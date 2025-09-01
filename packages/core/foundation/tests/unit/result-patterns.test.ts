@@ -76,7 +76,7 @@ describe('Result Patterns - 100% Coverage', () => {
       const result = ok(10)
         .map((x) => x * 2)
         .map((x) => x.toString())
-        .map((x) => `Result:${x}`);
+        .map((x) => 'Result:' + x);
 
       expect(result.isOk()).toBe(true);
       if (result.isOk()) {
@@ -101,7 +101,7 @@ describe('Result Patterns - 100% Coverage', () => {
 
     it('should transform errors with mapErr', () => {
       const result = err(new Error('original')).mapErr(
-        (error) => new Error(`wrapped:${error.message}`)
+        (error) => new Error('wrapped:' + error.message)
       );
 
       expect(result.isErr()).toBe(true);
@@ -157,7 +157,7 @@ describe('Result Patterns - 100% Coverage', () => {
     it('should handle complex chaining scenarios', () => {
       const parseNumber = (str: string): Result<number, Error> => {
         const num = Number(str);
-        if (Number.isNaN(num)) return err(new Error(`Invalid number:${str}`));
+        if (Number.isNaN(num)) return err(new Error('Invalid number:' + str));
         return ok(num);
       };
 
@@ -213,13 +213,13 @@ describe('Result Patterns - 100% Coverage', () => {
       const errorResult = err(new Error('failed'));
 
       const successMatch = successResult.match(
-        (value) => `Success:${value}`,
-        (error) => `Error:${error.message}`
+        (value) => 'Success:' + value,
+        (error) => 'Error:' + error.message
       );
 
       const errorMatch = errorResult.match(
-        (value) => `Success:${value}`,
-        (error) => `Error:${error.message}`
+        (value) => 'Success:' + value,
+        (error) => 'Error:' + error.message
       );
 
       expect(successMatch).toBe('Success:42');

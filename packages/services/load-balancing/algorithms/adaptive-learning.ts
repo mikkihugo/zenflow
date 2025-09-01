@@ -515,7 +515,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence: this.strategies.get(strategyName)?.confidence || 0.5,
-      reasoning: `${reasoning} (strategy:${strategyName})`,
+      reasoning: (reasoning) + ` (strategy:${strategyName})`,
       alternativeAgents: alternatives,
       estimatedLatency: metrics.get(selectedAgent?.id)?.responseTime || 1000,
       expectedQuality: this.strategies.get(strategyName)?.successRate || 0.8,
@@ -814,7 +814,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     const timeSlot = Math.floor(context.timeOfDay / 4); // 4-hour slots
     const loadLevel = Math.floor(context.systemLoad / 2); // Load buckets
 
-    return `${timeSlot}_${context.dayOfWeek}_${loadLevel}_${context.taskType}_${context.agentCount}`;
+    return (timeSlot) + '_' + (context.dayOfWeek) + '_' + (loadLevel) + '_' + (context.taskType) + '_' + context.agentCount;
   }
 
   private findSimilarPattern(
@@ -893,7 +893,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private encodeState(features: Record<string, number>): string {
     // Encode state features into a string for Q-learning
     return Object.entries(features)
-      .map(([key, value]) => `${key}:${Math.floor(value * 10)}`)
+      .map(([key, value]) => (key) + ':' + Math.floor(value * 10))
       .join('|');
   }
 

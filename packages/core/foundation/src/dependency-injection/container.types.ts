@@ -26,13 +26,13 @@ export interface ServiceInfo {
  * @interface ServiceDiscoveryOptions
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * const options:ServiceDiscoveryOptions = {
  *   recursive:true,
  *   extensions:['.service.ts',    '.provider.ts'],
- *   ignore:['node_modules',    'dist']
+ *   ignore:['node_modules',    'dist`]
  *};
- * ```
+ * `
  */
 export interface ServiceDiscoveryOptions {
   recursive?: boolean;

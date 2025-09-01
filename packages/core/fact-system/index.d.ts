@@ -8,14 +8,14 @@
  * multi-source data integration, and intelligent context augmentation.
  *
  * **CORE FACT CAPABILITIES:**
- * - 🚀 **Rust Engine Integration**:High-performance processing with WASM/native bindings
- * - 🔍 **Multi-Source Search**:GitHub, NPM, Documentation, and API integration
- * - 💾 **Smart Caching**:Intelligent cache with TTL and storage backends
- * - 🎯 **Vector Search**:LanceDB integration for semantic similarity search
- * - 📊 **GraphQL APIs**:Advanced GitHub GraphQL for deep repository analysis
- * - 🔧 **Foundation Integration**:Complete @claude-zen/foundation support
- * - 🌐 **Live Data Connectors**:Real-time API and documentation scraping
- * - 📈 **Performance Analytics**:Comprehensive metrics and monitoring
+ * -  **Rust Engine Integration**:High-performance processing with WASM/native bindings
+ * -  **Multi-Source Search**:GitHub, NPM, Documentation, and API integration
+ * -  **Smart Caching**:Intelligent cache with TTL and storage backends
+ * -  **Vector Search**:LanceDB integration for semantic similarity search
+ * -  **GraphQL APIs**:Advanced GitHub GraphQL for deep repository analysis
+ * -  **Foundation Integration**:Complete @claude-zen/foundation support
+ * -  **Live Data Connectors**:Real-time API and documentation scraping
+ * -  **Performance Analytics**:Comprehensive metrics and monitoring
  *
  * **Enterprise Features:**
  * - Multi-database backend support (SQLite, LanceDB, Kuzu graph database)
@@ -28,7 +28,7 @@
  * - Command-line interface for batch processing and automation
  *
  * @example Basic FACT System Setup
- * ```typescript`
+ * '''typescript'
  * import { FactSystem} from '@claude-zen/fact-system';
  *
  * // Quick setup with SQLite backend
@@ -62,10 +62,10 @@
  *   filterOutdated:true,
  *   enhanceWithContext:true
  *});
- * ```
+ * '
  *
  * @example Advanced Multi-Source Configuration
- * ```typescript`
+ * '''typescript'
  * import {
  *   FactSystem,
  *   createLanceDBFactClient,
@@ -125,10 +125,10 @@
  *   sourceDistribution:comprehensiveFacts.sourceBreakdown,
  *   topicCoverage:comprehensiveFacts.coverageMetrics
  *});
- * ```
+ * '
  *
  * @example Natural Language Query Processing
- * ```typescript`
+ * '''typescript'
  * import {
  *   FactSystem,
  *   NaturalLanguageQuery,
@@ -173,10 +173,10 @@
 ' *   logger.info('Code Examples: ', answer.codeExamples.length);
 ' *   logger.info('---');
  *}
- * ```
+ * '
  *
  * @example Real-Time Documentation Monitoring
- * ```typescript`
+ * '''typescript'
  * import {
  *   FactSystem,
  *   DocumentationProcessor,
@@ -232,10 +232,10 @@
  *   await factSystem.ingestLiveUpdate(update);
  *   logger.info('Live update processed: ', update.source);
 ' *}
- * ```
+ * '
  *
  * @example Security and Vulnerability Analysis
- * ```typescript`
+ * '''typescript'
  * import { FactSystem, createKuzuFactClient} from '@claude-zen/fact-system';
  *
  * // Setup with graph database for security analysis
@@ -273,10 +273,10 @@
  *   recommendations:securityReport.recommendations,
  *   complianceStatus:securityReport.licenseCompliance
  *});
- * ```
+ * '
  *
  * @example Custom Fact Processors and Extensions
- * ```typescript`
+ * '''typescript'
  * import { FactBridge, IntelligentCache} from '@claude-zen/fact-system';
  *
  * // Create custom domain-specific fact processor
@@ -316,7 +316,7 @@
  *
  * const blockchainFacts = await blockchainProcessor.processBlockchainData(
  *   'ethereum layer 2 scaling solutions') * );
- * ```
+ * '
  *
  * **Performance Characteristics:**
  * - **Query Speed**:<100ms for cached results, <2s for live searches

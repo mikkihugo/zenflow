@@ -1,123 +1,103 @@
 /**
- * @fileoverview Flow Optimization Service
- *
- * Service for AI-powered flow optimization recommendations.
- * Handles optimization strategy generation, flow analysis, and recommendation scoring.
- *
- * SINGLE RESPONSIBILITY: dateFns;';
+* @fileoverview Flow Optimization Service
+*
+* Service for AI-powered flow optimization recommendations.
+* Handles optimization strategy generation, flow analysis, and recommendation scoring.
+*
+* SINGLE RESPONSIBILITY: dateFns;';
 import {
-  meanBy,
-  orderBy,
-  sumBy,
-} from 'lodash-es')import type { Logger} from '../../types')/**';
- * Flow optimization configuration
- */
+meanBy,
+orderBy,
+sumBy,
+} from 'lodash-es')../../types');
+* Flow optimization configuration
+*/
 export interface FlowOptimizationConfig {
-    readonly optimizationId: 'low';
+readonly optimizationId: 'low';
 }
 /**
- * Optimization scope
- */
+* Optimization scope
+*/
 export interface OptimizationScope {
-    readonly includeStages: 'cycle_time';
+readonly includeStages: 'cycle_time';
 }
 /**
- * Optimization constraints
- */
+* Optimization constraints
+*/
 export interface OptimizationConstraints {
-    readonly budgetConstraint: 'low';
+readonly budgetConstraint: 'low';
 }
 /**
- * Milestone
- */
+* Milestone
+*/
 export interface Milestone {
-    readonly milestoneId: 'critical';
+readonly milestoneId: 'critical';
 }
 /**
- * Objective weight
- */
+* Objective weight
+*/
 export interface ObjectiveWeight {
-    readonly objectiveId: 'conservative';
+readonly objectiveId: 'conservative';
 }
 /**
- * Change management preference
- */
+* Change management preference
+*/
 export interface ChangeManagementPreference {
 }
 /**
- * Monitoring requirement
- */
+* Monitoring requirement
+*/
 export interface MonitoringRequirement {
-    readonly metricName: 'process_optimization';
+readonly metricName: 'process_optimization';
 }
 /**
- * Recommendation priority
- */
+* Recommendation priority
+*/
 export declare enum RecommendationPriority {
-    ')  CRITICAL = ' = 0,
-    critical = 1,
-    ')  HIGH = ' = 2,
-    high = 3,
-    ')  MEDIUM = ' = 4,
-    medium = 5,
-    ')  LOW = ' = 6,
-    low = 7,
-    ')};; 
-    /**
-     * Expected impact
-     */
-    = 8
-    /**
-     * Expected impact
-     */
-    ,
-    /**
-     * Expected impact
-     */
-    export = 9,
-    interface = 10,
-    ExpectedImpact = 11
+') = 0,
+critical = 1,
+') = 2,
+high = 3,
+') = 4,
+medium = 5,
+') = 6,
+low = 7,
+')available';
 }
 /**
- * Implementation timeline
- */
-export interface ImplementationTimeline {
-    readonly estimatedDuration: 'available';
-}
-/**
- * Implementation step
- */
+* Implementation step
+*/
 export interface ImplementationStep {
-    readonly stepId: 'technical';
+readonly stepId: 'technical';
 }
 /**
- * Risk probability
- */
+* Risk probability
+*/
 export declare enum RiskProbability {
-    ')  VERY_LOW = ' = 0,
-    very_low = 1,
-    ')  LOW = ' = 2,
-    low = 3,
-    ')  MEDIUM = ' = 4,
-    medium = 5,
-    ')  HIGH = ' = 6,
-    high = 7,
-    ')  VERY_HIGH = ' = 8,
-    very_high = 9,
-    ')};; 
-    /**
-     * Risk impact
-     */
-    = 10
-    /**
-     * Risk impact
-     */
-    ,
-    /**
-     * Risk impact
-     */
-    export = 11,
-    enum = 12,
-    RiskImpact = 13
+') = 0,
+very_low = 1,
+') = 2,
+low = 3,
+') = 4,
+medium = 5,
+') = 6,
+high = 7,
+') = 8,
+very_high = 9,
+')};
+/**
+* Risk impact
+*/
+= 10
+/**
+* Risk impact
+*/
+,
+/**
+* Risk impact
+*/
+export = 11,
+enum = 12,
+RiskImpact = 13
 }
 //# sourceMappingURL=flow-optimization-service.d.ts.map

@@ -64,13 +64,13 @@ class KnowledgeFactSystem {
         try {
             // Initialize the high-performance Rust fact bridge
             await this.factBridge.initialize();
-            logger.info('✅ Rust fact bridge initialized successfully');
+            logger.info(' Rust fact bridge initialized successfully');
             ';
             // Initialize TypeScript fallback client for when Rust bridge fails
             this.factClient = await createSQLiteFactClient();
             await this.factClient.initialize();
             this.initialized = true;
-            logger.info('✅ Knowledge fact system initialized with Rust engine + TypeScript fallback', ');
+            logger.info(' Knowledge fact system initialized with Rust engine + TypeScript fallback', ');
         }
         catch (error) {
             logger.error('Failed to initialize knowledge fact system:', error);
@@ -382,7 +382,7 @@ getGitHubRepoInfo(owner, string, repo, string);
     try {
         // First try Rust fact bridge for maximum performance
         const githubResult = await this.factBridge.getGitHubFacts(owner, repo);
-        logger.info(`✅ GitHub repo info retrieved via Rust bridge: ${owner}/${repo}` `
+        logger.info(` GitHub repo info retrieved via Rust bridge: ${owner}/${repo}` `
       );
       return githubResult;
     } catch (error) 

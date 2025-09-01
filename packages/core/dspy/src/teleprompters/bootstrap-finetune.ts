@@ -1,13 +1,13 @@
 /**
- * @fileoverview BootstrapFinetune Teleprompter - 100% Stanford DSPy API Compatible
- *
- * Direct TypeScript port of Stanford's dspy/teleprompt/bootstrap_finetune.py
- * Maintains exact API compatibility with original Python implementation.
- *
- * @version 1.0.0
- * @author Claude Code Zen Team
- * @see {@link https://github.com/stanfordnlp/dspy/blob/main/dspy/teleprompt/bootstrap_finetune.py} Original Implementation
- */
+* @fileoverview BootstrapFinetune Teleprompter - 100% Stanford DSPy API Compatible
+*
+* Direct TypeScript port of Stanford's dspy/teleprompt/bootstrap_finetune.py
+* Maintains exact API compatibility with original Python implementation.
+*
+* @version 1.0.0
+* @author Claude Code Zen Team
+* @see {@link https://github.com/stanfordnlp/dspy/blob/main/dspy/teleprompt/bootstrap_finetune.py} Original Implementation
+*/
 
 import { ChatAdapter} from "../adapters/chat-adapter";
 import type { Adapter} from "../interfaces/adapter";
@@ -19,13 +19,13 @@ import type { Prediction} from "../primitives/prediction";
 import { Teleprompter} from "./teleprompter.js";
 
 /**
- * Data format types for fine-tuning
- */
+* Data format types for fine-tuning
+*/
 export type DataFormat = "chat|completion|instruction";
 
 /**
- * Failed prediction class for error handling
- */
+* Failed prediction class for error handling
+*/
 export class FailedPrediction {
 	completion_text:string;
 	format_reward?:number | null;
@@ -37,8 +37,8 @@ export class FailedPrediction {
 }
 
 /**
- * Trace data interface
- */
+* Trace data interface
+*/
 export interface TraceData {
 	example_ind:number;
 	example:Example;
@@ -48,17 +48,17 @@ export interface TraceData {
 }
 
 /**
- * Fine-tuning job interface
- */
+* Fine-tuning job interface
+*/
 export interface FinetuneJob {
 	result():Promise<LMInterface | Error>;
 	thread:{ join(): void};
 }
 
 /**
- * Abstract base class for fine-tuning teleprompters
- * Exact port of Stanford DSPy's FinetuneTeleprompter
- */
+* Abstract base class for fine-tuning teleprompters
+* Exact port of Stanford DSPy's FinetuneTeleprompter
+*/
 export abstract class FinetuneTeleprompter extends Teleprompter {
 	protected trainKwargs:Map<LMInterface, any>;
 
@@ -102,9 +102,9 @@ export abstract class FinetuneTeleprompter extends Teleprompter {
 }
 
 /**
- * Configuration interface for BootstrapFinetune teleprompter
- * Exact match with Stanford DSPy BootstrapFinetune constructor
- */
+* Configuration interface for BootstrapFinetune teleprompter
+* Exact match with Stanford DSPy BootstrapFinetune constructor
+*/
 export interface BootstrapFinetuneConfig {
 	/** Metric function for evaluation */
 	metric?:MetricFunction | null;
@@ -124,154 +124,154 @@ export interface BootstrapFinetuneConfig {
 }
 
 /**
- * BootstrapFinetune Teleprompter
- *
- * 100% compatible with Stanford DSPy's BootstrapFinetune teleprompter.
- * Bootstraps training data and fine-tunes language models for improved performance.
- *
- * @example
- * ```typescript`
- * // Basic fine-tuning with bootstrapped demonstrations
- * const bootstrapFinetune = new BootstrapFinetune({
- *   metric:exactMatchMetric
- *});
- *
- * const fineTunedProgram = await bootstrapFinetune.compile(studentProgram, {
- *   trainset:trainingData,
- *   teacher:teacherProgram
- *});
- *
- * // Advanced fine-tuning with custom configuration
- * const advancedFinetune = new BootstrapFinetune({
- *   metric:f1ScoreMetric,
- *   multitask:false,           // Single-task fine-tuning
- *   adapter:new ChatAdapter({  // Custom format adapter
- *     model: 'gpt-3.5-turbo', *     system_prompt:'You are a helpful assistant') *}),
- *   exclude_demos:true,        // Exclude demo examples from fine-tuning
- *   num_threads:4,             // Parallel processing
- *   train_kwargs:{
- *     learning_rate:1e-5,      // Custom training parameters
- *     batch_size:16,
- *     epochs:3,
- *     warmup_steps:100
- *}
- *});
- *
- * const advancedResult = await advancedFinetune.compile(complexProgram, {
- *   trainset:largeTrainingSet,
- *   teacher:[teacher1, teacher2, teacher3],  // Multiple teachers
- *   valset:validationSet
- *});
- *
- * // Production fine-tuning with comprehensive setup
- * const productionFinetune = new BootstrapFinetune({
- *   metric:(gold, pred, trace) => {
- *     // Custom metric with trace analysis
- *     const accuracy = gold.answer === pred.answer ? 1:0;
- *     const efficiency = trace ? 1 / trace.length:0.5;  // Prefer shorter traces
- *     return accuracy * 0.8 + efficiency * 0.2;
- *},
- *   multitask:true,            // Multi-task learning
- *   adapter:new Map([          // Model-specific adapters
- *     [gpt35Model, new ChatAdapter({ model: 'gpt-3.5-turbo'})],
- *     [gpt4Model, new ChatAdapter({ model: 'gpt-4'})],
- *     [customModel, new CompletionAdapter({ format: 'instruction'})]
- *]),
- *   exclude_demos:false,       // Include demonstrations
- *   num_threads:8,             // High parallelism
- *   train_kwargs:new Map([     // Model-specific training params
- *     [gpt35Model, {
- *       learning_rate:2e-5,
- *       batch_size:32,
- *       epochs:5,
- *       validation_split:0.1
- *}],
- *     [gpt4Model, {
- *       learning_rate:5e-6,    // Lower LR for larger model
- *       batch_size:16,
- *       epochs:3,
- *       gradient_clipping:1.0
- *}]
- *])
- *});
- *
- * try {
- *   const productionProgram = await productionFinetune.compile(deploymentProgram, {
- *     trainset:productionTraining,
- *     teacher:ensembleTeacher,
- *     valset:productionValidation
- *});
- *
- *   logger.info('Fine-tuning completed successfully');
- *
- *   // Evaluate fine-tuned model
- *   const testResults = await evaluate(productionProgram, testSet);
- *   logger.info('Test performance: ', testResults);
+* BootstrapFinetune Teleprompter
+*
+* 100% compatible with Stanford DSPy's BootstrapFinetune teleprompter.
+* Bootstraps training data and fine-tunes language models for improved performance.
+*
+* @example
+* ```typescript`
+* // Basic fine-tuning with bootstrapped demonstrations
+* const bootstrapFinetune = new BootstrapFinetune({
+* metric:exactMatchMetric
+*});
+*
+* const fineTunedProgram = await bootstrapFinetune.compile(studentProgram, {
+* trainset:trainingData,
+* teacher:teacherProgram
+*});
+*
+* // Advanced fine-tuning with custom configuration
+* const advancedFinetune = new BootstrapFinetune({
+* metric:f1ScoreMetric,
+* multitask:false, // Single-task fine-tuning
+* adapter:new ChatAdapter({ // Custom format adapter
+* model: 'gpt-3.5-turbo', * system_prompt:'You are a helpful assistant') *}),
+* exclude_demos:true, // Exclude demo examples from fine-tuning
+* num_threads:4, // Parallel processing
+* train_kwargs:{
+* learning_rate:1e-5, // Custom training parameters
+* batch_size:16,
+* epochs:3,
+* warmup_steps:100
+*}
+*});
+*
+* const advancedResult = await advancedFinetune.compile(complexProgram, {
+* trainset:largeTrainingSet,
+* teacher:[teacher1, teacher2, teacher3], // Multiple teachers
+* valset:validationSet
+*});
+*
+* // Production fine-tuning with comprehensive setup
+* const productionFinetune = new BootstrapFinetune({
+* metric:(gold, pred, trace) => {
+* // Custom metric with trace analysis
+* const accuracy = gold.answer === pred.answer ? 1:0;
+* const efficiency = trace ? 1 / trace.length:0.5; // Prefer shorter traces
+* return accuracy * 0.8 + efficiency * 0.2;
+*},
+* multitask:true, // Multi-task learning
+* adapter:new Map([ // Model-specific adapters
+* [gpt35Model, new ChatAdapter({ model: 'gpt-3.5-turbo'})],
+* [gpt4Model, new ChatAdapter({ model: 'gpt-4'})],
+* [customModel, new CompletionAdapter({ format: 'instruction'})]
+*]),
+* exclude_demos:false, // Include demonstrations
+* num_threads:8, // High parallelism
+* train_kwargs:new Map([ // Model-specific training params
+* [gpt35Model, {
+* learning_rate:2e-5,
+* batch_size:32,
+* epochs:5,
+* validation_split:0.1
+*}],
+* [gpt4Model, {
+* learning_rate:5e-6, // Lower LR for larger model
+* batch_size:16,
+* epochs:3,
+* gradient_clipping:1.0
+*}]
+*])
+*});
+*
+* try {
+* const productionProgram = await productionFinetune.compile(deploymentProgram, {
+* trainset:productionTraining,
+* teacher:ensembleTeacher,
+* valset:productionValidation
+*});
+*
+* logger.info('Fine-tuning completed successfully');
+*
+* // Evaluate fine-tuned model
+* const testResults = await evaluate(productionProgram, testSet);
+* logger.info('Test performance: ', testResults);
 ' *} catch (error) {
- *   logger.error('Fine-tuning failed: ', error.message);
+* logger.error('Fine-tuning failed: ', error.message);
 ' *}
- *
- * // Domain-specific fine-tuning
- * const domainFinetune = new BootstrapFinetune({
- *   metric:domainSpecificMetric,
- *   multitask:true,
- *   adapter:new InstructionAdapter({
- *     format: 'chat', *     system_message: 'You are an expert in medical diagnosis', *     response_format:'structured'*}),
- *   train_kwargs:{
- *     learning_rate:1e-5,
- *     batch_size:8,           // Smaller batch for specialized domain
- *     epochs:10,              // More epochs for domain adaptation
- *     regularization:0.01,    // Prevent overfitting
- *     early_stopping:true,
- *     patience:3
- *}
- *});
- *
- * const domainExpertProgram = await domainFinetune.compile(medicalProgram, {
- *   trainset:medicalTrainingCases,
- *   teacher:expertMedicalProgram,
- *   valset:medicalValidationCases
- *});
- *
- * // Multi-stage fine-tuning pipeline
- * async function multiStageFineTuning(baseProgram, datasets) {
- *   // Stage 1:General capability fine-tuning
- *   const stage1 = new BootstrapFinetune({
- *     metric:generalMetric,
- *     multitask:true,
- *     exclude_demos:true,
- *     train_kwargs:{ learning_rate: 2e-5, epochs:3}
- *});
- *
- *   const generalProgram = await stage1.compile(baseProgram, {
- *     trainset:datasets.general,
- *     teacher:generalTeacher
- *});
- *
- *   // Stage 2:Task-specific fine-tuning
- *   const stage2 = new BootstrapFinetune({
- *     metric:taskSpecificMetric,
- *     multitask:false,
- *     exclude_demos:false,
- *     train_kwargs:{ learning_rate: 1e-5, epochs:5}
- *});
- *
- *   const taskProgram = await stage2.compile(generalProgram, {
- *     trainset:datasets.taskSpecific,
- *     teacher:taskSpecificTeacher,
- *     valset:datasets.validation
- *});
- *
- *   return taskProgram;
- *}
- *
- * const multiStageProgram = await multiStageFineTuning(baseProgram, {
- *   general:generalTrainingData,
- *   taskSpecific:taskTrainingData,
- *   validation:validationData
- *});
- * ```
- */
+*
+* // Domain-specific fine-tuning
+* const domainFinetune = new BootstrapFinetune({
+* metric:domainSpecificMetric,
+* multitask:true,
+* adapter:new InstructionAdapter({
+* format: 'chat', * system_message: 'You are an expert in medical diagnosis', * response_format:`structured`*}),
+* train_kwargs:{
+* learning_rate:1e-5,
+* batch_size:8, // Smaller batch for specialized domain
+* epochs:10, // More epochs for domain adaptation
+* regularization:0.01, // Prevent overfitting
+* early_stopping:true,
+* patience:3
+*}
+*});
+*
+* const domainExpertProgram = await domainFinetune.compile(medicalProgram, {
+* trainset:medicalTrainingCases,
+* teacher:expertMedicalProgram,
+* valset:medicalValidationCases
+*});
+*
+* // Multi-stage fine-tuning pipeline
+* async function multiStageFineTuning(baseProgram, datasets) {
+* // Stage 1:General capability fine-tuning
+* const stage1 = new BootstrapFinetune({
+* metric:generalMetric,
+* multitask:true,
+* exclude_demos:true,
+* train_kwargs:{ learning_rate: 2e-5, epochs:3}
+*});
+*
+* const generalProgram = await stage1.compile(baseProgram, {
+* trainset:datasets.general,
+* teacher:generalTeacher
+*});
+*
+* // Stage 2:Task-specific fine-tuning
+* const stage2 = new BootstrapFinetune({
+* metric:taskSpecificMetric,
+* multitask:false,
+* exclude_demos:false,
+* train_kwargs:{ learning_rate: 1e-5, epochs:5}
+*});
+*
+* const taskProgram = await stage2.compile(generalProgram, {
+* trainset:datasets.taskSpecific,
+* teacher:taskSpecificTeacher,
+* valset:datasets.validation
+*});
+*
+* return taskProgram;
+*}
+*
+* const multiStageProgram = await multiStageFineTuning(baseProgram, {
+* general:generalTrainingData,
+* taskSpecific:taskTrainingData,
+* validation:validationData
+*});
+* ```
+*/
 export class BootstrapFinetune extends FinetuneTeleprompter {
 	private config:Required<BootstrapFinetuneConfig>;
 	private adapterMap:Map<LMInterface, Adapter>;
@@ -343,7 +343,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			if (!pred.lm) {
 				throw new Error(
 					`Predictor ${predInd} does not have an LM assigned. ` +
-						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`Please ensure the module`s predictors have their LM set before fine-tuning. ` +
 						`You can set it using: your_module.set_lm(your_lm)`,
 				);
 }
@@ -408,7 +408,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 
 	/**
 	 * Fine-tune language models
-	 * Exact port of Stanford DSPy's finetune_lms static method
+	 * Exact port of Stanford DSPy`s finetune_lms static method
 	 */
 	private async finetuneLMs(
 		finetuneDict:Map<string, any>,
@@ -572,7 +572,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			if (!predictor.lm) {
 				throw new Error(
 					`Predictor ${i} does not have an LM assigned. ` +
-						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`Please ensure the module`s predictors have their LM set before fine-tuning. ` +
 						`You can set it using: your_module.set_lm(your_lm)`,
 				);
 }
@@ -617,7 +617,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 
 	/**
-	 * Validate that student and teacher don't share predictor objects
+	 * Validate that student and teacher don`t share predictor objects
 	 */
 	private validateSharedPredictors(
 		student:DSPyModule,

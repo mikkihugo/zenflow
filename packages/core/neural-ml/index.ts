@@ -8,14 +8,14 @@
  * comprehensive Foundation support and enterprise-scale neural computation capabilities.
  *
  * **CORE CAPABILITIES:**
- * - 🚀 **Machine-Adaptive Optimization**:Auto-detects and optimizes for CPU/GPU capabilities
- * - 🧠 **TypeScript-Rust Bridge**:Zero-overhead native performance with type safety
- * - 📊 **Enterprise Telemetry**:Comprehensive performance monitoring and analytics
- * - 🛡️ **Circuit Breaker Protection**:Fault tolerance and graceful degradation
- * - ⚡ **SIMD Optimization**:AVX2, AVX-512, ARM NEON vector acceleration
- * - 🎯 **GPU Acceleration**:CUDA, Metal, WebGPU for massive parallel computation
- * - 📈 **Real-Time Performance**:Live optimization and bottleneck detection
- * - 🔧 **Foundation Integration**:Complete @claude-zen/foundation ecosystem support
+ * -  **Machine-Adaptive Optimization**:Auto-detects and optimizes for CPU/GPU capabilities
+ * -  **TypeScript-Rust Bridge**:Zero-overhead native performance with type safety
+ * -  **Enterprise Telemetry**:Comprehensive performance monitoring and analytics
+ * - ️ **Circuit Breaker Protection**:Fault tolerance and graceful degradation
+ * -  **SIMD Optimization**:AVX2, AVX-512, ARM NEON vector acceleration
+ * -  **GPU Acceleration**:CUDA, Metal, WebGPU for massive parallel computation
+ * -  **Real-Time Performance**:Live optimization and bottleneck detection
+ * -  **Foundation Integration**:Complete @claude-zen/foundation ecosystem support
  *
  * **Enterprise Features:**
  * - Multi-backend hardware optimization with automatic fallback
@@ -27,7 +27,7 @@
  * - Enterprise-grade logging, monitoring, and observability
  *
  * @example Basic Neural ML Engine Setup
- * ```typescript`
+ * '''typescript'
  * import { NeuralMLEngine} from '@claude-zen/neural-ml';
  *
  * // Initialize with comprehensive telemetry and monitoring
@@ -78,13 +78,13 @@
  * // Get AI-powered optimization recommendations
  * const recommendations = await engine.getOptimizationRecommendations();
  * recommendations.forEach(rec => {
- *   logger.info(`💡 ${rec.category}:${rec.suggestion}`);
- *   logger.info(`   Expected improvement:${rec.expectedImprovement}`);
+ *   logger.info(' ' + (rec.category) + ':' + rec.suggestion);
+ *   logger.info('   Expected improvement:' + rec.expectedImprovement);
  *});
- * ```
+ * '
  *
  * @example Advanced Enterprise Neural Network Operations
- * ```typescript`
+ * '''typescript'
  * import {
  *   NeuralMLEngine,
  *   ActivationType,
@@ -139,7 +139,7 @@
  * logger.info('Vector Addition: ', {
 ' *   backend:vectorSum.backend,
  *   executionTime:vectorSum.executionTime,
- *   throughput:`${(vectorA.length / (vectorSum.executionTime / 1000)).toFixed(0)} ops/sec`
+ *   throughput:(vectorA.length / (vectorSum.executionTime / 1000)).toFixed(0) + ' ops/sec'
  *});
  *
  * // Advanced neural activation functions with performance monitoring
@@ -174,16 +174,16 @@
  *
  * // Real-time performance monitoring and alerting
  * engine.on('performanceAlert', (alert) => {
- *   logger.warn(`Performance Alert:${alert.type} - ${alert.message}`);
+ *   logger.warn('Performance Alert:' + alert.type + ' - ' + alert.message);
  *   if (alert.severity === 'critical') {
  *     // Implement automatic scaling or optimization
  *     engine.enablePerformanceBoost();
  *}
  *});
- * ```
+ * '
  *
  * @example Distributed Neural Network Training
- * ```typescript`
+ * '''typescript'
  * import {
  *   NeuralMLEngine,
  *   DistributedTrainingManager,
@@ -305,10 +305,10 @@
  *   expectedLatency:exportedModel.benchmarks.latency,
  *   expectedThroughput:exportedModel.benchmarks.throughput
  *});
- * ```
+ * '
  *
  * @example High-Performance Matrix Operations with Auto-Optimization
- * ```typescript`
+ * '''typescript'
  * import {
  *   NeuralMLEngine,
  *   MatrixOperations,
@@ -351,7 +351,7 @@
  * logger.info('Running Matrix Operation Benchmarks...\n');
  *
  * for (const size of benchmarkSizes) {
- *   logger.info(`🔍 Benchmarking ${size.name} matrices (${size.rows}x${size.cols})...`);
+ *   logger.info(' Benchmarking ' + size.name + ' matrices (' + size.rows + 'x' + size.cols + ')...');
  *
  *   // Generate random matrices
  *   const matrixA = new Float32Array(size.rows * size.cols)
@@ -387,11 +387,11 @@
  *         memoryUsage:result.memoryUsage
  *};
  *
- *       logger.info(`  ${backend.padEnd(8)}:${(endTime - startTime).toFixed(2)}ms ` +`
- *                  `(${result.backend}, ${(results[backend].throughput / 1e6).toFixed(1)}M ops/sec)`);
+ *       logger.info('  ' + backend.padEnd(8) + ':' + (endTime - startTime).toFixed(2) + 'ms ' +'
+ *                  '(' + (result.backend) + ', ' + (results[backend].throughput / 1e6).toFixed(1) + 'M ops/sec)');
  *
  *} catch (error) {
- *       logger.info(`  ${backend.padEnd(8)}:Failed (${error.message})`);
+ *       logger.info('  ' + (backend.padEnd(8)) + ':Failed (' + error.message + ')');
  *}
  *}
  *
@@ -400,7 +400,7 @@
  *     .sort(([,a], [,b]) => a.executionTime - b.executionTime)[0];
  *
  *   if (optimal) {
- *     logger.info(`  🏆 Optimal:${optimal[0]} (${optimal[1].executionTime.toFixed(2)}ms)\n`);
+ *     logger.info('   Optimal:' + (optimal[0]) + ' (' + optimal[1].executionTime.toFixed(2) + 'ms)\n');
  *}
  *}
  *
@@ -413,13 +413,13 @@
  *   thermalAnalysis:true
  *});
  *
- * logger.info('🎯 Optimization Recommendations: ');
+ * logger.info(' Optimization Recommendations: ');
 ' * recommendations.forEach((rec, index) => {
- *   logger.info(`  ${index + 1}. ${rec.title}`);
- *   logger.info(`     ${rec.description}`);
- *   logger.info(`     Expected improvement:${rec.expectedImprovement}`);
- *   logger.info(`     Implementation effort:${rec.implementationEffort}`);
- *   logger.info(`     Priority:${rec.priority}\n`);
+ *   logger.info('  ' + (index + 1) + '. ' + rec.title);
+ *   logger.info('     ' + rec.description);
+ *   logger.info('     Expected improvement:' + rec.expectedImprovement);
+ *   logger.info('     Implementation effort:' + rec.implementationEffort);
+ *   logger.info('     Priority:' + rec.priority + '\n');
  *});
  *
  * // Real-time performance monitoring dashboard
@@ -438,11 +438,11 @@
  *});
  *
  * performanceMonitor.on('metrics', (metrics) => {
- *   logger.info(`📊 Live Metrics:Latency: ${metrics.latency}ms, ` +`
- *              `Throughput:${(metrics.throughput / 1e6).toFixed(1)}M ops/sec, ` +`
- *              `Memory:${(metrics.memoryUsage * 100).toFixed(1)}%`);
+ *   logger.info(' Live Metrics:Latency: ' + metrics.latency + 'ms, ' +'
+ *              'Throughput:' + (metrics.throughput / 1e6).toFixed(1) + 'M ops/sec, ' +'
+ *              'Memory:' + (metrics.memoryUsage * 100).toFixed(1) + '%');
  *});
- * ```
+ * '
  *
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.1
@@ -497,7 +497,7 @@ export {
  *
  * ## Architecture
  *
- * ```
+ * ''
  * ┌─────────────────────────────────────────────────────────────┐
  * │                    TypeScript API Layer                    │
  * │  • NeuralMLEngine (main interface)                        │
@@ -512,7 +512,7 @@ export {
  * │  • GPU acceleration (CUDA, Metal, WebGPU)                │
  * │  • High-performance linear algebra                       │
  * └─────────────────────────────────────────────────────────────┘
- * ```
+ * '
  *
  * ## Supported Backends
  *
@@ -578,9 +578,9 @@ export {
  *
  * ## Getting Started
  *
- * ```bash`
+ * '''bash'
  * npm install @claude-zen/neural-ml @claude-zen/foundation
- * ```
+ * `
  *
  * See the examples above for usage patterns.
  */

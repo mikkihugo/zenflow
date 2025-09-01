@@ -99,7 +99,7 @@ describe('MemoryManager', () => {
       const result = await manager.registerBackend(backendId, config);
       expect(result.isOk()).toBe(true);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining(`Backend '${backendId}' registered`)`
+        expect.stringContaining('Backend '' + backendId + '' registered')'
       );
 });
 
@@ -125,7 +125,7 @@ describe('MemoryManager', () => {
 
       expect(result.isOk()).toBe(true);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining(`Backend '${backendId}' unregistered`)`
+        expect.stringContaining('Backend '' + backendId + '' unregistered')'
       );
 });
 

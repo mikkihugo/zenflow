@@ -1,9 +1,9 @@
 /**
- * @fileoverview Document Intelligence Types
- * 
- * Unified type system for document intelligence service including semantic analysis,
- * strategic vision, document processing, and swarm integration types.
- */
+* @fileoverview Document Intelligence Types
+*
+* Unified type system for document intelligence service including semantic analysis,
+* strategic vision, document processing, and swarm integration types.
+*/
 
 
 // Re-export types from core processing
@@ -19,182 +19,182 @@ export type * from '../scanning/enhanced-document-scanner';
 export type * from '../services/strategic-vision-service';
 
 /**
- * Document intelligence service types
- */
+* Document intelligence service types
+*/
 export interface DocumentIntelligenceConfig {
-  enableSemanticAnalysis?:boolean;
-  enableStrategicVision?:boolean;
-  enableWorkflowProcessing?:boolean;
-  enableSwarmIntegration?:boolean;
-  confidenceThreshold?:number;
-  maxSegmentSize?:number;
-  preserveAlgorithmBlocks?:boolean;
+enableSemanticAnalysis?:boolean;
+enableStrategicVision?:boolean;
+enableWorkflowProcessing?:boolean;
+enableSwarmIntegration?:boolean;
+confidenceThreshold?:number;
+maxSegmentSize?:number;
+preserveAlgorithmBlocks?:boolean;
 }
 
 /**
- * Document analysis request options
- */
+* Document analysis request options
+*/
 export interface DocumentAnalysisOptions {
-  content:string;
-  projectId?:string;
-  enableSemanticAnalysis?:boolean;
-  enableStrategicAnalysis?:boolean;
-  enableScanning?:boolean;
-  enableSegmentation?:boolean;
+content:string;
+projectId?:string;
+enableSemanticAnalysis?:boolean;
+enableStrategicAnalysis?:boolean;
+enableScanning?:boolean;
+enableSegmentation?:boolean;
 }
 
 /**
- * Semantic analysis options
- */
+* Semantic analysis options
+*/
 export interface SemanticAnalysisOptions {
-  content:string;
-  enablePatternRecognition?:boolean;
-  enableDensityAnalysis?:boolean;
-  customPatterns?:any;
+content:string;
+enablePatternRecognition?:boolean;
+enableDensityAnalysis?:boolean;
+customPatterns?:any;
 }
 
 /**
- * Document segmentation options
- */
+* Document segmentation options
+*/
 export interface DocumentSegmentationOptions {
-  content:string;
-  strategy?:string;
-  preserveAlgorithmBlocks?:boolean;
-  maxSegmentSize?:number;
+content:string;
+strategy?:string;
+preserveAlgorithmBlocks?:boolean;
+maxSegmentSize?:number;
 }
 
 /**
- * Strategic vision coordination options
- */
+* Strategic vision coordination options
+*/
 export interface VisionCoordinationOptions {
-  projectId:string;
-  includeTaskGeneration?:boolean;
-  includeDocumentLinks?:boolean;
+projectId:string;
+includeTaskGeneration?:boolean;
+includeDocumentLinks?:boolean;
 }
 
 /**
- * Document processing options
- */
+* Document processing options
+*/
 export interface DocumentProcessingOptions {
-  path:string;
-  enableWorkflow?:boolean;
-  generateTasks?:boolean;
-  saveToDatabase?:boolean;
+path:string;
+enableWorkflow?:boolean;
+generateTasks?:boolean;
+saveToDatabase?:boolean;
 }
 
 /**
- * Pattern scanning options
- */
+* Pattern scanning options
+*/
 export interface PatternScanningOptions {
-  rootPath:string;
-  includePatterns?:string[];
-  excludePatterns?:string[];
-  enabledPatterns?:string[];
-  generateSwarmTasks?:boolean;
+rootPath:string;
+includePatterns?:string[];
+excludePatterns?:string[];
+enabledPatterns?:string[];
+generateSwarmTasks?:boolean;
 }
 
 /**
- * Service status information
- */
+* Service status information
+*/
 export interface ServiceStatus {
-  initialized:boolean;
-  enabledCapabilities:string[];
-  componentStatus:Record<string, boolean>;
+initialized:boolean;
+enabledCapabilities:string[];
+componentStatus:Record<string, boolean>;
 }
 
 /**
- * Processing metrics
- */
+* Processing metrics
+*/
 export interface ProcessingMetrics {
-  totalProcessingTime:number;
-  confidenceScore:number;
-  qualityScore:number;
+totalProcessingTime:number;
+confidenceScore:number;
+qualityScore:number;
 }
 
 /**
- * Document intelligence capability
- */
+* Document intelligence capability
+*/
 export type DocumentIntelligenceCapability =
-  || 'semantic-analysis')  || 'strategic-vision')  || 'workflow-processing')  || 'swarm-integration')  || 'pattern-recognition')  || 'intelligent-segmentation;
+|| 'semantic-analysis') || 'strategic-vision') || 'workflow-processing') || 'swarm-integration') || 'pattern-recognition') || 'intelligent-segmentation;
 
 /**
- * Analysis result confidence levels
- */
+* Analysis result confidence levels
+*/
 export type ConfidenceLevel =
-  || 'low')  || 'medium')  || 'high')  || 'very-high;
+|| 'low') || 'medium') || 'high') || 'very-high;
 
 /**
- * Document complexity metrics
- */
+* Document complexity metrics
+*/
 export interface DocumentComplexityMetrics {
-  algorithmDensity:number;
-  conceptComplexity:number;
-  technicalDepth:number;
-  structuralComplexity:number;
+algorithmDensity:number;
+conceptComplexity:number;
+technicalDepth:number;
+structuralComplexity:number;
 }
 
 /**
- * Content analysis result
- */
+* Content analysis result
+*/
 export interface ContentAnalysisResult {
-  documentType:string;
-  confidence:number;
-  complexity:DocumentComplexityMetrics;
-  patterns:{
-    detected:string[];
-    confidence:Record<string, number>;
-    weights:Record<string, number>;
+documentType:string;
+confidence:number;
+complexity:DocumentComplexityMetrics;
+patterns:{
+detected:string[];
+confidence:Record<string, number>;
+weights:Record<string, number>;
 };
-  recommendedActions:string[];
+recommendedActions:string[];
 }
 
 /**
- * Document intelligence event types
- */
+* Document intelligence event types
+*/
 export type DocumentIntelligenceEvent =
-  || 'initialized')  || 'analysis_started')  || 'analysis_complete')  || 'classification_complete')  || 'segmentation_complete')  || 'scanning_complete')  || 'processing_complete')  || 'error')  || 'shutdown;
+|| 'initialized') || 'analysis_started') || 'analysis_complete') || 'classification_complete') || 'segmentation_complete') || 'scanning_complete') || 'processing_complete') || 'error') || 'shutdown;
 
 /**
- * Event payload types
- */
+* Event payload types
+*/
 export interface EventPayloads {
-  initialized:{ config: DocumentIntelligenceConfig};
-  analysis_started:{ options: DocumentAnalysisOptions};
-  analysis_complete:{ result: any};
-  classification_complete:{ classification: any};
-  segmentation_complete:{ segmentation: any};
-  scanning_complete:{ scanResults: any};
-  processing_complete:{ processingResult: any};
-  error:{ error: Error; context?: string};
-  shutdown:{};
+initialized:{ config: DocumentIntelligenceConfig};
+analysis_started:{ options: DocumentAnalysisOptions};
+analysis_complete:{ result: any};
+classification_complete:{ classification: any};
+segmentation_complete:{ segmentation: any};
+scanning_complete:{ scanResults: any};
+processing_complete:{ processingResult: any};
+error:{ error: Error; context?: string};
+shutdown:{};
 }
 
 /**
- * Document intelligence error types
- */
+* Document intelligence error types
+*/
 export class DocumentIntelligenceError extends Error {
-  constructor(
-    message:string,
-    public readonly code:string,
-    public readonly context?:any
-  ) {
-    super(message);
-    this.name = 'DocumentIntelligenceError';
+constructor(
+message:string,
+public readonly code:string,
+public readonly context?:any
+) {
+super(message);
+this.name = 'DocumentIntelligenceError';
 }
 }
 
 /**
- * Service component types
- */
+* Service component types
+*/
 export type ServiceComponent =
-  || 'semanticClassifier')  || 'segmentationEngine')  || 'visionService')  || 'documentScanner')  || 'documentProcessor;
+|| 'semanticClassifier') || 'segmentationEngine') || 'visionService') || 'documentScanner') || 'documentProcessor;
 
 /**
- * Configuration validation result
- */
+* Configuration validation result
+*/
 export interface ConfigValidationResult {
-  isValid:boolean;
-  errors:string[];
-  warnings:string[];
-  suggestions:string[];
+isValid:boolean;
+errors:string[];
+warnings:string[];
+suggestions:string[];
 }

@@ -5,7 +5,7 @@
  * Collects data over time or until batch size is reached.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ProcessorConfig, TelemetryData} from '../types.js';
 import type { BaseProcessor} from './index.js';
 
@@ -29,7 +29,7 @@ export class BatchProcessor implements BaseProcessor {
   constructor(config:ProcessorConfig) {
     this.name = config.name;
     this.config = config;
-    this.logger = getLogger(`BatchProcessor:${config.name}`);
+    this.logger = getLogger('BatchProcessor:' + config.name);
 
     // Extract configuration
     this.maxBatchSize = config.config?.maxBatchSize  ||  100;
@@ -120,7 +120,7 @@ export class BatchProcessor implements BaseProcessor {
     // Flush remaining batch if configured to do so
     if (this.flushOnShutdown && this.batch.length > 0) {
       this.logger.info(
-        `Flushing ${this.batch.length} remaining items before shutdown`
+        'Flushing ' + this.batch.length + ' remaining items before shutdown'
       );
       await this.flushBatch();
 }
@@ -191,7 +191,7 @@ export class BatchProcessor implements BaseProcessor {
     try {
       // In a real implementation, this would trigger the next stage
       // For now, we just log the batch flush
-      this.logger.debug(`Flushing batch of ${batchToFlush.length} items`);
+      this.logger.debug('Flushing batch of ' + batchToFlush.length + ' items');
 
       // Emit batch ready event (would be caught by collector)
       // this.emit('batchReady', batchToFlush);

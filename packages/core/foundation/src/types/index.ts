@@ -89,17 +89,17 @@ export type LogLevel = 'debug|info|warn|error|fatal';
  * that enhance the foundation type system for complex transformations.
  *
  * @example String Manipulation
- * ```typescript`
+ * '''typescript'
  * // Create union types with autocomplete support
  * type ModelName = LiteralUnion<'claude-3|gpt-4', string>;
- * const model:ModelName = 'claude-3'; // ✅ Autocomplete
- * const customModel:ModelName = 'custom-model'; // ✅ Also valid
+ * const model:ModelName = 'claude-3'; //  Autocomplete
+ * const customModel:ModelName = 'custom-model'; //  Also valid
  *
  * // Case conversions
- * type ApiKey = CamelCase<'api_key'>; // ' apiKey') * type UrlPath = KebabCase<'getUserProfile'>; // ' get-user-profile') * ```
+ * type ApiKey = CamelCase<'api_key'>; // ' apiKey') * type UrlPath = KebabCase<'getUserProfile'>; // ' get-user-profile') * '
  *
  * @example Object Manipulation
- * ```typescript`
+ * '''typescript'
  * interface User {
  *   id:string;
  *   name:string;
@@ -115,10 +115,10 @@ export type LogLevel = 'debug|info|warn|error|fatal';
  *
  * // Deep partial for nested objects
  * type UserUpdate = PartialDeep<User>;
- * ```
+ * '
  *
  * @example Configuration Types
- * ```typescript`
+ * '''typescript'
  * // Type-safe package.json handling
  * import type { PackageJson} from '@claude-zen/foundation';
  *
@@ -133,7 +133,7 @@ export type LogLevel = 'debug|info|warn|error|fatal';
  *   compilerOptions:{
  *     target: 'ES2022', *     module:'ESNext') *}
  *};
- * ```
+ * '
  */
 export type {
   // ArgumentsType - Use Parameters<T> instead
@@ -220,7 +220,7 @@ export type {
  * All utilities now sourced from type-fest for consistency.
  *
  * @example Deep Type Operations (type-fest equivalents)
- * ```typescript`
+ * '''typescript'
  * interface Config {
  *   database:{ host: string; port: number;};
  *   api:{ baseUrl: string; timeout: number;};
@@ -230,7 +230,7 @@ export type {
  * type ConfigUpdate = PartialDeep<Config>; // Instead of DeepPartial
  * type ValidatedConfig = RequiredDeep<Config>; // Instead of DeepRequired
  * type ImmutableConfig = ReadonlyDeep<Config>; // Instead of DeepReadonly
- * ```
+ * '
  */
 
 // Type utilities using type-fest for enhanced type safety

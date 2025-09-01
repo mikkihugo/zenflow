@@ -98,7 +98,7 @@ export class MemoryHealthMonitor extends EventEmitter {
     // Start health checking for this node
     this.startHealthChecking(node.id);
 
-    this.logger.debug(`Added node to health monitor:${node.id}`);
+    this.logger.debug('Added node to health monitor:' + node.id);
     this.updateHealthStats();
   }
 
@@ -112,7 +112,7 @@ export class MemoryHealthMonitor extends EventEmitter {
     this.nodes.delete(nodeId);
     this.healthHistory.delete(nodeId);
 
-    this.logger.debug(`Removed node from health monitor:${nodeId}`);
+    this.logger.debug('Removed node from health monitor:' + nodeId);
     this.updateHealthStats();
   }
 
@@ -127,7 +127,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       try {
         await this.performHealthCheck(nodeId);
       } catch (error) {
-        this.logger.error(`Health check error for node ${nodeId}:`, error);
+        this.logger.error('Health check error for node ' + nodeId + ':', error);
       }
     }, this.config.interval);
 
@@ -226,7 +226,7 @@ export class MemoryHealthMonitor extends EventEmitter {
 
     try {
       // Test basic connectivity with a simple operation
-      const testKey = `health_check_${Date.now()}`;
+      const testKey = 'health_check_' + Date.now();
       const testValue = { timestamp: Date.now(), check: 'health' };
 
       // Test write
@@ -331,7 +331,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       if (consecutiveFailures >= this.config.unhealthyThreshold) {
         this.emit('nodeUnhealthy', node.id);
         this.logger.warn(
-          `Node marked as unhealthy after ${consecutiveFailures} consecutive failures:${node.id}`
+          'Node marked as unhealthy after ' + (consecutiveFailures) + ' consecutive failures:' + node.id
         );
         recordMetric('memory_node_status_change', 1, {
           nodeId: node.id,
@@ -346,7 +346,7 @@ export class MemoryHealthMonitor extends EventEmitter {
       if (consecutiveSuccesses >= this.config.healthyThreshold) {
         this.emit('nodeRecovered', node.id);
         this.logger.info(
-          `Node recovered after ${consecutiveSuccesses} consecutive successes:${node.id}`
+          'Node recovered after ' + (consecutiveSuccesses) + ' consecutive successes:' + node.id
         );
         recordMetric('memory_node_status_change', 1, {
           nodeId: node.id,
@@ -471,7 +471,7 @@ export class MemoryHealthMonitor extends EventEmitter {
 
     score = Math.max(0, Math.min(100, score));
 
-    const summary = `${this.stats.healthyNodes}/${totalNodes} nodes healthy, avg latency:${Math.round(this.stats.averageLatency)}ms`;
+    const summary = (this.stats.healthyNodes) + '/' + (totalNodes) + ' nodes healthy, avg latency:' + Math.round(this.stats.averageLatency) + 'ms';
 
     return {
       status,

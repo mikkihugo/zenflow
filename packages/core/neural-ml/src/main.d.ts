@@ -13,7 +13,7 @@
  * - Professional Google TypeScript naming conventions
  *
  * @example Basic Usage
- * ```typescript`
+ * '''typescript'
  * const bridge = container.get(NeuralMLBridge);
  * await bridge.initialize();
  *
@@ -21,7 +21,7 @@
  *   target: 'auto', *   precision:'f32') *});
  *
  * const result = await bridge.matrixMultiply(optimizerId, matrixA, matrixB, 512, 512, 512);
- * ```
+ * '
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -208,7 +208,7 @@ export interface NeuralMLOptimizerInstance {
  * - Integration with existing foundation coordination system
  *
  * @example Creating and using an adaptive optimizer
- * ```typescript`
+ * '''typescript'
  * const engine = container.get(NeuralMLEngine);
  * await engine.initialize();
  *
@@ -224,7 +224,7 @@ export interface NeuralMLOptimizerInstance {
  *     result.value, matrixA, matrixB, 2, 2, 2
  *   );
  *}
- * ```
+ * '
  */
 export declare class NeuralMLEngine {
   private foundationLogger;

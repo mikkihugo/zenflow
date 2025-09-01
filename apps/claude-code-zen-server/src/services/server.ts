@@ -218,7 +218,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
 
       // Initialize service container
       Object.assign(this, {
-        serviceContainer: await createContainer(`server-${this.id}`),
+        serviceContainer: await createContainer('server-' + this.id),
       });
 
       // Initialize strategic facades
@@ -265,7 +265,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       }
 
       // Start event adapter if available
-      if (this.adapters.event) {
+      if (this.adapters._event) {
         await this.adapters.event.start(this.config);
       }
 
@@ -296,7 +296,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       await this.executeLifecycleHooks('running');
 
       // Stop adapters in reverse order
-      if (this.adapters.event) {
+      if (this.adapters._event) {
         await this.adapters.event.stop();
       }
       if (this.adapters.websocket) {
@@ -396,11 +396,11 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
           status: httpHealth.healthy ? 'ok' : ' error',
           message: httpHealth.message,
         });
-      } catch (error) {
+      } catch (_error) {
         healthChecks.push({
           name: 'http',
           status: 'error',
-          message: `HTTP adapter health check failed: ${error}`,
+          message: 'HTTP adapter health check failed: ' + error,
         });
       }
     }
@@ -413,11 +413,11 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
           status: dbHealth.healthy ? 'ok' : ' error',
           message: dbHealth.message,
         });
-      } catch (error) {
+      } catch (_error) {
         healthChecks.push({
           name: 'database',
           status: 'error',
-          message: `Database adapter health check failed: ${error}`,
+          message: 'Database adapter health check failed: ' + error,
         });
       }
     }
@@ -478,17 +478,17 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       });
 
       return result;
-    }).catch(async (error) => {
+    }).catch(async (_error) => {
       // Update error metrics
       this.serverMetrics.errors++;
-      this.serverStatus.lastError = error.message;
+      this.serverStatus.lastError = (error as Error).message;
 
       // Emit error event
       await this.emit('request:error', {
         requestId: context.id || generateUUID(),
         path: context.path,
         method: context.method,
-        error: error.message,
+        error: (error as Error).message,
         timestamp: Date.now(),
       });
 
@@ -515,7 +515,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.http = adapter;
       logger.info('HTTP adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return { success: false, error: error as Error };
     }
   }
@@ -525,7 +525,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.websocket = adapter;
       logger.info('WebSocket adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return { success: false, error: error as Error };
     }
   }
@@ -535,7 +535,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.database = adapter;
       logger.info('Database adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return { success: false, error: error as Error };
     }
   }
@@ -545,7 +545,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.event = adapter;
       logger.info('Event adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (error) {
+    } catch (_error) {
       return { success: false, error: error as Error };
     }
   }
@@ -575,10 +575,10 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       logger.debug('Strategic facades skipped (none available)', {
         serverId: this.id,
       });
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Strategic facades initialization skipped', {
         serverId: this.id,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? (error as Error).message : String(error),
       });
     }
   }
@@ -597,10 +597,10 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         logger.debug('Default database adapter initialized', {
           serverId: this.id,
         });
-      } catch (error) {
+      } catch (_error) {
         logger.warn('Database adapter initialization failed', {
           serverId: this.id,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? (error as Error).message : String(error),
         });
       }
     }
@@ -613,10 +613,10 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         logger.debug('Default event adapter initialized', {
           serverId: this.id,
         });
-      } catch (error) {
+      } catch (_error) {
         logger.warn('Event adapter initialization failed', {
           serverId: this.id,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? (error as Error).message : String(error),
         });
       }
     }
@@ -630,11 +630,11 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       for (const hook of hooks) {
         try {
           await hook(this);
-        } catch (error) {
+        } catch (_error) {
           logger.error('Lifecycle hook execution failed', {
             serverId: this.id,
             phase,
-            error: error instanceof Error ? error.message : String(error),
+            error: error instanceof Error ? (error as Error).message : String(error),
           });
         }
       }
@@ -678,9 +678,9 @@ export class ClaudeZenServerFactory implements ServerFactory {
       await server.registerWebSocketAdapter(
         await createWebSocketAdapter(webApiConfig)
       );
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Some web adapters not available', {
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? (error as Error).message : String(error),
       });
     }
 
@@ -710,9 +710,9 @@ export class ClaudeZenServerFactory implements ServerFactory {
       await server.registerEventAdapter(
         await createEventAdapter(coordinationConfig)
       );
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Event adapter not available for coordination server', {
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? (error as Error).message : String(error),
       });
     }
 
@@ -769,9 +769,9 @@ export class ClaudeZenServerFactory implements ServerFactory {
         ),
         server.registerEventAdapter(await createEventAdapter(prodConfig)),
       ]);
-    } catch (error) {
+    } catch (_error) {
       logger.warn('Some production adapters not available', {
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? (error as Error).message : String(error),
       });
     }
 

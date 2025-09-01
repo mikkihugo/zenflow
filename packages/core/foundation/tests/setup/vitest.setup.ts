@@ -11,7 +11,7 @@ import { getLogger } from '../../src/core/logging';
 beforeAll(async () => {
   // Initialize logging for tests
   const logger = getLogger('foundation-tests');
-  logger.info('🧪 Starting Foundation test suite');
+  logger.info(' Starting Foundation test suite');
 
   // Set test environment variables
   process.env['NODE_ENV'] = 'test';
@@ -20,7 +20,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   const logger = getLogger('foundation-tests');
-  logger.info('✅ Foundation test suite completed');
+  logger.info(' Foundation test suite completed');
 });
 
 // Per-test setup
@@ -55,7 +55,7 @@ export const testUtils = {
 
   // Helper to create test IDs
   createTestId: () =>
-    `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    'test-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
 };
 
 declare global {

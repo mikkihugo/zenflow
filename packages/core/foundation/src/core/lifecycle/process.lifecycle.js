@@ -79,7 +79,7 @@ export class ProcessLifecycleManager {
         // Error handling
         process.on('uncaughtException', this.handleUncaughtException.bind(this));
         process.on('unhandledRejection', this.handleUnhandledRejection.bind(this));
-        logger.info('✅ Process lifecycle handlers registered');
+        logger.info(' Process lifecycle handlers registered');
     }
     /**
      * Handle shutdown signals with graceful shutdown logic.
@@ -94,7 +94,7 @@ export class ProcessLifecycleManager {
             logger.warn(`Received ${signal} during shutdown, forcing exit...`);
             process.exit(1);
         }
-        logger.info(`📡 Received ${signal}, initiating graceful shutdown...`);
+        logger.info(` Received ${signal}, initiating graceful shutdown...`);
         this.isShuttingDown = true;
         // Set timeout for forced shutdown
         this.shutdownTimeout = setTimeout(() => {
@@ -106,7 +106,7 @@ export class ProcessLifecycleManager {
             if (this.handlers.onShutdown) {
                 await this.handlers.onShutdown();
             }
-            logger.info('✅ Graceful shutdown completed');
+            logger.info(' Graceful shutdown completed');
             // Clear timeout and exit cleanly
             if (this.shutdownTimeout) {
                 clearTimeout(this.shutdownTimeout);
@@ -114,13 +114,13 @@ export class ProcessLifecycleManager {
             process.exit(0);
         }
         catch (error) {
-            logger.error('❌ Error during graceful shutdown:', error);
+            logger.error(' Error during graceful shutdown:', error);
             if (this.handlers.onError) {
                 try {
                     await this.handlers.onError(error instanceof Error ? error : new Error(String(error)));
                 }
                 catch (handlerError) {
-                    logger.error('❌ Error in shutdown error handler:', handlerError);
+                    logger.error(' Error in shutdown error handler:', handlerError);
                 }
             }
             process.exit(1);
@@ -132,17 +132,17 @@ export class ProcessLifecycleManager {
      * @param error - The uncaught exception error
      */
     handleUncaughtException(error) {
-        logger.error('💥 Uncaught exception:', error);
+        logger.error(' Uncaught exception:', error);
         if (this.handlers.onUncaughtException) {
             try {
                 this.handlers.onUncaughtException(error);
             }
             catch (handlerError) {
-                logger.error('❌ Error in uncaught exception handler:', handlerError);
+                logger.error(' Error in uncaught exception handler:', handlerError);
             }
         }
         if (this.options.exitOnUncaughtException) {
-            logger.error('🚨 Exiting due to uncaught exception');
+            logger.error(' Exiting due to uncaught exception');
             process.exit(1);
         }
     }
@@ -152,17 +152,17 @@ export class ProcessLifecycleManager {
      * @param reason - The rejection reason
      */
     handleUnhandledRejection(reason) {
-        logger.error('🚫 Unhandled promise rejection:', reason);
+        logger.error(' Unhandled promise rejection:', reason);
         if (this.handlers.onUnhandledRejection) {
             try {
                 this.handlers.onUnhandledRejection(reason);
             }
             catch (handlerError) {
-                logger.error('❌ Error in unhandled rejection handler:', handlerError);
+                logger.error(' Error in unhandled rejection handler:', handlerError);
             }
         }
         if (this.options.exitOnUnhandledRejection) {
-            logger.error('🚨 Exiting due to unhandled promise rejection');
+            logger.error(' Exiting due to unhandled promise rejection');
             process.exit(1);
         }
     }
@@ -190,7 +190,7 @@ export class ProcessLifecycleManager {
         if (this.shutdownTimeout) {
             clearTimeout(this.shutdownTimeout);
         }
-        logger.info('✅ Process lifecycle handlers removed');
+        logger.info(' Process lifecycle handlers removed');
     }
 }
 /**
@@ -214,7 +214,7 @@ export function setupProcessLifecycle(shutdownHandler) {
     return new ProcessLifecycleManager({
         onShutdown: shutdownHandler,
         onError: async (error) => {
-            logger.error('🔥 Application error during shutdown:', error);
+            logger.error(' Application error during shutdown:', error);
             // Add minimal async operation to satisfy linter
             await new Promise((resolve) => setTimeout(resolve, 0));
         },

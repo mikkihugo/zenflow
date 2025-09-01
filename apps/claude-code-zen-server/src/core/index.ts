@@ -94,7 +94,7 @@ class ExportSystem {
   }
 }
 class ExportUtils {
-  static format(data: unknown) {
+  static format(_data: unknown) {
     return JSON.stringify(data);
   }
 }

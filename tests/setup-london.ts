@@ -143,7 +143,7 @@ globalThis.waitForInteraction = async (
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
   if (spy.mock.calls.length === 0) {
-    throw new Error(`Expected interaction did not occur within ${timeout}ms`);
+    throw new Error('Expected interaction did not occur within ' + timeout + 'ms');
   }
 };
 

@@ -579,7 +579,7 @@ export class EventDrivenAISafety extends TypedEventBase {
   }
 
   private async emergencyShutdownInternal(reason: string): Promise<void> {
-    this.logger.warn('🛑 EMERGENCY SAFETY SHUTDOWN', { reason });
+    this.logger.warn(' EMERGENCY SAFETY SHUTDOWN', { reason });
 
     // Stop all monitoring
     await this.stopMonitoringInternal();

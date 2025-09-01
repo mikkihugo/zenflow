@@ -8,14 +8,14 @@
  * task automation, and business process management with full observability.
  *
  * **CORE CAPABILITIES:**
- * - 🔄 **Workflow Orchestration**: Complex multi-step process automation
- * - 📊 **Visual Workflow Designer**: Graphical workflow creation and editing
- * - 🎯 **Step-by-Step Execution**: Granular control over workflow execution
- * - 🔀 **Conditional Logic**: Dynamic branching and decision-making
- * - 🔄 **Error Handling**: Comprehensive error recovery and retry mechanisms
- * - 📈 **Performance Monitoring**: Real-time workflow execution analytics
- * - 💾 **State Management**: Persistent workflow state and context preservation
- * - 🔧 **Foundation Integration**: Complete @claude-zen/foundation support
+ * -  **Workflow Orchestration**: Complex multi-step process automation
+ * -  **Visual Workflow Designer**: Graphical workflow creation and editing
+ * -  **Step-by-Step Execution**: Granular control over workflow execution
+ * -  **Conditional Logic**: Dynamic branching and decision-making
+ * -  **Error Handling**: Comprehensive error recovery and retry mechanisms
+ * -  **Performance Monitoring**: Real-time workflow execution analytics
+ * -  **State Management**: Persistent workflow state and context preservation
+ * -  **Foundation Integration**: Complete @claude-zen/foundation support
  *
  * **Enterprise Features:**
  * - Workflow versioning and rollback capabilities

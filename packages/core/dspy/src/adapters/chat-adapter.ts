@@ -1,12 +1,12 @@
 /**
- * @fileoverview Chat Adapter - Production Grade
- *
- * Chat-based adapter for formatting DSPy data for chat-based language models.
- * 100% compatible with Stanford DSPy's chat formatting system.
- *
- * @version 1.0.0
- * @author Claude Code Zen Team
- */
+* @fileoverview Chat Adapter - Production Grade
+*
+* Chat-based adapter for formatting DSPy data for chat-based language models.
+* 100% compatible with Stanford DSPy's chat formatting system.
+*
+* @version 1.0.0
+* @author Claude Code Zen Team
+*/
 
 import {
 	BaseAdapter,
@@ -17,8 +17,8 @@ import {
 import type { Prediction} from "../primitives/prediction";
 
 /**
- * Chat adapter configuration
- */
+* Chat adapter configuration
+*/
 export interface ChatAdapterConfig {
 	/** Whether to include system messages */
 	include_system?:boolean;
@@ -35,8 +35,8 @@ export interface ChatAdapterConfig {
 }
 
 /**
- * Chat message interface
- */
+* Chat message interface
+*/
 export interface ChatMessage {
 	role:"system" | "user" | "assistant";
 	content:string;
@@ -44,9 +44,9 @@ export interface ChatMessage {
 }
 
 /**
- * Chat adapter for formatting data as conversation messages
- * Compatible with OpenAI Chat API, Anthropic Claude, and other chat-based models
- */
+* Chat adapter for formatting data as conversation messages
+* Compatible with OpenAI Chat API, Anthropic Claude, and other chat-based models
+*/
 export class ChatAdapter extends BaseAdapter {
 	private chatConfig:Required<ChatAdapterConfig>;
 

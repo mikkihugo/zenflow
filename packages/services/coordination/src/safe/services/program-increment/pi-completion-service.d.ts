@@ -1,199 +1,171 @@
 export interface PICompletionWorkflowConfig {
-    readonly piId: string;
-    readonly completionDate: Date;
-    readonly finalMetrics: PIExecutionMetrics;
-    readonly stakeholders: CompletionStakeholder[];
-    readonly deliverables: CompletionDeliverable[];
-    readonly workshops: InspectAndAdaptWorkshop[];
-    readonly archivalRequirements: ArchivalRequirement[];
+readonly piId: string;
+readonly completionDate: Date;
+readonly finalMetrics: PIExecutionMetrics;
+readonly stakeholders: CompletionStakeholder[];
+readonly deliverables: CompletionDeliverable[];
+readonly workshops: InspectAndAdaptWorkshop[];
+readonly archivalRequirements: ArchivalRequirement[];
 }
 export interface CompletionStakeholder {
-    readonly userId: string;
-    readonly name: string;
-    '; : any;
-    readonly role: product;
+readonly userId: string;
+readonly name: string;
+'; : any;
+readonly role: product;
 }
 export interface CompletionDeliverable {
-    readonly id: string;
-    readonly name: string;
-    readonly description: string;
-    readonly type: 'report| metrics| documentation' | ' presentation';
-    readonly status: 'pending| in-progress| completed' | ' approved';
-    readonly owner: string;
-    readonly dueDate: Date;
-    readonly dependencies: string[];
+id: string;
 }
 export interface InspectAndAdaptWorkshop {
-    readonly id: string;
-    readonly title: string;
-    readonly description: string;
-    readonly duration: number;
-    readonly facilitators: string[];
-    readonly participants: string[];
-    readonly agenda: WorkshopAgendaItem[];
-    readonly objectives: string[];
-    readonly expectedOutcomes: string[];
+id: string;
 }
 export interface WorkshopAgendaItem {
-    readonly id: string;
-    readonly activity: string;
-    readonly description: string;
-    readonly duration: number;
-    readonly facilitator: string;
-    readonly participants: string[];
-    readonly materials: string[];
-    readonly deliverables: string[];
+id: string;
 }
 export interface ArchivalRequirement {
-    readonly category: metrics | decisions | lessons | artifacts | 'communications';
-    readonly description: string;
-    readonly retentionPeriod: number;
-    readonly accessLevel: 'public' | ' internal' | ' restricted';
-    readonly format: 'json| pdf| csv' | ' archive';
+readonly category: metrics | decisions | lessons | artifacts | 'communications';
+readonly description: string;
+readonly retentionPeriod: number;
+readonly accessLevel: 'public' | ' internal' | ' restricted';
+readonly format: 'json| pdf| csv' | ' archive';
 }
 export interface PICompletionReport {
-    readonly piId: string;
-    readonly completionDate: Date;
-    readonly overallSuccessRate: number;
-    readonly objectivesAchieved: number;
-    readonly totalObjectives: number;
-    readonly featuresDelivered: number;
-    readonly totalFeatures: number;
-    readonly finalMetrics: PIExecutionMetrics;
-    readonly achievements: Achievement[];
-    readonly challenges: Challenge[];
-    readonly lessonsLearned: LessonLearned[];
-    readonly improvements: ImprovementRecommendation[];
-    readonly nextPIRecommendations: string[];
-    readonly stakeholderFeedback: StakeholderFeedback[];
-    readonly qualityAssessment: QualityAssessment;
-    readonly riskAnalysis: CompletionRiskAnalysis;
-    readonly budgetAnalysis: BudgetAnalysis;
+readonly piId: string;
+readonly completionDate: Date;
+readonly overallSuccessRate: number;
+readonly objectivesAchieved: number;
+readonly totalObjectives: number;
+readonly featuresDelivered: number;
+readonly totalFeatures: number;
+readonly finalMetrics: PIExecutionMetrics;
+readonly achievements: Achievement[];
+readonly challenges: Challenge[];
+readonly lessonsLearned: LessonLearned[];
+readonly improvements: ImprovementRecommendation[];
+readonly nextPIRecommendations: string[];
+readonly stakeholderFeedback: StakeholderFeedback[];
+readonly qualityAssessment: QualityAssessment;
+readonly riskAnalysis: CompletionRiskAnalysis;
+readonly budgetAnalysis: BudgetAnalysis;
 }
 export interface Achievement {
-    readonly category: delivery | quality | innovation | collaboration | 'process';
-    readonly title: string;
-    readonly description: string;
-    readonly impact: string;
-    readonly metrics: Record<string, number>;
-    readonly contributors: string[];
+readonly category: delivery | quality | innovation | collaboration | 'process';
+readonly title: string;
+readonly description: string;
+readonly impact: string;
+readonly metrics: Record<string, number>;
+readonly contributors: string[];
 }
 export interface Challenge {
-    readonly category: technical | process | resource | external | 'communication';
-    readonly title: string;
-    readonly description: string;
-    readonly impact: string;
-    readonly rootCause: string;
-    readonly mitigationAttempts: string[];
-    readonly resolution: string;
-    readonly preventionStrategy: string;
+readonly category: technical | process | resource | external | 'communication';
+readonly title: string;
+readonly description: string;
+readonly impact: string;
+readonly rootCause: string;
+readonly mitigationAttempts: string[];
+readonly resolution: string;
+readonly preventionStrategy: string;
 }
 export interface LessonLearned {
-    readonly category: planning | execution | coordination | technical | 'leadership';
-    readonly lesson: string;
-    readonly context: string;
-    readonly outcome: string;
-    readonly applicability: string[];
-    readonly actionItems: string[];
-    readonly priority: high;
+readonly category: planning | execution | coordination | technical | 'leadership';
+readonly lesson: string;
+readonly context: string;
+readonly outcome: string;
+readonly applicability: string[];
+readonly actionItems: string[];
+readonly priority: high;
 }
 export interface ImprovementRecommendation {
-    readonly area: 'process| tools| skills| communication' | ' planning';
-    readonly recommendation: string;
-    readonly rationale: string;
-    readonly expectedBenefit: string;
-    readonly implementationEffort: 'low' | ' medium' | ' high';
-    readonly timeline: string;
-    readonly owner: string;
-    readonly successCriteria: string[];
+readonly area: 'process| tools| skills| communication' | ' planning';
+readonly recommendation: string;
+readonly rationale: string;
+readonly expectedBenefit: string;
+readonly implementationEffort: 'low' | ' medium' | ' high';
+readonly timeline: string;
+readonly owner: string;
+readonly successCriteria: string[];
 }
 export interface StakeholderFeedback {
-    readonly stakeholderId: string;
-    readonly role: string;
-    readonly satisfaction: number;
-    readonly feedback: string;
-    readonly positives: string[];
-    readonly improvements: string[];
-    readonly wouldRecommend: boolean;
+readonly stakeholderId: string;
+readonly role: string;
+readonly satisfaction: number;
+readonly feedback: string;
+readonly positives: string[];
+readonly improvements: string[];
+readonly wouldRecommend: boolean;
 }
 export interface QualityAssessment {
-    readonly overallQuality: number;
-    readonly codeQuality: number;
-    readonly testCoverage: number;
-    readonly defectRate: number;
-    readonly performanceScore: number;
-    readonly securityScore: number;
-    readonly maintainabilityScore: number;
-    readonly documentationScore: number;
+readonly overallQuality: number;
+readonly codeQuality: number;
+readonly testCoverage: number;
+readonly defectRate: number;
+readonly performanceScore: number;
+readonly securityScore: number;
+readonly maintainabilityScore: number;
+readonly documentationScore: number;
 }
 export interface CompletionRiskAnalysis {
-    readonly totalRisks: number;
-    readonly mitigatedRisks: number;
-    readonly unresolvedRisks: number;
-    readonly riskManagementEffectiveness: number;
-    readonly highImpactRisks: PIRisk[];
-    readonly riskTrends: RiskTrend[];
+readonly totalRisks: number;
+readonly mitigatedRisks: number;
+readonly unresolvedRisks: number;
+readonly riskManagementEffectiveness: number;
+readonly highImpactRisks: PIRisk[];
+readonly riskTrends: RiskTrend[];
 }
 export interface PIRisk {
-    readonly id: string;
-    readonly description: string;
-    readonly category: string;
-    readonly probability: number;
-    readonly impact: string;
-    readonly mitigation: string;
-    readonly status: string;
+id: string;
 }
 export interface RiskTrend {
-    readonly period: string;
-    readonly riskCount: number;
-    readonly avgProbability: number;
-    readonly trend: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' worsening';
+readonly period: string;
+readonly riskCount: number;
+readonly avgProbability: number;
+readonly trend: 'improving' | ' stable' | ' declining' | ' improving' | ' stable' | ' declining' | ' worsening';
 }
 export interface BudgetAnalysis {
-    readonly plannedBudget: number;
-    readonly actualSpend: number;
-    readonly variance: number;
-    readonly utilizationRate: number;
-    readonly costPerStoryPoint: number;
-    readonly costPerFeature: number;
-    readonly budgetEfficiency: number;
+readonly plannedBudget: number;
+readonly actualSpend: number;
+readonly variance: number;
+readonly utilizationRate: number;
+readonly costPerStoryPoint: number;
+readonly costPerFeature: number;
+readonly budgetEfficiency: number;
 }
 export interface PIExecutionMetrics {
-    readonly piId: string;
-    readonly progressPercentage: number;
-    readonly velocityTrend: any;
-    readonly predictability: any;
-    readonly qualityMetrics: any;
-    readonly riskBurndown: any;
-    readonly dependencyHealth: any;
-    readonly teamMetrics: any[];
-    readonly lastUpdated: Date;
+readonly piId: string;
+readonly progressPercentage: number;
+readonly velocityTrend: any;
+readonly predictability: any;
+readonly qualityMetrics: any;
+readonly riskBurndown: any;
+readonly dependencyHealth: any;
+readonly teamMetrics: any[];
+readonly lastUpdated: Date;
 }
 export interface PICompletionConfiguration {
-    readonly enableAutomatedReporting: boolean;
-    readonly enableStakeholderSurveys: boolean;
-    readonly enableInspectAndAdapt: boolean;
-    readonly enableDataArchival: boolean;
-    readonly completionTimeoutHours: number;
-    readonly reportGenerationTimeout: number;
-    readonly stakeholderSurveyTimeout: number;
-    readonly workshopSchedulingLeadTime: number;
+readonly enableAutomatedReporting: boolean;
+readonly enableStakeholderSurveys: boolean;
+readonly enableInspectAndAdapt: boolean;
+readonly enableDataArchival: boolean;
+readonly completionTimeoutHours: number;
+readonly reportGenerationTimeout: number;
+readonly stakeholderSurveyTimeout: number;
+readonly workshopSchedulingLeadTime: number;
 }
 /**
- * PI Completion Service for Program Increment completion management
- */
+* PI Completion Service for Program Increment completion management
+*/
 export declare class PICompletionService extends EventBus {
-    private readonly logger;
-    private readonly workshops;
-    private brainCoordinator;
-    constructor(logger:  {});
-    /**
-     * Initialize the service with dependencies
-     */
-    initialize(): Promise<void>;
-    /**
-     * Complete Program Increment with comprehensive workflow
-     */
-    completeProgramIncrement(piId: this, performanceTracker: any, startTimer: any): any;
+private readonly logger;
+private readonly workshops;
+private brainCoordinator;
+constructor(logger: {});
+/**
+* Initialize the service with dependencies
+*/
+initialize(): Promise<void>;
+/**
+* Complete Program Increment with comprehensive workflow
+*/
+completeProgramIncrement(piId: this, performanceTracker: any, startTimer: any): any;
 }
 //# sourceMappingURL=pi-completion-service.d.ts.map

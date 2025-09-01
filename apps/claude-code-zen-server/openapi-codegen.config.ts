@@ -5,7 +5,27 @@
  * Optimized for AI tool integration and development efficiency
  */
 
-import type { ConfigFile } from 'openapi-typescript-codegen';
+// import type { ConfigFile } from 'openapi-typescript-codegen';
+
+// Temporary type definition to avoid TS2307 error
+interface ConfigFile {
+  input: string;
+  output: string;
+  client?: string;
+  useOptions?: boolean;
+  useUnionTypes?: boolean;
+  exportModels?: boolean;
+  exportSchemas?: boolean;
+  indent?: number;
+  postfixServices?: string;
+  postfixModels?: string;
+  request?: string;
+  write?: boolean;
+  format?: boolean;
+  lint?: boolean;
+  exportCore?: boolean;
+  exportServices?: boolean;
+}
 
 const config: ConfigFile = {
   input: './docs/api/openapi.yaml',

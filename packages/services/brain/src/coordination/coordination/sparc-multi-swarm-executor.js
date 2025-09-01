@@ -99,7 +99,7 @@ export class SPARCMultiSwarmExecutor {
                     totalWorktreesCreated,
                 },
             };
-            logger.info(`✅ SPARC Multi-Swarm test completed: ${testId}`);
+            logger.info(` SPARC Multi-Swarm test completed: ${testId}`);
             `
       logger.info(
         `;
@@ -384,7 +384,7 @@ Promise < SPARCExecutionResult > {
 try { }
 catch (error) {
     const duration = Date.now() - startTime;
-    logger.error(`❌ SPARC strategy failed: ${strategy.name}`, error);
+    logger.error(` SPARC strategy failed: ${strategy.name}`, error);
     `
 
       return {

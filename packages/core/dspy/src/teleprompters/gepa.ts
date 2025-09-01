@@ -1,27 +1,27 @@
 /**
- * @fileoverview GEPA (Reflective Prompt Evolution) Teleprompter Implementation
- *
- * GEPA is an evolutionary optimizer that uses reflection to evolve text components
- * of complex systems. GEPA is proposed in the paper "GEPA:Reflective Prompt Evolution Can Outperform Reinforcement Learning".
- *
- * This implementation provides 100% API compatibility with Stanford DSPy GEPA.
- *
- * Key Features:
- * - Reflective prompt evolution with LLM feedback
- * - Genetic algorithm with Pareto optimization
- * - Automatic budget calculation and management
- * - Multi-objective optimization (accuracy, efficiency, diversity)
- * - Comprehensive trace capture and feedback extraction
- * - Batch inference-time search capabilities
- * - Full integration with DSPy modules and predictors
- *
- * @author Claude Code Zen Team
- * @version 2.0.0
- * @since 1.0.0-alpha.47
- *
- * @see {@link https://arxiv.org/abs/2507.19457} GEPA:Reflective Prompt Evolution Paper
- * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
- */
+* @fileoverview GEPA (Reflective Prompt Evolution) Teleprompter Implementation
+*
+* GEPA is an evolutionary optimizer that uses reflection to evolve text components
+* of complex systems. GEPA is proposed in the paper "GEPA:Reflective Prompt Evolution Can Outperform Reinforcement Learning".
+*
+* This implementation provides 100% API compatibility with Stanford DSPy GEPA.
+*
+* Key Features:
+* - Reflective prompt evolution with LLM feedback
+* - Genetic algorithm with Pareto optimization
+* - Automatic budget calculation and management
+* - Multi-objective optimization (accuracy, efficiency, diversity)
+* - Comprehensive trace capture and feedback extraction
+* - Batch inference-time search capabilities
+* - Full integration with DSPy modules and predictors
+*
+* @author Claude Code Zen Team
+* @version 2.0.0
+* @since 1.0.0-alpha.47
+*
+* @see {@link https://arxiv.org/abs/2507.19457} GEPA:Reflective Prompt Evolution Paper
+* @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
+*/
 
 import type { LMInterface} from "../interfaces/lm";
 import type { Example} from "../primitives/example";
@@ -30,9 +30,9 @@ import type { Prediction} from "../primitives/prediction";
 import { Teleprompter} from "./teleprompter";
 
 /**
- * AUTO_RUN_SETTINGS for GEPA budget configuration
- * Matches Stanford DSPy GEPA implementation exactly
- */
+* AUTO_RUN_SETTINGS for GEPA budget configuration
+* Matches Stanford DSPy GEPA implementation exactly
+*/
 export const AUTO_RUN_SETTINGS = {
 	light:{ n: 6},
 	medium:{ n: 12},
@@ -40,8 +40,8 @@ export const AUTO_RUN_SETTINGS = {
 } as const;
 
 /**
- * Protocol for GEPA feedback metrics with exact Stanford API
- */
+* Protocol for GEPA feedback metrics with exact Stanford API
+*/
 export type GEPAFeedbackMetric = (
 	gold:Example,
 	pred:Prediction,
@@ -51,22 +51,22 @@ export type GEPAFeedbackMetric = (
 ) => number | ScoreWithFeedback;
 
 /**
- * DSPy trace type for execution tracking
- */
+* DSPy trace type for execution tracking
+*/
 export type DSPyTrace = Array<[any, Record<string, any>, Prediction]>;
 
 /**
- * Score with feedback for GEPA optimization
- */
+* Score with feedback for GEPA optimization
+*/
 export interface ScoreWithFeedback {
 	score:number;
 	feedback:string;
 }
 
 /**
- * Result data for GEPA optimization
- * Matches Stanford DSPy DspyGEPAResult exactly
- */
+* Result data for GEPA optimization
+* Matches Stanford DSPy DspyGEPAResult exactly
+*/
 export class DspyGEPAResult {
 	/** Proposed candidates (component_name -> component_text) */
 	public readonly candidates:DSPyModule[];
@@ -206,94 +206,94 @@ export class DspyGEPAResult {
 }
 
 /**
- * GEPA Teleprompter with exact Stanford DSPy API compatibility
- *
- * GEPA is an evolutionary optimizer that uses reflection to evolve text components
- * of complex systems. GEPA captures full traces of the DSPy module's execution,
- * identifies parts of the trace corresponding to specific predictors, and reflects
- * on the behavior to propose new instructions.
- *
- * @example
- * ```typescript`
- * // Basic GEPA optimization with auto mode
- * const gepa = new GEPA({
- *   metric:(gold, pred) => gold.answer === pred.answer ? 1:0,
- *   auto:"light"  // Quick evolutionary optimization
- *});
- * const optimized = await gepa.compile(studentProgram, {
- *   trainset:trainingData,
- *   valset:validationData
- *});
- *
- * // Advanced GEPA with reflection and feedback
- * const advancedGepa = new GEPA({
- *   metric:(gold, pred, trace) => {
- *     const score = calculateF1Score(gold, pred);
- *     return {
- *       score,
- *       feedback:score < 0.8 ? "Consider more specific instructions" : "Good performance"
- *};
- *},
- *   auto:"medium",
- *   reflection_lm:async (input) => await gpt4.generate(input),
- *   candidate_selection_strategy:"pareto",  // Multi-objective optimization
- *   reflection_minibatch_size:10,
- *   track_stats:true
- *});
- *
- * const result = await advancedGepa.compile(complexProgram, {
- *   trainset:largeTrainingSet,
- *   valset:validationSet,
- *   valset_idx:[0, 5, 10, 15]  // Select specific validation indices
- *});
- *
- * // Production GEPA with comprehensive logging
- * const productionGepa = new GEPA({
- *   metric:productionMetric,
- *   auto:"heavy",               // Maximum optimization effort
- *   reflection_lm:await openai.createModel("gpt-4"),
- *   skip_perfect_score:false,   // Continue optimizing even with perfect scores
- *   use_merge:true,             // Enable component merging
- *   max_merge_invocations:3,    // Limit merge attempts
- *   failure_score:0.0,          // Score for failed executions
- *   perfect_score:1.0,          // Perfect score threshold
- *   num_threads:4,              // Parallel evaluation
- *   log_dir:"./gepa_logs",      // Save optimization artifacts
- *   track_best_outputs:true,    // Track best outputs per validation instance
- *   use_wandb:true,             // Integration with Weights & Biases
- *   wandb_api_key:process.env.WANDB_API_KEY
- *});
- *
- * const bestProgram = await productionGepa.compile(deploymentProgram, {
- *   trainset:productionTraining,
- *   valset:productionValidation,
- *   requires_permission_to_run:false
- *});
- *
- * // Custom budget control (expert usage)
- * const customBudgetGepa = new GEPA({
- *   metric:customMetric,
- *   max_full_evals:50,          // Manual budget control
- *   max_metric_calls:1000,      // Total evaluation limit
- *   reflection_minibatch_size:5,
- *   add_format_failure_as_feedback:true  // Include format errors in feedback
- *});
- *
- * const customResult = await customBudgetGepa.compile(program, {
- *   trainset:examples,
- *   valset:validation
- *});
- *
- * // Access detailed optimization results
- * logger.info(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`);
- * logger.info(`Total evaluations:${customResult.total_metric_calls}`);
- * logger.info(`Discovery budget:${customResult.discovery_eval_counts}`);
- *
- * // Get per-instance best candidates
- * const perInstanceBest = customResult.per_val_instance_best_candidates;
- * logger.info(`Best candidates per validation instance:`, perInstanceBest);
- * ```
- */
+* GEPA Teleprompter with exact Stanford DSPy API compatibility
+*
+* GEPA is an evolutionary optimizer that uses reflection to evolve text components
+* of complex systems. GEPA captures full traces of the DSPy module`s execution,
+* identifies parts of the trace corresponding to specific predictors, and reflects
+* on the behavior to propose new instructions.
+*
+* @example
+* ```typescript`
+* // Basic GEPA optimization with auto mode
+* const gepa = new GEPA({
+* metric:(gold, pred) => gold.answer === pred.answer ? 1:0,
+* auto:"light" // Quick evolutionary optimization
+*});
+* const optimized = await gepa.compile(studentProgram, {
+* trainset:trainingData,
+* valset:validationData
+*});
+*
+* // Advanced GEPA with reflection and feedback
+* const advancedGepa = new GEPA({
+* metric:(gold, pred, trace) => {
+* const score = calculateF1Score(gold, pred);
+* return {
+* score,
+* feedback:score < 0.8 ? "Consider more specific instructions" : "Good performance"
+*};
+*},
+* auto:"medium",
+* reflection_lm:async (input) => await gpt4.generate(input),
+* candidate_selection_strategy:"pareto", // Multi-objective optimization
+* reflection_minibatch_size:10,
+* track_stats:true
+*});
+*
+* const result = await advancedGepa.compile(complexProgram, {
+* trainset:largeTrainingSet,
+* valset:validationSet,
+* valset_idx:[0, 5, 10, 15] // Select specific validation indices
+*});
+*
+* // Production GEPA with comprehensive logging
+* const productionGepa = new GEPA({
+* metric:productionMetric,
+* auto:"heavy", // Maximum optimization effort
+* reflection_lm:await openai.createModel("gpt-4"),
+* skip_perfect_score:false, // Continue optimizing even with perfect scores
+* use_merge:true, // Enable component merging
+* max_merge_invocations:3, // Limit merge attempts
+* failure_score:0.0, // Score for failed executions
+* perfect_score:1.0, // Perfect score threshold
+* num_threads:4, // Parallel evaluation
+* log_dir:"./gepa_logs", // Save optimization artifacts
+* track_best_outputs:true, // Track best outputs per validation instance
+* use_wandb:true, // Integration with Weights & Biases
+* wandb_api_key:process.env.WANDB_API_KEY
+*});
+*
+* const bestProgram = await productionGepa.compile(deploymentProgram, {
+* trainset:productionTraining,
+* valset:productionValidation,
+* requires_permission_to_run:false
+*});
+*
+* // Custom budget control (expert usage)
+* const customBudgetGepa = new GEPA({
+* metric:customMetric,
+* max_full_evals:50, // Manual budget control
+* max_metric_calls:1000, // Total evaluation limit
+* reflection_minibatch_size:5,
+* add_format_failure_as_feedback:true // Include format errors in feedback
+*});
+*
+* const customResult = await customBudgetGepa.compile(program, {
+* trainset:examples,
+* valset:validation
+*});
+*
+* // Access detailed optimization results
+* logger.info(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`);
+* logger.info(`Total evaluations:${customResult.total_metric_calls}`);
+* logger.info(`Discovery budget:${customResult.discovery_eval_counts}`);
+*
+* // Get per-instance best candidates
+* const perInstanceBest = customResult.per_val_instance_best_candidates;
+* logger.info(`Best candidates per validation instance:`, perInstanceBest);
+* ```
+*/
 export class GEPA extends Teleprompter {
 	private metric_fn:GEPAFeedbackMetric;
 
@@ -396,13 +396,13 @@ export class GEPA extends Teleprompter {
 		if (!config.reflection_lm) {
 			throw new Error(
 				"GEPA requires a reflection language model to be provided. " +
-					"Typically, you can use `new LM({ model: 'gpt-4', temperature: 1.0, max_tokens: 32000})` " +
+					"Typically, you can use `new LM({ model: `gpt-4', temperature: 1.0, max_tokens: 32000})` " +
 					"to get a good reflection model. Reflection LM is used by GEPA to reflect on the behavior " +
 					"of the program and propose new instructions, and will benefit from a strong model.",
 			);
 }
 
-		this.reflection_lm = (x:string) => 
+		this.reflection_lm = (x:string) =>
 			// Simplified reflection LM interface - in production would call actual LM
 			 `Reflected analysis:${x}`
 ;
@@ -737,7 +737,7 @@ export class GEPA extends Teleprompter {
 		track_best_outputs:boolean;
 		seed?:number | null;
 }):Promise<any> {
-		logger.info("🧬 Starting GEPA optimization...");
+		logger.info(" Starting GEPA optimization...");
 
 		// Initialize candidates with seed candidate
 		const candidates = [config.seed_candidate];
@@ -771,7 +771,7 @@ export class GEPA extends Teleprompter {
 			config.max_metric_calls / config.valset.length,
 		);
 
-		logger.info(`📊 Running for up to ${max_generations} generations`);
+		logger.info(` Running for up to ${max_generations} generations`);
 
 		// Evolution loop
 		while (
@@ -779,7 +779,7 @@ export class GEPA extends Teleprompter {
 			generation < max_generations
 		) {
 			generation++;
-			logger.info(`\n🔄 Generation ${generation}`);
+			logger.info(`\n Generation ${generation}`);
 
 			// Generate new candidates through reflection
 			const new_candidates = await this.generateCandidates(
@@ -827,17 +827,17 @@ export class GEPA extends Teleprompter {
 				metric_calls += config.valset.length;
 
 				logger.info(
-					`   Candidate ${candidates.length - 1}:${score.toFixed(3)}`,
+					` Candidate ${candidates.length - 1}:${score.toFixed(3)}`,
 				);
 }
 
 			// Report best score
 			const best_score = Math.max(...val_aggregate_scores);
-			logger.info(`✨ Best score so far:${best_score.toFixed(3)}`);
+			logger.info(` Best score so far:${best_score.toFixed(3)}`);
 
 			// Early stopping if perfect score achieved
 			if (best_score >= config.perfect_score && config.skip_perfect_score) {
-				logger.info("🎯 Perfect score achieved, stopping early");
+				logger.info(" Perfect score achieved, stopping early");
 				break;
 }
 }
@@ -850,7 +850,7 @@ export class GEPA extends Teleprompter {
 		);
 
 		logger.info(
-			`🏆 Optimization complete! Best candidate:${best_idx} (score:${val_aggregate_scores[best_idx].toFixed(3)})`,
+			` Optimization complete! Best candidate:${best_idx} (score:${val_aggregate_scores[best_idx].toFixed(3)})`,
 		);
 
 		return {

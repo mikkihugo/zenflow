@@ -5,18 +5,18 @@
  * health status, and capability reporting using service management.
  *
  * @example Basic Usage - Check System Status
- * ```typescript`
+ * '''typescript'
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * logger.info(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`);
+ * logger.info('Overall:' + (systemStatus.overall) + ', Health:' + systemStatus.healthScore + '%');
  *
  * const health = getHealthSummary();
  * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
- * ```
+ * '
  *
  * @example Service Resolution with Fallbacks
- * ```typescript`
+ * '''typescript'
  * import { getService, hasService} from '@claude-zen/foundation/status-manager';
  *
  * // Check if monitoring service is registered in container
@@ -29,20 +29,20 @@
  *     PerformanceTracker:class FallbackTracker { startTimer() { return () => {};}}
  *}));
  *}
- * ```
+ * '
  *
  * @example Service Registration
- * ```typescript`
+ * '''typescript'
  * import { registerService} from '@claude-zen/foundation/status-manager';
  *
  * // Register infrastructure service with expected packages
  * await registerService('infrastructure', [
  *   '@claude-zen/event-system', *   '@claude-zen/database', *   '@claude-zen/system-monitoring') *], [
  *   'Event system management', *   'Database access and ORM', *   'System monitoring and telemetry') *]);
- * ```
+ * '
  *
  * @example Health Check Endpoints
- * ```typescript`
+ * '''typescript'
  * import { getHealthSummary, getSystemStatus} from '@claude-zen/foundation/status-manager';
  *
  * // Basic health endpoint
@@ -66,7 +66,7 @@
  *}))
  *});
  *});
- * ```
+ * '
  *
  * Features:
  * • Package availability detection with service container integration
@@ -246,12 +246,12 @@ export declare class SystemStatusManager extends EventEmitter<ServiceStatusEvent
      * Check if a package is available and register it with Awilix
      *
      * @example
-     * ```typescript`
+     * '''typescript'
      * const packageInfo = await statusManager.checkAndRegisterPackage('@claude-zen/brain',    'brainService');
      * if (packageInfo.status === PackageStatus.REGISTERED) {
      *   logger.info('Brain package available and registered in Awilix');
      *}
-     * ```
+     * '
      */
     checkAndRegisterPackage(packageName: string, serviceName?: string): Promise<PackageInfo>;
     /**
@@ -286,25 +286,25 @@ export declare class SystemStatusManager extends EventEmitter<ServiceStatusEvent
      * Register a service with its expected packages
      *
      * @example
-     * ```typescript`
+     * '''typescript'
      * await statusManager.registerService('intelligence', [
      *   '@claude-zen/brain',	 *   '@claude-zen/ai-safety')	 *], [
      *   'Neural coordination',	 *   'AI safety protocols'*]);
-     * ```
+     * '
      */
     registerService(serviceName: string, expectedPackages: string[], features?: string[]): Promise<void>;
     /**
      * Get a service from the Awilix container with fallback
      *
      * @example
-     * ```typescript`
+     * '''typescript'
      * // Try to get real monitoring service, fall back to stub
      * const monitoring = await statusManager.getService('systemmonitoring', () => ({
      *   PerformanceTracker:class FallbackTracker {
      *     startTimer() { return () => logger.info('Fallback timer');}
      *}
      *}));
-     * ```
+     * `
      */
     getService<T>(serviceName: string, fallback?: () => T): T | null;
     /**

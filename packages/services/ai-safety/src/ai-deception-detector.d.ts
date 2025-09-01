@@ -114,71 +114,7 @@ export declare class AIDeceptionDetector {
   private config;
   private patternDatabase;
   private alertHistory;
-  constructor(config?: Partial<DetectionConfig>);
-  /**
-   * Calculate total patterns for logging.
-   */
-  private calculateTotalPatterns;
-  /**
-   * Initialize pattern detection database with compiled regex patterns.
-   */
-  private initializePatternDatabase;
-  /**
-   * Analyze AI response for deception patterns.
-   */
-  analyzeAIResponse(data: AIInteractionData): DeceptionAlert[];
-  /**
-   * Detect patterns in message text.
-   */
-  private detectPatterns;
-  /**
-   * Calculate confidence score for detected patterns.
-   */
-  private calculateConfidence;
-  /**
-   * Get threshold for specific category.
-   */
-  private getThreshold;
-  /**
-   * Get category-specific multiplier for confidence calculation.
-   */
-  private getCategoryMultiplier;
-  /**
-   * Create deception alert from detected patterns.
-   */
-  private createAlert;
-  /**
-   * Calculate severity based on confidence score.
-   */
-  private calculateSeverity;
-  /**
-   * Map category to specific deception type.
-   */
-  private mapCategoryToType;
-  /**
-   * Map category to alert category.
-   */
-  private mapCategoryToAlertCategory;
-  /**
-   * Get intervention text for deception type and severity.
-   */
-  private getIntervention;
-  /**
-   * Get required tool calls for verification.
-   */
-  private getRequiredToolCalls;
-  /**
-   * Determine if alert should escalate to human.
-   */
-  private shouldEscalateToHuman;
-  /**
-   * Trigger intervention for detected deception.
-   */
-  private triggerIntervention;
-  /**
-   * Get detection metrics.
-   */
-  getDetectionMetrics(): {
+  constructor(): void {
     totalAlerts: number;
     severityBreakdown: Record<string, number>;
     categoryBreakdown: Record<string, number>;

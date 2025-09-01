@@ -41,7 +41,7 @@ export class SmartPromptOptimizer {
                 // Initialize with some baseline optimization patterns
                 await this.initializeBaselinePatterns(),
                 this: .initialized = true,
-                logger, : .info('✅ Smart Prompt Optimizer initialized successfully'), ')} catch (error) {: logger.error('❌ Failed to initialize Smart Prompt Optimizer:', error), ')      throw error;: 
+                logger, : .info(' Smart Prompt Optimizer initialized successfully'), ')} catch (error) {: logger.error(' Failed to initialize Smart Prompt Optimizer:', error), ')      throw error;: 
             }
         };
         /**
@@ -120,7 +120,7 @@ export class SmartPromptOptimizer {
             return result;
         }
         catch (error) {
-            logger.error('❌ Prompt optimization failed:', error);
+            logger.error(' Prompt optimization failed:', error);
             ')      throw error;;
         }
     }
@@ -129,7 +129,7 @@ export class SmartPromptOptimizer {
      */
     async learnFromPerformance(analysisData) {
         try {
-            logger.debug(`📊 Learning from prompt performance:success rate ${analysisData.successRate.toFixed(2)}` `
+            logger.debug(` Learning from prompt performance:success rate ${analysisData.successRate.toFixed(2)}` `
       );
 
       // Add to performance history
@@ -156,7 +156,7 @@ export class SmartPromptOptimizer {
         }
     }
     catch(error) {
-        logger.error('❌ Failed to learn from performance:', error);
+        logger.error(' Failed to learn from performance:', error);
         ')};
     }
     /**
@@ -455,7 +455,7 @@ export class SmartPromptOptimizer {
         }
         logger.debug('Updated optimization patterns based on performance feedback');
         ')    // For now, just log the learning event;
-        logger.debug(`🎯 Pattern learning:$analysisData.successRate > 0.7 ? 'positive' : ' negative'feedback received` `
+        logger.debug(` Pattern learning:$analysisData.successRate > 0.7 ? 'positive' : ' negative'feedback received` `
     );
 }
 

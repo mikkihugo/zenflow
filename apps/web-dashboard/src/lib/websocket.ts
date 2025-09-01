@@ -10,13 +10,13 @@ import { type Writable, writable } from 'svelte/store';
 // Simple browser logger
 const logger = {
   info: (msg: string, ...args: unknown[]) =>
-    console.info(`[websocket] ${msg}`, ...args),
+    console.info('[websocket] ' + msg, ...args),
 
   warn: (msg: string, ...args: unknown[]) =>
-    console.warn(`[websocket] ${msg}`, ...args),
+    console.warn('[websocket] ' + msg, ...args),
 
   error: (msg: string, ...args: unknown[]) =>
-    console.error(`[websocket] ${msg}`, ...args),
+    console.error('[websocket] ' + msg, ...args),
 };
 
 interface WebSocketData {
@@ -135,7 +135,7 @@ export class WebSocketManager {
       this.socket?.emit('subscribe', channel);
     }
 
-    toast.push('📡 Real-time updates connected', {
+    toast.push(' Real-time updates connected', {
       theme: {
         '--toastBackground': '#48cc6c',
         '--toastColor': 'white',
@@ -160,110 +160,110 @@ export class WebSocketManager {
       {
         event: 'system:initial',
         store: this.systemStatus,
-        icon: '📊',
+        icon: '',
         name: 'System initial',
       },
       {
         event: 'system:status',
         store: this.systemStatus,
-        icon: '📊',
+        icon: '',
         name: 'System status',
       },
       {
         event: 'agents:initial',
         store: this.agents,
-        icon: '🤖',
+        icon: '',
         name: 'Agents initial',
       },
       {
         event: 'agents:update',
         store: this.agents,
-        icon: '🤖',
+        icon: '',
         name: 'Agents',
       },
       {
         event: 'tasks:initial',
         store: this.tasks,
-        icon: '✅',
+        icon: '',
         name: 'Tasks initial',
       },
-      { event: 'tasks:update', store: this.tasks, icon: '✅', name: 'Tasks' },
+      { event: 'tasks:update', store: this.tasks, icon: '', name: 'Tasks' },
       {
         event: 'performance:update',
         store: this.performance,
-        icon: '📈',
+        icon: '',
         name: 'Performance',
       },
       // New facade events
       {
         event: 'facades:initial',
         store: this.facades,
-        icon: '🏗️',
+        icon: '️',
         name: 'Facades initial',
       },
       {
         event: 'facades:status',
         store: this.facades,
-        icon: '🏗️',
+        icon: '️',
         name: 'Facades status',
       },
       // New swarm events
       {
         event: 'swarms:initial', 
         store: this.swarms,
-        icon: '🐝',
+        icon: '',
         name: 'Swarms initial',
       },
       {
         event: 'swarms:update',
         store: this.swarms,
-        icon: '🐝', 
+        icon: '', 
         name: 'Swarms',
       },
       // New swarm stats events
       {
         event: 'swarm-stats:initial',
         store: this.swarmStats,
-        icon: '📊',
+        icon: '',
         name: 'Swarm Stats initial',
       },
       {
         event: 'swarm-stats:update',
         store: this.swarmStats,
-        icon: '📊',
+        icon: '',
         name: 'Swarm Stats',
       },
       // New memory events
       {
         event: 'memory:initial',
         store: this.memoryStatus,
-        icon: '💾',
+        icon: '',
         name: 'Memory initial',
       },
       {
         event: 'memory:status',
         store: this.memoryStatus,
-        icon: '💾',
+        icon: '',
         name: 'Memory status',
       },
       // New database events
       {
         event: 'database:initial',
         store: this.databaseStatus,
-        icon: '🗄️',
+        icon: '️',
         name: 'Database initial',
       },
       {
         event: 'database:status',
         store: this.databaseStatus,
-        icon: '🗄️',
+        icon: '️',
         name: 'Database status',
       },
     ];
 
     for (const { event, store, name } of dataChannels) {
       this.socket?.on(event, (data: WebSocketData) => {
-        logger.debug(`${name} data received`, { data: data.data });
+        logger.debug(name + ' data received', { data: data.data });
         store.set(data.data);
       });
     }
@@ -274,56 +274,56 @@ export class WebSocketManager {
       {
         event: 'stories:initial',
         store: this.stories,
-        icon: '📖',
+        icon: '',
         name: 'User Stories initial',
         key: 'stories',
       },
       {
         event: 'stories:update',
         store: this.stories,
-        icon: '📖',
+        icon: '',
         name: 'User Stories',
         key: 'stories',
       },
       {
         event: 'epics:initial',
         store: this.epics,
-        icon: '🏔️',
+        icon: '️',
         name: 'Epics initial',
         key: 'epics',
       },
       {
         event: 'epics:update',
         store: this.epics,
-        icon: '🏔️',
+        icon: '️',
         name: 'Epics',
         key: 'epics',
       },
       {
         event: 'features:initial',
         store: this.features,
-        icon: '🎯',
+        icon: '',
         name: 'Features initial',
         key: 'features',
       },
       {
         event: 'features:update',
         store: this.features,
-        icon: '🎯',
+        icon: '',
         name: 'Features',
         key: 'features',
       },
       {
         event: 'teams:initial',
         store: this.teams,
-        icon: '👥',
+        icon: '',
         name: 'Teams initial',
         key: 'teams',
       },
       {
         event: 'teams:update',
         store: this.teams,
-        icon: '👥',
+        icon: '',
         name: 'Teams',
         key: 'teams',
       },
@@ -331,7 +331,7 @@ export class WebSocketManager {
 
     for (const { event, store, name, key } of safeChannels) {
       this.socket?.on(event, (data: WebSocketData) => {
-        logger.debug(`${name} data received`, { data: data.data });
+        logger.debug(name + ' data received', { data: data.data });
         store.set(data.data?.[key] || []);
       });
     }
@@ -463,7 +463,7 @@ export class WebSocketManager {
     }));
 
     if (reason !== 'io client disconnect') {
-      toast.push('📡 Real-time connection lost', {
+      toast.push(' Real-time connection lost', {
         theme: {
           '--toastBackground': '#f56565',
           '--toastColor': 'white',
@@ -480,7 +480,7 @@ export class WebSocketManager {
       error: error.message,
     }));
 
-    toast.push(`📡 Connection error: ${error.message}`, {
+    toast.push(' Connection error: ' + error.message, {
       theme: {
         '--toastBackground': '#f56565',
         '--toastColor': 'white',
@@ -490,7 +490,7 @@ export class WebSocketManager {
 
   private handleReconnect(): void {
     logger.info('WebSocket reconnected');
-    toast.push('📡 Real-time connection restored', {
+    toast.push(' Real-time connection restored', {
       theme: {
         '--toastBackground': '#48cc6c',
         '--toastColor': 'white',
@@ -510,7 +510,7 @@ export class WebSocketManager {
       error: 'Failed to reconnect to server',
     }));
 
-    toast.push('📡 Failed to reconnect to server', {
+    toast.push(' Failed to reconnect to server', {
       theme: {
         '--toastBackground': '#f56565',
         '--toastColor': 'white',

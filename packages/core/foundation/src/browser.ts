@@ -1,18 +1,18 @@
 /**
  * @fileoverview Foundation Package - Browser Entry Point
  *
- * **🌐 BROWSER-COMPATIBLE ENTRY POINT**
+ * ** BROWSER-COMPATIBLE ENTRY POINT**
  *
  * This entry point only includes browser-compatible modules from the foundation package.
  * Node.js specific modules like syslog, system utilities, and file operations are excluded.
  *
  * @example Browser Usage
- * ```typescript`
+ * '''typescript'
  * import { getLogger, Result, ok, err} from '@claude-zen/foundation';
  *
  * const logger = getLogger('browser-component');
- * logger.info('Browser component initialized');
- * ```
+ * logger.info('Browser component initialized`);
+ * `
  */
 
 // =============================================================================
@@ -55,19 +55,19 @@ export enum LogLevel {
 // Simple browser logger implementation
 export const getLogger = (name: string): Logger => ({
   debug: (message: string, ...args: unknown[]) =>
-    console.debug(`[${name}] ${message}`, ...args),
+    console.debug('[' + (name) + '] ' + String(message), ...args),
 
   info: (message: string, ...args: unknown[]) =>
-    console.info(`[${name}] ${message}`, ...args),
+    console.info('[' + (name) + '] ' + String(message), ...args),
 
   warn: (message: string, ...args: unknown[]) =>
-    console.warn(`[${name}] ${message}`, ...args),
+    console.warn('[' + (name) + '] ' + String(message), ...args),
 
   error: (message: string, ...args: unknown[]) =>
-    console.error(`[${name}] ${message}`, ...args),
+    console.error('[' + (name) + '] ' + String(message), ...args),
 
   fatal: (message: string, ...args: unknown[]) =>
-    console.error(`[${name}] FATAL:${message}`, ...args),
+    console.error('[' + (name) + '] FATAL: ' + String(message), ...args),
 });
 
 export const getLogEntries = () => [];
@@ -195,7 +195,7 @@ export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> =>
     new Promise<T>((resolve, reject) => {
       resolve; // Mark as used for linter
       setTimeout(
-        () => reject(new TimeoutError(`Operation timed out after ${ms}ms`)),
+        () => reject(new TimeoutError('Operation timed out after ' + String(ms) + 'ms')),
         ms
       );
     }),
@@ -343,8 +343,8 @@ export const generateUUID = (): string => {
 };
 
 export const generateShortId = () => nanoid(8);
-export const generateTimestampId = () => `${Date.now()}-${nanoid(6)}`;
-export const generateSessionId = () => `session-${nanoid(16)}`;
+export const generateTimestampId = () => (Date.now()) + '-' + String(nanoid(6)) + '';
+export const generateSessionId = () => 'session-' + String(nanoid(16)) + '';
 
 // Time utilities (browser compatible)
 export const now = () => Date.now();
@@ -365,7 +365,7 @@ export const z = {
     min: (minLength: number) => ({
       parse: (val: string) => {
         if (val.length < minLength) {
-          throw new Error(`String must be at least ${minLength} characters`);
+          throw new Error('String must be at least ' + String(minLength) + ' characters');
         }
         return val;
       },
@@ -468,25 +468,25 @@ export const usePolicy = <T>(fn: () => Promise<T>) => fn();
 // =============================================================================
 
 /*
-🌐 BROWSER-COMPATIBLE MODULES:
+ BROWSER-COMPATIBLE MODULES:
 
 INCLUDED:
-✅ Core logging (browser console based)
-✅ Error handling and Result patterns
-✅ Event system (browser EventTarget based)
-✅ Dependency injection
-✅ Async utilities
-✅ Time utilities (browser Date API)
-✅ Validation (zod based)
-✅ Resilience patterns (cockatiel)
-✅ Type definitions (no runtime code)
+// CHECK Core logging (browser console based)
+// CHECK Error handling and Result patterns
+// CHECK Event system (browser EventTarget based)
+// CHECK Dependency injection
+// CHECK Async utilities
+// CHECK Time utilities (browser Date API)
+// CHECK Validation (zod based)
+// CHECK Resilience patterns (cockatiel)
+// CHECK Type definitions (no runtime code)
 
 EXCLUDED (Node.js specific):
-❌ System utilities (os, process, fs)
-❌ Syslog bridge (child_process)
-❌ File operations
-❌ Process lifecycle management
-❌ Advanced system detection
+// ERROR System utilities (os, process, fs)
+// ERROR Syslog bridge (child_process)
+// ERROR File operations
+// ERROR Process lifecycle management
+// ERROR Advanced system detection
 
 For Node.js environments, use the main index.ts entry point.
 */

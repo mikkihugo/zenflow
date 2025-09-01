@@ -42,7 +42,7 @@ export class FactClient {
 	async initialize() {
 		logger.info("Initializing FACT System...");
 		await this.bridge.initialize();
-		logger.info("✅ FACT System initialized successfully");
+		logger.info(" FACT System initialized successfully");
 	}
 	/**
 	 * Search for facts - simple SQL query, very fast
@@ -141,7 +141,7 @@ export class FactClient {
 	async shutdown() {
 		logger.info("Shutting down FACT System...");
 		await this.bridge.shutdown();
-		logger.info("✅ FACT System shut down");
+		logger.info(" FACT System shut down");
 	}
 }
 /**

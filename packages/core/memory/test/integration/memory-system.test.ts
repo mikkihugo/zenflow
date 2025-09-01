@@ -267,7 +267,7 @@ describe('Memory System Integration', () => {
 
           if (!isHealthy) {
             healthStatus.overall = false;
-            healthStatus.issues.push(`Backend '${name}' is unhealthy`);
+            healthStatus.issues.push('Backend '' + name + '' is unhealthy');
 }
 }
 
@@ -474,7 +474,7 @@ describe('Memory System Integration', () => {
               return { acquired:false, reason: 'already-locked'};
 }
             lockManager.locks.set(key, { acquiredAt:Date.now(), timeout});
-            return { acquired:true, lockId:`lock-${Date.now()}`};
+            return { acquired:true, lockId:'lock-' + Date.now()};
 }),
         release:vi
           .fn()

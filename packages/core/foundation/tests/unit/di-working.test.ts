@@ -131,22 +131,22 @@ describe('Dependency Injection - Working Methods Only', () => {
 
       // Register many services
       for (let i = 0; i < serviceCount; i++) {
-        container.registerInstance(`service-${i}`, {
+        container.registerInstance('service-' + i, {
           id: i,
-          name: `service-${i}`,
-          data: `data-${i}`,
+          name: 'service-' + i,
+          data: 'data-' + i,
         });
       }
 
       // Verify all are registered and resolvable
       for (let i = 0; i < serviceCount; i++) {
-        const serviceName = `service-${i}`;
+        const serviceName = 'service-' + i;
         expect(container.has(serviceName)).toBe(true);
 
         const resolved = container.resolve(serviceName);
         expect(resolved.id).toBe(i);
         expect(resolved.name).toBe(serviceName);
-        expect(resolved.data).toBe(`data-${i}`);
+        expect(resolved.data).toBe('data-' + i);
       }
     });
   });
@@ -198,7 +198,7 @@ describe('Dependency Injection - Working Methods Only', () => {
         const config = container.resolve('app-config');
         return {
           baseUrl: config.api.baseUrl,
-          request: (path: string) => `${config.api.baseUrl}${path}`,
+          request: (path: string) => (config.api.baseUrl) + path,
           isLoggingEnabled: () => config.features.logging,
         };
       });

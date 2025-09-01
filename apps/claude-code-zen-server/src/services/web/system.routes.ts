@@ -12,12 +12,12 @@
  * - GET /api/v1/system/capability/health - Health monitoring endpoint
  *
  * @example
- * ```typescript`
+ * '''typescript'
  * import { SystemCapabilityRoutes} from './system-capability-routes';
  *
  * const routes = new SystemCapabilityRoutes();
- * app.use('/api/v1/system/capability', routes.getRouter());
- * ```
+ * app.use('/api/v1/system/capability`, routes.getRouter());
+ * `
  */
 
 import { getLogger } from '@claude-zen/foundation';
@@ -64,7 +64,7 @@ export class SystemCapabilityRoutes {
     // Capability scores by facade
     this.router.get('/scores', this.handleGetScores.bind(this));
 
-    logger.info('✅ System capability routes configured');
+    logger.info(' System capability routes configured');
   }
 
   /**
@@ -82,7 +82,7 @@ export class SystemCapabilityRoutes {
           timestamp: new Date().toISOString(),
         },
       });
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get system status', { error });
       res.status(500).json({
         success: false,
@@ -108,7 +108,7 @@ export class SystemCapabilityRoutes {
           count: facadesData.facades.length,
         },
       });
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get facades data', { error });
       res.status(500).json({
         success: false,
@@ -137,7 +137,7 @@ export class SystemCapabilityRoutes {
           count: suggestionsData.suggestions.length,
         },
       });
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get suggestions data', { error });
       res.status(500).json({
         success: false,
@@ -165,7 +165,7 @@ export class SystemCapabilityRoutes {
           availablePackages: detailedData.availablePackages,
         },
       });
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get detailed data', { error });
       res.status(500).json({
         success: false,
@@ -190,13 +190,13 @@ export class SystemCapabilityRoutes {
         health: {
           score: capabilityData.systemHealthScore,
           overall: capabilityData.overall,
-          packages: `${capabilityData.availablePackages}/${capabilityData.totalPackages}`,
+          packages: (capabilityData.availablePackages) + '/' + capabilityData.totalPackages,
           services: capabilityData.registeredServices,
         },
       };
 
       res.status(isHealthy ? 200 : 503).json(response);
-    } catch (error) {
+    } catch (_error) {
       logger.error('Health check failed', { error });
       res.status(503).json({
         status: 'unhealthy',
@@ -231,7 +231,7 @@ export class SystemCapabilityRoutes {
           timestamp: new Date().toISOString(),
         },
       });
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get capability scores', { error });
       res.status(500).json({
         success: false,

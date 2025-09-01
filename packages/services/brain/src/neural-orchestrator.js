@@ -648,7 +648,7 @@ export class NeuralOrchestrator {
         return result;
     }
     catch(error) {
-        logger.error(`❌ Neural task failed:${task.id}`, error);
+        logger.error(` Neural task failed:${task.id}`, error);
         `
       throw error;
 }
@@ -907,7 +907,7 @@ try {
     ')      this.neuralMlCache = neuralMl;;
     this.isNeuralMlLoaded = true;
     this.metrics.neuralMlLoadCount++;
-    logger.info('✅ Neural-ML package loaded successfully');
+    logger.info(' Neural-ML package loaded successfully');
     ')      return neuralMl;;
 }
 catch (error) {
@@ -1017,7 +1017,7 @@ $;
 async;
 storeInVectorDB(data, NeuralData);
 Promise < void  > {
-// Use foundation's LanceDB storage')    logger.debug(`📊 Storing in vector DB:$data.id`);`
+// Use foundation's LanceDB storage')    logger.debug(` Storing in vector DB:$data.id`);`
 };
 async;
 storeInGraphDB(data, NeuralData);

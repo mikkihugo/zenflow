@@ -5,7 +5,7 @@
  * Converts telemetry metrics to Prometheus metrics and serves them.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ExporterConfig} from '../types.js';
 import type { BaseExporter} from './index.js';
 
@@ -219,12 +219,12 @@ export class PrometheusExporter implements BaseExporter {
 
       if (Array.isArray(data.data)) {
         metricsData = data.data;
-} else if (data.data.metrics && Array.isArray(data.data.metrics)) {
+      } else if (data.data.metrics && Array.isArray(data.data.metrics)) {
         metricsData = data.data.metrics;
-} else if (typeof data.data === 'object') {
-    ')        // Single metric object
+      } else if (typeof data.data === 'object') {
+        // Single metric object
         metricsData = [data.data];
-}
+      }
 
       // Process each metric
       for (const metricData of metricsData) {

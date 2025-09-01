@@ -7,7 +7,7 @@
 
 import { createServer, type Server} from 'node:http';
 import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
@@ -54,17 +54,17 @@ export class InternalOTELCollector {
 
     // Initialize managers
     this.exporterManager = new ExporterManager(this.config.exporters || []);
-    this.processorManager = new ProcessorManager(this.config.processors || []);
+    this.processorManager = new ProcessorManager();
 
     // Initialize stats
-    this._stats = {
+    this.stats = {
       received:{ traces: 0, metrics:0, logs:0},
       exported:{ traces: 0, metrics:0, logs:0},
       errors:{},
       queueSizes:{},
       memoryUsage:{ heapUsed: 0, heapTotal:0, external:0},
       uptime:0,
-};
+    };
 }
 
   /**
@@ -81,7 +81,7 @@ export class InternalOTELCollector {
       await this.exporterManager.initialize();
 
       // Initialize processors
-      await this.processorManager.initialize();
+      await this.processorManager.initialize(this.config.processors || []);
 
       // Start HTTP server for telemetry ingestion
       await this.startHttpServer();
@@ -91,11 +91,11 @@ export class InternalOTELCollector {
 
       this.isRunning = true;
       this.logger.info('Internal OTEL Collector started', {
-        httpPort:this.config.http?.port,
-        grpcPort:this.config.grpc?.port,
+        httpPort:this.config.httpPort,
+        grpcPort:this.config.grpcPort,
         exporters:this.config.exporters?.length || 0,
         processors:this.config.processors?.length || 0,
-});
+      });
 } catch (error) {
       this.logger.error('Failed to start OTEL collector', error);
       throw error;
@@ -134,10 +134,10 @@ export class InternalOTELCollector {
   /**
    * Ingest telemetry data
    */
-  async ingest(data:TelemetryData): Promise<void> {
+  async ingest(data: TelemetryData): Promise<void> {
     if (!this.isRunning) {
       throw new Error('Collector is not running');
-}
+    }
 
     try {
       // Update received stats
@@ -146,31 +146,33 @@ export class InternalOTELCollector {
       // Process the data
       const processedData = await this.processorManager.process(data);
 
-      // Export to backends
-      const exportResults = await this.exporterManager.export(processedData);
+      // Export to backends if processing didn't filter out the data
+      if (processedData) {
+        const exportResults = await this.exporterManager.export(processedData);
 
-      // Update export stats
-      for (const result of exportResults) {
-        if (result.success) {
-          this.stats.exported[data.type]++;
-} else {
-          this.stats.errors[result.backend] =
-            (this.stats.errors[result.backend] || 0) + 1;
-}
-}
-} catch (error) {
+        // Update export stats
+        for (const result of exportResults) {
+          if (result.success) {
+            this.stats.exported[data.type]++;
+          } else {
+            this.stats.errors[result.backend] =
+              (this.stats.errors[result.backend] || 0) + 1;
+          }
+        }
+      }
+    } catch (error) {
       this.logger.error('Failed to ingest telemetry data', {
         error,
-        dataType:data.type,
-});
+        dataType: data.type,
+      });
       throw error;
-}
-}
+    }
+  }
 
   /**
    * Ingest multiple telemetry data items (batch)
    */
-  async ingestBatch(dataItems:TelemetryData[]): Promise<void> {
+  async ingestBatch(dataItems: TelemetryData[]): Promise<void> {
     const results = await Promise.allSettled(
       dataItems.map((data) => this.ingest(data))
     );
@@ -178,42 +180,42 @@ export class InternalOTELCollector {
     const failed = results.filter((r) => r.status === 'rejected').length;
     if (failed > 0) {
       this.logger.warn('Some batch items failed to ingest', {
-        total:dataItems.length,
+        total: dataItems.length,
         failed,
-});
-}
-}
+      });
+    }
+  }
 
   /**
    * Get collector statistics
    */
-  getStats():CollectorStats {
+  getStats(): CollectorStats {
     const memUsage = process.memoryUsage();
     return {
       ...this.stats,
-      memoryUsage:{
-        heapUsed:memUsage.heapUsed,
-        heapTotal:memUsage.heapTotal,
-        external:memUsage.external,
-},
-      uptime:Date.now() - this.startTime,
-      queueSizes:this.exporterManager.getQueueSizes(),
-};
-}
+      memoryUsage: {
+        heapUsed: memUsage.heapUsed,
+        heapTotal: memUsage.heapTotal,
+        external: memUsage.external,
+      },
+      uptime: Date.now() - this.startTime,
+      queueSizes: this.exporterManager.getQueueSizes(),
+    };
+  }
 
   /**
    * Get health status
    */
-  async getHealthStatus():Promise<HealthStatus> {
+  async getHealthStatus(): Promise<HealthStatus> {
     const exporterHealth = await this.exporterManager.getHealthStatus();
     const __stats = this.getStats();
 
     // Determine overall status
     const hasUnhealthyExporter = Object.values(exporterHealth).some(
-      (h) => h.status === 'unhealthy'
+      (h) => h.status.trim() === 'unhealthy'
     );
     const hasDegradedExporter = Object.values(exporterHealth).some(
-      (h) => h.status === 'degraded'
+      (h) => h.status.trim() === 'degraded'
     );
 
     let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
@@ -224,13 +226,13 @@ export class InternalOTELCollector {
     }
 
     // Check resource usage
-    const memUsedMB = stats.memoryUsage.heapUsed / (1024 * 1024);
-    const memTotalMB = stats.memoryUsage.heapTotal / (1024 * 1024);
+    const memUsedMB = __stats.memoryUsage.heapUsed / (1024 * 1024);
+    const memTotalMB = __stats.memoryUsage.heapTotal / (1024 * 1024);
     const memUsagePercent = (memUsedMB / memTotalMB) * 100;
 
     return {
       status: overallStatus,
-      exporters: exporterHealth,
+      exporters: exporterHealth as Record<string, { status: 'healthy' | 'degraded' | 'unhealthy'; lastSuccess?: number; lastError?: string; }>,
       resources: {
         memory:
           memUsagePercent > 90
@@ -258,7 +260,7 @@ export class InternalOTELCollector {
     app.use(express.json({ limit: '10mb'}));
 
     // Health endpoint
-    app.get('/health', async (req, res) => {
+    app.get('/health', async (_req, res) => {
       try {
         const health = await this.getHealthStatus();
         res.status(health.status === 'healthy' ? 200:503).json(health);
@@ -271,7 +273,7 @@ export class InternalOTELCollector {
     app.get('/stats', (_req, res) => {
       try {
         const __stats = this.getStats();
-        res.json(stats);
+        res.json(__stats);
 } catch (error) {
         res.status(500).json({ error:String(error)});
 }
@@ -315,13 +317,13 @@ export class InternalOTELCollector {
 });
 
     // Start server
-    const port = this.config.http?.port || 4318;
+    const port = this.config.httpPort || 4318;
     this.httpServer = createServer(app);
 
     await new Promise<void>((resolve, reject) => {
       this.httpServer?.listen(port, () => {
         this.logger.info(
-          `OTEL Collector HTTP server listening on port ${port}`
+          'OTEL Collector HTTP server listening on port ' + port
         );
         resolve();
 });
@@ -353,7 +355,7 @@ export class InternalOTELCollector {
       await this.ingest(telemetryData);
       res.status(200).json({ success:true});
 } catch (error) {
-      this.logger.error(`Failed to handle ${signalType} ingestion`, error);
+      this.logger.error('Failed to handle ' + signalType + ' ingestion', error);
       res.status(500).json({ error:String(error)});
 }
 }

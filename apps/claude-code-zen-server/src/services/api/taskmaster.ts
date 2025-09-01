@@ -20,13 +20,13 @@ const logger = getLogger('TaskMasterRoutes');
 const asyncHandler =
   (fn: (req: Request, res: Response) => Promise<void>) =>
   (req: Request, res: Response) =>
-    Promise.resolve(fn(req, res)).catch((error) => {
+    Promise.resolve(fn(req, _res)).catch((_error) => {
       logger.error('AsyncHandler error: ', error);
       if (!res.headersSent) {
         res.status(500).json({
           success: false,
           error: 'Internal server error',
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: error instanceof Error ? (error as Error).message : 'Unknown error',
         });
       }
     });
@@ -141,10 +141,10 @@ class TaskMasterManager {
         }
 
         logger.info('TaskMaster system initialized successfully');
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to initialize TaskMaster system: ', error);
         throw new Error(
-          `TaskMaster system initialization failed:${(error as Error).message}`
+          'TaskMaster system initialization failed:' + (error as Error).message
         );
       }
     }
@@ -172,7 +172,7 @@ class TaskMasterManager {
       }
 
       logger.info('TaskMaster system cleanup completed');
-    } catch (error) {
+    } catch (_error) {
       logger.error('Error during TaskMaster cleanup: ', error);
     }
   }
@@ -291,7 +291,7 @@ async function handleTaskCreation(
     taskMaster as { createTask: (data: unknown) => Promise<unknown> }
   ).createTask(safeTaskData);
 
-  log(LogLevel.INFO, `SAFe task created with ID: ${taskId}`);
+  log(LogLevel.INFO, 'SAFe task created with ID: ' + taskId);
   return createdTask;
 }
 
@@ -316,7 +316,7 @@ function setupFlowMetricsRoutes(
 ): void {
   router.get(
     '/metrics',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       log(LogLevel.DEBUG, 'Getting SAFe flow metrics', req);
 
       try {
@@ -365,7 +365,7 @@ function setupFlowMetricsRoutes(
             health,
           });
         }
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get flow metrics: ', error);
         log(LogLevel.ERROR, 'Failed to get flow metrics', req, {
           error: (error as Error).message,
@@ -414,7 +414,7 @@ async function handleCreateTask(
       manager.webSocketCoordinator.broadcast('task:created', task);
     }
 
-    logger.info(`Task created:${task.id} - ${task.title}`);
+    logger.info('Task created:' + (task.id) + ' - ' + task.title);
 
     res.status(201).json({
       success: true,
@@ -422,8 +422,8 @@ async function handleCreateTask(
       message: 'Task created successfully',
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
-    logger.error(`${TASK_ERROR_MESSAGES.createFailed}:`, error);
+  } catch (_error) {
+    logger.error(TASK_ERROR_MESSAGES.createFailed + ':', error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.createFailed, req, {
       error: (error as Error).message,
       body: req.body,
@@ -448,7 +448,7 @@ function setupTaskManagementRoutes(
   // Create task
   router.post(
     '/tasks',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       await handleCreateTask(req, res, manager);
     })
   );
@@ -456,7 +456,7 @@ function setupTaskManagementRoutes(
   // Get task by ID
   router.get(
     '/tasks/:taskId',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       await handleGetTask(req, res, manager);
     })
   );
@@ -464,7 +464,7 @@ function setupTaskManagementRoutes(
   // Move task
   router.put(
     '/tasks/:taskId/move',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       await handleMoveTask(req, res, manager);
     })
   );
@@ -472,7 +472,7 @@ function setupTaskManagementRoutes(
   // Get tasks by state
   router.get(
     '/tasks/state/:state',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       await handleGetTasksByState(req, res, manager);
     })
   );
@@ -518,7 +518,7 @@ async function handleGetTask(
       data: task,
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (_error) {
     logger.error(`Failed to get task ${req.params.taskId}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTaskFailed, req, {
       error: (error as Error).message,
@@ -608,7 +608,7 @@ async function handleGetTasksByState(
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (_error) {
     logger.error(`Failed to get tasks by state ${req.params.state}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTasksByStateFailed, req, {
       error: (error as Error).message,
@@ -737,7 +737,7 @@ async function validateWIPLimits(
         success: false,
         error: 'WIP limit exceeded',
         wipStatus: wipLimits,
-        message: `Cannot move task to ${toState}. WIP limit reached (${wipLimits.current}/${wipLimits.limit})`,
+        message: 'Cannot move task to ' + (toState) + '. WIP limit reached (' + (wipLimits.current) + `/${wipLimits.limit})`,
         timestamp: new Date().toISOString(),
       },
       wipStatus: wipLimits,
@@ -846,7 +846,7 @@ async function handleMoveTask(
 
     // Move the task
     const result = await taskMaster.moveTask(taskId, toState);
-    if (!result) {
+    if (!_result) {
       return res.status(422).json({
         success: false,
         error: TASK_ERROR_MESSAGES.moveTaskFailed,
@@ -862,11 +862,11 @@ async function handleMoveTask(
       toState,
       reason,
     });
-    logger.info(`Task ${taskId} moved from ${currentTask.state} to ${toState}`);
+    logger.info('Task ' + (taskId) + ' moved from ' + (currentTask.state) + ' to ' + toState);
 
     res.json({
       success: true,
-      message: `Task moved to ${toState}`,
+      message: 'Task moved to ' + toState,
       data: {
         taskId,
         fromState: currentTask.state,
@@ -876,7 +876,7 @@ async function handleMoveTask(
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch (_error) {
     handleMoveTaskError(req, res, error);
   }
 }
@@ -980,10 +980,10 @@ async function createPIPlanningEventHandler(
     });
 
     logger.info(
-      `PI Planning event created:PI ${planningIntervalNumber} for ART ${artId}`
+      'PI Planning event created:PI ' + (planningIntervalNumber) + ' for ART ' + artId
     );
     sendPIEventSuccess(res, piEvent);
-  } catch (error) {
+  } catch (_error) {
     handlePIEventError(req, res, error);
   }
 }
@@ -1010,7 +1010,7 @@ function setupSystemHealthRoutes(
 ): void {
   router.get(
     '/health',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       log(LogLevel.DEBUG, 'Getting TaskMaster health status', req);
 
       try {
@@ -1047,7 +1047,7 @@ function setupSystemHealthRoutes(
           success: true,
           data: healthDetails,
         });
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get system health: ', error);
         log(LogLevel.ERROR, 'Failed to get system health', req, {
           error: (error as Error).message,
@@ -1173,7 +1173,7 @@ async function createDashboardDataHandler(
         realTimeEnabled: !!manager.webSocketCoordinator,
       },
     });
-  } catch (error) {
+  } catch (_error) {
     logger.error('Failed to get dashboard data: ', error);
     log(LogLevel.ERROR, 'Failed to get dashboard data', req, {
       error: (error as Error).message,
@@ -1196,7 +1196,7 @@ function setupDashboardRoutes(
 ): void {
   router.get(
     '/dashboard',
-    asyncHandler(async (req: Request, res: Response) => {
+    asyncHandler(async (_req: Request, _res: Response) => {
       await createDashboardDataHandler(req, res, manager);
     })
   );

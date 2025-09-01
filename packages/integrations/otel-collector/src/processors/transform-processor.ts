@@ -5,7 +5,7 @@
  * Supports field mapping, data enrichment, and format conversion.
  */
 
-import { getLogger} from '@claude-zen/foundation/logging';
+import { getLogger} from '@claude-zen/foundation';
 import type { ProcessorConfig, TelemetryData} from '../types.js';
 import type { BaseProcessor} from './index.js';
 
@@ -31,10 +31,14 @@ export class TransformProcessor implements BaseProcessor {
   private readonly removeFields: string[];
   private readonly fieldMappings: Record<string, string>;
   private readonly operations: TransformOperation[];
+  private processedCount: number = 0;
+  private transformedCount: number = 0;
+  private lastProcessedTime?: number;
+  private lastError?: string | null;
 
   constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger(`TransformProcessor:${config.name}`);
+    this.logger = getLogger('TransformProcessor:' + config.name);
 
     // Parse configuration
     this.addAttributes = config.config?.addAttributes || {};
@@ -93,7 +97,7 @@ export class TransformProcessor implements BaseProcessor {
 
       if (actuallyTransformed > 0) {
         this.logger.debug(
-          `Transformed ${transformedItems.length} of ${dataItems.length} items`
+          'Transformed ' + (transformedItems.length) + ' of ' + dataItems.length + ' items'
         );
 }
 
@@ -114,20 +118,34 @@ export class TransformProcessor implements BaseProcessor {
       totalTransformed:this.transformedCount,
       transformRate:
         this.processedCount > 0
-          ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) +
-            '%')          : '0%',});
-}
+          ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) + '%'
+          : '0%',
+    });
+  }
 
-  async getHealthStatus():Promise<{
-    status:'healthy''  |  ' degraded''  |  ' unhealthy';
-    lastProcessed?:number;
-    lastError?:string;
-}> {
-    return {
-      status:this.lastError ? 'unhealthy' : ' healthy',      lastProcessed:this.lastProcessedTime || undefined,
-      lastError:this.lastError || undefined,
-};
-}
+  async getHealthStatus(): Promise<{
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    lastProcessed?: number;
+    lastError?: string;
+  }> {
+    const result: {
+      status: 'healthy' | 'degraded' | 'unhealthy';
+      lastProcessed?: number;
+      lastError?: string;
+    } = {
+      status: this.lastError ? 'unhealthy' : 'healthy',
+    };
+
+    if (this.lastProcessedTime !== undefined) {
+      result.lastProcessed = this.lastProcessedTime;
+    }
+
+    if (this.lastError !== undefined && this.lastError !== null) {
+      result.lastError = this.lastError;
+    }
+
+    return result;
+  }
 
   /**
    * Get transform statistics
@@ -139,9 +157,9 @@ export class TransformProcessor implements BaseProcessor {
 } {
     const transformRate =
       this.processedCount > 0
-        ? `${((this.transformedCount / this.processedCount) * 100).toFixed(1)}%`
+        ? ((this.transformedCount / this.processedCount) * 100).toFixed(1) + '%'
         : '0%';
-'
+
     return {
       processed:this.processedCount,
       transformed:this.transformedCount,
@@ -158,9 +176,10 @@ export class TransformProcessor implements BaseProcessor {
 
     try {
       transformedData = JSON.parse(JSON.stringify(data));
-} catch (error) {
-      this.logger.warn('Failed to clone data for transformation', error);')      return data;
-}
+    } catch (error) {
+      this.logger.warn('Failed to clone data for transformation', error);
+      return data;
+    }
 
     let wasTransformed = false;
 
@@ -207,11 +226,11 @@ export class TransformProcessor implements BaseProcessor {
     if (wasTransformed) {
       if (!transformedData.attributes) {
         transformedData.attributes = {};
-}
-      transformedData.attributes._transformed = true;
-      transformedData.attributes._transformedAt = Date.now();
-      transformedData.attributes._transformedBy = this.config.name;
-}
+      }
+      transformedData.attributes['_transformed'] = true;
+      transformedData.attributes['_transformedAt'] = Date.now();
+      transformedData.attributes['_transformedBy'] = this.config.name;
+    }
 
     return transformedData;
 }
@@ -232,20 +251,20 @@ export class TransformProcessor implements BaseProcessor {
 }
 
     switch (operation.type) {
-      case 'add':{
-    ')        if (!data.attributes) {
+      case 'add': {
+        if (!data.attributes) {
           data.attributes = {};
-}
+        }
         const resolvedValue = this.resolveValue(operation.value, data);
         if (resolvedValue !== undefined) {
           this.setFieldValue(data, operation.field, resolvedValue);
           return true;
-}
+        }
         break;
-}
+      }
 
-      case 'modify':{
-    ')        const currentValue = this.getFieldValue(data, operation.field);
+      case 'modify': {
+        const currentValue = this.getFieldValue(data, operation.field);
         if (currentValue !== undefined) {
           const newValue = this.resolveValue(
             operation.value,
@@ -254,23 +273,27 @@ export class TransformProcessor implements BaseProcessor {
           );
           this.setFieldValue(data, operation.field, newValue);
           return true;
-}
+        }
         break;
-}
+      }
 
-      case 'remove': ')'        return this.removeFieldValue(data, operation.field);
+      case 'remove':
+        return this.removeFieldValue(data, operation.field);
 
-      case 'rename': ')'        if (operation.newField) {
+      case 'rename': {
+        if (operation.newField) {
           const value = this.getFieldValue(data, operation.field);
           if (value !== undefined) {
             this.setFieldValue(data, operation.newField, value);
             this.removeFieldValue(data, operation.field);
             return true;
-}
-}
+          }
+        }
         break;
+      }
 
-      case 'map': ')'        if (operation.mapping) {
+      case 'map': {
+        if (operation.mapping) {
           const currentValue = this.getFieldValue(data, operation.field);
           if (
             currentValue !== undefined  && 
@@ -282,131 +305,148 @@ export class TransformProcessor implements BaseProcessor {
               operation.mapping[currentValue]
             );
             return true;
-}
-}
+          }
+        }
         break;
-}
+      }
+    }
 
     return false;
-}
+  }
 
   /**
    * Get field value using dot notation
    */
-  private getFieldValue(data:any, fieldPath:string): any {
-    const parts = fieldPath.split('.');')    let value = data;
+  private getFieldValue(data: any, fieldPath: string): any {
+    const parts = fieldPath.split('.');
+    let value = data;
 
     for (const part of parts) {
       if (value === null || value === undefined) {
         return undefined;
-}
+      }
       value = value[part];
-}
+    }
 
     return value;
-}
+  }
 
   /**
    * Set field value using dot notation
    */
-  private setFieldValue(data:any, fieldPath:string, value:any): void {
-    const parts = fieldPath.split('.');')    let current = data;
+  private setFieldValue(data: any, fieldPath: string, value: any): void {
+    const parts = fieldPath.split('.');
+    let current = data;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part] || typeof current[part] !=='object') {
-    ')        current[part] =;
-}
+      if (!part) continue; // Skip empty parts
+      if (!current[part] || typeof current[part] !== 'object') {
+        current[part] = {};
+      }
       current = current[part];
-}
+    }
 
-    current[parts[parts.length - 1]] = value;
-}
+    const lastPart = parts[parts.length - 1];
+    if (lastPart) {
+      current[lastPart] = value;
+    }
+  }
 
   /**
    * Remove field value using dot notation
    */
-  private removeFieldValue(data:any, fieldPath:string): boolean {
-    const parts = fieldPath.split('.');')    let current = data;
+  private removeFieldValue(data: any, fieldPath: string): boolean {
+    const parts = fieldPath.split('.');
+    let current = data;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!current[part]) {
+      if (!part || !current[part]) {
         return false;
-}
+      }
       current = current[part];
-}
+    }
 
     const lastPart = parts[parts.length - 1];
-    if (lastPart in current) {
+    if (lastPart && lastPart in current) {
       delete current[lastPart];
       return true;
-}
+    }
 
     return false;
-}
+  }
 
   /**
    * Resolve value (supports templates and functions)
    */
   private resolveValue(
-    value:any,
-    data:TelemetryData,
-    currentValue?:any
-  ):any {
+    value: any,
+    data: TelemetryData,
+    currentValue?: any
+  ): any {
     if (typeof value === 'string') {
-    ')      // Template substitution
+      // Template substitution
       return value.replace(/\{\{([^}]+)\}\}/g, (match, path) => {
-        const resolved = this.getFieldValue(data, path.trim())();
-        return resolved !== undefined ? String(resolved) :match;
-});
-}
+        const resolved = this.getFieldValue(data, path.trim());
+        return resolved !== undefined ? String(resolved) : match;
+      });
+    }
 
     if (typeof value === 'function') {
-    ')      try {
+      try {
         return value(data, currentValue);
-} catch (error) {
-        this.logger.warn('Error in transform function', error);')        return currentValue;
-}
-}
+      } catch (error) {
+        this.logger.warn('Error in transform function', error);
+        return currentValue;
+      }
+    }
 
     return value;
-}
+  }
 
   /**
    * Evaluate simple conditions
    */
-  private evaluateCondition(data:TelemetryData, condition:string): boolean {
+  private evaluateCondition(data: TelemetryData, condition: string): boolean {
     try {
       // Very simple condition evaluation
-      // In production, you'd want a proper expression evaluator')      const parts = condition.split(' ');')      if (parts.length === 3) {
+      // In production, you'd want a proper expression evaluator
+      const parts = condition.split(' ');
+      if (parts.length === 3) {
         const [field, operator, expectedValue] = parts;
+        if (!field || !operator) return false;
         const actualValue = this.getFieldValue(data, field);
 
         switch (operator) {
-          case '==': ')'            return actualValue === expectedValue;
-          case '!=': ')'            return actualValue !== expectedValue;
-          case 'contains': ')'            return String(actualValue).includes(expectedValue);
-          case 'exists': ')'            return actualValue !== undefined;
-}
-}
-} catch (error) {
-      this.logger.warn(`Failed to evaluate condition: ${condition}`, error);
-}
+          case '==':
+            return actualValue === expectedValue;
+          case '!=':
+            return actualValue !== expectedValue;
+          case 'contains':
+            return expectedValue ? String(actualValue).includes(expectedValue) : false;
+          case 'exists':
+            return actualValue !== undefined;
+        }
+      }
+    } catch (error) {
+      this.logger.warn('Failed to evaluate condition: ' + condition, error);
+    }
 
     return true; // Default to true on condition evaluation error
-}
+  }
 
   /**
    * Parse transform operations from configuration
    */
-  private parseOperations(operations:any[]): TransformOperation[] {
+  private parseOperations(operations: any[]): TransformOperation[] {
     return operations.map((op) => ({
-      type:op.type || 'add',      field:op.field,
-      value:op.value,
-      newField:op.newField,
-      mapping:op.mapping,
-      condition:op.condition,
-}));
-}
+      type: op.type || 'add',
+      field: op.field,
+      value: op.value,
+      newField: op.newField,
+      mapping: op.mapping,
+      condition: op.condition,
+    }));
+  }
 }

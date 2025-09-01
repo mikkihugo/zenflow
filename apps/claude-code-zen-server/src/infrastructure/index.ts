@@ -84,7 +84,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
       };
 
       return ok(health);
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to get system health: ', error);
       return err(error as Error);
     }
@@ -102,7 +102,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
         };
 
         return ok(metrics);
-      } catch (error) {
+      } catch (_error) {
         logger.error('Failed to get system metrics: ', error);
         return err(error as Error);
       }
@@ -126,7 +126,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
       this.initialized = true;
       logger.info('System coordinator initialized successfully');
       return ok();
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to initialize system: ', error);
       return err(error as Error);
     }
@@ -145,7 +145,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
       this.initialized = false;
       logger.info('System coordinator shut down successfully');
       return ok();
-    } catch (error) {
+    } catch (_error) {
       logger.error('Failed to shutdown system: ', error);
       return err(error as Error);
     }
@@ -159,7 +159,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
           // Simple health check - brain system availability
           'healthy'
       )
-      .catch((error) => {
+      .catch((_error) => {
         logger.warn('Brain system not available: ', error);
         return 'critical';
       });
@@ -202,7 +202,7 @@ class SystemCoordinatorImpl implements SystemCoordinator {
         logger.warn('Database health check failed: ', healthResult.details);
         return 'critical';
       }
-    } catch (error) {
+    } catch (_error) {
       logger.error('Database health check error: ', error);
       return 'critical';
     }

@@ -96,7 +96,7 @@ export class RecoveryStrategyManager extends EventEmitter {
           strategy: 'none',
           action: 'no_applicable_strategy',
           duration: Date.now() - startTime,
-          error: `No recovery strategy found for error code: ${error.code}`,
+          error: 'No recovery strategy found for error code: ' + error.code,
         };
       }
 
@@ -175,7 +175,7 @@ export class RecoveryStrategyManager extends EventEmitter {
       const timeout = setTimeout(() => {
         reject(
           new Error(
-            `Recovery strategy '${strategy.name}' timed out after ${strategy.timeoutMs}ms`
+            'Recovery strategy (strategy.name) timed out after ' + strategy.timeoutMs + 'ms'
           )
         );
       }, strategy.timeoutMs);
@@ -751,7 +751,7 @@ export class RecoveryStrategyManager extends EventEmitter {
         return true;
       }
       default:
-        throw new Error(`Unsupported operation: ${operation}`);
+        throw new Error('Unsupported operation: ' + operation);
     }
   }
 }

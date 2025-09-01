@@ -283,8 +283,8 @@ function cleanupClassicalResources() {
 ) => {
   return {
     phase,
-    input: `test-input-${phase}`,
-    expectedOutput: `test-output-${phase}`,
+    input: 'test-input-' + phase,
+    expectedOutput: 'test-output-' + phase,
     context: { swarmId: 'test-swarm', agentCount: 5 },
   };
 };

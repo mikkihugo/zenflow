@@ -57,7 +57,7 @@ export class DaemonProcessManager {
     // Check if already running
     const existing = await this.getRunningProcess();
     if (existing) {
-      throw new Error(`Daemon already running with PID:${existing.pid}`);
+      throw new Error('Daemon already running with PID:' + existing.pid);
     }
 
     this.logger.info('Starting daemon process...', { command, args });
@@ -88,14 +88,14 @@ export class DaemonProcessManager {
     await writeFile(this.config.pidFile, child.pid.toString());
 
     // Handle process events
-    child.on('error', (error) => {
+    child.on('error', (_error) => {
       this.logger.error('Daemon process error: ', error);
       this.handleProcessError(error);
     });
 
     child.on('exit', (code, signal) => {
       this.logger.info(
-        `Daemon process exited with code ${code}, signal ${signal}`
+        'Daemon process exited with code ' + (code) + ', signal ' + signal
       );
       this.cleanupPidFile();
     });
@@ -106,7 +106,7 @@ export class DaemonProcessManager {
     }
 
     this.currentProcess = child;
-    this.logger.info(`Daemon started with PID: ${child.pid}`);
+    this.logger.info('Daemon started with PID: ' + child.pid);
 
     return processInfo;
   }
@@ -121,7 +121,7 @@ export class DaemonProcessManager {
       return false;
     }
 
-    this.logger.info(`Stopping daemon process:${processInfo.pid}`);
+    this.logger.info('Stopping daemon process:' + processInfo.pid);
 
     try {
       // Send signal to process
@@ -135,7 +135,7 @@ export class DaemonProcessManager {
 
       this.logger.info('Daemon process stopped successfully');
       return true;
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to stop daemon process: ', error);
 
       // Force kill if graceful stop failed
@@ -195,7 +195,7 @@ export class DaemonProcessManager {
         command: 'unknown', // We don' t store command info
         args: [],
       };
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to read PID file: ', error);
       await this.cleanupPidFile();
       return null;
@@ -240,7 +240,7 @@ export class DaemonProcessManager {
         memory: process.memoryUsage(), // Current process memory
         status: isRunning ? 'healthy' : ' unhealthy',
       };
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to get daemon status: ', error);
       return {
         running: false,
@@ -261,7 +261,7 @@ export class DaemonProcessManager {
       const content = await readFile(this.config.logFile, 'utf-8');
       const lines = content.split('\n').filter((line) => line.trim());
       return lines.slice(-maxLines);
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to read daemon logs: ', error);
       return [];
     }
@@ -275,7 +275,7 @@ export class DaemonProcessManager {
       // Sending signal 0 checks if process exists without actually sending a signal
       process.kill(pid, 0);
       return true;
-    } catch (error) {
+    } catch (_error) {
       // Process doesn't exist or permission denied
       this.logger.debug('Process check failed: ', error);
       return false;
@@ -298,7 +298,7 @@ export class DaemonProcessManager {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
-    throw new Error(`Process ${pid} did not stop within ${timeout}ms`);
+    throw new Error('Process ' + (pid) + ` did not stop within ${timeout}ms`);
   }
 
   /**
@@ -310,7 +310,7 @@ export class DaemonProcessManager {
         await unlink(this.config.pidFile);
         this.logger.debug('PID file cleaned up');
       }
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Failed to cleanup PID file: ', error);
     }
   }
@@ -338,14 +338,14 @@ export class DaemonProcessManager {
   private async handleProcessError(error: Error): Promise<void> {
     const errorLog = {
       timestamp: new Date().toISOString(),
-      error: error.message,
+      error: (error as Error).message,
       stack: error.stack,
     };
 
     try {
       await writeFile(
         this.config.errorFile,
-        `${JSON.stringify(errorLog, null, 2)}\n`,
+        JSON.stringify(errorLog, null, 2) + '\n',
         { flag: 'a' }
       );
     } catch (writeError) {

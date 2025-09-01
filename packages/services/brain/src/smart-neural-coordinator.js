@@ -399,7 +399,7 @@ return withAsyncTrace('smart-neural-generate-embedding', async (span) => {
                 'neural.embedding.error_message': ')', error, instanceof: Error ? error.message : String(error),
                 'neural.embedding.processing_time_ms': processingTime,
             });
-            this.logger.error('❌ Failed to generate neural embedding:', error);
+            this.logger.error(' Failed to generate neural embedding:', error);
             ');
             // Return a basic fallback result
             return {
@@ -909,7 +909,7 @@ Promise < void  > {
                     'neural.shutdown.success': true,
                     'neural.shutdown.cache_cleared': true,
                 }),
-                this: .logger.info('✅ SmartNeuralCoordinator shutdown completed'), '): recordEvent('smart-neural-coordinator-shutdown-complete', ')            status: ', success, ',);)
+                this: .logger.info(' SmartNeuralCoordinator shutdown completed'), '): recordEvent('smart-neural-coordinator-shutdown-complete', ')            status: ', success, ',);)
             });
             try { }
             catch (error) {
@@ -920,7 +920,7 @@ Promise < void  > {
                     'neural.shutdown.success': false,
                     'neural.shutdown.error': ')', error, instanceof: Error ? error.message : String(error),
                 });
-                this.logger.error('❌ Failed to shutdown SmartNeuralCoordinator: ', '            error);
+                this.logger.error(' Failed to shutdown SmartNeuralCoordinator: ', '            error);
                 throw error;
             }
         }
@@ -951,7 +951,7 @@ Promise < void  > {
 async;
 initializeEagerLoading();
 Promise < void  > {
-    this: .logger.info('⚡ Eager loading mode - attempting to load all models...'),
+    this: .logger.info(' Eager loading mode - attempting to load all models...'),
     // Load primary model first
     await, this: .loadTransformersModel(),
     : .config.enableFallbacks
@@ -1095,7 +1095,7 @@ void {
 }
 60000;
 ; // Every minute
-this.logger.info('📊 Performance monitoring started');
+this.logger.info(' Performance monitoring started');
 ')};
 async;
 generateNewEmbedding(request, NeuralEmbeddingRequest, span, Span);
@@ -1418,13 +1418,13 @@ void {
 {
     const cacheEfficiency = this.calculateCacheEfficiency();
     if (cacheEfficiency < 0.5) {
-        this.logger.info('📊 Cache efficiency low, performing optimization...');
+        this.logger.info(' Cache efficiency low, performing optimization...');
         ')        this.performCacheEviction();;
     }
 }
 // Log performance metrics
 const __stats = this.getCoordinatorStats();
-this.logger.debug('📊 Performance metrics: ', {
+this.logger.debug(' Performance metrics: ', {
     '    ': 
 });
 averageLatency: stats.performance.averageLatency,

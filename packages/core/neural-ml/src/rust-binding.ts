@@ -300,7 +300,7 @@ export class RustNeuralML {
         if (code === 0) {
           resolve(stdout.trim());
         } else {
-          reject(new Error(`Command failed with code ${code}:${stderr}`));
+          reject(new Error('Command failed with code ' + (code) + ':' + stderr));
         }
       });
 
