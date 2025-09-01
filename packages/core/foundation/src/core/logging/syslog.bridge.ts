@@ -72,8 +72,8 @@ export class LogTapeSyslogBridge {
  // Also log via LogTape for database storage
  this.logViaLogTape(entry);
  } catch (error) {
- // Use direct error logging to avoid circular dependency with syslog bridge
- process.stderr.write(`[SyslogBridge] Syslog bridge error:${error}\n`
+   // Use direct error logging to avoid circular dependency with syslog bridge
+   process.stderr.write(`[SyslogBridge] Syslog bridge error: ${error}\n`);
  }
  }
 
@@ -242,8 +242,8 @@ export class LogTapeSyslogBridge {
  * Enable/disable syslog integration
  */
  public setEnabled(enabled: boolean): void {
- this.isEnabled = enabled;
- this.logger.info(`Syslog bridge ${enabled ? 'enabled' : 'disabled'}`
+   this.isEnabled = enabled;
+   this.logger.info(`Syslog bridge ${enabled ? 'enabled' : 'disabled'}`);
  }
 
  /**

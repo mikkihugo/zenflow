@@ -1167,13 +1167,13 @@ export class NixIntegration {
  await this.enableFlakes();
  steps.push('✓ Enabled Nix flakes');
  } catch (error) {
- errors.push(`Failed to enable flakes:${error}`
+ errors.push(`Failed to enable flakes: ${error}`);
  }
  }
 
  return { success: errors.length === 0, steps, errors };
  } catch (error) {
- errors.push(`Auto-setup failed:${error}`
+ errors.push(`Auto-setup failed: ${error}`);
  return { success: false, steps, errors };
  }
  }
@@ -1246,7 +1246,7 @@ export class NixIntegration {
  await writeFile(configPath, configContent);
  }
  } catch (error) {
- throw new Error(`Failed to enable flakes:${error}`
+   throw new Error(`Failed to enable flakes: ${error}`);
  }
  }
 
@@ -1293,17 +1293,17 @@ export class NixIntegration {
  */
  private async saveCache(data: NixEnvironment): Promise<void> {
  try {
- const cacheDir = join(this.cachePath, '..');
- await execAsync(`mkdir -p ${cacheDir}`
+   const cacheDir = join(this.cachePath, '..');
+   await execAsync(`mkdir -p ${cacheDir}`);
 
- const cache = {
- timestamp: Date.now(),
- data,
- };
+   const cache = {
+     timestamp: Date.now(),
+     data,
+   };
 
- await writeFile(this.cachePath, JSON.stringify(cache, null, 2));
+   await writeFile(this.cachePath, JSON.stringify(cache, null, 2));
  } catch (error) {
- this.logger.error('Failed to save Nix cache:', error);
+   this.logger.error('Failed to save Nix cache:', error);
  }
  }
 

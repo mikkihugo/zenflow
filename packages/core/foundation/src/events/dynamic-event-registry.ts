@@ -152,7 +152,7 @@ export class DynamicEventRegistry extends EventBus {
         version: (registration.metadata?.['version'] as string) || '1.0.0',
         description:
           (registration.metadata?.['description'] as string) ||
-          registration.moduleName + ' module',
+          `${registration.moduleName  } module`,
       },
     };
 
@@ -225,13 +225,12 @@ export class DynamicEventRegistry extends EventBus {
     const eventName = args[0] as string;
     const payload = args[1];
 
-    if (eventName.startsWith('registry:
-          ) {
+    if (eventName.startsWith('registry:')) {
       return; // Don't track registry events to avoid recursion
     }
 
     const flow: EventFlow = {
-      id: 'flow-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
+      id: `flow-${  Date.now()  }-${  Math.random().toString(36).substr(2, 9)}`,
       eventName: eventName as EventName,
       source: this.inferEventSource(eventName),
       target: this.inferEventTarget(eventName),
@@ -459,8 +458,7 @@ export class DynamicEventRegistry extends EventBus {
   }
 
   private inferEventSource(eventName: string): string {
-    const prefix = eventName.split(':
-          [0];
+    const prefix = eventName.split(':')[0];
     return prefix || 'unknown';
   }
 

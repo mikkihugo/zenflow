@@ -26,7 +26,7 @@ export function pTimeout<T>(
  'name' in error &&
  (error.name === 'TaskCancelledError' || error.name === 'TimeoutError')
  ) {
- throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`
+   throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`);
  }
  throw error;
  }

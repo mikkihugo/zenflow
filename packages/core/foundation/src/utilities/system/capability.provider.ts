@@ -211,11 +211,11 @@ export async function displaySystemStatus(): Promise<void> {
  );
 
  if (facade.missingPackages.length > 0) {
- logger.info(` Missing:${facade.missingPackages.join(', ')}`
+   logger.info(`Missing: ${facade.missingPackages.join(', ')}`);
  }
 
  if (facade.registeredServices.length > 0) {
- logger.info(` Services:${facade.registeredServices.join(', ')}`
+   logger.info(`Services: ${facade.registeredServices.join(', ')}`);
  }
  }
 
@@ -223,20 +223,18 @@ export async function displaySystemStatus(): Promise<void> {
  if (dashboard.installationSuggestions.length > 0) {
  logger.info('\n Installation Suggestions:');
  for (const suggestion of dashboard.installationSuggestions.slice(0, 5)) {
- const priorityEmoji =
- suggestion.priority === 'high'
- ? ''
- : suggestion.priority === 'medium'
- ? ''
- : '';
- logger.info(` ${priorityEmoji} pnpm add ${suggestion.package}`
- logger.info(` └─ ${suggestion.reason}`
- }
+   const priorityEmoji =
+     suggestion.priority === 'high'
+       ? '🔴'
+       : suggestion.priority === 'medium'
+         ? '🟡'
+         : '🟢';
+   logger.info(`📦 pnpm add ${suggestion.package}`);
+   logger.info(` └─ ${suggestion.reason}`);
  }
 
- logger.info(`\n Last Updated:${dashboard.timestamp}`
+ logger.info(`\nLast Updated: ${dashboard.timestamp}`);
  logger.info('='.repeat(50));
-}
 
 /**
  * Create health check data providers (data only, no Express routing)
@@ -292,39 +290,39 @@ export function createHealthDataProviders() {
  * Monitor system status changes and log important events
  */
 export function startSystemMonitoring(): void {
- facadeStatusManager.on('package-loaded', (...args: unknown[]) => {
- const data = args[0] as {
- packageName: string;
- version?: string;
- timestamp: Date;
- };
- logger.info(` Package ${data.packageName} loaded successfully`, {
- version: data.version || 'unknown',
- timestamp: data.timestamp.toISOString(),
- });
- });
+  facadeStatusManager.on('package-loaded', (...args: unknown[]) => {
+    const data = args[0] as {
+      packageName: string;
+      version?: string;
+      timestamp: Date;
+    };
+    logger.info(`Package ${data.packageName} loaded successfully`, {
+      version: data.version || 'unknown',
+      timestamp: data.timestamp.toISOString(),
+    });
+  });
 
- facadeStatusManager.on('facade-registered', (...args: unknown[]) => {
- const data = args[0] as { facadeName: string; timestamp: Date };
- logger.info(`️ Facade ${data.facadeName} registered`, {
- timestamp: data.timestamp.toISOString(),
- });
- });
+  facadeStatusManager.on('facade-registered', (...args: unknown[]) => {
+    const data = args[0] as { facadeName: string; timestamp: Date };
+    logger.info(`Facade ${data.facadeName} registered`, {
+      timestamp: data.timestamp.toISOString(),
+    });
+  });
 
- facadeStatusManager.on('system-status-changed', (...args: unknown[]) => {
- const data = args[0] as {
- status: string;
- healthScore: number;
- timestamp: Date;
- };
- logger.debug(' System status updated', {
- overall: data.status,
- healthScore: data.healthScore,
- timestamp: data.timestamp.toISOString(),
- });
- });
+  facadeStatusManager.on('system-status-changed', (...args: unknown[]) => {
+    const data = args[0] as {
+      status: string;
+      healthScore: number;
+      timestamp: Date;
+    };
+    logger.debug('System status updated', {
+      overall: data.status,
+      healthScore: data.healthScore,
+      timestamp: data.timestamp.toISOString(),
+    });
+  });
 
- logger.info(' System monitoring started');
+  logger.info('System monitoring started');
 }
 
 /**

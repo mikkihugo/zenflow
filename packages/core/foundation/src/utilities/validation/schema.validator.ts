@@ -165,9 +165,9 @@ export class JsonSchemaManager {
  const schemaName = file.replace('.json', '').replace('-', '_');
 
  this.registerSchema(schemaName, schemaContent);
- this.logger.info(`Loaded JSON Schema:${schemaName}`
+   this.logger.info(`Loaded JSON Schema: ${schemaName}`);
  } catch (error) {
- this.logger.error(`Failed to load schema ${file}:`, error);
+   this.logger.error(`Failed to load schema ${file}:`, error);
  }
  }
  }
@@ -301,7 +301,7 @@ export class JsonSchemaManager {
  const schemaEntry = this.schemas[documentType];
 
  if (!schemaEntry) {
- throw new SchemaValidationError(`Unknown document type:${documentType}`
+   throw new SchemaValidationError(`Unknown document type: ${documentType}`);
  }
 
  if (!schemaEntry.modes.includes(mode)) {
@@ -396,15 +396,15 @@ export class JsonSchemaManager {
  private async loadSchemaAsync(uri: string): Promise<JsonObject> {
  // Implementation for loading external schema references
  // Used for schema composition and ${ref} resolution
- this.logger.info(`Loading external schema:${uri}`
+ this.logger.info(`Loading external schema: ${uri}`);
 
  try {
- // Support HTTP/HTTPS URLs and file paths
- if (uri.startsWith('http://') || uri.startsWith('https://')) {
- const response = await fetch(uri);
- if (!response.ok) {
- throw new Error(`HTTP ${response.status}:${response.statusText}`
- }
+   // Support HTTP/HTTPS URLs and file paths
+   if (uri.startsWith('http://') || uri.startsWith('https://')) {
+     const response = await fetch(uri);
+     if (!response.ok) {
+       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+     }
  return (await response.json()) as JsonObject;
  } else if (uri.startsWith('file://') || !uri.includes('://')) {
  // File path - use fs to load
@@ -417,7 +417,7 @@ export class JsonSchemaManager {
  const content = await fs.readFile(absolutePath, 'utf-8');
  return JSON.parse(content);
  } else {
- throw new Error(`Unsupported URI scheme:${uri}`
+   throw new Error(`Unsupported URI scheme: ${uri}`);
  }
  } catch (error) {
  this.logger.error(`Failed to load schema from ${uri}:`, error);

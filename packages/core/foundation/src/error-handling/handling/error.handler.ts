@@ -463,27 +463,27 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  }
 
  private setupEventListeners(): void {
- // Cockatiel uses event listeners on the policy itself
- this.policy.onBreak(() => {
- logger.warn(`Circuit breaker ${this.name} opened`
- });
+   // Cockatiel uses event listeners on the policy itself
+   this.policy.onBreak(() => {
+     logger.warn(`Circuit breaker ${this.name} opened`);
+   });
 
- this.policy.onReset(() => {
- logger.info(`Circuit breaker ${this.name} closed`
- });
+   this.policy.onReset(() => {
+     logger.info(`Circuit breaker ${this.name} closed`);
+   });
 
- this.policy.onHalfOpen(() => {
- logger.info(`Circuit breaker ${this.name} half-opened`
- });
+   this.policy.onHalfOpen(() => {
+     logger.info(`Circuit breaker ${this.name} half-opened`);
+   });
 
- this.policy.onFailure((data: { reason?: unknown }) => {
- const reason = data.reason || data;
- logger.debug(`Circuit breaker ${this.name} recorded failure:`, reason);
- });
+   this.policy.onFailure((data: { reason?: unknown }) => {
+     const reason = data.reason || data;
+     logger.debug(`Circuit breaker ${this.name} recorded failure:`, reason);
+   });
 
- this.policy.onSuccess(() => {
- logger.debug(`Circuit breaker ${this.name} recorded success`
- });
+   this.policy.onSuccess(() => {
+     logger.debug(`Circuit breaker ${this.name} recorded success`);
+   });
  }
 
  /**
@@ -568,7 +568,7 @@ export async function withTimeout<T>(
 
  // Add event listeners for monitoring
  const timeoutListener = timeoutPolicy.onTimeout(() => {
- logger.warn(`Operation timed out after ${timeoutMs}ms`
+   logger.warn(`Operation timed out after ${timeoutMs}ms`);
  });
 
  const failureListener = timeoutPolicy.onFailure(

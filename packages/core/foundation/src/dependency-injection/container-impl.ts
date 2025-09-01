@@ -153,16 +153,16 @@ export class ContainerImpl implements Container {
  }
 
  async resolveAsync<T>(token: string): Promise<T> {
- const metadata = this.serviceMetadata.get(token);
- if (!metadata) {
- throw new Error(`Service '${token}' is not registered`
- }
+   const metadata = this.serviceMetadata.get(token);
+   if (!metadata) {
+     throw new Error(`Service '${token}' is not registered`);
+   }
 
- if (metadata.singleton && this.singletonCache.has(token)) {
- return this.singletonCache.get(token) as T;
- }
+   if (metadata.singleton && this.singletonCache.has(token)) {
+     return this.singletonCache.get(token) as T;
+   }
 
- if (metadata.type === ASYNC_FACTORY_TYPE) {
+   if (metadata.type === ASYNC_FACTORY_TYPE) {
  const factory = this.services.get(token) as () => Promise<T>;
  const instance = await factory();
 
@@ -179,19 +179,19 @@ export class ContainerImpl implements Container {
  }
 
  resolve<T>(token: string): T {
- const metadata = this.serviceMetadata.get(token);
- if (!metadata) {
- throw new Error(`Service '${token}' is not registered`
- }
+   const metadata = this.serviceMetadata.get(token);
+   if (!metadata) {
+     throw new Error(`Service '${token}' is not registered`);
+   }
 
- if (metadata.singleton && this.singletonCache.has(token)) {
- return this.singletonCache.get(token) as T;
- }
+   if (metadata.singleton && this.singletonCache.has(token)) {
+     return this.singletonCache.get(token) as T;
+   }
 
- const serviceDefinition = this.services.get(token);
- if (!serviceDefinition) {
- throw new Error(`Service definition for '${token}' not found`
- }
+   const serviceDefinition = this.services.get(token);
+   if (!serviceDefinition) {
+     throw new Error(`Service definition for '${token}' not found`);
+   }
 
  const instance = this.createServiceInstance<T>(
  serviceDefinition,
@@ -416,13 +416,13 @@ export class ContainerImpl implements Container {
  getServicesByTag(tag: string): ServiceInfo[] {
  const matchingServices: ServiceInfo[] = [];
  for (const [serviceToken, metadata] of this.serviceMetadata.entries()) {
- if (metadata.tags?.includes(tag)) {
- const logger = require('../core/logging').getLogger(
- 'foundation:service-discovery'
- );
- logger.debug(`Service ${serviceToken} has tag:${tag}`
- matchingServices.push(metadata);
- }
+   if (metadata.tags?.includes(tag)) {
+     const logger = require('../core/logging').getLogger(
+       'foundation:service-discovery'
+     );
+     logger.debug(`Service ${serviceToken} has tag: ${tag}`);
+     matchingServices.push(metadata);
+   }
  }
  return matchingServices;
  }

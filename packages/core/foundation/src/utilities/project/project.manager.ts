@@ -313,7 +313,7 @@ export class ProjectManager {
     for (const dir of directories) {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
-        logger.info(`Created directory: ${dir}`
+        logger.info(`Created directory: ${dir}`);
       }
     }
   }
@@ -333,7 +333,7 @@ export class ProjectManager {
         await fsAsync.access(dir);
       } catch {
         await fsAsync.mkdir(dir, { recursive: true });
-        logger.info(`Created directory: ${dir}`
+        logger.info(`Created directory: ${dir}`);
       }
     }
   }
@@ -925,7 +925,7 @@ target/`
       }
     }
 
-    logger.debug(`Created project directories for ${projectId}`
+    logger.debug(`Created project directories for ${projectId}`);
   }
 
   /**
@@ -1744,16 +1744,16 @@ target/`
       try {
         await fsAsync.access(projectDir);
         await fsAsync.rm(projectDir, { recursive: true, force: true });
-        logger.info(`Deleted project database directory: ${projectDir}`
+        logger.info(`Deleted project database directory: ${projectDir}`);
       } catch {
-        // Directory doesn't exist or can' t be deleted, that's okay
+        // Directory doesn't exist or can't be deleted, that's okay
         logger.debug(
           `Project directory not found or couldn't be deleted: ${projectDir}`
         );
       }
     }
 
-    logger.info(`Removed project: ${project.name} (${project.id})`
+    logger.info(`Removed project: ${project.name} (${project.id})`);
     return true;
   }
 
@@ -1774,14 +1774,14 @@ target/`
     // Apply updates
     const existingProject = registry.projects[project.id];
     if (!existingProject) {
-      throw new Error(`Project ${project.id} not found in registry`
+      throw new Error(`Project ${project.id} not found in registry`);
     }
     Object.assign(existingProject, updates);
     existingProject.lastAccessedAt = new Date().toISOString();
 
     this.saveRegistry();
 
-    logger.info(`Updated project: ${project.name} (${project.id})`
+    logger.info(`Updated project: ${project.name} (${project.id})`);
     return await Promise.resolve(true);
   }
 }

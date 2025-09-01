@@ -619,8 +619,8 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  }
 
  if (fallback) {
- logger.debug(`Using fallback for service ${serviceName}`
- return fallback();
+   logger.debug(`Using fallback for service ${serviceName}`);
+   return fallback();
  }
 
  return null;
@@ -798,7 +798,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  }
 
  if (cleanedCount > 0) {
- logger.debug(`Cleaned up ${cleanedCount} expired cache entries`
+   logger.debug(`Cleaned up ${cleanedCount} expired cache entries`);
  }
  }
 

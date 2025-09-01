@@ -571,7 +571,7 @@ export function getEventsByCategory(
     | ' registry'
     | ' system'
 ): EventName[] {
-  return getAllEventNames().filter((name) => name.startsWith(category + ':'));
+  return getAllEventNames().filter((name) => name.startsWith(`${category  }:`));
 }
 
 /**
@@ -583,16 +583,16 @@ export class CatalogEventLogger {
    */
   static logValidatedEvent(eventName: string, payload?: unknown): void {
     if (!isValidEventName(eventName)) {
-      logger.warn('  Unknown event:' + eventName);
-      logger.warn(' Valid events:' + getAllEventNames().join(',    '));
+      logger.warn(`  Unknown event:${  eventName}`);
+      logger.warn(` Valid events:${  getAllEventNames().join(',    ')}`);
       return;
     }
 
     const eventType = getEventType(eventName);
-    logger.info(' Event:' + (eventName) + ` (${eventType})`
+    logger.info(`Event: ${eventName} (${eventType})`);
 
     if (payload) {
-      logger.info(' Payload:', payload);
+      logger.info('Payload:', payload);
     }
   }
 
@@ -601,11 +601,11 @@ export class CatalogEventLogger {
    */
   static logValidatedFlow(from: string, to: string, eventName: string): void {
     if (!isValidEventName(eventName)) {
-      logger.warn('  Unknown event in flow:' + eventName);
+      logger.warn(`  Unknown event in flow:${  eventName}`);
       return;
     }
 
-    logger.info(' Flow:' + (from) + '  ' + (eventName) + '  ' + to);
+    logger.info(` Flow:${  from  }  ${  eventName  }  ${  to}`);
   }
 }
 

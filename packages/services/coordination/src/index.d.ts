@@ -14,11 +14,11 @@ export * as eventDrivenDSPy from './dspy/event-driven-dspy';
 export * from './teamwork';
 export * as teamwork from './teamwork';
 export interface CoordinationSystem {
-teamwork: typeof import(): void {
-name: string;
-version: string;
-description: string;
-domains: string[];
-benefits: string[];
-'};
-//# sourceMappingURL=index.d.ts.map
+  teamwork: {
+    name: string;
+    version: string;
+    description: string;
+    domains: string[];
+    benefits: string[];
+  };
+}

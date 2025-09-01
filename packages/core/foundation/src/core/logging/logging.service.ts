@@ -277,7 +277,7 @@ class LoggingConfigurationManager {
   private async checkCollectorAvailability(endpoint: string): Promise<boolean> {
     try {
       const response = await globalThis
-        .fetch(endpoint + '/health', {
+        .fetch(`${endpoint  }/health`, {
           method: 'GET',
           headers: { accept: 'application/json' },
         })
@@ -318,8 +318,8 @@ class LoggingConfigurationManager {
       status: 'active',
       timestamp: new Date().toISOString(),
     });
-    console.info(`   Internal Collector: ${endpoint}/ingest`
-    console.info('   Service: claude-zen-foundation');
+    console.info(`Internal Collector: ${endpoint}/ingest`);
+    console.info('Service: claude-zen-foundation');
   }
 
   /**
@@ -353,7 +353,7 @@ class LoggingConfigurationManager {
       }
 
       const timestamp = this.config.timestamp
-        ? '[' + new Date(record['timestamp'] as string | number | Date).toISOString() + '] '
+        ? `[${  new Date(record['timestamp'] as string | number | Date).toISOString()  }] `
         : '';
       const level = String(record['level']).toUpperCase().padStart(5);
       const category = Array.isArray(record['category'])
@@ -365,10 +365,10 @@ class LoggingConfigurationManager {
       const properties = (record['properties'] || {}) as UnknownRecord;
       const props =
         Object.keys(properties).length > 0
-          ? ' ' + JSON.stringify(properties)
+          ? ` ${  JSON.stringify(properties)}`
           : '';
 
-      console.info((timestamp) + (level) + ' [' + (category) + '] ' + (message) + props);
+      console.info(`${(timestamp) + (level)  } [${  category  }] ${  message  }${props}`);
     };
   }
 
@@ -455,7 +455,7 @@ class LoggingConfigurationManager {
 
         // Send to internal collector via HTTP POST
         await globalThis
-          .fetch(collectorEndpoint + '/ingest', {
+          .fetch(`${collectorEndpoint  }/ingest`, {
             method: 'POST',
             headers: {
               'content-type': 'application/json',
@@ -580,7 +580,7 @@ class LoggingConfigurationManager {
     // Add success and progress methods
     logger.success = (message: string, meta?: unknown) => {
       if (this.shouldLog('info', componentLevel)) {
-        const formattedMessage = ' ' + this.formatMessage(message, meta);
+        const formattedMessage = ` ${  this.formatMessage(message, meta)}`;
         logTapeLogger.info(formattedMessage);
         addLogEntry({
           timestamp: new Date().toISOString(),
@@ -594,7 +594,7 @@ class LoggingConfigurationManager {
 
     logger.progress = (message: string, meta?: unknown) => {
       if (this.shouldLog('info', componentLevel)) {
-        const formattedMessage = ' ' + this.formatMessage(message, meta);
+        const formattedMessage = ` ${  this.formatMessage(message, meta)}`;
         logTapeLogger.info(formattedMessage);
         addLogEntry({
           timestamp: new Date().toISOString(),
@@ -630,10 +630,10 @@ class LoggingConfigurationManager {
     }
 
     if (typeof meta === 'object') {
-      return (message) + ' ' + JSON.stringify(meta);
+      return `${message  } ${  JSON.stringify(meta)}`;
     }
 
-    return (message) + ' ' + meta;
+    return `${message  } ${  meta}`;
   }
 
   updateConfig(newConfig: Partial<LoggingConfig>): void {
@@ -674,7 +674,7 @@ class LoggingConfigurationManager {
 
     if (invalidLevels.length > 0) {
       issues.push(
-        'Invalid log levels for components: ' + invalidLevels.join(', ')
+        `Invalid log levels for components: ${  invalidLevels.join(', ')}`
       );
     }
 
