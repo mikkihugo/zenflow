@@ -46,7 +46,7 @@ declare module "$app/types" {
 			"/system": Record<string, never>
 		};
 		Pathname(): "/" | "/agents" | "/agents/" | "/agui" | "/agui/" | "/database" | "/database/" | "/events" | "/events/" | "/facades" | "/facades/" | "/memory" | "/memory/" | "/safe-production" | "/safe-production/" | "/safe" | "/safe/" | "/stories" | "/stories/" | "/swarm" | "/swarm/" | "/system" | "/system/";
-		ResolvedPathname(): "" | '/' + string + ReturnType<AppTypes['Pathname']>;
+		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf" | string & {};
 	}
 }

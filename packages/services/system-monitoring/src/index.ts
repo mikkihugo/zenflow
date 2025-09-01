@@ -42,6 +42,13 @@ export {
   EventDrivenSystemMonitor as default,
 } from './monitoring-event-driven.js';
 
+// EVENT BRIDGE EXPORTS (WITH FOUNDATION IMPORTS)
+export {
+  EventDrivenSystemMonitorBridge,
+  createSystemMonitoringBridge,
+  createCustomSystemMonitoringBridge,
+} from './monitoring-event-bridge.js';
+
 // LEGACY EXPORTS (WITH IMPORTS - DEPRECATED)
 export {
   createHealthChecker,
