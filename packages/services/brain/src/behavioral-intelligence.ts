@@ -254,7 +254,7 @@ export class BehavioralIntelligence {
       );
 
       // 🧠 Initialize Enhanced ML Models
-      logger.info('🔬 Initializing advanced ML algorithms...');')
+      logger.info('🔬 Initializing advanced ML algorithms...');
       // DBSCAN for behavioral clustering
       this.behaviorClusterer = new clustering.DBSCAN();
 
@@ -262,11 +262,11 @@ export class BehavioralIntelligence {
       this.kmeansClusterer = kmeans;
 
       logger.info(
-        '✅ Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)')      );
+        '✅ Enhanced ML algorithms initialized (DBSCAN + KMeans + Regression + Statistics + Time Series)'      );
 
       this.initialized = true;
       logger.info(
-        'Behavioral Intelligence initialized successfully with advanced ML capabilities')      );
+        'Behavioral Intelligence initialized successfully with advanced ML capabilities'      );
 } catch (error) {
       logger.error('Failed to initialize Behavioral Intelligence:', error);')      throw error;
 }
@@ -607,7 +607,7 @@ export class BehavioralIntelligence {
    */
   private async trainAdvancedMLModels():Promise<void> {
     try {
-      logger.info('🔬 Training advanced ML models...');')
+      logger.info('🔬 Training advanced ML models...');
       // Async model preparation and optimization
       const modelStrategy = await this.analyzeOptimalModelStrategy();
       const trainingConfiguration = await this.optimizeTrainingConfiguration();
@@ -846,8 +846,7 @@ export class BehavioralIntelligence {
 
     try {
       logger.debug(
-        `📝 Recording behavior:${data.agentId} - ${data.behaviorType}``
-      );
+        `📝 Recording behavior:${data.agentId} - ${data.behaviorType}```      );
 
       // Convert behavior data to execution data format for learning
       const executionData:AgentExecutionData = {
@@ -1707,4 +1706,5 @@ export async function demoBehavioralIntelligence(
   } catch (error) {
     logger.error('❌ Demo failed:', error);
   }
+}
 }
