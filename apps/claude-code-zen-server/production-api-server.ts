@@ -30,8 +30,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logging middleware
-app.use((req, _res, next) => {
-  logger.debug(`${req.method  } ${  req.path}`, { query: req.query, body: req.body });
+app.use((req, res, next) => {
+  logger.debug(`${req.method} ${req.path}`, { query: req.query, body: req.body });
   next();
 });
 
@@ -39,19 +39,15 @@ app.use((req, _res, next) => {
 let dataService: WebDataService;
 
 async function initializeServices(): Promise<void> {
-  return await withRetry(async () => {
+  return withRetry(() => {
     logger.info('Initializing production foundation services...');
-    
-    // Initialize data service with real foundation systems
     dataService = new WebDataService();
-    
-    // In production, WebSocket coordination would be handled by the actual service
     logger.info('✅ Production foundation services initialized');
   }, { retries: 3, minTimeout: 1000 });
 }
 
 // Production health endpoint with real system status
-app.get('/api/v1/coordination/health', async (_req, _res) => { const res = _res;
+app.get('/api/v1/coordination/health', async (req, res) => {
   try {
     const status = await dataService.getSystemStatus();
     res.json({
@@ -70,8 +66,8 @@ app.get('/api/v1/coordination/health', async (_req, _res) => { const res = _res;
         systemLoad: status.performance.cpuUsage / 100,
       },
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({
       status: 'error',
       error: 'Health check failed',
@@ -80,32 +76,46 @@ app.get('/api/v1/coordination/health', async (_req, _res) => { const res = _res;
   }
 });
 
+// Define Project type for endpoint
+type Project = {
+  id?: string;
+  name?: string;
+  description?: string;
+  status?: string;
+  createdAt?: string;
+  lastUpdated?: string;
+};
+
+// Define interfaces for type safety
+interface ProjectManager {
+  getAllProjects(): Promise<Project[]>;
+}
+
+interface FoundationGlobal {
+  getProjectManager?: () => ProjectManager;
+  getMemoryManager?: () => { get: (key: string) => Promise<Project[]> };
+  // ...other foundation methods...
+}
+
 // Production projects endpoint - get from foundation project management
-app.get('/api/v1/coordination/projects', async (_req, _res) => { const res = _res;
+app.get('/api/v1/coordination/projects', async (req, res) => {
   try {
     const projects = await safeAsync(async () => {
-      // Use foundation project management service
-      const foundationGlobal = (global as { foundation?: { getProjectManager: () => any } }).foundation;
+      const foundationGlobal = (global as { foundation?: FoundationGlobal }).foundation;
       const getProjectManager = foundationGlobal?.getProjectManager;
-
       if (getProjectManager) {
         const projectManager = getProjectManager();
         return await projectManager.getAllProjects();
       }
-
-      // Fallback to memory storage
       const getMemoryManager = foundationGlobal?.getMemoryManager;
-
       if (getMemoryManager) {
         const memoryManager = getMemoryManager();
         return await memoryManager.get('projects') || [];
       }
-
       return [];
     }, []);
-
     res.json({
-      projects: projects.map((project: any) => ({
+      projects: projects.map((project: Project) => ({
         id: project.id || `proj-${  Date.now()}`,
         name: project.name || 'Unnamed Project',
         description: project.description || 'No description',
@@ -115,14 +125,14 @@ app.get('/api/v1/coordination/projects', async (_req, _res) => { const res = _re
       })),
       total: projects.length,
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get projects' });
   }
 });
 
 // Production swarms endpoint - get from brain coordinator
-app.get('/api/v1/coordination/swarms', async (_req, _res) => { const res = _res;
+app.get('/api/v1/coordination/swarms', async (req, res) => {
   try {
     const swarms = await dataService.getSwarmStatus();
     res.json({
@@ -137,30 +147,29 @@ app.get('/api/v1/coordination/swarms', async (_req, _res) => { const res = _res;
       })),
       total: swarms.length,
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get swarms' });
   }
 });
 
 // Production agents endpoint - get from brain coordinator agent registry
-app.get('/api/v1/coordination/agents', async (_req, _res) => { const res = _res;
+app.get('/api/v1/coordination/agents', async (req, res) => {
   try {
     const agents = await safeAsync(async () => {
-      const { BrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => any } })
+      const { getBrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => unknown } })
         .foundation || { getBrainCoordinator: () => null };
-
-      if (BrainCoordinator) {
+      if (getBrainCoordinator) {
         const coordinator = getBrainCoordinator();
-        const agentRegistry = await coordinator.getAgentRegistry();
-        return agentRegistry.getAllAgents();
+        // @ts-expect-error: coordinator type is unknown
+        const agentRegistry = await (coordinator as any).getAgentRegistry();
+        // @ts-expect-error: agentRegistry type is unknown
+        return (agentRegistry as any).getAllAgents();
       }
-
       return [];
     }, []);
-
     res.json({
-      agents: agents.map((agent: any) => ({
+      agents: (agents as unknown[]).map((agent: any) => ({
         id: agent.id || `agent-${  Date.now()}`,
         name: agent.name || 'Unnamed Agent',
         type: agent.type || 'general',
@@ -173,31 +182,30 @@ app.get('/api/v1/coordination/agents', async (_req, _res) => { const res = _res;
         currentTask: agent.currentTask || null,
         lastActive: agent.lastActive || new Date().toISOString(),
       })),
-      total: agents.length,
+      total: (agents as unknown[]).length,
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get agents' });
   }
 });
 
 // Production agent creation endpoint
-app.post('/api/v1/coordination/agents', async (req, _res) => { const res = _res;
+app.post('/api/v1/coordination/agents', async (req, res) => {
   try {
     const agentData = req.body;
     const newAgent = await safeAsync(async () => {
-      const foundationGlobal = (global as { foundation?: { getBrainCoordinator: () => any } }).foundation;
+      const foundationGlobal = (global as { foundation?: { getBrainCoordinator: () => unknown } }).foundation;
       const getBrainCoordinator = foundationGlobal?.getBrainCoordinator;
-
       if (getBrainCoordinator) {
         const coordinator = getBrainCoordinator();
-        return await coordinator.createAgent({
+        // @ts-expect-error: coordinator type is unknown
+        return await (coordinator as any).createAgent({
           name: agentData.name || 'New Agent',
           type: agentData.type || 'general',
           capabilities: agentData.capabilities || ['coordination'],
         });
       }
-
       // Fallback to memory storage
       return {
         id: `agent-${  Date.now()}`,
@@ -210,35 +218,31 @@ app.post('/api/v1/coordination/agents', async (req, _res) => { const res = _res;
         createdAt: new Date().toISOString(),
       };
     }, null);
-
     if (newAgent) {
       res.json(newAgent);
     } else {
       res.status(500).json({ error: 'Failed to create agent' });
     }
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to create agent' });
   }
 });
 
 // Production tasks endpoint - get from task master
-app.get('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
+app.get('/api/v1/coordination/tasks', async (req, res) => {
   try {
     const tasks = await safeAsync(async () => {
-      const { TaskMaster } = (global as { foundation?: { getTaskMaster: () => any } })
+      const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
-
-      if (TaskMaster) {
-        const taskMaster = new TaskMaster();
+      if (getTaskMaster) {
+        const taskMaster = new (getTaskMaster() as any)();
         return await taskMaster.getAllTasks();
       }
-
       return [];
     }, []);
-
     res.json({
-      tasks: tasks.map((task: any) => ({
+      tasks: (tasks as unknown[]).map((task: any) => ({
         id: task.id || `task-${  Date.now()}`,
         title: task.title || task.name || 'Unnamed Task',
         description: task.description || 'No description',
@@ -248,24 +252,23 @@ app.get('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
         createdAt: task.createdAt || new Date().toISOString(),
         estimatedCompletion: task.estimatedCompletion || task.dueDate,
       })),
-      total: tasks.length,
+      total: (tasks as unknown[]).length,
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get tasks' });
   }
 });
 
 // Production task creation endpoint
-app.post('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
+app.post('/api/v1/coordination/tasks', async (req, res) => {
   try {
     const taskData = req.body;
     const newTask = await safeAsync(async () => {
-      const { TaskMaster } = (global as { foundation?: { getTaskMaster: () => any } })
+      const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
-
-      if (TaskMaster) {
-        const taskMaster = new TaskMaster();
+      if (getTaskMaster) {
+        const taskMaster = new (getTaskMaster() as any)();
         return await taskMaster.createTask({
           title: taskData.title || 'New Task',
           description: taskData.description || 'Task description',
@@ -273,7 +276,6 @@ app.post('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
           assignedAgent: taskData.assignedAgent,
         });
       }
-
       // Fallback implementation
       return {
         id: `task-${  Date.now()}`,
@@ -286,24 +288,22 @@ app.post('/api/v1/coordination/tasks', async (req, _res) => { const res = _res;
         estimatedCompletion: new Date(Date.now() + 3600000).toISOString(),
       };
     }, null);
-
     if (newTask) {
       res.json(newTask);
     } else {
       res.status(500).json({ error: 'Failed to create task' });
     }
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to create task' });
   }
 });
 
 // Production performance metrics endpoint
-app.get('/api/v1/analytics/performance', async (req, _res) => { const res = _res;
+app.get('/api/v1/analytics/performance', async (req, res) => {
   try {
     const metrics = await dataService.getTaskMetrics();
     const systemStatus = await dataService.getSystemStatus();
-    
     res.json({
       overview: {
         totalTasks: metrics.totalTasks,
@@ -336,24 +336,22 @@ app.get('/api/v1/analytics/performance', async (req, _res) => { const res = _res
         },
       },
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get performance metrics' });
   }
 });
 
 // Production memory status endpoint
-app.get('/api/v1/memory/status', async (req, _res) => { const res = _res;
+app.get('/api/v1/memory/status', async (req, res) => {
   try {
     const memoryStatus = await safeAsync(async () => {
-      const { MemoryManager } = (global as { foundation?: { getMemoryManager: () => any } })
+      const { getMemoryManager } = (global as { foundation?: { getMemoryManager: () => unknown } })
         .foundation || { getMemoryManager: () => null };
-
-      if (MemoryManager) {
-        const memoryManager = new MemoryManager();
+      if (getMemoryManager) {
+        const memoryManager = new (getMemoryManager() as any)();
         return await memoryManager.getStatus();
       }
-
       return {
         status: 'unknown',
         totalMemory: process.memoryUsage().heapTotal,
@@ -366,7 +364,6 @@ app.get('/api/v1/memory/status', async (req, _res) => { const res = _res;
       usedMemory: process.memoryUsage().heapUsed,
       sessions: 1,
     });
-
     res.json({
       status: memoryStatus.status,
       totalMemory: `${Math.round(memoryStatus.totalMemory / 1024 / 1024)  }MB`,
@@ -374,24 +371,22 @@ app.get('/api/v1/memory/status', async (req, _res) => { const res = _res;
       sessions: memoryStatus.sessions,
       lastBackup: new Date(Date.now() - 1800000).toISOString(),
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get memory status' });
   }
 });
 
 // Production database status endpoint
-app.get('/api/v1/database/status', async (req, _res) => { const res = _res;
+app.get('/api/v1/database/status', async (req, res) => {
   try {
     const dbStatus = await safeAsync(async () => {
-      const { DatabaseProvider } = (global as { foundation?: { getDatabaseProvider: () => any } })
+      const { getDatabaseProvider } = (global as { foundation?: { getDatabaseProvider: () => unknown } })
         .foundation || { getDatabaseProvider: () => null };
-
-      if (DatabaseProvider) {
-        const dbProvider = new DatabaseProvider();
+      if (getDatabaseProvider) {
+        const dbProvider = new (getDatabaseProvider() as any)();
         return await dbProvider.getStatus();
       }
-
       return {
         status: 'connected',
         type: 'SQLite + LanceDB + Kuzu',
@@ -402,21 +397,20 @@ app.get('/api/v1/database/status', async (req, _res) => { const res = _res;
       type: 'SQLite + LanceDB + Kuzu',
       totalRecords: 15420,
     });
-
     res.json({
       status: dbStatus.status,
       type: dbStatus.type,
       totalRecords: dbStatus.totalRecords,
       lastSync: new Date(Date.now() - 600000).toISOString(),
     });
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     res.status(500).json({ error: 'Failed to get database status' });
   }
 });
 
 // Error handling middleware
-app.use((err: Error, _req: express.Request, _res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({
     error: 'Internal server error',
@@ -425,7 +419,7 @@ app.use((err: Error, _req: express.Request, _res: express.Response, next: expres
 });
 
 // 404 handler
-app.use((req, _res) => { const res = _res;
+app.use((req, res) => {
   res.status(404).json({
     error: 'Endpoint not found',
     path: req.path,
@@ -437,7 +431,6 @@ app.use((req, _res) => { const res = _res;
 async function startServer(): Promise<void> {
   try {
     await initializeServices();
-    
     const server = app.listen(port, () => {
       logger.info(' Claude Code Zen Production API Server');
       logger.info(` Server running at: http://localhost:${  port}`);
@@ -473,14 +466,14 @@ async function startServer(): Promise<void> {
       });
     });
 
-  } catch (_error) {
-    logger.error("Error:", _error);
+  } catch (error) {
+    logger.error("Error:", error);
     process.exit(1);
   }
 }
 
 // Start the server
-startServer().catch((_error) => {
-  logger.error("Error:", _error);
+startServer().catch((error) => {
+  logger.error("Error:", error);
   process.exit(1);
 });

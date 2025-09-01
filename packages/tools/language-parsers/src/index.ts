@@ -78,9 +78,7 @@ return detectLanguageFamily(filePath) !== null;
 * Create parser factory for different language families
 */
 export interface ParserFactory {
-createBeamParser(
-options?: import('./beam-parser').BeamParserOptions
-): import('./beam-parser').BeamLanguageParser;
+createBeamParser(): import('./beam-parser').BeamLanguageParser;
 }
 
 /**
@@ -220,5 +218,7 @@ name:PACKAGE_NAME,
 version:VERSION,
 description:
 'Multi-language parsers for code analysis and repository understanding', author: 'Claude Code Zen Team', license: 'MIT', repository: 'https://github.com/zen-neural/claude-code-zen', keywords:[
-'parser', 'language-parser', 'code-analysis', 'multi-language', 'beam', 'elixir', 'erlang', 'gleam', 'ast-parsing', 'code-intelligence',],
+'parser', 'language-parser', 'code-analysis', 'multi-language', 'beam', 'elixir', 'erlang', 'gleam', 'ast-parsing', 'code-intelligence',
+],
+} as const;
 } as const;

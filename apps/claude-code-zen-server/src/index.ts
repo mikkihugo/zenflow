@@ -11,9 +11,7 @@ import {
   Result,
   ok,
   err,
-  eventRegistryInitializer,
 } from '@claude-zen/foundation';
-import { eventRegistryWebSocketService } from './services/websocket/event-registry-websocket.js';
 import type { Express, Request, Response } from 'express';
 import type { Server as HTTPServer } from 'http';
 import type { Server as SocketIOServer, Socket } from 'socket.io';
@@ -149,35 +147,14 @@ class ClaudeZenServer {
   }
 
   /**
-   * Initialize WebSocket services
+   * Initialize WebSocket services (Socket.IO only)
    */
   private async initializeWebSockets(server: HTTPServer): Promise<void> {
-    // Initialize WebSocket service for event registry
-    eventRegistryWebSocketService.initialize(server);
-
-    // Set up broadcast callback to connect event registry with WebSocket service
-    eventRegistryInitializer.setBroadcastCallback(
-      (type: string, data: unknown) => {
-        eventRegistryWebSocketService.broadcast(
-          type as
-            | 'module-status'
-            | ' module-registry'
-            | ' module-list'
-            | ' module-update'
-            | ' event-flows'
-            | ' event-metrics'
-            | ' event-flow'
-            | ' heartbeat',
-          data
-        );
-      }
-    );
-
     await this.initializeSocketIO(server);
   }
 
   /**
-   * Initialize Socket.IO for dashboard real-time updates
+   * Initialize Socket.IO for all real-time updates
    */
   private async initializeSocketIO(server: HTTPServer): Promise<void> {
     try {
@@ -191,13 +168,26 @@ class ClaudeZenServer {
         allowEIO3: true,
       });
 
+      // Set up broadcast callback to connect event registry with Socket.IO
+      // TODO: Re-enable event registry integration when config issue is resolved
+      /*
+      eventRegistryInitializer.setBroadcastCallback(
+        (type: string, data: unknown) => {
+          io.to('events').emit(type, {
+            data,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      );
+      */
+
       this.setupSocketHandlers(io);
       logger.info(
-        `🔌 Socket.IO server initialized for dashboard real-time updates`
+        `🔌 Socket.IO server initialized for real-time updates`
       );
     } catch (error) {
       logger.warn(
-        'Failed to initialize Socket.IO, dashboard real-time features may not work:',
+        'Failed to initialize Socket.IO, real-time features may not work:',
         error
       );
     }
@@ -208,7 +198,7 @@ class ClaudeZenServer {
    */
   private setupSocketHandlers(io: SocketIOServer): void {
     io.on('connection', (socket: Socket) => {
-      logger.debug(`Dashboard client connected: ${socket.id}`);
+      logger.debug(`Client connected: ${socket.id}`);
 
       // Send initial connection data
       socket.emit('connected', {
@@ -217,7 +207,7 @@ class ClaudeZenServer {
         serverVersion: '1.0.0',
       });
 
-      this.setupSocketSubscriptions(socket);
+      this.setupSocketSubscriptions(socket, io);
       this.setupSocketUtilities(socket);
     });
   }
