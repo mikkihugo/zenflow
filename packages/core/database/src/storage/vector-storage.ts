@@ -321,7 +321,7 @@ export class VectorStorageImpl implements VectorStorage {
  try {
  await this.ensureCollectionExists();
  const result = await this.connection.query<{ count: number }>(
- `SELECT COUNT(*) as count FROM "${this.collectionName}"`
+ `SELECT COUNT(*) as count FROM "${this.collectionName}"`;
  );
  return result.rows[0]?.count || 0;
  } catch (error) {
@@ -348,7 +348,7 @@ export class VectorStorageImpl implements VectorStorage {
  await this.ensureCollectionExists();
 
  const countResult = await this.connection.query<{ count: number }>(
- `SELECT COUNT(*) as count FROM "${this.collectionName}"`
+ `SELECT COUNT(*) as count FROM "${this.collectionName}"`;
  );
  const totalVectors = countResult.rows[0]?.count || 0;
 
@@ -356,7 +356,7 @@ export class VectorStorageImpl implements VectorStorage {
  let dimensions = 0;
  if (totalVectors > 0) {
  const sampleResult = await this.connection.query<{ vector: Buffer }>(
- `SELECT vector FROM "${this.collectionName}" LIMIT 1`
+ `SELECT vector FROM "${this.collectionName}" LIMIT 1`;
  );
  if (sampleResult.rows.length > 0) {
  const sampleVector = new Float32Array(
@@ -404,7 +404,7 @@ export class VectorStorageImpl implements VectorStorage {
  error: error instanceof Error ? error.message : String(error),
  });
  throw new QueryError(
- `Failed to create vectors table:${error instanceof Error ? error.message : String(error)}`
+ `Failed to create vectors table:${error instanceof Error ? error.message : String(error)}`;
  );
  }
  }
@@ -440,7 +440,7 @@ export class VectorStorageImpl implements VectorStorage {
  try {
  await this.ensureCollectionExists();
  await this.connection.query(
- `SELECT COUNT(*) FROM "${this.collectionName}" LIMIT 1`
+ `SELECT COUNT(*) FROM "${this.collectionName}" LIMIT 1`;
  );
  return true;
  } catch {
@@ -464,7 +464,7 @@ export class VectorStorageImpl implements VectorStorage {
 
  await this.ensureCollectionExists();
  const result = await this.connection.query<{ count: number }>(
- `SELECT COUNT(*) as count FROM "${this.collectionName}"`
+ `SELECT COUNT(*) as count FROM "${this.collectionName}"`;
  );
 
  return {

@@ -785,7 +785,7 @@ export class NeuralOrchestrator {
 
  // Analyze task complexity
  const complexity = this.analyzeTaskComplexity(task);
- logger.debug(`📊 Task complexity analysis:${complexity}`);`
+ logger.debug(`📊 Task complexity analysis:${complexity}`);`;
 
  let result:NeuralResult;
 
@@ -805,7 +805,7 @@ export class NeuralOrchestrator {
  result = await this.processHeavyTask(task);
  break;
  default:
- throw new Error(`Unknown complexity level:$complexity`);`
+ throw new Error(`Unknown complexity level:${complexity}`);`;
 }
 
  // Update metrics
@@ -820,7 +820,7 @@ export class NeuralOrchestrator {
  );
  return result;
 } catch (error) {
- logger.error(`❌ Neural task failed:${task.id}`, error);`
+ logger.error(`❌ Neural task failed:${task.id}`, error);`;
  throw error;
 }
 }
@@ -851,17 +851,17 @@ export class NeuralOrchestrator {
  if (needsHighAccuracy) {
  requirementComplexity = TaskComplexity.COMPLEX;
  logger.debug(
- `High accuracy required - upgrading complexity to $requirementComplexity``
+ `High accuracy required - upgrading complexity to ${requirementComplexity}``
  );
 }
  if (needsLowLatency) {
  // Low latency favors simpler models for faster processing
- logger.debug(`Low latency required - considering lightweight processing`);`
+ logger.debug(`Low latency required - considering lightweight processing`);`;
 }
  if (needsGpu) {
  requirementComplexity = TaskComplexity.HEAVY;
  logger.debug(
- `GPU processing required - upgrading complexity to $requirementComplexity``
+ `GPU processing required - upgrading complexity to ${requirementComplexity}``
  );
 }
 
@@ -924,7 +924,7 @@ export class NeuralOrchestrator {
  * Process simple tasks with internal brain.js
  */
  private async processSimpleTask(task:NeuralTask): Promise<NeuralResult> {
- logger.debug(`🟢 Processing simple task with brain.js:${task.id}`);`
+ logger.debug(`🟢 Processing simple task with brain.js:${task.id}`);`;
 
  // Use internal brain.js for simple operations
  const input = task.data.input as number[];
@@ -947,7 +947,7 @@ export class NeuralOrchestrator {
  */
  private async processModerateTask(task:NeuralTask): Promise<NeuralResult> {
  logger.debug(
- `🟡 Processing moderate task with enhanced brain.js:$task.id``
+ `🟡 Processing moderate task with enhanced brain.js:${task}.id``
  );
 
  // Enhanced processing with some ML features
@@ -985,14 +985,14 @@ export class NeuralOrchestrator {
  * Process complex tasks by lazy-loading neural-ml
  */
  private async processComplexTask(task:NeuralTask): Promise<NeuralResult> {
- logger.debug(`🔶 Processing complex task - loading neural-ml:${task.id}`);`
+ logger.debug(`🔶 Processing complex task - loading neural-ml:${task.id}`);`;
 
  const neuralMl = await this.loadNeuralML();
 
  // Use neural-ml for complex processing with lightweight models
  let result;
  if (neuralMl && neuralMl.isAvailable && neuralMl.hasLightweightModels) {
- logger.debug(`Using neural-ml lightweight models for task ${task.id}`);`
+ logger.debug(`Using neural-ml lightweight models for task ${task.id}`);`;
  result = await this.processWithNeuralMl(task, neuralMl, `light`);`)} else {
  logger.debug(
  `Neural-ml not available, falling back to simulation for task ${task.id}``
@@ -1016,14 +1016,14 @@ export class NeuralOrchestrator {
  * Process heavy tasks with full neural-ml capabilities
  */
  private async processHeavyTask(task:NeuralTask): Promise<NeuralResult> {
- logger.debug(`🔴 Processing heavy task with full neural-ml:${task.id}`);`
+ logger.debug(`🔴 Processing heavy task with full neural-ml:${task.id}`);`;
 
  const neuralMl = await this.loadNeuralML();
 
  // Use neural-ml for heavy processing with full models (LSTM, Transformers, etc.)
  let result;
  if (neuralMl && neuralMl.isAvailable && neuralMl.hasHeavyModels) {
- logger.debug(`Using neural-ml heavy models for task ${task.id}`);`
+ logger.debug(`Using neural-ml heavy models for task ${task.id}`);`;
  result = await this.processWithNeuralMl(task, neuralMl, `heavy`);`)} else {
  logger.debug(
  `Neural-ml heavy models not available, falling back to simulation for task ${task.id}``
@@ -1101,7 +1101,7 @@ export class NeuralOrchestrator {
  */
  async storeNeuralData(data:NeuralData): Promise<void> {
  const strategy = this.determineStorageStrategy(data);
- logger.debug(`💾 Storing neural data with strategy:${strategy}`, {`
+ logger.debug(`💾 Storing neural data with strategy:${strategy}`, {`;
  id:data.id,
  type:data.type,
  size:data.characteristics.size,
@@ -1130,7 +1130,7 @@ export class NeuralOrchestrator {
  break;
 }
 
- logger.debug(`✅ Neural data stored:${data.id} (strategy:${strategy})`);`
+ logger.debug(`✅ Neural data stored:${data.id} (strategy:${strategy})`);`;
 }
 
  /**
@@ -1175,24 +1175,24 @@ export class NeuralOrchestrator {
  */
  private async storeInMemory(data:NeuralData): Promise<void> {
  // Use internal memory storage
- logger.debug(`💭 Storing in memory:${data.id}`);`
+ logger.debug(`💭 Storing in memory:${data.id}`);`;
 }
 
  private async storeInDatabase(data:NeuralData): Promise<void> {
- // Use foundation`s SQLite storage`) logger.debug(`🗃️ Storing in database:${data.id}`);`
+ // Use foundation`s SQLite storage`) logger.debug(`🗃️ Storing in database:${data.id}`);`;
 }
 
  private async storeInVectorDB(data:NeuralData): Promise<void> {
- // Use foundation`s LanceDB storage`) logger.debug(`📊 Storing in vector DB:$data.id`);`
+ // Use foundation`s LanceDB storage`) logger.debug(`📊 Storing in vector DB:${data}.id`);`;
 }
 
  private async storeInGraphDB(data:NeuralData): Promise<void> {
- // Use foundation's Kuzu graph storage`) logger.debug(`🕸️ Storing in graph DB:${data.id}`);`
+ // Use foundation's Kuzu graph storage`) logger.debug(`🕸️ Storing in graph DB:${data.id}`);`;
 }
 
  private async storeInHybrid(data:NeuralData): Promise<void> {
  // Use multiple storage backends
- logger.debug(`🔀 Storing in hybrid mode:$data.id`);`
+ logger.debug(`🔀 Storing in hybrid mode:${data}.id`);`;
  await Promise.all([this.storeInDatabase(data), this.storeInVectorDB(data)]);
 }
 
@@ -1288,7 +1288,7 @@ export class NeuralOrchestrator {
 }
 } catch (error) {
  logger.warn(
- `Neural-ml processing failed, falling back to simulation:`,`
+ `Neural-ml processing failed, falling back to simulation:`,
  error
  );
  return await this.simulateNeuralMlProcessing(task, modelType);

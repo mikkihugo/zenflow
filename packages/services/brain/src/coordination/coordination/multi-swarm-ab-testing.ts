@@ -201,12 +201,12 @@ timeoutMs?:number;
 collectDetailedMetrics?:boolean;
 } = {}
 ):Promise<ABTestResult> {
-const testId = `ab-test-${generateNanoId()}`;`
+const testId = `ab-test-${generateNanoId()}`;`;
 const startTime = new Date();
 
-logger.info(` Starting A/B test:$testId`);`
-logger.info(` Task:${taskDescription}`);`
-logger.info(` Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(`, `)`);`
+logger.info(` Starting A/B test:${testId}`);`;
+logger.info(` Task:${taskDescription}`);`;
+logger.info(` Testing ${strategies}.lengthstrategies:${strategies}.map((s) => s.name).join(`, `)`);`;
 
 try {
 // Prepare git worktrees if configured
@@ -263,14 +263,14 @@ if (options.gitConfig?.cleanupAfterTest) {
 await this.cleanupGitWorktrees(worktreePaths);
 }
 
-logger.info(` A/B test completed:${testId}`);`
+logger.info(` A/B test completed:${testId}`);`;
 logger.info(
-` Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)``
+` Winner:${comparison}.winner.name(${comparison}.confidence.toFixed(2)confidence)``
 );
 
 return testResult;
 } catch (error) {
-logger.error(` A/B test failed:${testId}`, error);`
+logger.error(` A/B test failed:${testId}`, error);`;
 throw error;
 }
 }
@@ -334,7 +334,7 @@ case 'comprehensive': ')' return [
 ];
 
 default:
-throw new Error(`Unknown strategy scenario:$scenario`);`
+throw new Error(`Unknown strategy scenario:${scenario}`);`;
 }
 }
 
@@ -367,7 +367,7 @@ return {
 recommendedStrategy:mostSuccessful,
 confidence:0.3,
 reasoning:[
-`No specific data for "${taskType}" tasks`,`
+`No specific data for "${taskType}" tasks`,
 `Recommendation based on general performance across all task types`, `Consider running A/B test for this specific task type`,],
 };
 }
@@ -381,10 +381,10 @@ return {
 recommendedStrategy:recommended,
 confidence:successRate,
 reasoning:[
-`Based on ${relevantTests.length} historical tests for "${taskType}"`,`
-`Success rate:${(successRate * 100).toFixed(1)}%`,`
-`Model:${recommended?.modelBackend}`,`
-`Topology:${recommended?.swarmConfig.topology}`,`
+`Based on ${relevantTests.length} historical tests for "${taskType}"`,
+`Success rate:${(successRate * 100).toFixed(1)}%`,
+`Model:${recommended?.modelBackend}`,
+`Topology:${recommended?.swarmConfig.topology}`,
 ],
 };
 }
@@ -412,7 +412,7 @@ const cleanupAfterTest = gitConfig.cleanupAfterTest ?? true;
 // Validate git configuration
 if (strategies.length > maxWorktrees) {
 logger.warn(
-`Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,`
+`Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,
 {
 strategies:strategies.length,
 maxWorktrees,
@@ -422,7 +422,7 @@ willLimitTo:maxWorktrees,
 }
 
 const strategiesToProcess = strategies.slice(0, maxWorktrees);
-logger.info(` Creating ${strategiesToProcess.length} git worktrees...`, {`
+logger.info(` Creating ${strategiesToProcess.length} git worktrees...`, {`;
 baseBranch,
 branchPrefix,
 cleanupAfterTest,
@@ -430,11 +430,11 @@ maxWorktrees,
 });
 
 for (const strategy of strategiesToProcess) {
-const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`
-const worktreePath = joinPath(getHomeDirectory(), `.claude-zen`, 'tmp', `ab-test-worktrees`, branchName);`
+const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`;
+const worktreePath = joinPath(getHomeDirectory(), `.claude-zen`, 'tmp', `ab-test-worktrees`, branchName);`;
 
 // Log worktree creation with gitConfig details
-logger.debug(` Creating worktree for ${strategy.name}`, {`
+logger.debug(` Creating worktree for ${strategy.name}`, {`;
 strategyId:strategy.id,
 branchName,
 worktreePath,
@@ -443,10 +443,10 @@ modelBackend:strategy.modelBackend,
 });
 
 // In a real implementation, this would execute:
-// await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)`
+// await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)`;
 
 worktreePaths[strategy.id] = worktreePath;
-logger.info(` Created worktree for ${strategy.name}:${worktreePath}`);`
+logger.info(` Created worktree for ${strategy.name}:${worktreePath}`);`;
 }
 
 // Log final worktree configuration summary
@@ -465,7 +465,7 @@ strategies:ABTestStrategy[],
 worktreePaths:Record<string, string>,
 options:any
 ):Promise<SwarmTestResult[]> {
-logger.info(` Executing $strategies.lengthstrategies in parallel...`);`
+logger.info(` Executing ${strategies}.lengthstrategies in parallel...`);`;
 
 const promises = strategies.map((strategy) =>
 this.executeStrategy(
@@ -492,7 +492,7 @@ const enableContinueOnFailure = options.continueOnFailure !== false;
 
 if (enableProgressLogging) {
 logger.info(
-`⏭️ Executing $strategies.lengthstrategies sequentially...``
+`⏭️ Executing ${strategies}.lengthstrategies sequentially...``
 );
 logger.info(
 ` Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
@@ -529,7 +529,7 @@ logger.info(
 );
 }
 } catch (error) {
-logger.error(` Strategy ${i + 1} failed:${strategy.name}`, error);`
+logger.error(` Strategy ${i + 1} failed:${strategy.name}`, error);`;
 
 if (!enableContinueOnFailure) {
 throw error;
@@ -569,7 +569,7 @@ results.push(failureResult);
 if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
 if (enableProgressLogging) {
 logger.info(
-`⏸️ Pausing $delayBetweenStrategiesms before next strategy...``
+`⏸️ Pausing ${delayBetweenStrategiesms} before next strategy...``
 );
 }
 await new Promise((resolve) =>
@@ -593,7 +593,7 @@ cleanupType: `git_worktree`,});
 
 private async persistTestResult(testResult:ABTestResult): Promise<void> {
 // In a real implementation, this would save to database
-logger.info(` Persisted A/B test result:${testResult.testId}`);`
+logger.info(` Persisted A/B test result:${testResult.testId}`);`;
 }
 }
 

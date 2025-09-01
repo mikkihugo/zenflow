@@ -30,7 +30,7 @@ export interface ServiceInfo {
  *   extensions:['.service.ts',    '.provider.ts'],
  *   ignore:['node_modules',    'dist']
  *};
- * `
+ * `;
  */
 export interface ServiceDiscoveryOptions {
     recursive?: boolean;

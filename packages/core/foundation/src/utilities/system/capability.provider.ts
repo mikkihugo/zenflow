@@ -8,7 +8,7 @@
 /**
  *
  * @example Get System Capability Data
- * ```typescript`
+ * ```typescript`;
  * import { getSystemCapabilityData} from '@claude-zen/foundation/system-capability-data-provider';
  *
  * const data = await getSystemCapabilityData();
@@ -16,7 +16,7 @@
  * ```
  *
  * @example Get Installation Suggestions
- * ```typescript`
+ * ```typescript`;
  * import { getInstallationSuggestions} from '@claude-zen/foundation/system-capability-data-provider';
  *
  * const suggestions = await getInstallationSuggestions();
@@ -188,13 +188,13 @@ export async function displaySystemStatus(): Promise<void> {
  ? '⚠️'
  : '';
  logger.info(
- `${statusEmoji} Overall:${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`
+ `${statusEmoji} Overall:${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`;
  );
  logger.info(
- ` Packages:${dashboard.availablePackages}/${dashboard.totalPackages} available`
+ ` Packages:${dashboard.availablePackages}/${dashboard.totalPackages} available`;
  );
  logger.info(
- ` Services:${dashboard.registeredServices} registered in Awilix`
+ ` Services:${dashboard.registeredServices} registered in Awilix`;
  );
 
  // Facade breakdown
@@ -207,7 +207,7 @@ export async function displaySystemStatus(): Promise<void> {
  ? '⚠️'
  : '';
  logger.info(
- ` ${facadeEmoji} ${facade.name}:${facade.capability} (${facade.healthScore}%)`
+ ` ${facadeEmoji} ${facade.name}:${facade.capability} (${facade.healthScore}%)`;
  );
 
  if (facade.missingPackages.length > 0) {

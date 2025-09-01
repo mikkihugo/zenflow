@@ -66,7 +66,7 @@ return err(new Error(`Document search failed: ${(error as Error).message}`));
 
 async getDocumentsByProject(projectId: string): Promise<Result<BaseDocumentEntity[], Error>> {
 try {
-const query = `
+const query = `;
 SELECT * FROM documents
 WHERE project_id = ?
 ORDER BY created_at DESC
@@ -94,7 +94,7 @@ created_at: new Date().toISOString(),
 updated_at: new Date().toISOString(),
 };
 
-const query = `
+const query = `;
 INSERT INTO documents (id, type, content, summary, keywords, metadata, related_documents, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;

@@ -580,7 +580,7 @@ export {
  *
  * '''bash'
  * npm install @claude-zen/neural-ml @claude-zen/foundation
- * `
+ * `;
  *
  * See the examples above for usage patterns.
  */

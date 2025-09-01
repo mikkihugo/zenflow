@@ -13,7 +13,7 @@
 * - Professional Google TypeScript naming conventions
 *
 * @example Basic Usage
-* ```typescript`
+* ```typescript`;
 * const bridge = container.get(BrainJsBridge);
 * await bridge.initialize();
 *
@@ -180,7 +180,7 @@ readonly parameterCount?:number;
 * - Integration with existing coordination system
 *
 * @example Creating and training a feedforward network
-* ```typescript`
+* ```typescript`;
 * const bridge = container.get(BrainJsBridge);
 * await bridge.initialize();
 *
@@ -444,7 +444,7 @@ isTraining:true,
 this.networks.set(networkId, updatedInstance);
 
 this.foundationLogger.info(
-`Training brain.js network ${networkId} with ${trainingData.length} samples`
+`Training brain.js network ${networkId} with ${trainingData.length} samples`;
 );
 
 const startTime = Date.now();
@@ -787,7 +787,7 @@ imported:new Date().toISOString(),
 }
 
 this.foundationLogger.info(
-`Imported brain.js neural network:${id} (${type})`
+`Imported brain.js neural network:${id} (${type})`;
 );
 return id;
 }).then((result) =>

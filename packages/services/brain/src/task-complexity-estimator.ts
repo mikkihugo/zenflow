@@ -110,7 +110,7 @@ export class TaskComplexityEstimator {
  // 1. Analyze prompt content complexity
  const promptComplexity = this.analyzePromptComplexity(prompt);
  totalComplexity += promptComplexity.score * 0.4;
- reasoning.push(`Prompt analysis:${promptComplexity.reasoning}`);`
+ reasoning.push(`Prompt analysis:${promptComplexity.reasoning}`);`;
 
  // 2. Analyze context complexity
  const contextComplexity = this.analyzeContextComplexity(context);
@@ -315,7 +315,7 @@ export class TaskComplexityEstimator {
 
  complexity += Math.min(technicalMatches * 0.1, 0.4);
  if (technicalMatches > 0) {
- factors.push(`${technicalMatches} technical terms`);`
+ factors.push(`${technicalMatches} technical terms`);`;
 }
 
  // Question complexity
@@ -326,7 +326,7 @@ export class TaskComplexityEstimator {
 
  // Code-related complexity
  if (
- prompt.includes('```')||prompt.includes(' function')||prompt.includes(' class')') ) {`
+ prompt.includes('```')||prompt.includes(' function')||prompt.includes(' class')') ) {`;
  complexity += 0.2;
  factors.push('code involved');')}
 
@@ -356,7 +356,7 @@ export class TaskComplexityEstimator {
  const contextSize = Object.keys(context).length;
  complexity += Math.min(contextSize * 0.05, 0.3);
  if (contextSize > 5) {
- factors.push(`${contextSize} context fields`);`
+ factors.push(`${contextSize} context fields`);`;
 }
 
  // Data size indicators
@@ -369,7 +369,7 @@ export class TaskComplexityEstimator {
  if (context.dependencies && Array.isArray(context.dependencies)) {
  const depComplexity = Math.min(context.dependencies.length * 0.05, 0.2);
  complexity += depComplexity;
- factors.push(`$context.dependencies.lengthdependencies`);`
+ factors.push(`${context}.dependencies.lengthdependencies`);`;
 }
 
  // Time constraints
@@ -477,7 +477,7 @@ export class TaskComplexityEstimator {
 
  return {
  score:complexity * 0.3, // Scale down role impact
- reasoning:`${agentRole} role (${(_complexity * 100).toFixed(0)}% complexity)`,`
+ reasoning:`${agentRole} role (${(_complexity * 100).toFixed(0)}% complexity)`,
 };
 }
 

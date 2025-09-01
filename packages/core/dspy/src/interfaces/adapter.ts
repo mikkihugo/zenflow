@@ -225,10 +225,10 @@ inputs: Record<string, any>,
 outputs: Record<string, any>
 ): string {
 const inputParts = Object.entries(inputs).map(
-([key, value]) => `${key}:${value}`
+([key, value]) => `${key}:${value}`;
 );
 const outputParts = Object.entries(outputs).map(
-([key, value]) => `${key}:${value}`
+([key, value]) => `${key}:${value}`;
 );
 
 return `Input:${inputParts.join(', ')}\nOutput:${outputParts.join(`, `)}`;

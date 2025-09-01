@@ -322,7 +322,7 @@ export async function getFactIntelligence(
  ({
  insights: facts.map(
  (fact) =>
- `${(fact as any).source || 'unknown'}:${(fact as any).summary || (fact as any).content || 'no content'}`
+ `${(fact as any).source || 'unknown'}:${(fact as any).summary || (fact as any).content || 'no content'}`;
  ),
  patterns: [], // Pattern detection would be implemented here
  recommendations: [], // Recommendations based on facts

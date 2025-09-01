@@ -132,7 +132,7 @@ return new EnsembledProgram(copiedPrograms, this.reduceFunction, this.size);
 * Combines multiple programs into an ensemble with optional reduce function.
 *
 * @example
-* 'typescript`
+* 'typescript`;
 * // Basic ensemble with all programs
 * const ensemble = new Ensemble();
 * const ensembledProgram = ensemble.compile([
@@ -206,7 +206,7 @@ return new EnsembledProgram(copiedPrograms, this.reduceFunction, this.size);
 * return {
 * data:consensus.data,
 * confidence:consensus.normalizedWeight,
-* reasoning:`Ensemble consensus from ` + (validOutputs.length) + `/${outputs.length} members`
+* reasoning:`Ensemble consensus from ` + (validOutputs.length) + `/${outputs.length} members`;
 *};
 *} catch (error) {
 * return {
@@ -255,7 +255,7 @@ return new EnsembledProgram(copiedPrograms, this.reduceFunction, this.size);
 * // Access ensemble configuration
 * const config = ensemble.getConfig();
 * logger.info('Ensemble settings: ', config);
-` * `
+` * `;
 */
 export class Ensemble {
 private config: Required<EnsembleConfig>;

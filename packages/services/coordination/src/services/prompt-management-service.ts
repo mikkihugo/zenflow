@@ -34,7 +34,7 @@ await this.startApprovalWorkflow(template, newVersion, createdBy);
 }
 // Create audit entry
 await this.createAuditEntry(promptId, updated, createdBy, auditContext, {
-reason : `New version created,`
+reason : `New version created,`;
 version: await this.getPromptTemplate(promptId);) if (!template) {
 `) throw new Error(`Prompt template ${p}romptIdnot found``);`)};) await this.checkPermission(template, createdBy,`edit');
 // Validate traffic allocation
@@ -139,12 +139,12 @@ hasPermission = [
 ...accessControl.approvers,
 ].includes(userId);
 break;
-case`,edit: [`
+case`,edit: [`;
 ...accessControl.owners,
 ...accessControl.editors,
 ].includes(userId);
 break;
-case`approve: [`
+case`approve: [`;
 ...accessControl.owners,
 ...accessControl.approvers,
 ].includes(userId);
@@ -273,7 +273,7 @@ private async getPromptTemplate(
 promptId: string
 ): Promise<PromptTemplate | null> {
 try {
-const query = `
+const query = `;
 SELECT id, name, content, gate_type, variables, metadata,
 is_active, created_at, updated_at
 FROM prompt_templates

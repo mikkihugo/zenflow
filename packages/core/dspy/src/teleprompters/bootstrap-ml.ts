@@ -318,7 +318,7 @@ let round = 0;
 
 while (round < this.config.maxRounds) {
 this.logger.info(
-`Bootstrap round ${round + 1}/${this.config.maxRounds}`
+`Bootstrap round ${round + 1}/${this.config.maxRounds}`;
 );
 
 // Intelligent example selection
@@ -472,7 +472,7 @@ features: embeddings,
 labels: new Int32Array(embeddings.length).fill(0), // Unsupervised
 featureNames: Array.from(
 { length: this.config.embeddingDimension },
-(_, i) => `dim_${i}`
+(_, i) => `dim_${i}`;
 ),
 size: embeddings.length,
 };

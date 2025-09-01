@@ -294,7 +294,7 @@ const initStartTime = Date.now();
 
 try {
 this.logger.info(
-` Initializing Intelligence Orchestrator with foundation EventBus...`
+` Initializing Intelligence Orchestrator with foundation EventBus...`;
 );
 
 // Initialize EventBus first

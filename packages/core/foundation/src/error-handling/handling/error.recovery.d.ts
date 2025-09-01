@@ -44,7 +44,7 @@
  *
  * const result = await recovery.handleError({
  *   errorId: 'neural-training-failure', *   component: 'neural-network', *   operation: 'train', *   errorType: 'timeout', *   severity:'high') *});
- * `
+ * `;
  */
 import { type Result } from './error.handler.js';
 import { EventEmitter } from '../../events/event-emitter.js';

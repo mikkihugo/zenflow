@@ -71,7 +71,7 @@ type ProjectType =
  * @interface ProjectInfo
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const project: ProjectInfo = {
  *   id: 'proj-123', *   name: 'my-awesome-project', *   path: '/home/user/projects/my-project', *   description: 'An awesome TypeScript project', *   createdAt: '2025-01-01T00:00:00.000Z', *   lastAccessedAt: '2025-01-15T12:00:00.000Z', *   framework: 'Next.js', *   language:'TypeScript') *};
  * ```
@@ -154,7 +154,7 @@ export interface ProjectRegistry {
  * @singleton
  *
  * @example Basic Usage
- * ```typescript`
+ * ```typescript`;
  * const manager = ProjectManager.getInstance();
  *
  * // Create a new project
@@ -166,7 +166,7 @@ export interface ProjectRegistry {
  * ```
  *
  * @example Advanced Workspace Detection
- * ```typescript`
+ * ```typescript`;
  * const manager = ProjectManager.getInstance();
  *
  * // Add project with workspace analysis
@@ -182,12 +182,12 @@ export class ProjectManager {
    * Root configuration directory path following Claude Zen storage architecture.
    *
    * @description Absolute path to the Claude Zen configuration directory, resolved
-   * based on the `storeInUserHome` configuration setting. This path serves as the`
+   * based on the `storeInUserHome` configuration setting. This path serves as the`;
    * root for all project management storage operations.
    *
    * **Possible Values**:
-   * - User-global:`/home/user/.claude-zen/` or `C:\Users\user\.claude-zen\`
-   * - Project-local:`/path/to/project/.claude-zen/`
+   * - User-global:`/home/user/.claude-zen/` or `C:\Users\user\.claude-zen\`;
+   * - Project-local:`/path/to/project/.claude-zen/`;
    *
    * @see {@link constructor} for initialization logic
    */
@@ -196,26 +196,26 @@ export class ProjectManager {
   /**
    * Path to the main project registry file.
    *
-   * @description Absolute path to `projects.json` file that contains the registry`
+   * @description Absolute path to `projects.json` file that contains the registry`;
    * of all managed projects. Located within the configDir following the standard
    * Claude Zen storage structure.
    *
    * **Example Paths**:
-   * - User-global:`~/.claude-zen/projects.json`
-   * - Project-local:`./.claude-zen/projects.json`
+   * - User-global:`~/.claude-zen/projects.json`;
+   * - Project-local:`./.claude-zen/projects.json`;
    */
   private projectsFile: string;
 
   /**
    * Path to the projects storage directory.
    *
-   * @description Absolute path to the `projects/` directory containing individual`
+   * @description Absolute path to the `projects/` directory containing individual`;
    * project databases and storage. Each project gets its own subdirectory with
-   * isolated storage following the `proj-{id}/` naming pattern.`
+   * isolated storage following the `proj-{id}/` naming pattern.`;
    *
    * **Example Paths**:
-   * - User-global:`~/.claude-zen/projects/`
-   * - Project-local:`./.claude-zen/projects/`
+   * - User-global:`~/.claude-zen/projects/`;
+   * - Project-local:`./.claude-zen/projects/`;
    *
    * **Directory Structure**:
    * ```
@@ -240,9 +240,9 @@ export class ProjectManager {
      * Initialize Claude Zen configuration directory path based on storage preference.
      *
      * **Storage Resolution Logic**:
-     * 1. Check `config.project.storeInUserHome` setting`
-     * 2. If `true` → Use user home directory (`~/.claude-zen/`)`
-     * 3. If `false` → Use project directory (`./.claude-zen/`)`
+     * 1. Check `config.project.storeInUserHome` setting`;
+     * 2. If `true` → Use user home directory (`~/.claude-zen/`)`;
+     * 3. If `false` → Use project directory (`./.claude-zen/`)`;
      * 4. Resolve to absolute path for consistent access
      *
      * **Use Cases**:
@@ -368,7 +368,7 @@ export class ProjectManager {
       const gitignoreContent = this.createGitignoreContent();
       fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
       logger.info(
-        `Created comprehensive .gitignore protection: ${gitignorePath}`
+        `Created comprehensive .gitignore protection: ${gitignorePath}`;
       );
     }
   }
@@ -634,7 +634,7 @@ target/`;
       const gitignoreContent = this.createGitignoreContent();
       await fsAsync.writeFile(gitignorePath, gitignoreContent, 'utf8');
       logger.info(
-        `Created comprehensive .gitignore protection: ${gitignorePath}`
+        `Created comprehensive .gitignore protection: ${gitignorePath}`;
       );
     }
   }
@@ -659,7 +659,7 @@ target/`;
         const content = fs.readFileSync(this.projectsFile, 'utf8');
         this.registry = JSON.parse(content);
         logger.debug(
-          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`
+          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`;
         );
       } catch (error) {
         logger.error(
@@ -694,7 +694,7 @@ target/`;
         const content = await fsAsync.readFile(this.projectsFile, 'utf8');
         this.registry = JSON.parse(content);
         logger.debug(
-          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`
+          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`;
         );
       } catch (error) {
         logger.error(
@@ -797,7 +797,7 @@ target/`;
     );
     if (existingProject) {
       logger.info(
-        `Project already registered: ${existingProject.name} (${existingProject.id})`
+        `Project already registered: ${existingProject.name} (${existingProject.id})`;
       );
       return existingProject.id;
     }
@@ -828,7 +828,7 @@ target/`;
     this.createProjectDirectories(projectId);
 
     logger.info(
-      `Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`
+      `Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`;
     );
     return projectId;
   }
@@ -1570,7 +1570,7 @@ target/`;
       const monorepoProject = this.getProject(monorepoRoot);
       if (monorepoProject) {
         logger.debug(
-          `Found existing monorepo project: ${monorepoProject.name} (${monorepoProject.id})`
+          `Found existing monorepo project: ${monorepoProject.name} (${monorepoProject.id})`;
         );
         return {
           projectId: monorepoProject.id,
@@ -1594,7 +1594,7 @@ target/`;
             this.registerMonorepoProject(monorepoRoot);
           if (monorepoProjectResult) {
             logger.info(
-              `Registered monorepo root, but working in package: ${path.relative(monorepoRoot, resolvedStartPath)}`
+              `Registered monorepo root, but working in package: ${path.relative(monorepoRoot, resolvedStartPath)}`;
             );
             return monorepoProjectResult;
           }
@@ -1623,7 +1623,7 @@ target/`;
       });
 
       logger.info(
-        `Registered monorepo project: ${path.basename(monorepoRoot)} (${projectId})`
+        `Registered monorepo project: ${path.basename(monorepoRoot)} (${projectId})`;
       );
 
       return {
@@ -1748,7 +1748,7 @@ target/`;
       } catch {
         // Directory doesn't exist or can' t be deleted, that's okay
         logger.debug(
-          `Project directory not found or couldn't be deleted: ${projectDir}`
+          `Project directory not found or couldn't be deleted: ${projectDir}`;
         );
       }
     }

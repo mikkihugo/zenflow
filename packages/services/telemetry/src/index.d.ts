@@ -35,7 +35,7 @@
  * eventSystem.on('telemetry:metrics', (data) => {
  *   logger.info('Telemetry data: ', data.metrics);
 ' *});
- * `
+ * `;
  *
  * @author Claude Code Zen Team
  * @version 2.0.0-event-driven

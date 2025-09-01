@@ -214,7 +214,7 @@ export class DspyGEPAResult {
 * on the behavior to propose new instructions.
 *
 * @example
-* ```typescript`
+* ```typescript`;
 * // Basic GEPA optimization with auto mode
 * const gepa = new GEPA({
 * metric:(gold, pred) => gold.answer === pred.answer ? 1:0,
@@ -404,7 +404,7 @@ export class GEPA extends Teleprompter {
 
 		this.reflection_lm = (x:string) =>
 			// Simplified reflection LM interface - in production would call actual LM
-			 `Reflected analysis:${x}`
+			 `Reflected analysis:${x}`;
 ;
 
 		this.skip_perfect_score = config.skip_perfect_score ?? true;

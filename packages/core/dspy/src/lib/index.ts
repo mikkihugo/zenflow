@@ -249,7 +249,7 @@
 * // Production-ready classifier with ensemble power
 * const production_result = await ensemble.forward("This product is amazing!");
 * logger.info(`Category:${production_result.category}, Confidence:` + production_result.confidence);
-* `
+* `;
 *
 * @example Real-World Foundation LLM Integration
 * `''typescript'
@@ -280,7 +280,7 @@
 *
 * const evaluation_results = await evaluator.evaluate(optimized_program, test_set);
 * logger.info('Program performance:` + evaluation_results.score);
-* `
+* `;
 *
 * **OPTIMIZATION STRATEGIES:**
 *

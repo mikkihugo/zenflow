@@ -483,7 +483,7 @@
  *     recommendations:reasoningResult.recommendations
  *}
  *});
- * `
+ * `;
  *
  * @author Claude Code Zen Team
  * @since 1.0.0

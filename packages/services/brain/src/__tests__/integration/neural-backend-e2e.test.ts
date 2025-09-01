@@ -324,7 +324,7 @@ type: `long`,},
 const results = await Promise.all(
 testCases.map((testCase) =>
 brainCoordinator.generateEmbedding(testCase.text, {
-context:`quality-test-${testCase.type}`,`
+context:`quality-test-${testCase.type}`,
 qualityLevel: `standard`,})
 )
 );

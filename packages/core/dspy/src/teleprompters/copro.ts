@@ -100,7 +100,7 @@ export interface CoproStats {
 * Matches Stanford DSPy COPRO implementation exactly.
 *
 * @example
-* ```typescript`
+* ```typescript`;
 * // Basic COPRO optimization
 * const copro = new COPRO({
 * prompt_model:gpt4,

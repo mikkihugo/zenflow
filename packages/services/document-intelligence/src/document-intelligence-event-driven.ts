@@ -882,26 +882,26 @@ return `Provides strategic business value through improved processes and capabil
 }
 
 private generatePRDContent(requirements:ProductRequirements): string {
-return `
+return `;
 # Product Requirements Document
 
 ## Overview
 ${requirements.businessValue}
 
 ## Functional Requirements
-${requirements.functional.map(req => `- ${req}`).join(`\n`)}`
+${requirements.functional.map(req => `- ${req}`).join(`\n`)}`;
 
 ## Non-Functional Requirements
-${requirements.nonFunctional.map(req => `- ${req}`).join(`\n`)}`
+${requirements.nonFunctional.map(req => `- ${req}`).join(`\n`)}`;
 
 ## Stakeholders
-${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join(`\n`)}`
+${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join(`\n`)}`;
 
 ## Constraints
-${requirements.constraints.map(constraint => `- ${constraint}`).join(`\n`)}`
+${requirements.constraints.map(constraint => `- ${constraint}`).join(`\n`)}`;
 
 ## Assumptions
-${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`
+${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`;
 
 ## Success Criteria
 - All functional requirements implemented and tested
@@ -912,14 +912,14 @@ ${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`
 }
 
 private generateEpicContent(epicName:string, features:string[]): string {
-return `
+return `;
 # Epic:${this.formatEpicName(epicName)}
 
 ## Description
 This epic covers the ${epicName.toLowerCase().replace(/epic$/, ')} functionality of the system.
 
 ## Features
-${features.map(feature => `- ${feature}`).join(`\n`)}`
+${features.map(feature => `- ${feature}`).join(`\n`)}`;
 
 ## Acceptance Criteria
 - [] All features implemented and tested

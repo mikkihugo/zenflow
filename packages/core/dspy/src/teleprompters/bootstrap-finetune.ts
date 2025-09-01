@@ -130,7 +130,7 @@ export interface BootstrapFinetuneConfig {
 * Bootstraps training data and fine-tunes language models for improved performance.
 *
 * @example
-* ```typescript`
+* ```typescript`;
 * // Basic fine-tuning with bootstrapped demonstrations
 * const bootstrapFinetune = new BootstrapFinetune({
 * metric:exactMatchMetric

@@ -224,7 +224,7 @@ export class ContainerImpl implements Container {
  return serviceDefinition as T;
  default:
  throw new Error(
- `Unknown service type '${metadata.type}' for '${token}'`
+ `Unknown service type '${metadata.type}' for '${token}'`;
  );
  }
  } catch (error) {
@@ -405,7 +405,7 @@ export class ContainerImpl implements Container {
  'foundation:service-discovery'
  );
  logger.debug(
- `Service ${serviceToken} provides capability:${capability}`
+ `Service ${serviceToken} provides capability:${capability}`;
  );
  matchingServices.push(metadata);
  }

@@ -279,7 +279,7 @@ export class IntelligentPromptGenerator {
       { performanceRecommendations, securityRecommendations, testingRecommendations}
     );
 
-    let __standards = `
+    let __standards = `;
 ## 🎯 Coding Standards & Best Practices (${language.toUpperCase()})
 ${enhancedStandards.contextualIntro}
 
@@ -302,7 +302,7 @@ ${enhancedStandards.contextualIntro}
 - **Clear naming**: Function names should describe what they do`;
 
     if (language === 'typescript') {
-      __standards += `
+      __standards += `;
 
 ### 🔷 TypeScript Quality Standards:
 - **Strict typing**: Always use explicit types, avoid 'any'
@@ -314,7 +314,7 @@ ${enhancedStandards.contextualIntro}
     }
 
     if (config.includePerformance) {
-      __standards += `
+      __standards += `;
 
 ### ⚡ Performance Guidelines:
 - **Big O awareness**: Consider algorithmic complexity
@@ -325,7 +325,7 @@ ${enhancedStandards.contextualIntro}
     }
 
     if (config.includeSecurity) {
-      __standards += `
+      __standards += `;
 
 ### 🔒 Security Best Practices:
 - **Input validation**: Validate all external inputs
@@ -348,7 +348,7 @@ ${enhancedStandards.contextualIntro}
   ):string {
     switch (phase) {
       case 'specification':
-        return `
+        return `;
 ### 📋 Specification Phase Guidelines:
 - **Clear requirements**: Each requirement should be testable and specific
 - **Domain modeling**: Use ${config.language === 'typescript' ? 'TypeScript interfaces' : 'clear data structures'} to model domain entities
@@ -358,7 +358,7 @@ ${enhancedStandards.contextualIntro}
 - **Edge cases**: Identify and document edge cases and error scenarios`;
 
       case 'pseudocode':
-        return `
+        return `;
 ### 🔄 Pseudocode Phase Guidelines:
 - **Algorithm clarity**: Write self-documenting pseudocode
 - **Data structures**: Choose appropriate data structures (Map, Set, Array)
@@ -368,7 +368,7 @@ ${enhancedStandards.contextualIntro}
 - **Variable naming**: Use descriptive names in pseudocode`;
 
       case 'architecture':
-        return `
+        return `;
 ### 🏗️ Architecture Phase Guidelines:
 - **Modular design**: Create loosely coupled, highly cohesive modules
 - **Separation of concerns**: Separate business logic from presentation/data layers
@@ -378,7 +378,7 @@ ${enhancedStandards.contextualIntro}
 - **Scalability patterns**: Design for future growth and changes`;
 
       case 'refinement':
-        return `
+        return `;
 ### ⚡ Refinement Phase Guidelines:
 - **Performance optimization**: Profile and optimize critical paths
 - **Code review practices**: Focus on readability and maintainability
@@ -388,7 +388,7 @@ ${enhancedStandards.contextualIntro}
 - **Error handling**: Robust error handling and logging`;
 
       case 'completion':
-        return `
+        return `;
 ### ✅ Completion Phase Guidelines:
 - **Production readiness**: Ensure error handling, logging, monitoring
 - **Security validation**: Check for common security vulnerabilities
@@ -398,7 +398,7 @@ ${enhancedStandards.contextualIntro}
 - **Monitoring**: Implement proper monitoring and alerting`;
 
       default:
-        return `
+        return `;
 ### 🎯 General Development Guidelines:
 - **Code quality**: Follow established coding standards
 - **Documentation**: Write clear, comprehensive documentation
@@ -460,7 +460,7 @@ ${enhancedStandards.contextualIntro}
     codingStandards:string,
     phaseGuidelines:string
   ):string {
-    return `
+    return `;
 # 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt
 
 ## 📋 Project Context:
@@ -611,14 +611,14 @@ Generate a complete, ready-to-use development prompt.`,
    */
   private getPhaseExampleGuidelines(phase:DevelopmentPhase): string {
     switch (phase) {
-      case 'specification': ')'        return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`;`
-      case 'pseudocode': ')'        return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`;`
-      case 'architecture': ')'        return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;`
+      case 'specification': ')'        return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`;`;
+      case 'pseudocode': ')'        return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`;`;
+      case 'architecture': ')'        return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;`;
       case 'refinement':{
-    ')        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage`;`
-      case 'completion': ')'        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`;`
+    ')        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage`;`;
+      case 'completion': ')'        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`;`;
       default:
-        return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing`;`
+        return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing`;`;
 }
 }
 
@@ -632,11 +632,11 @@ Generate a complete, ready-to-use development prompt.`,
     return [
       {
         input: `Generate ${phase} phase prompt for e-commerce API project in rest-api domain using ${config.language}`,
-        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`;
       },
       {
         input: `Generate ${phase} phase prompt for mobile app project in mobile domain using ${config.language}`,
-        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`;
       }
 ];
 }
@@ -667,30 +667,30 @@ Generate a complete, ready-to-use development prompt.`,
       let contextualInsights = ';
 
       if (context.currentPhase) {
-        contextualInsights += `- Project phase:$context.currentPhase- applying phase-specific patterns\n`;`
+        contextualInsights += `- Project phase:${context}.currentPhase- applying phase-specific patterns\n`;`;
 }
 
       if (context.domainSpecific) {
-        contextualInsights += `- Domain:$context.domainSpecific- leveraging domain expertise\n`;`
+        contextualInsights += `- Domain:${context}.domainSpecific- leveraging domain expertise\n`;`;
 }
 
       if (complexityLevel > 0.7) {
-        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;`
+        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;`;
 }
 
       // Include agent performance insights relevant to project type
       if (enhancedStats.averagePerformance > 0.8) {
-        contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n`;`
+        contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n`;`;
 }
 
-      return `$content`
+      return `${content}`;
 
 ## 🧠 AI-Enhanced Recommendations:
 Based on ${agentProfiles.size} agent profiles and project context analysis:
 ${contextualInsights}
 - Focus on areas where similar ${projectTags.join(',    ')} projects typically encounter issues')- Leverage patterns that have proven successful in comparable domains
 - Pay special attention to complexity hotspots identified by behavioral analysis
-- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;`
+- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;`;
 } catch (error) {
       this.logger.warn(
         'Error enhancing prompt with behavioral intelligence: ','        error
@@ -710,7 +710,7 @@ ${contextualInsights}
 
     // Add additional tags based on context properties
     if (context.requirements && context.requirements.length > 0) {
-      tags.push(`$context.requirements.length-requirements`);`
+      tags.push(`${context}.requirements.length-requirements`);`;
 }
 }
 
@@ -847,23 +847,23 @@ ${contextualInsights}
     context:ProjectContext,
     principles:any
   ):string {
-    return `# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`
+    return `# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt`;
 ## META-LEARNING ENABLED ✨
 
 ## 📋 Project Context:
-- **Project**:$context.name
-- **Domain**:$context.domain
-- **Requirements**:$context.requirements?.length || 0defined
-- **Tech Stack**:$context.techStack?.join(',    ') || ' To be determined')- **Research Confidence**:$(principles.researchMetadata.confidence * 100).toFixed(1)%
+- **Project**:${context}.name
+- **Domain**:${context}.domain
+- **Requirements**:${context}.requirements?.length || 0defined
+- **Tech Stack**:${context}.techStack?.join(',    ') || ' To be determined')- **Research Confidence**:$(principles.researchMetadata.confidence * 100).toFixed(1)%
 
 ## 🎯 AI-Researched Standards:
-$principles.template
+${principles}.template
 
 ## 🔍 Quality Metrics (Research-Based):
-- **Complexity**:$principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
-- **Coverage**:$principles.qualityMetrics.coverage.metric> $principles.qualityMetrics.coverage.threshold%
-- **Maintainability**:$principles.qualityMetrics.maintainability.metric> $principles.qualityMetrics.maintainability.threshold
-- **Performance**:$principles.qualityMetrics.performance.metric< ${principles.qualityMetrics.performance.threshold}ms
+- **Complexity**:${principles}.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}
+- **Coverage**:${principles}.qualityMetrics.coverage.metric> ${principles}.qualityMetrics.coverage.threshold%
+- **Maintainability**:${principles}.qualityMetrics.maintainability.metric> ${principles}.qualityMetrics.maintainability.threshold
+- **Performance**:${principles}.qualityMetrics.performance.metric< ${principles.qualityMetrics.performance.threshold}ms
 
 ## 🧠 Meta-Learning Instructions:
 1. **Track your execution**:Note what works well and what doesn't')2. **Report feedback**:Identify missing guidelines or incorrect assumptions
@@ -876,7 +876,7 @@ $principles.template
 3. **Maintain function _complexity** within researched thresholds
 4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications')5. **Plan for validation** - another AI may review your work for accuracy
 
-Remember:This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.`;`
+Remember:This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.`;`;
 }
 
   /**
@@ -887,7 +887,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
 
     if (principles.qualityMetrics.complexity) {
       metrics.push(
-        `Complexity:$principles.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}``
+        `Complexity:${principles}.qualityMetrics.complexity.metric< ${principles.qualityMetrics.complexity.threshold}``
       );
 }
     if (principles.qualityMetrics.coverage) {
@@ -961,7 +961,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
 };
 
     await this.codingPrinciplesResearcher.submitAgentFeedback(agentFeedback);
-    this.logger.info(`Agent feedback submitted for principles ${principlesId}:accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}`);`
+    this.logger.info(`Agent feedback submitted for principles ${principlesId}:accuracy=${feedback.accuracy}, usefulness=${feedback.usefulness}`);`;
 }
 
   /**
@@ -980,14 +980,14 @@ Remember:This prompt learns from your execution. The better you follow and provi
     return `# 🔍 SECOND OPINION VALIDATION
 
 ## Original Task Prompt:
-\`\`\`
+\`\`\`;
 ${originalPrompt}
-\`\`\`
+\`\`\`;
 
 ## Agent's Implementation:
-\`\`\`
+\`\`\`;
 ${agentResponse}
-\`\`\`
+\`\`\`;
 
 ## Project Context:
 - **Project**: ${context.name}
@@ -1034,7 +1034,7 @@ Provide your validation in JSON format:
   "overall_assessment": "Good implementation with minor areas for improvement",
   "validation_confidence": 0.9
 }
-\`\`\`
+\`\`\`;
 
 Be thorough but constructive. Focus on helping improve both the implementation and future prompt clarity.`;
   }
@@ -1126,7 +1126,7 @@ Be thorough but constructive. Focus on helping improve both the implementation a
 
     if (analysis.securityProfile) {
       recommendations.push(
-        `- **${language} Security**:${this.getLanguageSecurityTips(language)}`,`
+        `- **${language} Security**:${this.getLanguageSecurityTips(language)}`,
         ...analysis.securityProfile.vulnerabilityTypes.map((vuln:string) => 
           `- Prevent ${vuln}:${this.getVulnerabilityPreventionTip(vuln)}``
         ),
@@ -1150,8 +1150,8 @@ Be thorough but constructive. Focus on helping improve both the implementation a
 
     if (analysis.testingProfile) {
       recommendations.push(
-        `- **Testing Strategy**:${analysis.testingProfile.testingStrategy}`,`
-        `- **Coverage Target**:${analysis.testingProfile.coverageTargets}`,`
+        `- **Testing Strategy**:${analysis.testingProfile.testingStrategy}`,
+        `- **Coverage Target**:${analysis.testingProfile.coverageTargets}`,
         ...analysis.testingProfile.recommendedFrameworks.map((framework:string) => 
           `- Use ${framework} for ${language} testing``
         ),

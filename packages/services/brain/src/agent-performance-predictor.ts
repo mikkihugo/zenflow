@@ -137,7 +137,7 @@ this.performanceHistory.set(data.agentId, history);
 await this.updatePerformanceTrends(data.agentId, history);
 
 logger.debug(
-`Performance recorded for agent ${data.agentId}:success rate ${data.successRate.toFixed(2)}`
+`Performance recorded for agent ${data.agentId}:success rate ${data.successRate.toFixed(2)}`;
 );
 } catch (error) {
 logger.error(`Failed to record performance: `, error);
@@ -219,7 +219,7 @@ riskFactors,
 };
 
 logger.info(
-`Performance prediction for ${agentId}:${predictedSuccessRate.toFixed(2)} success rate, ${predictedCompletionTime.toFixed(0)}ms completion time`
+`Performance prediction for ${agentId}:${predictedSuccessRate.toFixed(2)} success rate, ${predictedCompletionTime.toFixed(0)}ms completion time`;
 );
 
 return prediction;
@@ -542,7 +542,7 @@ riskFactors.push(`High CPU usage:${(avgCpuUsage * 100).toFixed(1)}%`);
 
 if (avgMemoryUsage > 0.8) {
 riskFactors.push(
-`High memory usage:${(avgMemoryUsage * 100).toFixed(1)}%`
+`High memory usage:${(avgMemoryUsage * 100).toFixed(1)}%`;
 );
 }
 
@@ -1355,7 +1355,7 @@ context:{
 systemLoad:process.cpuUsage(),
 memoryUsage:process.memoryUsage(),
 activeConnections:this.performanceHistory.size,
-environment: process.env.NODE_ENV || `development`
+environment: process.env.NODE_ENV || `development`;
 },
 recommendations:this.generatePerformanceRecommendations(eventType, eventData)
 };

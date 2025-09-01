@@ -57,7 +57,7 @@ declare const fetch: (url: string) => Promise<{
  *
  * @interface SchemaRegistry
  * @example
- * ```typescript`
+ * ```typescript`;
  * const registry:SchemaRegistry = {
  * 'user-schema':{
  * schema:{ type: 'object', properties:{ name: { type: ' string'}}},
@@ -82,7 +82,7 @@ export interface SchemaRegistry {
  * @class SchemaValidationError
  * @extends Error
  * @example
- * ```typescript`
+ * ```typescript`;
  * const error = new SchemaValidationError(
  * 'Validation failed', * 'user-document', * ['name is required', 'age must be a number']
  * );
@@ -105,7 +105,7 @@ export class SchemaValidationError extends Error {
  *
  * @class JsonSchemaManager
  * @example
- * ```typescript`
+ * ```typescript`;
  * const manager = new JsonSchemaManager(logger, './schemas');
  *
  * // Validate data against schema
@@ -193,7 +193,7 @@ export class JsonSchemaManager {
  };
 
  this.logger.info(
- `Registered schema ${name} for modes:${modes.join(', ')}`
+ `Registered schema ${name} for modes:${modes.join(', ')}`;
  );
  } catch (error) {
  this.logger.error(`Failed to register schema ${name}:`, error);
@@ -306,7 +306,7 @@ export class JsonSchemaManager {
 
  if (!schemaEntry.modes.includes(mode)) {
  throw new SchemaValidationError(
- `Document type ${documentType} not available in ${mode} mode`
+ `Document type ${documentType} not available in ${mode} mode`;
  );
  }
 
@@ -391,11 +391,11 @@ export class JsonSchemaManager {
  }
 
  /**
- * Load schema asynchronously (for $ref resolution)
+ * Load schema asynchronously (for ${ref} resolution)
  */
  private async loadSchemaAsync(uri: string): Promise<JsonObject> {
  // Implementation for loading external schema references
- // Used for schema composition and $ref resolution
+ // Used for schema composition and ${ref} resolution
  this.logger.info(`Loading external schema:${uri}`);
 
  try {
@@ -422,7 +422,7 @@ export class JsonSchemaManager {
  } catch (error) {
  this.logger.error(`Failed to load schema from ${uri}:`, error);
  throw new Error(
- `Schema loading failed:${error instanceof Error ? error['message'] : 'Unknown error'}`
+ `Schema loading failed:${error instanceof Error ? error['message'] : 'Unknown error'}`;
  );
  }
  }
@@ -506,7 +506,7 @@ export function validateInput<T>(schema: ZodSchema<T>, data: unknown): T {
  } catch (error) {
  if (error instanceof ZodError) {
  throw new Error(
- `Validation failed:${error.errors.map((e) => e['message']).join(', ')}`
+ `Validation failed:${error.errors.map((e) => e['message']).join(', ')}`;
  );
  }
  throw error;

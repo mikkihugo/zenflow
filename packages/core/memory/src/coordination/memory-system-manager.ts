@@ -728,7 +728,7 @@ export class MemorySystemManager extends EventEmitter {
 
  if (unhealthyComponents.length > 0) {
  recommendations.push(
- `Investigate unhealthy components:${unhealthyComponents.join(', ')}`
+ `Investigate unhealthy components:${unhealthyComponents.join(', ')}`;
  );
  }
 

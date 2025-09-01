@@ -64,7 +64,7 @@ export class ConsoleExporter implements BaseExporter {
  async exportBatch(dataItems:TelemetryData[]): Promise<ExportResult> {
  try {
  this.logger.info(
- ` Batch Export (${dataItems.length} items) - ${this.config.name}`
+ ` Batch Export (${dataItems.length} items) - ${this.config.name}`;
  );
 
  for (const data of dataItems) {
@@ -145,7 +145,7 @@ export class ConsoleExporter implements BaseExporter {
  const reset = '\x1b[0m';
 
  logger.info(
- `${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`
+ `${color}${emoji}[${timestamp}] ${data.type.toUpperCase()} ${service}${reset}`;
  );
 
  // Format the data payload
@@ -178,7 +178,7 @@ export class ConsoleExporter implements BaseExporter {
  for (const span of data.data.spans.slice(0, 3)) {
  // Show first 3 spans
  logger.info(
- ` ├─ ${span.name || 'unnamed'} (${span.duration || ' unknown'}ms)`
+ ` ├─ ${span.name || 'unnamed'} (${span.duration || ' unknown'}ms)`;
  );
 }
  if (data.data.spans.length > 3) {
@@ -230,7 +230,7 @@ export class ConsoleExporter implements BaseExporter {
  100
  );
  logger.info(
- ` ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`
+ ` ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`;
  );
  }
  if (data.data.logs.length > 3) {
@@ -238,7 +238,7 @@ export class ConsoleExporter implements BaseExporter {
  }
  } else if (typeof data.data === 'string') {
  logger.info(
- ` LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`
+ ` LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`;
  );
  } else {
  logger.info(` DATA:`, JSON.stringify(data.data, null, 2));

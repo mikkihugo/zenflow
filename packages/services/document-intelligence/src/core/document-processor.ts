@@ -6,7 +6,7 @@
 * ADRs are independent architectural governance documents that constrain and guide implementation..
 *
 * @example
-* ```typescript`
+* ```typescript`;
 * const processor = new DocumentProcessor(memorySystem, workflowEngine, {
 * autoWatch:true,
 * enableWorkflows:true
@@ -231,7 +231,7 @@ logger.info('Document processor ready`);`)}
 * @returns Workspace ID.
 */
 async loadWorkspace(workspacePath:string): Promise<string> {
-const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`
+const workspaceId = `workspace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;`;
 
 // Create workspace structure
 const workspace:DocumentWorkspace = {
@@ -266,7 +266,7 @@ this.setupDocumentWatchers(workspaceId);
 }
 
 logger.info(
-`Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)``
+`Loaded workspace:${workspacePath}(${context}.activeDocuments.sizedocuments)``
 );
 this.emit('workspace:loaded`, {
 `) workspaceId,
@@ -299,14 +299,14 @@ workspaceId = await this.loadWorkspace(dirname(documentPath));
 
 const context = this.workspaces.get(workspaceId);
 if (!context) {
-throw new Error(`Workspace not found:${workspaceId}`);`
+throw new Error(`Workspace not found:${workspaceId}`);`;
 }
 
 try {
 const docType = this.getDocumentType(documentPath);
 const content = await readFile(documentPath, `utf8`);') const metadata = await this.extractMetadata(content);
 
-logger.info(`Processing $docTypedocument:$documentPath`);`
+logger.info(`Processing ${docTypedocument}:${documentPath}`);`;
 
 const document:Document = {
 type:docType,
@@ -346,7 +346,7 @@ suggestedNextSteps:this.getSuggestedNextSteps(docType),
 });
 } catch (error)
 this.stats.errors++;
-logger.error(`Failed to process document ${documentPath}:`, error);`
+logger.error(`Failed to process document ${documentPath}:`, error);`;
 throw error;
 }
 }
@@ -376,11 +376,11 @@ throw new Error(`No workspace available. Load a workspace first.`);`)}
 
 const context = this.workspaces.get(workspaceId);
 if (!context) {
-throw new Error(`Workspace not found:$workspaceId`);`
+throw new Error(`Workspace not found:${workspaceId}`);`;
 
 // Generate file path
 const __dirPath = this.getDocumentDirectory(context.workspace, type);
-const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`
+const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')}.md`;`;
 const filePath = join(dirPath, fileName);
 
 // Create document content with metadata
@@ -394,7 +394,7 @@ const document = context.activeDocuments.get(filePath);
 if (!document) {
 throw new Error('Failed to create document');')}
 
-logger.info(`Created $typedocument:$title`);`
+logger.info(`Created ${typedocument}:${title}`);`;
 return document;
 }
 

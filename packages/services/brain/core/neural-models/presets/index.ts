@@ -149,7 +149,7 @@ export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
 
  if (missing.length > 0) {
  throw new Error(
- `Invalid preset configuration. Missing: ${missing.join(', ')}`
+ `Invalid preset configuration. Missing: ${missing.join(', ')}`;
  );
  }
 

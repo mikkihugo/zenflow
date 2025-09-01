@@ -82,9 +82,9 @@ const bridge = createCodeQLBridge(options.config);
 const languages = options.languages||['typescript', 'javascript'];') const securityQueryPacks:import('./types/codeql-types`).QueryPack[] = [];`)
 for (const language of languages) {
 securityQueryPacks.push({
-name:`${language}-security-extended`,`
+name:`${language}-security-extended`,
 version: `latest`, metadata:{
-description:`Security queries for ${language}`,`
+description:`Security queries for ${language}`,
 category: `security`, focus: 'vulnerability-detection',},
 });
 }
@@ -114,7 +114,7 @@ queryPacks?:import('./types/codeql-types').QueryPack[];') config?:Partial<import
 // Detect language from file extension
 const language = detectLanguageFromPath(filePath);
 if (!language) {
-throw new Error(`Unsupported file type:${filePath}`);`
+throw new Error(`Unsupported file type:${filePath}`);`;
 }
 
 const queryPacks =
@@ -191,18 +191,18 @@ languages:import('./types/codeql-types').CodeQLLanguage[]')):import('./types/cod
 for (const language of languages) {
 // OWASP Top 10 queries
 queryPacks.push({
-name:`$language-security-extended`,`
+name:`${language}-security-extended`,
 version: `latest`, metadata:
-description:`OWASP Top 10 security queries for ${language}`,`
+description:`OWASP Top 10 security queries for ${language}`,
 category: `security`, tags:['owasp', 'top-10'],
 },
 });
 
 // CWE-specific queries
 queryPacks.push({
-name:`$language-security-and-quality`,`
+name:`${language}-security-and-quality`,
 version: `latest`, metadata:
-description:`CWE-based security and quality queries for ${language}`,`
+description:`CWE-based security and quality queries for ${language}`,
 category: `security`, tags:['cwe', 'quality'],
 },
 });

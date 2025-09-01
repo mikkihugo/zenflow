@@ -308,7 +308,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
  try {
  this.logger.info(
- `Optimizing ${teleprompter_config.teleprompter_type} teleprompter with ML enhancement`
+ `Optimizing ${teleprompter_config.teleprompter_type} teleprompter with ML enhancement`;
  );
 
  const optimizationId = `dspy_${teleprompter_config.teleprompter_type}_${Date.now()}`;
@@ -344,7 +344,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  break;
  default:
  throw new Error(
- `Unsupported teleprompter type:${teleprompter_config.teleprompter_type}`
+ `Unsupported teleprompter type:${teleprompter_config.teleprompter_type}`;
  );
  }
 
@@ -393,7 +393,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
  if (!optimizationResult.success) {
  throw new Error(
- `Multi-objective optimization failed:${optimizationResult.error}`
+ `Multi-objective optimization failed:${optimizationResult.error}`;
  );
  }
 
@@ -753,7 +753,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
  if (driftResult.success && driftResult.data?.detected) {
  adaptations.push(
- `Detected ${driftResult.data?.drift_type} drift in coordination patterns`
+ `Detected ${driftResult.data?.drift_type} drift in coordination patterns`;
  );
 
  // Adapt learning rate
@@ -907,7 +907,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
  if (patterns.length > 0) {
  recommendations.push(
- `Detected ${patterns.length} optimization patterns for future reference`
+ `Detected ${patterns.length} optimization patterns for future reference`;
  );
  }
 
@@ -921,12 +921,12 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const recommendations: string[] = [];
 
  recommendations.push(
- `Optimal learning rate found:${bestPoint.parameters[0].toFixed(4)}`
+ `Optimal learning rate found:${bestPoint.parameters[0].toFixed(4)}`;
  );
 
  if (driftAlerts.length > 0) {
  recommendations.push(
- `${driftAlerts.length} concept drift alerts detected - consider adaptive strategies`
+ `${driftAlerts.length} concept drift alerts detected - consider adaptive strategies`;
  );
  }
 
@@ -940,7 +940,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const recommendations: string[] = [];
 
  recommendations.push(
- `Gradient optimization converged with parameters:${bestPoint.parameters.map((p) => p.toFixed(4)).join(', ')}`
+ `Gradient optimization converged with parameters:${bestPoint.parameters.map((p) => p.toFixed(4)).join(', ')}`;
  );
 
  if (patterns.some((p) => p.pattern_type === 'optimization')) {
@@ -1100,7 +1100,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  this.emit('training_started', trainingEvent);
 
  this.logger.info(
- `Started training job ${trainingId} in SPARC phase:${sparc_phase}`
+ `Started training job ${trainingId} in SPARC phase:${sparc_phase}`;
  );
 
  return trainingId;
@@ -1177,7 +1177,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  this.emit('inference_completed', inferenceEvent);
 
  this.logger.debug(
- `Inference ${inferenceId} completed in ${processingTime}ms`
+ `Inference ${inferenceId} completed in ${processingTime}ms`;
  );
 
  return inferenceEvent;

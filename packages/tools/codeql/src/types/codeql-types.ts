@@ -107,7 +107,7 @@ export interface SARIFResult {
 /** SARIF format version */
 version: string;
 /** Schema URI */
-$schema: string;
+${schema}: string;
 /** Analysis runs */
 runs: SARIFRun[];
 }

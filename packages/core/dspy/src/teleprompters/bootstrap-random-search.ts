@@ -98,7 +98,7 @@ program: DSPyModule;
 * random seeds.
 *
 * @example
-* ```typescript`
+* ```typescript`;
 * // Basic random search with default settings
 * const randomSearch = new BootstrapFewShotWithRandomSearch({
 * metric:exactMatchMetric,
@@ -247,10 +247,10 @@ this.num_candidate_sets = config.num_candidate_programs ?? 16;
 this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
 logger.info(
-`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`
+`Going to sample between ${this.min_num_samples} and ${this.max_num_samples} traces per predictor.`;
 );
 logger.info(
-`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`
+`Will attempt to bootstrap ${this.num_candidate_sets} candidate sets.`;
 );
 }
 
@@ -383,7 +383,7 @@ this.stop_at_score !== undefined &&
 score >= this.stop_at_score
 ) {
 logger.info(
-`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`
+`Stopping early because score ${score} is >= stop_at_score ${this.stop_at_score}`;
 );
 break;
 }

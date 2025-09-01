@@ -296,7 +296,7 @@ this.optimizationHistory = [];
 
 try {
 this.logger.info(
-`Starting MIPROv2ML compilation with ML enhancements...`
+`Starting MIPROv2ML compilation with ML enhancements...`;
 );
 
 // Step 1:Multi-objective optimization for hyperparameter search
@@ -376,7 +376,7 @@ student: DSPyModule,
 options: any
 ): Promise<{ bestSolution: any; paretoFront: ParetoFront }> {
 this.logger.info(
-`Performing multi-objective optimization with NSGA-II algorithm...`
+`Performing multi-objective optimization with NSGA-II algorithm...`;
 );
 
 // Define parameter bounds for MIPROv2
@@ -406,7 +406,7 @@ const weights = this.config.objectiveWeights || [0.6, 0.25, 0.15]; // Prioritize
 const bestSolution = this.selectBestSolution(result, weights);
 
 this.logger.info(
-`Multi-objective optimization completed. Found ${result.solutions.length} Pareto solutions`
+`Multi-objective optimization completed. Found ${result.solutions.length} Pareto solutions`;
 );
 
 return {
@@ -423,7 +423,7 @@ student: DSPyModule,
 initialSolution: any
 ): Promise<OptimizationResult> {
 this.logger.info(
-`Performing Bayesian optimization with Gaussian Process...`
+`Performing Bayesian optimization with Gaussian Process...`;
 );
 
 const _bounds: OptimizationBounds = {
@@ -451,7 +451,7 @@ return accuracy;
 const result = await this.bayesianOptimizer?.optimize(objectiveFunction);
 
 this.logger.info(
-`Bayesian optimization completed after ${result.iterations} iterations`
+`Bayesian optimization completed after ${result.iterations} iterations`;
 );
 
 return result;
@@ -469,7 +469,7 @@ return [];
 }
 
 this.logger.info(
-`Analyzing optimization patterns with clustering algorithms...`
+`Analyzing optimization patterns with clustering algorithms...`;
 );
 
 // Extract trajectory features for pattern analysis
@@ -516,7 +516,7 @@ return [];
 }
 
 this.logger.info(
-`Performing statistical validation of optimization results...`
+`Performing statistical validation of optimization results...`;
 );
 
 const tests: HypothesisTest[] = [];
@@ -691,7 +691,7 @@ const highQualityPatterns = patterns.filter(
 );
 if (highQualityPatterns.length > 0) {
 recommendations.push(
-`Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`
+`Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`;
 );
 }
 }
@@ -700,7 +700,7 @@ recommendations.push(
 const significantTests = tests.filter((test) => test.significant);
 if (significantTests.length > 0) {
 recommendations.push(
-`${significantTests.length} statistical tests show significant improvement - results are statistically reliable`
+`${significantTests.length} statistical tests show significant improvement - results are statistically reliable`;
 );
 }
 
@@ -710,7 +710,7 @@ const finalAccuracy =
 this.optimizationHistory[this.optimizationHistory.length - 1].accuracy;
 if (finalAccuracy > 0.9) {
 recommendations.push(
-`Excellent optimization result achieved - consider early stopping criteria for efficiency`
+`Excellent optimization result achieved - consider early stopping criteria for efficiency`;
 );
 } else if (finalAccuracy < 0.6) {
 recommendations.push(

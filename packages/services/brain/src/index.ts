@@ -11,7 +11,7 @@
 * **⚠️ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
 *
 * While this package can be used directly, it is recommended to access brain
-* functionality through `@claude-zen/foundation` which provides integrated neural`
+* functionality through `@claude-zen/foundation` which provides integrated neural`;
 * coordination with telemetry, logging, and configuration management.
 *
 * **CORE AUTONOMOUS CAPABILITIES:**
@@ -47,7 +47,7 @@
 * - Audit trails for AI decision-making and compliance
 *
 * @example Recommended Usage via Foundation
-* ```typescript`
+* ```typescript`;
 * import { getNeuralAccess, AI} from '@claude-zen/foundation';
 *
 * // Get integrated neural access with telemetry
@@ -69,7 +69,7 @@
 * ````
 *
 * @example Direct Advanced Neural Coordination
-* ```typescript`
+* ```typescript`;
 * import {
 * BrainCoordinator,
 * AutonomousOptimizationEngine,
@@ -128,7 +128,7 @@
 * ````
 *
 * @example Enterprise Neural Network Training
-* ```typescript`
+* ```typescript`;
 * import {
 * NeuralBridge,
 * createNeuralNetwork,
@@ -210,7 +210,7 @@
 * ````
 *
 * @example Autonomous Task Complexity Analysis
-* ```typescript`
+* ```typescript`;
 * import {
 * TaskComplexityEstimator,
 * AutonomousOptimizationEngine,
@@ -236,9 +236,9 @@
 *
 * // Analyze complex enterprise task
 * const complexityAnalysis = await complexityEstimator.estimateComplexity({
-* task: 'microservices-architecture-design', * prompt:`Design a fault-tolerant microservices architecture for a global`
+* task: 'microservices-architecture-design', * prompt:`Design a fault-tolerant microservices architecture for a global`;
 * e-commerce platform handling 100M+ users with real-time inventory,
-* payment processing, recommendation engine, and fraud detection`,`
+* payment processing, recommendation engine, and fraud detection`,
 * context:{
 * domain: 'enterprise-architecture', * scale: 'global', * constraints:{
 * availability: '99.99%', * latency: '<100ms', * security: 'enterprise-grade', * compliance:['pci-dss', 'gdpr', 'sox']') *},
@@ -301,7 +301,7 @@
 * ````
 *
 * @example Behavioral Intelligence and Agent Performance Prediction
-* ```typescript`
+* ```typescript`;
 * import {
 * BehavioralIntelligence,
 * AgentPerformancePredictor,
@@ -399,7 +399,7 @@
 * ````
 *
 * @example GPU-Accelerated Neural Computation
-* ```typescript`
+* ```typescript`;
 * import {
 * GPUSupport,
 * detectGPUCapabilities,
@@ -463,7 +463,7 @@
 * ````
 *
 * @example Enterprise Multi-Tenant Neural System
-* ```typescript`
+* ```typescript`;
 * import {
 * BrainCoordinator,
 * AutonomousCoordinator,
@@ -549,7 +549,7 @@
 * ````
 *
 * @example Using separate entry points (optimal tree-shaking)
-* ```typescript`
+* ```typescript`;
 * // Optimal imports for tree-shaking
 * import { BrainCoordinator} from '@claude-zen/brain/coordinator';
 * import { NeuralBridge} from '@claude-zen/brain/neural';
@@ -1101,7 +1101,7 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 *
 * ## Getting Started
 *
-* ```bash`
+* ```bash`;
 * # Install core brain package
 * npm install @claude-zen/brain @claude-zen/foundation @claude-zen/dspy
 *

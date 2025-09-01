@@ -594,7 +594,7 @@ recursive?: boolean;
 const operation = this.createOperation(
 `clone`,
 projectId,
-`clone-${projectId}`
+`clone-${projectId}`;
 );
 
 try {
@@ -647,7 +647,7 @@ push?: boolean;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`branch-${branchName}`
+`branch-${branchName}`;
 );
 
 try {
@@ -695,7 +695,7 @@ deleteRemote?: boolean;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`delete-${branchName}`
+`delete-${branchName}`;
 );
 
 try {
@@ -748,7 +748,7 @@ autoResolveConflicts?: boolean;
 const operation = this.createOperation(
 `merge`,
 projectId,
-`merge-${sourceBranch}-${targetBranch}`
+`merge-${sourceBranch}-${targetBranch}`;
 );
 
 try {
@@ -830,7 +830,7 @@ autoResolveConflicts?: boolean;
 const operation = this.createOperation(
 `rebase`,
 projectId,
-`rebase-${targetBranch}`
+`rebase-${targetBranch}`;
 );
 
 try {
@@ -903,7 +903,7 @@ setUpstream?: boolean;
 const operation = this.createOperation(
 `push`,
 projectId,
-`push-${options.branch || 'current'}`
+`push-${options.branch || 'current'}`;
 );
 
 try {
@@ -955,7 +955,7 @@ autoResolveConflicts?: boolean;
 const operation = this.createOperation(
 `pull`,
 projectId,
-`pull-${options.branch || 'current'}`
+`pull-${options.branch || 'current'}`;
 );
 
 try {
@@ -1152,25 +1152,25 @@ max_tokens: 4000,
 messages: [
 {
 role: `user`,
-content: `
+content: `;
 # Git Merge Conflict Resolution
 
 **File**:${fileName}
 
 **Conflict Section**:
-\`\`\`
+\`\`\`;
 ${conflict.section}
-\`\`\`
+\`\`\`;
 
 **Our Version**:
-\`\`\`
+\`\`\`;
 ${conflict.ourVersion}
-\`\`\`
+\`\`\`;
 
 **Their Version**:
-\`\`\`
+\`\`\`;
 ${conflict.theirVersion}
-\`\`\`
+\`\`\`;
 
 Please analyze this merge conflict and provide:
 1. **Recommended Resolution**:The best way to combine both changes
@@ -1184,7 +1184,7 @@ Respond in JSON format:
 "confidence":85,
 "reasoning":"explanation of why this resolution is best"
 }
-\`\`\`
+\`\`\`;
 `,
 },
 ],
@@ -1609,7 +1609,7 @@ managerId: this.managerId,
 error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
 });
 const sandbox = await this.sandbox.createSandbox(
-`${projectId}-${Date.now()}`
+`${projectId}-${Date.now()}`;
 );
 return sandbox.id;
 }
@@ -1876,7 +1876,7 @@ path?: string;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`worktree-${worktreeName}`
+`worktree-${worktreeName}`;
 );
 
 try {
@@ -1939,7 +1939,7 @@ force?: boolean;
 const operation = this.createOperation(
 `branch`,
 projectId,
-`remove-worktree-${worktreeName}`
+`remove-worktree-${worktreeName}`;
 );
 
 try {

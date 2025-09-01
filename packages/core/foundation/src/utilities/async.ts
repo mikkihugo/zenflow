@@ -173,7 +173,7 @@ export class CircuitBreaker<T extends unknown[], R> {
  * @returns Promise that resolves with the function result or rejects after max attempts
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const result = await withRetry(
  * async () => {
  * const response = await fetch('/api/data');
@@ -233,7 +233,7 @@ export async function withRetry<T>(
  * @returns Promise that resolves with Result containing success or timeout error
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const result = await withTimeout(
  * fetch('/api/slow-endpoint'),
  * { timeout:5000, message: 'API request timed out'}
@@ -258,7 +258,7 @@ export async function withTimeout<T>(
  reject(
  new Error(
  config['message'] ||
- `Operation timed out after ${config.timeout}ms`
+ `Operation timed out after ${config.timeout}ms`;
  )
  );
  }, config.timeout);
@@ -278,7 +278,7 @@ export async function withTimeout<T>(
  * @returns Promise that resolves with Result containing success or timeout error
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const result = await safeAsync(
  * async () => {
  * const response = await fetch('/api/data');
@@ -314,7 +314,7 @@ export async function safeAsync<T>(
  * @returns Circuit breaker instance
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const apiCall = createCircuitBreaker(
  * async (url:string) => {
  * const response = await fetch(url);
@@ -345,7 +345,7 @@ export function createCircuitBreaker<T extends unknown[], R>(
  * @returns Promise that resolves after delay
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * await sleep(1000); // Wait 1 second
  * ```
  */
@@ -361,7 +361,7 @@ export function sleep(ms: number): Promise<void> {
  * @returns Promise that resolves with array of results
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const urls = ['url1', 'url2', 'url3', 'url4', 'url5'];
  * const results = await concurrent(
  * urls.map(url => () => fetch(url)),
@@ -408,7 +408,7 @@ export async function concurrent<T>(
  * @returns Promise that resolves with array of Results
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const results = await allSettledSafe([
  * fetch('/api/data1'),
  * fetch('/api/data2'),
@@ -448,7 +448,7 @@ export async function allSettledSafe<T>(
  * @returns Debounced function
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const debouncedSave = debounce(
  * async (data:any) => {
  * await saveToDatabase(data);
@@ -510,7 +510,7 @@ export function debounce<T extends unknown[], R>(
  * @returns Throttled function
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const throttledAPI = throttle(
  * async (query:string) => {
  * return fetch(`/api/search?q=${query}`);

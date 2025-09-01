@@ -215,7 +215,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  const eventBusResult = await super.initialize();
  if (eventBusResult.isErr()) {
  throw new Error(
- `EventBus initialization failed:${eventBusResult.error?.message}`
+ `EventBus initialization failed:${eventBusResult.error?.message}`;
  );
  }
 
@@ -362,7 +362,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
  const duration = Date.now() - startTime;
  this.logger.debug(
- `🚦 Traffic control complete:${decisions.length} decisions made in ${duration}ms`
+ `🚦 Traffic control complete:${decisions.length} decisions made in ${duration}ms`;
  );
 
  return decisions;

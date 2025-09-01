@@ -609,7 +609,7 @@ export class KuzuAdapter implements DatabaseConnection {
  .join(', ');
 
  const primaryKeyClause = primaryKey
- ? `, PRIMARY KEY (${primaryKey})`
+ ? `, PRIMARY KEY (${primaryKey})`;
  : '';
  const cypher = `CREATE NODE TABLE IF NOT EXISTS ${tableName} (${propertyDefs}${primaryKeyClause})`;
 
@@ -695,7 +695,7 @@ export class KuzuAdapter implements DatabaseConnection {
  for (const node of nodes) {
  const properties = Object.keys(node);
  const values = Object.values(node);
- const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:$param${i}`).join(', ')}})`;
+ const cypher = `CREATE (:${tableName} {${properties.map((prop, i) => `${prop}:${param}${i}`).join(', ')}})`;
 
  // Convert values array to params object
  const params: Record<string, unknown> = {};
@@ -805,7 +805,7 @@ export class KuzuAdapter implements DatabaseConnection {
 
  // Add relationship pattern with optional hop limits
  cypher += options?.maxHops
- ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`
+ ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`;
  : `-[r:${relationshipPattern}]-`;
 
  // Add end node condition if specified
@@ -1013,7 +1013,7 @@ export class KuzuAdapter implements DatabaseConnection {
 
  private async createMigrationsTable(): Promise<void> {
  try {
- await this.query(`
+ await this.query(`;
  CREATE NODE TABLE IF NOT EXISTS _Migration (
  version STRING, 
  name STRING, 
@@ -1028,7 +1028,7 @@ export class KuzuAdapter implements DatabaseConnection {
 
  private async recordMigration(version: string, name: string): Promise<void> {
  await this.query(
- 'CREATE (:_Migration {version:$version, name:$name, applied_at:timestamp()})',
+ 'CREATE (:_Migration {version:${version}, name:${name}, applied_at:timestamp()})',
  { version, name }
  );
  }

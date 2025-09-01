@@ -795,13 +795,13 @@ export class SQLiteAdapter implements DatabaseConnection {
 
  // Get indexes
  const indexResult = await this.query<{ name: string }>(
- `PRAGMA index_list(${tableName})`
+ `PRAGMA index_list(${tableName})`;
  );
  const indexes: IndexSchema[] = [];
 
  for (const idx of indexResult.rows) {
  const indexInfo = await this.query<{ name: string }>(
- `PRAGMA index_info(${idx.name})`
+ `PRAGMA index_info(${idx.name})`;
  );
  indexes.push({
  name: idx.name,
@@ -841,7 +841,7 @@ export class SQLiteAdapter implements DatabaseConnection {
  }
 
  private async createMigrationsTable(): Promise<void> {
- await this.query(`
+ await this.query(`;
  CREATE TABLE IF NOT EXISTS _migrations (
  version TEXT PRIMARY KEY,
  name TEXT NOT NULL,

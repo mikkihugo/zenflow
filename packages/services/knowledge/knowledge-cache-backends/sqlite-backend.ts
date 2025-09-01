@@ -201,7 +201,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  * Create required database tables.
  */
  private async createTables(): Promise<void> {
- const createKnowledgeEntriesTable = `
+ const createKnowledgeEntriesTable = `;
  CREATE TABLE IF NOT EXISTS knowledge_entries (
  id TEXT PRIMARY KEY,
  content TEXT NOT NULL,
@@ -218,7 +218,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  )
  `;
 
- const createFTSTable = `
+ const createFTSTable = `;
  CREATE VIRTUAL TABLE IF NOT EXISTS knowledge_fts USING fts5(
  content,
  content='knowledge_entries',
@@ -226,7 +226,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  )
  `;
 
- const createMetricsTable = `
+ const createMetricsTable = `;
  CREATE TABLE IF NOT EXISTS storage_metrics (
  metric_name TEXT PRIMARY KEY,
  metric_value TEXT,

@@ -288,20 +288,20 @@ const requirements = context.product_requirements as any;
 
 const prdDocument:DocumentContent = {
 id:`prd-${Date.now()}`,
-type: `prd`, title: `Product Requirements Document`, content:`
+type: `prd`, title: `Product Requirements Document`, content:`;
 # Product Requirements Document
 
 ## Functional Requirements
-${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`
+${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`;
 
 ## Non-Functional Requirements
-${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`
+${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`;
 
 ## Constraints
-${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n`) || `}`
+${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n`) || `}`;
 
 ## Assumptions
-${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(`\n') || '}`
+${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(`\n') || '}`;
 `.trim(),
 metadata:{
 generatedAt:new Date().toISOString(),
@@ -350,11 +350,11 @@ for (const [epicName, features] of Object.entries(epicRequirements || {})) {
 const epicDoc:DocumentContent = {
 id:`epic-${epicName}-${Date.now()}`,
 type: `epic`, title:`Epic: ${epicName.replace(/([A-Z])/g, ' $1').trim()}`,
-content:`
+content:`;
 # Epic:${epicName}
 
 ## Features
-${(features as string[])?.map(feature => `- ${feature}`).join(`\n`) || '}`
+${(features as string[])?.map(feature => `- ${feature}`).join(`\n`) || '}`;
 
 ## Acceptance Criteria
 - [] Feature implementation complete

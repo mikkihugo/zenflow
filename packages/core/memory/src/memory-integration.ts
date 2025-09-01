@@ -96,7 +96,7 @@ export const defaultMemoryConfigurations = {
      * Debug memory storage path following Claude Zen storage architecture.
      *
      * **Storage Location**:'./.claude-zen/memory/debug.json'
-     * - **Project-local**:Uses project's '.claude-zen/memory/' subdirectory`
+     * - **Project-local**:Uses project's '.claude-zen/memory/' subdirectory`;
      * - **Purpose**:Development debugging and inspection storage
      * - **Features**:Human-readable JSON format, small size limit
      * - **Use case**:Development debugging, memory inspection, testing

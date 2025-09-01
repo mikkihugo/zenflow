@@ -85,7 +85,7 @@ export interface ContainerStats {
  *
  * // Resolve services with type safety
  * const userService = container.resolve<UserService>('userService');
- * `
+ * `;
  */
 export interface Container {
     on(event: string, listener: (...args: unknown[]) => void): this;

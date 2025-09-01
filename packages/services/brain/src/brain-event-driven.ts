@@ -16,7 +16,7 @@
 * **EVENT COORDINATION:**
 * - 'brain:brain-service:optimize-prompt' → ' brain-service:prompt-optimized') * - 'brain:brain-service:estimate-complexity' → ' brain-service:complexity-estimated') * - 'brain:brain-service:predict-performance' → ' brain-service:performance-predicted') * - 'brain:brain-service:coordinate-autonomous' → ' brain-service:autonomous-coordinated') * - 'brain:brain-service:analyze-behavioral' → ' brain-service:behavioral-analyzed') * - 'brain:brain-service:process-neural' → ' brain-service:neural-processed') *
 * @example Event-Driven Brain Coordination
-* ```typescript`
+* ```typescript`;
 * import { createEventDrivenBrain, EventDrivenBrain} from '@claude-zen/brain';
 *
 * // Create event-driven brain with brain coordination
@@ -43,7 +43,7 @@
 * ```
 *
 * @example Autonomous Decision-Making
-* ```typescript`
+* ```typescript`;
 * // Autonomous complexity estimation and strategy selection
 * brainService.eventBus.emit('brain:brain-service:estimate-complexity', {
 * requestId: 'complexity-456', * task: 'enterprise-system-design', * content: 'Build a fault-tolerant distributed system...', * context:{ domain: 'enterprise-architecture', scale: ' global'}
@@ -897,7 +897,7 @@ complexity,
 priority,
 timeLimit,
 qualityRequirement,
-historicalData:this.performanceHistory.get(`${request.task}-optimization`) || {}`
+historicalData:this.performanceHistory.get(`${request.task}-optimization`) || {}`;
 });
 
 // Apply strategy-specific optimization
@@ -1259,7 +1259,7 @@ return Math.min(0.95, baseConfidence + strategyConfidence - complexity * 0.1 + p
 }
 
 private generateOptimizationReasoning(strategy:string, complexity:number, confidence:number): string {
-return `Selected ${strategy} strategy based on complexity score of ${complexity.toFixed(2)}. `
+return `Selected ${strategy} strategy based on complexity score of ${complexity.toFixed(2)}. `;
 Confidence:${(confidence * 100).toFixed(1)}%.
 This approach optimizes for the given complexity and resource constraints.`;
 }
@@ -1676,7 +1676,7 @@ confidence:result.confidence
 * @returns Initialized EventDrivenBrain service
 *
 * @example
-* ```typescript`
+* ```typescript`;
 * const brainService = await createEventDrivenBrain({
 * autonomous:{ enabled: true, learningRate:0.01},
 * neural:{ rustAcceleration: true, gpuAcceleration:true},

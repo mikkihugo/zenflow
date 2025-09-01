@@ -89,7 +89,7 @@ export interface CircuitBreakerOptions {
  * @extends Error
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const error = new EnhancedError(
  * 'Database connection failed', * { host: 'localhost', port:5432},
  * 'DB_CONNECTION_ERROR') * );
@@ -159,7 +159,7 @@ export class EnhancedError extends Error {
  * @extends Error
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const contextError = new ContextError(
  * 'Validation failed', * { field: 'email', value: ' invalid-email', rule: ' email-format'},
  * 'VALIDATION_ERROR') * );
@@ -533,7 +533,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  */
  clear(): void {
  logger.info(
- `Circuit breaker ${this.name} metrics cleared (note:cockatiel doesn't support reset)`
+ `Circuit breaker ${this.name} metrics cleared (note:cockatiel doesn't support reset)`;
  );
  }
 }

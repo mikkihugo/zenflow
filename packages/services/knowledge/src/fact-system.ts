@@ -207,7 +207,7 @@ if (!this.factDatabase) return;
 
 try {
 // Main facts table with all data and coordinated indexes
-await this.factDatabase.execute(`
+await this.factDatabase.execute(`;
 CREATE TABLE IF NOT EXISTS coordination_facts (
 id TEXT PRIMARY KEY,
 type TEXT NOT NULL,
@@ -339,11 +339,11 @@ return;
 
 try {
 // Single insert with all data - database handles coordinated indexing automatically
-await this.factDatabase.execute(`
+await this.factDatabase.execute(`;
 INSERT OR REPLACE INTO coordination_facts (
 id, type, data, timestamp, source, confidence, tags
 ) VALUES (?, ?, ?, ?, ?, ?, ?)
-`, [`
+`, [`;
 fact.id,
 fact.type,
 JSON.stringify(fact.data),
@@ -492,7 +492,7 @@ throw error;
 * Build SQL query for database facts (helper method)
 */
 private buildQuerySQL(query:CoordinationFactQuery): { sql: string; params: unknown[]} {
-let sql = `
+let sql = `;
 SELECT id, type, data, timestamp, source, confidence, tags
 FROM coordination_facts
 WHERE 1=1
@@ -567,7 +567,7 @@ timestamp:number;
 source:string;
 confidence:number;
 tags:string;
-}>(`
+}>(`;
 SELECT id, type, data, timestamp, source, confidence, tags
 FROM coordination_facts
 WHERE id = ?
@@ -665,7 +665,7 @@ return [];
 }
 
 try {
-let sql = `
+let sql = `;
 SELECT id, type, data, timestamp, source, confidence, tags
 FROM coordination_facts
 WHERE 1=1
@@ -678,7 +678,7 @@ params.push(searchType);
 }
 
 if (query.trim()) {
-sql += ` AND (`
+sql += ` AND (`;
 JSON_EXTRACT(data, '$') LIKE ? OR
 source LIKE ? OR
 JSON_EXTRACT(tags, `$`) LIKE ?
@@ -854,7 +854,7 @@ try {
 // First try Rust fact bridge for maximum performance
 const npmResult = await this.factBridge.getNPMFacts();
 logger.info(
-` NPM package info retrieved via Rust bridge:${packageName}`
+` NPM package info retrieved via Rust bridge:${packageName}`;
 );
 return npmResult;
 } catch (error) {
@@ -891,7 +891,7 @@ try {
 // First try Rust fact bridge for maximum performance
 const githubResult = await this.factBridge.getGitHubFacts();
 logger.info(
-` GitHub repo info retrieved via Rust bridge:${owner}/${repo}`
+` GitHub repo info retrieved via Rust bridge:${owner}/${repo}`;
 );
 return githubResult;
 } catch (error) {
@@ -937,23 +937,23 @@ averageConfidence:number;
 if (this.factDatabase) {
 try {
 // Get statistics from unified database with coordinated indexes
-const totalResult = await this.factDatabase.query<{ count:number}>(`
+const totalResult = await this.factDatabase.query<{ count:number}>(`;
 SELECT COUNT(*) as count FROM coordination_facts
 `);
 
-const typeResult = await this.factDatabase.query<{ type:string; count: number}>(`
+const typeResult = await this.factDatabase.query<{ type:string; count: number}>(`;
 SELECT type, COUNT(*) as count
 FROM coordination_facts
 GROUP BY type
 `);
 
-const sourceResult = await this.factDatabase.query<{ source:string; count: number}>(`
+const sourceResult = await this.factDatabase.query<{ source:string; count: number}>(`;
 SELECT source, COUNT(*) as count
 FROM coordination_facts
 GROUP BY source
 `);
 
-const avgResult = await this.factDatabase.query<{ avg:number}>(`
+const avgResult = await this.factDatabase.query<{ avg:number}>(`;
 SELECT AVG(confidence) as avg FROM coordination_facts
 `);
 

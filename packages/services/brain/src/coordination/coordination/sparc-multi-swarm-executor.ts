@@ -181,7 +181,7 @@ const startTime = new Date();
 logger.info(` Starting SPARC Multi-Swarm A/B test: ${testId}`);
 logger.info(` Task: ${taskDescription}`);
 logger.info(
-` Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
+` Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`;
 );
 
 try {
@@ -243,13 +243,13 @@ logger.info(` SPARC Multi-Swarm test completed: ${testId}`);
 logger.info(
 ` Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(
 2
-)} confidence)`
+)} confidence)`;
 );
 logger.info(` Git trees created: ${totalWorktreesCreated}`);
 
 return multiSwarmResult;
 } catch (error) {
-logger.error(` SPARC Multi-Swarm test failed:$testId`, error);`
+logger.error(` SPARC Multi-Swarm test failed:${testId}`, error);`;
 throw error;
 }
 }
@@ -345,7 +345,7 @@ case 'comprehensive': ')' return [
 ];
 
 default:{
-throw new Error(`Unknown SPARC strategy scenario:${scenario}`);`
+throw new Error(`Unknown SPARC strategy scenario:${scenario}`);`;
 }
 }
 
@@ -359,7 +359,7 @@ gitConfig: GitTreeConfig,
 options: any
 ): Promise<SPARCExecutionResult[]> {
 logger.info(
-` Executing ${strategies.length} SPARC strategies in parallel with git trees...`
+` Executing ${strategies.length} SPARC strategies in parallel with git trees...`;
 );
 
 const promises = strategies.map((strategy) =>
@@ -385,7 +385,7 @@ gitConfig: GitTreeConfig,
 options: any
 ): Promise<SPARCExecutionResult[]> {
 logger.info(
-`⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...`
+`⏭️ Executing ${strategies.length} SPARC strategies sequentially with git trees...`;
 );
 
 const results:SPARCExecutionResult[] = [];
@@ -415,7 +415,7 @@ options:any
 const startTime = Date.now();
 
 logger.info(
-` Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})`
+` Executing SPARC strategy: ${strategy.name} (${strategy.modelBackend})`;
 );
 
 try {
@@ -429,7 +429,7 @@ gitConfig
 const duration = Date.now() - startTime;
 
 logger.info(
-` SPARC strategy completed: ${strategy.name} (${duration}ms)`
+` SPARC strategy completed: ${strategy.name} (${duration}ms)`;
 );
 
 return {
@@ -444,7 +444,7 @@ insights:sparcResult.insights,
 };
 } catch (error) {
 const duration = Date.now() - startTime;
-logger.error(` SPARC strategy failed:${strategy.name}`, error);`
+logger.error(` SPARC strategy failed:${strategy.name}`, error);`;
 
 return {
 strategy,
@@ -732,7 +732,7 @@ avgScore:scores.reduce((sum, score) => sum + score, 0) / scores.length,
 reasoning.push(
 `Best methodology: ${bestMethodology.methodology} (${bestMethodology.avgScore.toFixed(
 1
-)} avg score)`
+)} avg score)`;
 );
 
 // Analyze git tree usage
@@ -742,7 +742,7 @@ const successfulMerges = gitTreeResults.filter(
 (r) => r.gitTreeInfo.mergedToMain
 ).length;
 reasoning.push(
-`Git tree isolation: ${gitTreeResults.length} worktrees created, ${successfulMerges} successfully merged`
+`Git tree isolation: ${gitTreeResults.length} worktrees created, ${successfulMerges} successfully merged`;
 );
 }
 
@@ -774,7 +774,7 @@ withoutIntelligence.reduce(
 reasoning.push(
 `Intelligent systems impact: ${(
 avgWithIntelligence - avgWithoutIntelligence
-).toFixed(1)} point improvement`
+).toFixed(1)} point improvement`;
 );
 }
 

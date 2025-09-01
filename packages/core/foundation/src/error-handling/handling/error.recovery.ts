@@ -31,7 +31,7 @@
  * @see {@link https://aws.amazon.com/builders-library/timeouts-retries-and-backoff-with-jitter/} Retry Strategies
  *
  * @example Basic Recovery Strategy
- * ```typescript`
+ * ```typescript`;
  * import { ErrorRecoverySystem} from '@claude-zen/foundation';
  *
  * const recovery = new ErrorRecoverySystem({

@@ -562,7 +562,7 @@ const arity = params ? params.split(', ').length:0;') const lineNumber = content
 const func:BeamFunction = {
 name:functionName,
 arity:arity,
-visibility: 'public', // Determined by export list`) signature:`${functionName}(${params})`,`
+visibility: 'public', // Determined by export list`) signature:`${functionName}(${params})`,
 lineNumber:lineNumber,
 };
 
@@ -699,7 +699,7 @@ return attributes;
 
 private isOTPBehaviour(content: string): boolean {
 const otpBehaviours = [
-'gen_server', 'gen_statem', 'supervisor', `application`
+'gen_server', 'gen_statem', 'supervisor', `application`;
 ];
 return otpBehaviours.some((behaviour) =>
 content.includes(`-behaviour(${behaviour})`)

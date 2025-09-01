@@ -59,7 +59,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
 
  const primaryKey =
  schema.primaryKey?.length > 0
- ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`
+ ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`;
  : '';
 
  const sql = `CREATE TABLE IF NOT EXISTS ${name} (${columns}${primaryKey})`;
@@ -95,7 +95,7 @@ class TransactionSQLStorageImpl implements SqlStorage {
  options?: { ifExists?: boolean }
  ): Promise<void> {
  const query = options?.ifExists
- ? `DROP INDEX IF EXISTS ${name}`
+ ? `DROP INDEX IF EXISTS ${name}`;
  : `DROP INDEX ${name}`;
  await this.execute(query);
  }
@@ -233,7 +233,7 @@ export class SQLStorageImpl implements SqlStorage {
  error: error instanceof Error ? error.message : String(error),
  });
  throw new TransactionError(
- `Transaction failed:${error instanceof Error ? error.message : String(error)}`
+ `Transaction failed:${error instanceof Error ? error.message : String(error)}`;
  );
  }
  }
@@ -266,7 +266,7 @@ export class SQLStorageImpl implements SqlStorage {
 
  const primaryKey =
  schema.primaryKey?.length > 0
- ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`
+ ? `, PRIMARY KEY (${schema.primaryKey.join(', ')})`;
  : '';
 
  const sql = `CREATE TABLE IF NOT EXISTS ${name} (${columns}${primaryKey})`;
@@ -429,7 +429,7 @@ export class SQLStorageImpl implements SqlStorage {
  error: error instanceof Error ? error.message : String(error),
  });
  throw new QueryError(
- `Failed to list tables:${error instanceof Error ? error.message : String(error)}`
+ `Failed to list tables:${error instanceof Error ? error.message : String(error)}`;
  );
  }
  }
@@ -476,7 +476,7 @@ export class SQLStorageImpl implements SqlStorage {
  logger.debug('Dropping index', { indexName, options });
 
  const query = options?.ifExists
- ? `DROP INDEX IF EXISTS ${indexName}`
+ ? `DROP INDEX IF EXISTS ${indexName}`;
  : `DROP INDEX ${indexName}`;
  await this.execute(query);
 

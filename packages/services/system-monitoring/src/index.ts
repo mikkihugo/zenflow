@@ -29,7 +29,7 @@
  * eventSystem.on('system-monitoring:metrics', (data) => {
  *   logger.info('System metrics: ', data.metrics);
 ` *});
- * `
+ * `;
  *
  * @author Claude Code Zen Team
  * @version 2.0.0-event-driven

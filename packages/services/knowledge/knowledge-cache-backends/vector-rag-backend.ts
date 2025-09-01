@@ -213,7 +213,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  try {
  // Check if table exists and create if needed
  // This would be implemented using LanceDB's table creation API
- const createTableSQL = `
+ const createTableSQL = `;
  CREATE TABLE IF NOT EXISTS ${tableName} (
  id TEXT PRIMARY KEY,
  vector VECTOR(${this.config.vectorDimensions}),
@@ -339,7 +339,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  const tableName = this.config.vectorTableName || 'knowledge_vectors';
  
  try {
- const insertSQL = `
+ const insertSQL = `;
  INSERT INTO ${tableName} (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
  `;
@@ -401,7 +401,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  
  // Use LanceDB vector search via SQL-like syntax
  const tableName = this.config.vectorTableName || 'knowledge_vectors';
- const searchSQL = `
+ const searchSQL = `;
  SELECT id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata,
  vector_similarity(vector, ?) as similarity
  FROM ${tableName}

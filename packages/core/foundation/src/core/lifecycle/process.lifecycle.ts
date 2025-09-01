@@ -266,7 +266,7 @@ export class ProcessLifecycleManager {
  *   await cleanup();
  *   logger.info('Shutdown complete`);
  *});
- * `
+ * `;
  */
 export function setupProcessLifecycle(
   shutdownHandler: () => Promise<void>

@@ -5,7 +5,7 @@
  * health status, and capability reporting using service management.
  *
  * @example Basic Usage - Check System Status
- * ```typescript`
+ * ```typescript`;
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
@@ -16,7 +16,7 @@
  * ```
  *
  * @example Service Resolution with Fallbacks
- * ```typescript`
+ * ```typescript`;
  * import { getService, hasService} from '@claude-zen/foundation/status-manager';
  *
  * // Check if monitoring service is registered in container
@@ -32,7 +32,7 @@
  * ```
  *
  * @example Service Registration
- * ```typescript`
+ * ```typescript`;
  * import { registerService} from '@claude-zen/foundation/status-manager';
  *
  * // Register infrastructure service with expected packages
@@ -42,7 +42,7 @@
  * ```
  *
  * @example Health Check Endpoints
- * ```typescript`
+ * ```typescript`;
  * import { getHealthSummary, getSystemStatus} from '@claude-zen/foundation/status-manager';
  *
  * // Basic health endpoint
@@ -324,7 +324,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  * Check if a package is available and register it with Awilix
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * const packageInfo = await statusManager.checkAndRegisterPackage('@claude-zen/brain', 'brainService');
  * if (packageInfo.status === PackageStatus.REGISTERED) {
  * logger.info('Brain package available and registered in Awilix');
@@ -507,7 +507,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  * Register a service with its expected packages
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * await statusManager.registerService('intelligence', [
  * '@claude-zen/brain',	 * '@claude-zen/ai-safety')	 *], [
  * 'Neural coordination',	 * 'AI safety protocols'*]);
@@ -598,7 +598,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  * Get a service from the Awilix container with fallback
  *
  * @example
- * ```typescript`
+ * ```typescript`;
  * // Try to get real monitoring service, fall back to stub
  * const monitoring = await statusManager.getService('systemmonitoring', () => ({
  * PerformanceTracker:class FallbackTracker {
@@ -740,7 +740,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
 
  if (stalePackages.length > 0) {
  logger.debug(
- `Refreshing ${stalePackages.length} stale package statuses`
+ `Refreshing ${stalePackages.length} stale package statuses`;
  );
  await Promise.all(
  stalePackages.map((pkg) => this.checkAndRegisterPackage(pkg))

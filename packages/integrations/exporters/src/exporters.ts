@@ -170,7 +170,7 @@ export class ExportSystem {
 
  if (typeof obj === 'string') {
  return obj.includes('\n')
- ? `|\n${spaces}${obj.replace(/\n/g, `\n${spaces} `)}`
+ ? `|\n${spaces}${obj.replace(/\n/g, `\n${spaces} `)}`;
  : obj;
  }
 
@@ -182,7 +182,7 @@ export class ExportSystem {
  return obj
  .map(
  (item) =>
- `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`
+ `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`;
  )
  .join('\n');
  }
@@ -191,7 +191,7 @@ export class ExportSystem {
  return Object.entries(obj)
  .map(
  ([key, value]) =>
- `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`
+ `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`;
  )
  .join('\n');
  }
@@ -264,7 +264,7 @@ export class ExportSystem {
  const v = (item as Record<string, unknown>)?.[header];
  return v != null ? String(v) : '';
  })
- .join('|')}|`
+ .join('|')}|`;
  );
  return [headerRow, separatorRow, ...dataRows].join('\n');
  }

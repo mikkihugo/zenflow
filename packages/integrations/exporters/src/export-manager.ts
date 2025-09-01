@@ -219,7 +219,7 @@ export class ExportSystem extends EventEmitter {
  this.exportHistory.push(result);
  this.emit('export:success', result);
  logger.info(
- `Successfully exported data as ${format.toUpperCase()}:${filename}`
+ `Successfully exported data as ${format.toUpperCase()}:${filename}`;
  );
 
  return result;
@@ -288,7 +288,7 @@ export class ExportSystem extends EventEmitter {
  return entries
  .map(
  ([key, value]) =>
- `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`
+ `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`;
  )
  .join('\n');
  }
@@ -311,7 +311,7 @@ export class ExportSystem extends EventEmitter {
  return obj
  .map(
  (item, index) =>
- `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`
+ `${spaces}<item index="${index}">\n${this.convertToXML(item, indent + 1)}\n${spaces}</item>`;
  )
  .join('\n');
  }
@@ -320,7 +320,7 @@ export class ExportSystem extends EventEmitter {
  return Object.entries(obj)
  .map(
  ([key, value]) =>
- `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`
+ `${spaces}<${this.sanitizeXMLTag(key)}>\n${this.convertToXML(value, indent + 1)}\n${spaces}</${this.sanitizeXMLTag(key)}>`;
  )
  .join('\n');
  }
@@ -382,7 +382,7 @@ export class ExportSystem extends EventEmitter {
 
  html +=
  typeof value === 'string'
- ? `<p>${this.escapeHTML(value)}</p>`
+ ? `<p>${this.escapeHTML(value)}</p>`;
  : `<p>${this.escapeHTML(String(value))}</p>`;
  }
  } else {

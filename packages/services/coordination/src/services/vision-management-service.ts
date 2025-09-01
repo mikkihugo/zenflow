@@ -154,7 +154,7 @@ const dbSystem = await DatabaseProvider.create();') this.database = dbSystem.cre
 await this.createVisionTables();
 // Load existing visions
 await this.loadExistingVisions();') this.logger.info(`Vision Management Service initialized successfully,{`;
-visionsLoaded: `vision-`${Date.now()}-${Math.random().toString(36).substr(2, 9)}) this.logger.info(``Creating new vision artifact,{`
+visionsLoaded: `vision-`${Date.now()}-${Math.random().toString(36).substr(2, 9)}) this.logger.info(``Creating new vision artifact,{`;
 visionId,
 level: {
 id: await this.createVisionApprovalWorkflow(
@@ -174,7 +174,7 @@ visionId,
 approvalGateId,
 estimatedApprovalTime: this.visions.get(visionId);
 if (!vision) {
-`) throw new Error(`Vision not found: this.requiresNewApproval(`
+`) throw new Error(`Vision not found: this.requiresNewApproval(`;
 vision,
 updates,
 requestContext.changeImpact;
@@ -193,10 +193,10 @@ await this.persistVision(vision);
 return {
 success: this.visions.get(visionId);
 if (!vision) {
-`) throw new Error(`Vision not found: `vision-board-${v}isionId``) const visionBoard: {`
+`) throw new Error(`Vision not found: `vision-board-${v}isionId``) const visionBoard: {`;
 id: this.visions.get(visionId);
 if (!vision) {
-`) throw new Error(`Vision not found: this.calculateStakeholderAlignment(`
+`) throw new Error(`Vision not found: this.calculateStakeholderAlignment(`;
 assessmentContext.stakeholderFeedback;
 );
 const teamAlignment = this.calculateTeamAlignment(
@@ -364,4 +364,4 @@ private combineVisionHierarchies(hierarchies: any[]): any {
 return { hierarchy: [], orphanedVisions: []};
 };)};;
 export default VisionManagementService;
-;`
+;`;

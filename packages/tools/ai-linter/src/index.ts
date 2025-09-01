@@ -135,7 +135,7 @@ fixedErrors,
 timeTaken: Date.now() - startTime,
 aiModel: this.config.aiMode,
 backupPath: this.config.backupEnabled
-? `${filePath}.backup`
+? `${filePath}.backup`;
 : undefined,
 };
 
@@ -435,7 +435,7 @@ errors: Array<{ line: number; column: number; message: string }>
 const errorSummary = errors
 .map(
 (err, i) =>
-`${i + 1}. Line ${err.line}, Col ${err.column}:${err.message}`
+`${i + 1}. Line ${err.line}, Col ${err.column}:${err.message}`;
 )
 .join(`\n`);
 

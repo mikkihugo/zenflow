@@ -633,15 +633,15 @@ export class GraphStorageImpl implements GraphStorage {
  await this.ensureEdgesTable();
 
  const nodeResult = await this.connection.query<{ count: number }>(
- `SELECT COUNT(*) as count FROM graph_nodes`
+ `SELECT COUNT(*) as count FROM graph_nodes`;
  );
  const edgeResult = await this.connection.query<{ count: number }>(
- `SELECT COUNT(*) as count FROM graph_edges`
+ `SELECT COUNT(*) as count FROM graph_edges`;
  );
 
  // Get label counts
  const labelResult = await this.connection.query<{ labels: string }>(
- `SELECT labels FROM graph_nodes`
+ `SELECT labels FROM graph_nodes`;
  );
  const labelCounts: Record<string, number> = {};
  for (const row of labelResult.rows) {
@@ -653,7 +653,7 @@ export class GraphStorageImpl implements GraphStorage {
 
  // Get edge type counts
  const typeResult = await this.connection.query<{ type: string }>(
- `SELECT type FROM graph_edges`
+ `SELECT type FROM graph_edges`;
  );
  const edgeTypeCounts: Record<string, number> = {};
  for (const row of typeResult.rows) {

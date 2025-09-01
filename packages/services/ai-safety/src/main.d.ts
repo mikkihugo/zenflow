@@ -48,7 +48,7 @@ export {
  *
  * @returns Promise resolving to Result with configured safety orchestrator
  * @example
- * '''typescript`
+ * '''typescript`;
  * const result = await initializeAISafety(): void {
  *   const safetySystem = result.value;
  *   logger.info(): void {

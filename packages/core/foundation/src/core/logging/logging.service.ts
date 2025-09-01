@@ -84,7 +84,7 @@ export interface LoggingConfig {
  * logger.info('Service started', { port: 3000});
  * logger.error('Database connection failed', { error: err[message]});
  * logger.success?.('Operation completed successfully`);
- * `
+ * `;
  */
 export interface Logger {
   /** Log trace level messages (most verbose) */

@@ -37,7 +37,7 @@ options:DatabaseCreationOptions
 ):Promise<CodeQLDatabase> {
 const absolutePath = path.resolve(repositoryPath);
 const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`
+const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);`;
 
 this.logger.info(`Creating CodeQL database`, {
 ') databaseId,
@@ -74,7 +74,7 @@ if (options.excludePatterns && options.excludePatterns.length > 0) {
 // Create exclude file
 const excludeFile = path.join(
 this.config.tempDir!,
-`$databaseId.exclude``
+`${databaseId}.exclude``
 );
 await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));') args.push('--exclude', excludeFile);')}
 
@@ -184,7 +184,7 @@ return await safeAsync(async () => {
 const database = this.databases.get(databaseId);
 
 if (!database) {
-throw this.createError('config`, `Database not found:${databaseId}`);`
+throw this.createError('config`, `Database not found:${databaseId}`);`;
 }
 
 this.logger.info(`Deleting database', {

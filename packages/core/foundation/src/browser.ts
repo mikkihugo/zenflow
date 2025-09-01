@@ -12,7 +12,7 @@
  *
  * const logger = getLogger('browser-component');
  * logger.info('Browser component initialized`);
- * `
+ * `;
  */
 
 // =============================================================================

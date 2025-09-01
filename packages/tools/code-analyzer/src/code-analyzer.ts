@@ -348,11 +348,12 @@ const absolutePath = path.resolve(this.repositoryPath, filePath);
 // Detect language
 const language = this.detectLanguage(absolutePath);
 if (!language) {
-throw new Error(`Unsupported file type:${filePath}`);`
+throw new Error(`Unsupported file type:${filePath}`);`;
 }
 
 // Read file content
-const content = await fs.readFile(absolutePath, `utf-8`);// Create analysis ID
+const content = await fs.readFile(absolutePath, `utf-8`);
+// Create analysis ID
 const analysisId = this.generateSessionId();
 
 // Perform multi-stage analysis
@@ -466,15 +467,16 @@ return err(new Error('Brain system not available'));')}
 
 const coordinator = this.brainSystem.createCoordinator();
 
-const prompt = `Analyze this $languagecode for insights:`
-$content.substring(0, 2000)...
+const prompt = `Analyze this ${language} code for insights:
+
+${content.substring(0, 2000)}...
 
 Provide:
 1. Code quality assessment
 2. Potential improvements
 3. Security considerations
 4. Performance optimizations
-5. Maintainability recommendations`;`
+5. Maintainability recommendations`;
 
 await coordinator.optimizePrompt({
 task: 'Code analysis and insights', basePrompt:prompt,
@@ -541,7 +543,7 @@ logger.warn('AI insights generation failed`, { error});`) return err(error insta
 
 // Helper methods
 private generateSessionId():string {
-return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`
+return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;`;
 }
 
 private createInitialMetrics():SessionMetrics {
@@ -1199,19 +1201,19 @@ return await safeAsync(async ():Promise<DependencyRelationshipMap> => {
 this.logger.info('Building comprehensive dependency relationship map`, options);`)
 // Phase 1:Discovery - Find all analyzable files
 const files = await this.discoverFiles(options);
-this.logger.debug(`Discovered $files.lengthfiles for analysis`);`
+this.logger.debug(`Discovered ${files}.lengthfiles for analysis`);`;
 
 // Phase 2:Node Extraction - Extract all dependency nodes
 const __nodes = await this.extractNodes(files);
-this.logger.debug(`Extracted ${nodes.length} dependency nodes`);`
+this.logger.debug(`Extracted ${nodes.length} dependency nodes`);`;
 
 // Phase 3:Edge Analysis - Analyze relationships between nodes
 const edges = await this.analyzeRelationships(nodes, files);
-this.logger.debug(`Analyzed $edges.lengthdependency relationships`);`
+this.logger.debug(`Analyzed ${edges}.lengthdependency relationships`);`;
 
 // Phase 4:Cluster Analysis - Group related nodes
 const clusters = await this.performClusterAnalysis(nodes, edges);
-this.logger.debug(`Identified ${clusters.length} dependency clusters`);`
+this.logger.debug(`Identified ${clusters.length} dependency clusters`);`;
 
 // Phase 5:Metrics Calculation - Calculate comprehensive metrics
 const metrics = await this.calculateDependencyMetrics(nodes, edges, clusters);
@@ -1235,7 +1237,7 @@ analysisTime,
 },
 };
 
-this.logger.info(`Dependency relationship map completed in $analysisTime.toFixed(2)ms`, {`
+this.logger.info(`Dependency relationship map completed in ${analysisTime}.toFixed(2)ms`, {`;
 nodes:nodes.length,
 edges:edges.length,
 clusters:clusters.length,
@@ -1315,7 +1317,7 @@ for (const circular of circularDeps) {
 if (circular.severity === 'high' || circular.severity === ' critical{
 ') violations.push(
 type: 'circular-dependency', severity:circular.severity,
-description:`Circular dependency detected: $circular.cycle.join(' -> ')`,`
+description:`Circular dependency detected: ${circular}.cycle.join(' -> ')`,
 affectedNodes:circular.cycle,
 suggestedFix: 'Consider breaking the cycle by introducing an interface or moving shared code to a common module', impact:circular.cycle.length * 10,);
 }
@@ -1349,7 +1351,7 @@ files.push(fullPath);
 }
 }
 } catch (error) {
-this.logger.warn(`Failed to read directory:${dir}`, { error});`
+this.logger.warn(`Failed to read directory:${dir}`, { error});`;
 }
 };
 
@@ -1365,7 +1367,7 @@ try {
 const content = await fs.readFile(filePath, `utf-8`);') const fileNodes = await this.extractNodesFromFile(filePath, content);
 nodes.push(...fileNodes);
 } catch (error) {
-this.logger.warn(`Failed to extract nodes from file:$filePath`, { error});`
+this.logger.warn(`Failed to extract nodes from file:${filePath}`, { error});`;
 }
 }
 
@@ -1402,8 +1404,8 @@ _column,
 endLine:lineIndex + 1,
 endColumn:column + name.length,,
 metadata:
-isExported:content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),`
-isDefault:content.includes(`export default $name`),`
+isExported:content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),`;
+isDefault:content.includes(`export default ${name}`),`;
 visibility: `public`, complexity:this.calculateNodeComplexity(content, name),
 size:name.length,
 lastModified:new Date(),,);
@@ -1423,7 +1425,7 @@ try {
 const content = await fs.readFile(filePath, 'utf-8`);`) const fileEdges = await this.extractEdgesFromFile(filePath, content, nodeMap);
 edges.push(...fileEdges);
 } catch (error) {
-this.logger.warn(`Failed to analyze relationships in file:${filePath}`, { error});`
+this.logger.warn(`Failed to analyze relationships in file:${filePath}`, { error});`;
 }
 }
 
@@ -1438,7 +1440,7 @@ nodeMap:Map<string, DependencyNode>
 const edges:DependencyEdge[] = [];
 
 // Extract import relationships
-const importPattern = /imports+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[A-Za-z_$][A-Za-z0-9_$]*))s+froms+[`"`]([^`"`]+)['"`]/g;`
+const importPattern = /imports+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[A-Za-z_$][A-Za-z0-9_$]*))s+froms+[`"`]([^`"`]+)['"`]/g;`;
 let match;
 
 while ((match = importPattern.exec(content)) !== null) {
@@ -1492,7 +1494,7 @@ const coupling = this.calculateCoupling(dirNodes, edges);
 const stability = this.calculateStability(dirNodes, edges);
 
 clusters.push({
-id:`cluster_${clusterIndex++}`,`
+id:`cluster_${clusterIndex++}`,
 name:path.basename(dirPath),
 nodes:dirNodes.map(n => n.id),
 cohesion,
@@ -1542,11 +1544,11 @@ qualityAssessment:this.assessOverallQuality(nodes, edges, clusters, metrics),
 
 // Additional helper methods (simplified implementations for brevity)
 private generateNodeId():string
-return `node_${++this.nodeIdCounter}`;`
+return `node_${++this.nodeIdCounter}`;`;
 }
 
 private generateEdgeId():string {
-return `edge_$++this.edgeIdCounter`;`
+return `edge_$++this.edgeIdCounter`;`;
 
 private createEdge(type:string, from:string, to:string, importType?:string): DependencyEdge
 return {
@@ -1626,7 +1628,7 @@ return clusters.reduce((acc, cluster) => acc + (1 - cluster.stability), 0) / clu
 
 private calculateCouplingDistribution(clusters:DependencyCluster[]): [key: string]: number
 return clusters.reduce((acc, cluster, index) => {
-acc[`cluster_${index}`] = cluster.coupling;`
+acc[`cluster_${index}`] = cluster.coupling;`;
 return acc;
 }, {} as { [key:string]: number});
 }
