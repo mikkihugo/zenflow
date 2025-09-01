@@ -257,7 +257,7 @@ message += `\n- ${key}:${_spec.description || 'No description'}`
 if (signature.outputs) {
 message += `\nOutputs:`
 for (const [key, spec] of Object.entries(signature.outputs)) {
-message += `\n- ${key}:${spec.description || `No description`}`
+message += `\n- ${key}:${spec.description || `No description}`
 }
 }
 }

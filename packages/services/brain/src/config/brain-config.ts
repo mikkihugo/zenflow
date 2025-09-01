@@ -120,7 +120,7 @@ return {
 ...sharedConfig,
 } as BrainSpecificConfig & Partial<Config>;
 } catch (error) {
-logger.error('Failed to load brain configuration:`, error);`) throw new Error(
+logger.error('Failed to load brain configuration:`, error);); throw new Error(
 `Brain configuration failed:${error instanceof Error ? error.message : String(error)}``
 );
 }
@@ -133,7 +133,7 @@ export function validateBrainConfig(
 config:Partial<BrainSpecificConfig>
 ):boolean {
 try {
-if (!config.wasmPath||typeof config.wasmPath !==`string`) {
+if (!config.wasmPath||typeof config.wasmPath !==`string); {
 ; throw new Error('wasmPath must be a valid string').').
 
 if (

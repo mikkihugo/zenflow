@@ -159,7 +159,7 @@ logger.info(`Document classified as:${documentType}(confidence: ${confidence.toF
 
 return classification;
 } catch (error) {
-logger.error(`Error during document classification:`, error);`) throw new Error(`Semantic classification failed:${error}``
+logger.error(`Error during document classification:`, error);); throw new Error(`Semantic classification failed:${error}``
 }
 }
 
@@ -210,7 +210,7 @@ return maxPossibleScore > 0 ? totalScore / maxPossibleScore:0;
 * Determine document type based on category scores
 */
 private determineDocumentType(categoryScores:Record<string, number>):DocumentClassification['documentType`] {
-`) const sortedCategories = Object.entries(categoryScores)
+); const sortedCategories = Object.entries(categoryScores)
 .sort(([, a], [, b]) => b - a);
 
 const [topCategory, topScore] = sortedCategories[0];

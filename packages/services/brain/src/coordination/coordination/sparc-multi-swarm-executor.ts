@@ -3,10 +3,7 @@
 *
 * Advanced multi-swarm A/B testing system specifically designed for SPARC Commander.
 * Since SPARC Commander is the only system that can write code, this executor
-* launches multipl} catch (error) {
-logger.error(` SPARC Multi-Swarm test failed: ${testId}`, error);
-throw error;
-}ARC instances in parallel using git trees for isolation.
+* launches multiple SPARC instances in parallel using git trees for isolation.
 *
 * Features:
 * - Parallel SPARC execution with git tree isolation
@@ -20,7 +17,7 @@ throw error;
 * @since 2024-01-01
 */
 
-iexport async function quickSPARCTest(
+export async function quickSPARCTest(
 taskDescription: string,
 scenario:
 | 'rapid-development'
@@ -32,7 +29,8 @@ useGitTrees?: boolean;
 timeoutMs?: number;
 cleanupWorktrees?: boolean;
 } = {}
-): Promise<SPARCMultiSwarmResult> {generateNanoId} from '@claude-zen/foundation';
+): Promise<SPARCMultiSwarmResult> {
+import { generateNanoId } from '@claude-zen/foundation';
 
 import { CodingPrinciplesResearcher} from './coding-principles-researcher';
 import { IntelligentPromptGenerator} from './intelligent-prompt-generator';
@@ -178,10 +176,10 @@ cleanupWorktrees?:boolean;
 const testId = `sparc-multiswarm-${generateNanoId()}`
 const startTime = new Date();
 
-logger.info(` Starting SPARC Multi-Swarm A/B test: ${testId}`
-logger.info(` Task: ${taskDescription}`
+logger.info(`Starting SPARC Multi-Swarm A/B test: ${testId}`);
+logger.info(`Task: ${taskDescription}`);
 logger.info(
-` Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
+`Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
 );
 
 try {
@@ -239,17 +237,17 @@ totalWorktreesCreated,
 },
 };
 
-logger.info(` SPARC Multi-Swarm test completed: ${testId}`
+logger.info(`SPARC Multi-Swarm test completed: ${testId}`);
 logger.info(
-` Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(
+`Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(
 2
 )} confidence)`
 );
-logger.info(` Git trees created: ${totalWorktreesCreated}`
+logger.info(`Git trees created: ${totalWorktreesCreated}`);
 
 return multiSwarmResult;
 } catch (error) {
-logger.error(` SPARC Multi-Swarm test failed:${testId}`, error);`
+logger.error(`SPARC Multi-Swarm test failed: ${testId}`, error);
 throw error;
 }
 }
@@ -258,9 +256,11 @@ throw error;
 * Create predefined SPARC strategy sets for common scenarios
 */
 createSPARCStrategySet(
-scenario:`rapid-development` | ' quality-focused' | ' enterprise-grade' | ' comprehensive; ):SPARCStrategy[] {
+scenario: 'rapid-development' | 'quality-focused' | 'enterprise-grade' | 'comprehensive'
+): SPARCStrategy[] {
 switch (scenario) {
-case 'rapid-development': '). return [
+case 'rapid-development':
+return [
 {
 id: 'rapid-sparc-claude', name: 'Rapid SPARC with Claude Haiku', modelBackend: 'claude-haiku', swarmConfig:{
 topology: 'star', maxAgents:3,
@@ -281,7 +281,8 @@ style: 'concise', focus: 'speed',},
 
 ];
 
-case 'quality-focused': '). return [
+case 'quality-focused':
+return [
 {
 id: 'quality-sparc-opus', name: 'Quality SPARC with Claude Opus', modelBackend: 'claude-opus', swarmConfig:{
 topology: 'mesh', maxAgents:6,
@@ -318,7 +319,8 @@ style: 'detailed', focus: 'quality',},
 },
 ];
 
-case 'enterprise-grade': '). return [
+case 'enterprise-grade':
+return [
 {
 id: 'enterprise-sparc-opus', name: 'Enterprise SPARC with Claude Opus', modelBackend: 'claude-opus', swarmConfig:{
 topology: 'mesh', maxAgents:8,
@@ -338,14 +340,15 @@ style: 'detailed', focus: 'quality',},
 },
 ];
 
-case 'comprehensive': '). return [
-...this.createSPARCStrategySet('rapid-development').
-...this.createSPARCStrategySet('quality-focused').
-...this.createSPARCStrategySet(`enterprise-grade`),
+case 'comprehensive':
+return [
+...this.createSPARCStrategySet('rapid-development'),
+...this.createSPARCStrategySet('quality-focused'),
+...this.createSPARCStrategySet('enterprise-grade'),
 ];
 
-default:{
-throw new Error(`Unknown SPARC strategy scenario:${scenario}``
+default: {
+throw new Error(`Unknown SPARC strategy scenario: ${scenario}`);
 }
 }
 
@@ -359,7 +362,7 @@ gitConfig: GitTreeConfig,
 options: any
 ): Promise<SPARCExecutionResult[]> {
 logger.info(
-` Executing ${strategies.length} SPARC strategies in parallel with git trees...`
+`Executing ${strategies.length} SPARC strategies in parallel with git trees...`
 );
 
 const promises = strategies.map((strategy) =>
@@ -488,7 +491,7 @@ taskDescription:string,
 strategy:SPARCStrategy,
 gitConfig:GitTreeConfig
 ):Promise<{
-sparcMetrics:SPARCExecutionResult['sparcMetrics']; qualityMetrics:SPARCExecutionResult['qualityMetrics']; deliverables:SPARCExecutionResult['deliverables']; gitTreeInfo:SPARCExecutionResult['gitTreeInfo`];`) insights:string[];
+sparcMetrics:SPARCExecutionResult['sparcMetrics']; qualityMetrics:SPARCExecutionResult['qualityMetrics']; deliverables:SPARCExecutionResult['deliverables']; gitTreeInfo:SPARCExecutionResult['gitTreeInfo`];); insights:string[];
 }> {
 // Calculate base quality based on model and configuration
 const baseQuality = this.getBaseSPARCQuality(strategy);

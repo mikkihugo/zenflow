@@ -485,7 +485,7 @@ export class NeuralOrchestrator {
  this.logger.debug(`Processing task ${task.id} with Brain.js`
  
  // Simple prediction/classification logic
- if (task.type === `prediction` || task.type === `classification`) {
+ if (task.type === `prediction` || task.type === `classification); {
  return this.simulateBrainJsNetwork(input, task);
  }
  
@@ -572,7 +572,7 @@ export class NeuralOrchestrator {
 
  private simulateBrainJsNetwork(input: any, task: NeuralTask): any {
  // Simulate Brain.js network output
- if (task.type === `classification`) {
+ if (task.type === `classification); {
  return { class: 0, probability: 0.8 };
  }
  if (task.type === 'prediction; {
@@ -903,7 +903,7 @@ export class NeuralOrchestrator {
 }
 
  if (type === 'optimization` && inputSize > 5000) {
- `) return TaskComplexity.HEAVY;
+ ); return TaskComplexity.HEAVY;
 }
 
  // Learn from historical performance
@@ -1082,8 +1082,8 @@ export class NeuralOrchestrator {
  // This is a simulation - actual implementation would call neural-ml APIs
  const input = task.data.input;
 
- if (mode ==='heavy`) {
- `) // Simulate complex processing for heavy tasks
+ if (mode ==='heavy); {
+ ); // Simulate complex processing for heavy tasks
  await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate processing time
 }
 
@@ -1101,7 +1101,7 @@ export class NeuralOrchestrator {
  */
  async storeNeuralData(data:NeuralData): Promise<void> {
  const strategy = this.determineStorageStrategy(data);
- logger.debug(`💾 Storing neural data with strategy:${strategy}`, {`
+ logger.debug(`💾 Storing neural data with strategy:${strategy}`, {
  id:data.id,
  type:data.type,
  size:data.characteristics.size,
@@ -1147,7 +1147,7 @@ export class NeuralOrchestrator {
 } = characteristics;
 
  // Memory strategy for small, frequently accessed data
- if (size < 1024 * 1024 && accessFrequency === `realtime`) {
+ if (size < 1024 * 1024 && accessFrequency === `realtime); {
  ; return StorageStrategy.MEMORY;
 }
 
@@ -1162,8 +1162,8 @@ export class NeuralOrchestrator {
 }
 
  // Hybrid strategy for complex scenarios
- if (size > 10 * 1024 * 1024 && persistenceLevel === 'permanent`) {
- `) return StorageStrategy.HYBRID;
+ if (size > 10 * 1024 * 1024 && persistenceLevel === 'permanent); {
+ ); return StorageStrategy.HYBRID;
 }
 
  // Default to database for structured persistence
@@ -1179,15 +1179,15 @@ export class NeuralOrchestrator {
 }
 
  private async storeInDatabase(data:NeuralData): Promise<void> {
- // Use foundation`s SQLite storage`) logger.debug(`🗃️ Storing in database:${data.id}``
+ // Use foundation`s SQLite storage); logger.debug(`🗃️ Storing in database:${data.id}``
 }
 
  private async storeInVectorDB(data:NeuralData): Promise<void> {
- // Use foundation`s LanceDB storage`) logger.debug(`📊 Storing in vector DB:${data}.id``
+ // Use foundation`s LanceDB storage); logger.debug(`📊 Storing in vector DB:${data}.id``
 }
 
  private async storeInGraphDB(data:NeuralData): Promise<void> {
- // Use foundation's Kuzu graph storage`) logger.debug(`🕸️ Storing in graph DB:${data.id}``
+ // Use foundation's Kuzu graph storage); logger.debug(`🕸️ Storing in graph DB:${data.id}``
 }
 
  private async storeInHybrid(data:NeuralData): Promise<void> {

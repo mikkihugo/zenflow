@@ -90,7 +90,7 @@ outputs.length,
 predictors(): any[] {
 const allPredictors: any[] = [];
 for (const program of this.programs) {
-if (typeof program.predictors === `function`) {
+if (typeof program.predictors === `function); {
 allPredictors.push(...program.predictors())();
 }
 }

@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "build:watch": "tsc --project tsconfig.json --watch",
+    "type-check": "tsc --noEmit",
     "build:rust": "cd ../../core/neural-ml/neural-core && cargo build --release",
     "build:rust:feedforward": "cd ../../core/neural-ml/neural-core && cargo build -p claude-zen-neural-feedforward --release",
     "build:rust:framework": "cd ../../core/neural-ml/neural-core && cargo build -p claude-zen-neural-framework --release",
@@ -58,7 +59,7 @@
     "simple-statistics": "^7.8.8",
     "synaptic": "^1.1.4",
     "trendyways": "^1.0.1",
-    "zod": "^4.1.1"
+    "zod": "^3.23.8"
   },
   "_dependencies_replaced_with_rust": {
     "_tensorflow_js_replaced": "@tensorflow/tfjs + @tensorflow/tfjs-node → claude-zen-neural-framework (Burn/Candle)",

@@ -208,15 +208,15 @@ launched_flag = true;
 student = this._deepcopy(student);
 (student as any)._compiled = false;
 
-if (step_code === 'p{
-student = await this._compile_prompt_optimizer(
-student,
-trainset,
-valset_ratio
-);
-} else if (step_code === 'w{
-student = await this._compile_weight_optimizer(student, trainset);
-launched_flag = false;
+if (step_code === 'p') {
+  student = await this._compile_prompt_optimizer(
+    student,
+    trainset,
+    valset_ratio
+  );
+} else if (step_code === 'w') {
+  student = await this._compile_weight_optimizer(student, trainset);
+  launched_flag = false;
 }
 
 // Record program for current strategy
@@ -324,8 +324,8 @@ private _get_predictors(student: DSPyModule): any[] {
 const predictors: any[] = [];
 
 // In Stanford DSPy, student.predictors() returns a list of predictors
-if (typeof (student as any).predictors === 'function{
-return (student as any).predictors();
+if (typeof (student as any).predictors === 'function') {
+  return (student as any).predictors();
 }
 
 // Fallback:search for predictor-like objects
@@ -346,22 +346,22 @@ private _launch_lms(student: DSPyModule): void {
 // In Stanford implementation, this launches distributed LM servers
 const predictors = this._get_predictors(student);
 for (const predictor of predictors) {
-if (predictor.lm && typeof predictor.lm.launch === 'function{
-predictor.lm.launch();
-}
+  if (predictor.lm && typeof predictor.lm.launch === 'function') {
+    predictor.lm.launch();
+  }
 }
 }
 
 /**
-* Kill LMs exactly matching Stanford kill_lms
-*/
+ * Kill LMs exactly matching Stanford kill_lms
+ */
 private _kill_lms(student: DSPyModule): void {
-const predictors = this._get_predictors(student);
-for (const predictor of predictors) {
-if (predictor.lm && typeof predictor.lm.kill === 'function{
-predictor.lm.kill();
-}
-}
+  const predictors = this._get_predictors(student);
+  for (const predictor of predictors) {
+    if (predictor.lm && typeof predictor.lm.kill === 'function') {
+      predictor.lm.kill();
+    }
+  }
 }
 
 /**

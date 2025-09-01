@@ -284,7 +284,7 @@ let missionText = '';
 let outcomeText = ``
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -314,7 +314,7 @@ const goalKeywords = ['goal', 'objective', 'target', 'deliverable', `milestone`]
 const goals: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -346,7 +346,7 @@ let competitiveIndicators = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -393,7 +393,7 @@ let techScore = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -424,7 +424,7 @@ const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partn
 const stakeholders: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 
 // Extract potential stakeholder names
 const words = content.split(/\s+/);
@@ -456,7 +456,7 @@ const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 
 let timelineText = ``
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -481,7 +481,7 @@ const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threa
 const risks: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -509,7 +509,7 @@ const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', `benchmark
 const metrics: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || `}`
+const content = `${doc.content || '' } ${ doc.summary || }`
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {

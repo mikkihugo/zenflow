@@ -657,10 +657,6 @@ export class WebSocketManager {
       '@claude-zen/system-monitoring': {
         status: packageInfo['@claude-zen/system-monitoring']?.available ? 'registered' : 'fallback',
         version: packageInfo['@claude-zen/system-monitoring']?.version
-      },
-      '@claude-zen/load-balancing': {
-        status: packageInfo['@claude-zen/load-balancing']?.available ? 'registered' : 'fallback', 
-        version: packageInfo['@claude-zen/load-balancing']?.version
       }
     };
 

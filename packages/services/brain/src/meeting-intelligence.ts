@@ -9,14 +9,14 @@ async analyzeMeeting(data:any): Promise<any> {
 // Analyze meeting data to extract insights
 const insights = [];
 
-if (data && typeof data === 'object`) {
-`) // Extract basic meeting information
+if (data && typeof data === 'object') {
+ // Extract basic meeting information
 if (data.duration) {
-insights.push(`Meeting duration:${data.duration} minutes``
+insights.push(`Meeting duration: ${data.duration} minutes`);
 }
 
 if (data.participants && Array.isArray(data.participants)) {
-insights.push(`Participants:${data}.participants.lengthattendees``
+insights.push(`Participants: ${data.participants.length} attendees`);
 
 // Analyze participant engagement
 const activeParticipants = data.participants.filter(
@@ -30,15 +30,14 @@ insights.push(
 }
 
 if (data.topics && Array.isArray(data.topics)) {
-insights.push(`Discussion topics:${data.topics.length} items covered``
+insights.push(`Discussion topics: ${data.topics.length} items covered`);
 
 // Identify key themes
 const keyTopics = data.topics
 .slice(0, 3)
-.map((topic:any) => topic.title||topic.name||topic);
+.map((topic: any) => topic.title || topic.name || topic);
 if (keyTopics.length > 0) {
-insights.push(`Key themes:${keyTopics}.join(`, `)``
-}
+insights.push(`Key themes: ${keyTopics.join(', ')}`);
 }
 
 if (data.actionItems && Array.isArray(data.actionItems)) {
@@ -48,7 +47,7 @@ insights.push(
 
 // Analyze urgency
 const urgentItems = data.actionItems.filter(
-(item:any) => item.priority === `high`||item.urgent`) );
+(item:any) => item.priority === `high`||item.urgent); );
 if (urgentItems.length > 0) {
 insights.push(
 `Urgent actions:${urgentItems.length} high-priority items``

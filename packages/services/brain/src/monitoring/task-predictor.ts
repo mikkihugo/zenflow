@@ -235,7 +235,7 @@ metadata:{
 sampleSize:recentHistory.length,
 algorithm:
 contextAdjustmentFactors.length > 0
-? `context_adjusted_average`) : 'simple_average', trendDirection:this.calculateTrendDirection(durations),
+? `context_adjusted_average); : 'simple_average', trendDirection:this.calculateTrendDirection(durations),
 },
 };
 

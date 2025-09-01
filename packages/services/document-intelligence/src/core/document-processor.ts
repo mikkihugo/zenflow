@@ -269,7 +269,7 @@ logger.info(
 `Loaded workspace:${workspacePath}(${context}.activeDocuments.sizedocuments)``
 );
 this.emit('workspace:loaded`, {
-`) workspaceId,
+); workspaceId,
 path:workspacePath,
 documentCount:context.activeDocuments.size,
 });
@@ -340,7 +340,7 @@ logger.warn('Workflow processing failed:', error);').
 }
 
 this.emit('document:processed`, {
-`) workspaceId,
+); workspaceId,
 document,
 suggestedNextSteps:this.getSuggestedNextSteps(docType),
 });

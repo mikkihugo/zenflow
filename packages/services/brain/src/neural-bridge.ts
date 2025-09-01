@@ -53,7 +53,7 @@ export interface NetworkArchitecture {
  metadata?:Record<string, unknown>;
 }
 
-export type ActivationFunction =|'sigmoid|tanh|relu|leaky_relu|softmax|linear|swish|gelu;
+export type ActivationFunction = 'sigmoid' | 'tanh' | 'relu' | 'leaky_relu' | 'softmax' | 'linear' | 'swish' | 'gelu';
 
 /**
  * Neural Network Bridge for Claude-Zen integration.
@@ -83,21 +83,22 @@ export class NeuralBridge {
  private smartNeuralCoordinator:SmartNeuralCoordinator|null = null; // Smart neural backend
 
  constructor(
- private foundationLogger:Logger = getLogger('Neural').
- config:NeuralConfig = {}
+ private foundationLogger: Logger = getLogger('Neural'),
+ config: NeuralConfig = {}
  ) {
  this.config = {
- wasmPath: './wasm/claude_zen_neural', // Points to neural/wasm/ directory; gpuAcceleration:false,
- enableTraining:true,
+ wasmPath: './wasm/claude_zen_neural', // Points to neural/wasm/ directory
+ gpuAcceleration: false,
+ enableTraining: true,
  ...config,
 };
 }
 
- static getInstance(logger?:Logger, _config?:NeuralConfig): NeuralBridge {
+ static getInstance(logger?: Logger, _config?: NeuralConfig): NeuralBridge {
  if (!NeuralBridge.instance) {
  // For singleton pattern with DI, we need to provide a logger
- const __defaultLogger = logger||getLogger('Neural').
- NeuralBridge.instance = new NeuralBridge(defaultLogger, config);
+ const __defaultLogger = logger || getLogger('Neural');
+ NeuralBridge.instance = new NeuralBridge(__defaultLogger, _config);
 }
  return NeuralBridge.instance;
 }
@@ -109,11 +110,12 @@ export class NeuralBridge {
  if (this.initialized) return;
 
  this.foundationLogger.info(
- 'Initializing Neural Bridge with Foundation integration...; );
+ 'Initializing Neural Bridge with Foundation integration...'
+ );
 
  try {
  // Initialize database access for model persistence
- const { DatabaseProvider} = await import('@claude-zen/database').
+ const { DatabaseProvider } = await import('@claude-zen/database');
  this.dbAccess = new DatabaseProvider();
  await this.dbAccess.connect();
 
@@ -123,7 +125,7 @@ export class NeuralBridge {
  this.config.smartNeuralBackend||{}
  );
  await this.smartNeuralCoordinator.initialize();
- this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully; );
+ this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully');
 }
 
  // Load WASM module if available
@@ -141,9 +143,11 @@ export class NeuralBridge {
 
  this.initialized = true;
  this.foundationLogger.info(
- 'Neural Bridge initialized successfully with database, metrics, and smart neural backend integration; );
+ 'Neural Bridge initialized successfully with database, metrics, and smart neural backend integration'
+ );
 } catch (error) {
- this.foundationLogger.error('Failed to initialize Neural Bridge:', error); throw error;
+ this.foundationLogger.error('Failed to initialize Neural Bridge:', error);
+ throw error;
 }
 }
 
@@ -164,7 +168,8 @@ export class NeuralBridge {
 }
 
  if (!this.wasmModule) {
- throw new Error('WASM module not loaded').').
+ throw new Error('WASM module not loaded');
+ }
 
  try {
  // Create the actual WASM network using our Rust implementation
@@ -184,19 +189,20 @@ export class NeuralBridge {
 
  // Persist network metadata to database
  if (this.dbAccess) {
- const kv = await this.dbAccess.getKV('neural``) await kv.set(`metadata:${id}`, JSON.stringify(metadata));`
- await kv.set(`layers:${id}`, JSON.stringify(layers));`
+ const kv = await this.dbAccess.getKV('neural');
+ await kv.set(`metadata:${id}`, JSON.stringify(metadata));
+ await kv.set(`layers:${id}`, JSON.stringify(layers));
 }
 
  this.foundationLogger.info(
- `Created WASM neural network:${id}(${type}) with layers: [${layers}.join(`, `)]``
+ `Created WASM neural network: ${id} (${type}) with layers: [${layers.join(', ')}]`
  );
  return id;
 } catch (error) {
  const __errorMessage =
- error instanceof Error ? error.message:String(error);
- this.foundationLogger.error(`Failed to create network ${id}:`, error);`
- throw new Error(`Network creation failed:${_errorMessage}``
+ error instanceof Error ? error.message : String(error);
+ this.foundationLogger.error(`Failed to create network ${id}:`, error);
+ throw new Error(`Network creation failed: ${__errorMessage}`);
 }
 }
 
@@ -216,45 +222,47 @@ export class NeuralBridge {
  const metadata = this.networkMetadata.get(networkId);
 
  if (!wasmNetwork||!metadata) {
- throw new Error(`Network not found:${networkId}``
+ throw new Error(`Network not found: ${networkId}`);
 }
 
  if (!this.config.enableTraining) {
- throw new Error(`Training is disabled in configuration`').
+ throw new Error(`Training is disabled in configuration`);
+}
 
- metadata.status = `training`
+ metadata.status = 'training';
  this.foundationLogger.info(
- `Training WASM network ${networkIdfor} ${epochs} epochs``
+ `Training WASM network ${networkId} for ${epochs} epochs`
  );
 
  try {
  const startTime = Date.now();
 
  // Flatten the training data into Float32Arrays for WASM
- const flatInputs = new Float32Array(trainingData.inputs.flat())();
+ const flatInputs = new Float32Array(trainingData.inputs.flat());
  const flatOutputs = new Float32Array(trainingData.outputs.flat())();
 
  // Call the actual WASM training function
  const finalError = wasmNetwork.train(flatInputs, flatOutputs, epochs);
 
  const trainingTime = Date.now() - startTime;
- metadata.status = `idle`
+ metadata.status = 'idle';
 
  // Store training metrics in database
  if (this.dbAccess) {
- const __kv = await this.dbAccess.getKV('neural``) await kv.set(
- `training:${networkId}:${Date}.now()`,
+ const kv = await this.dbAccess.getKV('neural');
+ await kv.set(
+ `training:${networkId}:${Date.now()}`,
  JSON.stringify({
  epochs,
  finalError,
  trainingTime,
- timestamp:new Date().toISOString(),
+ timestamp: new Date().toISOString(),
 })
  );
 }
 
  this.foundationLogger.info(
- `WASM training completed for ${networkId} in ${trainingTime}ms with final error:${finalError}``
+ `WASM training completed for ${networkId} in ${trainingTime}ms with final error: ${finalError}`
  );
  return true;
 } catch (error) {
@@ -280,11 +288,11 @@ export class NeuralBridge {
  const wasmNetwork = this.networks.get(networkId);
  const metadata = this.networkMetadata.get(networkId);
 
- if (!wasmNetwork||!metadata) {
- throw new Error(`Network not found:${networkId}``
+ if (!wasmNetwork || !metadata) {
+ throw new Error(`Network not found: ${networkId}`);
 }
 
- metadata.status =`predicting;
+ metadata.status = 'predicting';
  const startTime = Date.now();
 
  try {
@@ -306,7 +314,7 @@ export class NeuralBridge {
  processingTime,
 };
 } catch (error) {
- metadata.status = `error`
+ metadata.status = 'error';
  this.foundationLogger.error(
  `WASM prediction failed for ${networkId}:`,
  error
@@ -402,7 +410,7 @@ export class NeuralBridge {
  this.wasmModule = wasmModule;
 
  this.foundationLogger.info(
- `WASM module loaded and initialized successfully`) );
+ `WASM module loaded and initialized successfully); );
 } catch (error) {
  const errorMessage =
  error instanceof Error ? error.message:String(error);

@@ -122,12 +122,12 @@ memoryOptimization?:boolean;
 };
 
 /** Optimization strategy configuration */
-optimization?:{
-strategies?:('dspy' | ' ml' | ' hybrid' | ' ensemble').];
-autoSelection?:boolean;
-performanceTracking?:boolean;
-kernelFusion?:boolean;
-memoryOptimization?:boolean;
+optimization?: {
+strategies?: ('dspy' | 'ml' | 'hybrid' | 'ensemble')[];
+autoSelection?: boolean;
+performanceTracking?: boolean;
+kernelFusion?: boolean;
+memoryOptimization?: boolean;
 pipelineParallelism?:boolean;
 };
 
@@ -257,9 +257,9 @@ context:{
 timeOfDay?:string;
 workload?:'light' | ' moderate' | ' heavy';
 collaboration?:boolean;
-urgency?:'low' | ' medium' | ' high';
+urgency?: 'low' | 'medium' | 'high';
 };
-horizons:('1h' | '4h' | '1d').];
+horizons: ('1h' | '4h' | '1d')[];
 }
 
 /**
@@ -469,7 +469,7 @@ private neuralNetworks = new Map<string, any>();
 constructor(config:EventDrivenBrainConfig = {}) {
 this.serviceId = config.serviceId || generateUUID();
 this.config = config;
-this.logger = getLogger(`brain-service:${this.serviceId}`
+this.logger = getLogger(`brain-service:${this.serviceId}`);
 this.container = createServiceContainer();
 
 // Initialize event bus
@@ -545,10 +545,10 @@ behavioralModels:Object.keys(this.behavioralModels),
 },
 });
 
-this.logger.info(`EventDrivenBrain service initialized successfully`
+this.logger.info(`EventDrivenBrain service initialized successfully`);
 return ok();
 } catch (error) {
-const errorMessage = `Failed to initialize brain service:${error}`
+const errorMessage = `Failed to initialize brain service:${error}`;
 this.logger.error(errorMessage, { error, serviceId:this.serviceId});
 recordMetric(`brain_service_init_error`, 1, { serviceId:this.serviceId});
 
@@ -596,7 +596,7 @@ this.eventBus.on('brain:brain-service:process-neural', async (request) => {
 await this.handleNeuralProcessing(request);
 });
 
-this.logger.info('Event handlers setup complete').
+this.logger.info('Event handlers setup complete');
 }
 
 /**
@@ -897,7 +897,7 @@ complexity,
 priority,
 timeLimit,
 qualityRequirement,
-historicalData:this.performanceHistory.get(`${request.task}-optimization`) || {}`
+historicalData:this.performanceHistory.get(`${request.task}-optimization`) || {}
 });
 
 // Apply strategy-specific optimization
@@ -1092,7 +1092,7 @@ case 'optimization':
 output = await this.processOptimization(inputData, modelUsed, processingOptions);
 break;
 default:
-throw new Error(`Unsupported neural processing task type:${taskType}`
+throw new Error(`Unsupported neural processing task type:${taskType}`);
 }
 
 const processingTime = Date.now() - startTime;
@@ -1122,22 +1122,23 @@ performance
 // =============================================================================
 
 private async initializeNeuralBackends():Promise<void> {
-this.logger.info(`Initializing neural backends`
+this.logger.info(`Initializing neural backends`);
 
 // Initialize based on configuration
 if (this.config.neural?.rustAcceleration) {
 this.neuralNetworks.set('rust-fann', {
-name: 'Rust FANN Backend', type: 'rust-fann', acceleration: 'cpu', status:'ready').);
+name: 'Rust FANN Backend', type: 'rust-fann', acceleration: 'cpu', status:'ready'});
 }
 
 if (this.config.neural?.gpuAcceleration) {
 this.neuralNetworks.set('gpu-accelerated', {
-name: 'GPU Accelerated Backend', type: 'gpu', acceleration: 'gpu', status:'ready').);
+name: 'GPU Accelerated Backend', type: 'gpu', acceleration: 'gpu', status:'ready'});
+}
 }
 
 // Fallback to JavaScript backend
 this.neuralNetworks.set('brain-js', {
-name: 'Brain.js Backend', type: 'brain-js', acceleration: 'cpu', status:'ready').);
+name: 'Brain.js Backend', type: 'brain-js', acceleration: 'cpu', status:'ready'});
 
 this.logger.info('Neural backends initialized', {
 backends:Array.from(this.neuralNetworks.keys())
@@ -1145,7 +1146,7 @@ backends:Array.from(this.neuralNetworks.keys())
 }
 
 private async initializeBehavioralModels():Promise<void> {
-this.logger.info('Initializing behavioral models').
+this.logger.info('Initializing behavioral models');
 
 // Initialize performance prediction models
 this.behavioralModels.set('performance-predictor', {
@@ -1371,7 +1372,7 @@ recommendations.push(`Increase monitoring for ${horizon} predictions`
 }
 }
 
-if (context.urgency === `high`) {
+if (context.urgency === `high); {
 recommendations.push('Prioritize task decomposition to manage urgency').
 }
 
@@ -1566,7 +1567,7 @@ private async selectNeuralModel(taskType:string, modelConfig:any): Promise<any> 
 const availableModels = Array.from(this.neuralNetworks.values());
 
 if (taskType === 'embedding' || taskType === ' inference; {
-return availableModels.find(m => m.type === `gpu`) || availableModels[0];
+return availableModels.find(m => m.type === `gpu); || availableModels[0];
 }
 
 return availableModels[0];

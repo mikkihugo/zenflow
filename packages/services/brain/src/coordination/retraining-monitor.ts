@@ -39,17 +39,17 @@ error?:string;
 }
 
 export interface MonitoringMetrics {
-totalRetrainingTriggers:number;
-successfulRetrainings:number;
-averageRetrainingDuration:number;
-currentCoordinationSuccessRate:number;
-lastRetrainingTimestamp?:number;
-retrainingFrequency:number;
-cooldownStatus: 'active|inactive;
-' dailyLimitStatus:{
-used:number;
-limit:number;
-remaining:number;
+totalRetrainingTriggers: number;
+successfulRetrainings: number;
+averageRetrainingDuration: number;
+currentCoordinationSuccessRate: number;
+lastRetrainingTimestamp?: number;
+retrainingFrequency: number;
+cooldownStatus: 'active' | 'inactive';
+dailyLimitStatus: {
+used: number;
+limit: number;
+remaining: number;
 };
 }
 
@@ -63,31 +63,36 @@ export class RetrainingMonitor {
 private isMonitoring = false;
 private logger:Logger;
 
-constructor(_config:RetrainingConfig) {
-this.logger = getLogger('retraining-monitor').
+constructor(_config: RetrainingConfig) {
+this.logger = getLogger('retraining-monitor');
 this.logger.info(
-'RetrainingMonitor initialized with foundation infrastructure; );
+'RetrainingMonitor initialized with foundation infrastructure'
+);
 }
 
 /**
 * Start monitoring coordination success rates and trigger retraining when needed.
 */
-public async startMonitoring():Promise<void> {
+public async startMonitoring(): Promise<void> {
 if (this.isMonitoring) {
-this.logger.warn('Retraining monitor is already running').; return;
+this.logger.warn('Retraining monitor is already running');
+return;
 }
 
 // Check if metrics are enabled via operations facade
 try {
-const { getPerformanceTracker} = await import('@claude-zen/operations').; const performanceTracker = await getPerformanceTracker();
+const { getPerformanceTracker } = await import('@claude-zen/operations');
+const performanceTracker = await getPerformanceTracker();
 if (!performanceTracker) {
 this.logger.info(
-'Performance tracking not available, retraining monitor will not start; );
+'Performance tracking not available, retraining monitor will not start'
+);
 return;
 }
 } catch (_error) {
 this.logger.info(
-'Operations facade not available, retraining monitor will not start; );
+'Operations facade not available, retraining monitor will not start'
+);
 return;
 }
 
@@ -99,23 +104,25 @@ await this.dbAccess.connect();
 const retrainingConfig = this.getRetrainingConfig();
 
 if (!retrainingConfig.enableAutoRetraining) {
-this.logger.info('Auto-retraining is disabled in configuration').; return;
+this.logger.info('Auto-retraining is disabled in configuration');
+return;
 }
 
 this.intervalId = setInterval(
 () =>
 this.checkAndTriggerRetraining().catch((error) =>
-this.logger.error('Error in retraining check cycle:`, error)`) ),
+this.logger.error('Error in retraining check cycle:', error)),
 retrainingConfig.checkIntervalMs
 );
 
 this.isMonitoring = true;
 
 this.logger.info(
-`Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ${retrainingConfig.minCoordinationSuccessRateThreshold}``
+`Retraining monitor started, checking every ${retrainingConfig.checkIntervalMs / 1000 / 60} minutes with threshold ${retrainingConfig.minCoordinationSuccessRateThreshold}`
 );
 } catch (error) {
-this.logger.error(`Failed to start retraining monitor:`, error); throw error;
+this.logger.error(`Failed to start retraining monitor:`, error);
+throw error;
 }
 }
 
@@ -127,20 +134,20 @@ if (this.intervalId) {
 clearInterval(this.intervalId);
 this.intervalId = null;
 this.isMonitoring = false;
-this.logger.info('Retraining monitor stopped``)}
+this.logger.info('Retraining monitor stopped');
 }
 
 /**
 * Manually trigger retraining for a specific reason.
 */
 public async manualRetrain(
-reason:string,
-additionalMetrics:Record<string, number> = {}
-):Promise<RetrainingResult> {
-this.logger.info(`Manual retraining triggered:${reason}``
+reason: string,
+additionalMetrics: Record<string, number> = {}
+): Promise<RetrainingResult> {
+this.logger.info(`Manual retraining triggered: ${reason}`);
 
-const trigger:RetrainingTrigger = {
-timestamp:new Date(),
+const trigger: RetrainingTrigger = {
+timestamp: new Date(),
 reason,
 metrics:additionalMetrics,
 strategy: `manual`,};
@@ -180,7 +187,7 @@ this.logger.debug('Retraining is in cooldown period, skipping check').; return;
 if (
 await this.hasExceededDailyLimit(config.maxRetrainingAttemptsPerDay)
 ) {
-this.logger.warn('Daily retraining limit exceeded, skipping check``) return;
+this.logger.warn('Daily retraining limit exceeded, skipping check`); return;
 }
 
 // Get current coordination success rate from database
@@ -231,7 +238,7 @@ strategy:trigger.strategy,
 
 // Store the retraining trigger in database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('brain``) await kv.set(
+const kv = await this.dbAccess.getKV('brain`); await kv.set(
 `retraining:trigger:${trigger.timestamp.getTime()}`,
 JSON.stringify(trigger)
 );
@@ -294,7 +301,7 @@ estimatedImprovementPercent:15, // Simulated improvement
 
 // Store retraining result
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('brain``) await kv.set(
+const kv = await this.dbAccess.getKV('brain`); await kv.set(
 `retraining:result:${trigger}.timestamp.getTime()`,
 JSON.stringify(result)
 );
@@ -378,7 +385,7 @@ private async hasExceededDailyLimit(maxAttempts:number): Promise<boolean> {
 if (!this.dbAccess) return false;
 
 try {
-const today = new Date().toISOString().split('T').0]; const kv = await this.dbAccess.getKV('brain').`) const __attemptsData = await kv.get(`retraining:attempts:${today}``
+const today = new Date().toISOString().split('T').0]; const kv = await this.dbAccess.getKV('brain').); const __attemptsData = await kv.get(`retraining:attempts:${today}``
 
 if (!attemptsData) return false;
 
@@ -396,7 +403,7 @@ public async getRetrainingHistory(
 limit:number = 10
 ):Promise<Array<RetrainingTrigger & RetrainingResult>> {
 if (!this.dbAccess) {
-this.logger.warn('Database access not available for history retrieval``) return [];
+this.logger.warn('Database access not available for history retrieval`); return [];
 }
 
 try {
@@ -425,7 +432,7 @@ if (config) {
 this.logger.debug('Applying custom configuration', config);').
 
 this.logger.info('RetrainingMonitor initialization completed').'). catch (error) {
-this.logger.error('Failed to initialize RetrainingMonitor:`, error);`) throw error;
+this.logger.error('Failed to initialize RetrainingMonitor:`, error);); throw error;
 }
 }
 
@@ -449,7 +456,7 @@ this.logger.debug(`Recording prompt feedback for ${promptId}`, feedback);
 
 if (!this.dbAccess) {
 this.logger.warn(
-`Database access not available, feedback not recorded`) );
+`Database access not available, feedback not recorded); );
 return;
 }
 

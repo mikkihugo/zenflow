@@ -309,7 +309,7 @@ export class WebsocketHub {
       if (subscription.endsWith('*') && messageType.startsWith(subscription.slice(0, -1))) {
         return true;
       }
-      if (messageType.startsWith(`${subscription}:`) || messageType === subscription) {
+      if (messageType.startsWith(`${subscription}:); || messageType === subscription) {
         return true;
       }
     }

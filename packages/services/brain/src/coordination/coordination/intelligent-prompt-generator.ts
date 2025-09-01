@@ -301,7 +301,7 @@ ${enhancedStandards.contextualIntro}
 - **Pure functions**: Prefer pure functions when possible
 - **Clear naming**: Function names should describe what they do`
 
-    if (language === 'typescript; {
+    if (language === 'typescript') {
       __standards += `
 
 ### 🔷 TypeScript Quality Standards:
@@ -467,7 +467,7 @@ ${enhancedStandards.contextualIntro}
 - **Project**: ${context.name}
 - **Domain**: ${context.domain}
 - **Requirements**: ${context.requirements?.length || 0} defined
-- **Tech Stack**: ${context.techStack?.join(', ; || 'To be determined'}
+- **Tech Stack**: ${context.techStack?.join(', ') || 'To be determined'}
 
 ${codingStandards}
 
@@ -534,15 +534,17 @@ Remember: Write code that tells a story - it should be self-documenting and easy
   ):Promise<IntelligentPrompt | null> {
     try {
       // Import DSPy LLM Bridge for prompt optimization
-      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge').
-      const { NeuralBridge } = await import('../../neural-bridge').
+      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge');
+      const { NeuralBridge } = await import('../../neural-bridge');
       // Initialize DSPy bridge if not available
-      const { getLogger } = await import('@claude-zen/foundation').      const logger = getLogger('NeuralBridge').
+      const { getLogger } = await import('@claude-zen/foundation');
+      const logger = getLogger('NeuralBridge');
       const neuralBridge = new NeuralBridge(logger);
       const dspyBridge = new DSPyLLMBridge(
         {
-          teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization;          maxTokens:16384,
-          optimizationSteps:3,
+          teleprompter: 'MIPROv2', // Use MIPROv2 for best optimization
+          maxTokens: 16384,
+          optimizationSteps: 3,
           coordinationFeedback:true,
           hybridMode:true,
 },
@@ -559,8 +561,8 @@ Remember: Write code that tells a story - it should be self-documenting and easy
 
 Project: "${context.name}" in ${context.domain} domain
 Language: ${config.language}
-Requirements: ${context.requirements?.join(', ; || 'To be determined'}
-Tech Stack: ${context.techStack?.join(', ; || 'To be determined'}
+Requirements: ${context.requirements?.join(', ') || 'To be determined'}
+Tech Stack: ${context.techStack?.join(', ') || 'To be determined'}
 
 The prompt should include:
 1. Project context section
@@ -610,11 +612,12 @@ Generate a complete, ready-to-use development prompt.`,
       this.logger.warn('DSPy prompt generation failed:', error);
       return null;
     }
+  }
 
   /**
    * Get phase-specific example guidelines for DSPy training
    */
-  private getPhaseExampleGuidelines(phase:DevelopmentPhase): string {
+  private getPhaseExampleGuidelines(phase: DevelopmentPhase): string {
     switch (phase) {
       case 'specification':
         return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`
@@ -622,21 +625,21 @@ Generate a complete, ready-to-use development prompt.`,
         return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`
       case 'architecture':
         return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`
-      case 'refinement':{
-    ;        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage``
-      case 'completion': ').        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation``
+      case 'refinement':
+        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage`
+      case 'completion':
+        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`
       default:
-        return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing``
-}
+        return `- Follow established coding standards\n- Write maintainable, self-documenting code\n- Ensure comprehensive testing`
 }
 
   /**
    * Generate few-shot examples for DSPy prompt optimization
    */
   private generateFewShotPromptExamples(
-    phase:DevelopmentPhase,
-    config:Required<CodingStandardsConfig>
-  ):Array<{ input: string; output: string}> {
+    phase: DevelopmentPhase,
+    config: Required<CodingStandardsConfig>
+  ): Array<{ input: string; output: string }> {
     return [
       {
         input: `Generate ${phase} phase prompt for e-commerce API project in rest-api domain using ${config.language}`,

@@ -292,13 +292,13 @@ type: `prd`, title: `Product Requirements Document`, content:`
 # Product Requirements Document
 
 ## Functional Requirements
-${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || }`
+${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n); || }`
 
 ## Non-Functional Requirements
-${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || }`
+${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n); || }`
 
 ## Constraints
-${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n`) || }`
+${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n); || }`
 
 ## Assumptions
 ${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(`\n; || '}`
@@ -354,7 +354,7 @@ content:`
 # Epic:${epicName}
 
 ## Features
-${(features as string[])?.map(feature => `- ${feature}`).join(`\n`) || '}`
+${(features as string[])?.map(feature => `- ${feature}`).join(`\n); || '}`
 
 ## Acceptance Criteria
 - [] Feature implementation complete

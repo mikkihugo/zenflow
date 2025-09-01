@@ -45,14 +45,14 @@ function recordGauge(name: string, value: number): void {
 
 function withAsyncTrace<T>(name: string, fn: () => Promise<T>): Promise<T> {
   const start = Date.now();
-  logger.debug(`Trace started: ${  name}`);
+  logger.debug(`Trace started: ${name}`);
   return fn().then(
     (result) => {
-      logger.debug(`${`Trace completed: ${  name  } (${  Date.now()}` - start  }ms)`);
+      logger.debug(`Trace completed: ${name} (${Date.now() - start}ms)`);
       return result;
     },
     (error) => {
-      logger.debug(`${`Trace failed: ${  name  } (${  Date.now()}` - start  }ms)`);
+      logger.debug(`Trace failed: ${name} (${Date.now() - start}ms)`);
       throw error;
     }
   );
@@ -332,7 +332,7 @@ export class SystemMonitor {
           status: (processMetrics.cpu ?? 0) > 80 ? 'warning' : 'ok',
           value: processMetrics.cpu ?? 0,
           threshold: 80,
-          message: `Process CPU usage: ${  processMetrics.cpu}` ?? `${0  }%`,
+          message: `Process CPU usage: ${processMetrics.cpu ?? 0}%`,
         },
         uptime: {
           status: 'ok',

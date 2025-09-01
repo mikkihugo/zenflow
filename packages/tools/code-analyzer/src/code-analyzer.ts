@@ -538,7 +538,7 @@ learningRecommendations:[],
 
 return ok(insights);
 } catch (error)
-logger.warn('AI insights generation failed`, { error});`) return err(error instanceof Error ? error:new Error(String(error)));
+logger.warn('AI insights generation failed`, { error});); return err(error instanceof Error ? error:new Error(String(error)));
 }
 
 // Helper methods
@@ -1237,7 +1237,7 @@ analysisTime,
 },
 };
 
-this.logger.info(`Dependency relationship map completed in ${analysisTime}.toFixed(2)ms`, {`
+this.logger.info(`Dependency relationship map completed in ${analysisTime}.toFixed(2)ms`, {
 nodes:nodes.length,
 edges:edges.length,
 clusters:clusters.length,
@@ -1341,7 +1341,7 @@ const fullPath = path.join(dir, entry.name);
 if (entry.isDirectory()) {
 // Skip node_modules unless explicitly included
 if (entry.name === 'node_modules' && !options.includeNodeModules) continue;// Skip test directories unless explicitly included
-if ((entry.name === '__tests__' || entry.name === ' test' || entry.name === ' tests`) && !options.includeTests) continue;`)
+if ((entry.name === '__tests__' || entry.name === ' test' || entry.name === ' tests); && !options.includeTests) continue;`)
 await walkDir(fullPath);
 } else if (entry.isFile()) {
 const ext = path.extname(entry.name);
@@ -1404,7 +1404,7 @@ _column,
 endLine:lineIndex + 1,
 endColumn:column + name.length,,
 metadata:
-isExported:content.includes(`export`) && (content.includes(`export ${name}`) || content.includes(`export { ${name}`)),`
+isExported:content.includes(`export); && (content.includes(`export ${name}); || content.includes(`export { ${name}`)),`
 isDefault:content.includes(`export default ${name}`),`
 visibility: `public`, complexity:this.calculateNodeComplexity(content, name),
 size:name.length,
@@ -1422,7 +1422,7 @@ const nodeMap = new Map(nodes.map(node => [node.name, node]));
 
 for (const filePath of files) {
 try {
-const content = await fs.readFile(filePath, 'utf-8``) const fileEdges = await this.extractEdgesFromFile(filePath, content, nodeMap);
+const content = await fs.readFile(filePath, 'utf-8`); const fileEdges = await this.extractEdgesFromFile(filePath, content, nodeMap);
 edges.push(...fileEdges);
 } catch (error) {
 this.logger.warn(`Failed to analyze relationships in file:${filePath}`, { error});`
@@ -1612,7 +1612,7 @@ private calculateStability(nodes:DependencyNode[], edges:DependencyEdge[]): numb
 return Math.random() * 0.5 + 0.5; // Placeholder
 
 private inferResponsibility(nodes:DependencyNode[]): string {
-const dir = path.dirname(nodes[0]?.filePath || ').`) return path.basename(dir) || `unknown;
+const dir = path.dirname(nodes[0]?.filePath || ').); return path.basename(dir) || `unknown;
 }
 
 private calculateMaxDependencyDepth(nodes:DependencyNode[], edges:DependencyEdge[]): number

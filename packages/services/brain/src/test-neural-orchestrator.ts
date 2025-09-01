@@ -149,7 +149,7 @@ logger.info(` Stored ${data.id} with intelligent routing``
 
 // Test 6:Orchestration metrics
 logger.info(`\n Test 6:Orchestration Metrics`; const metrics = brain.getOrchestrationMetrics();
-logger.info(' Orchestration Metrics:``) logger.info(` Tasks processed:${metrics}.tasksProcessed``
+logger.info(' Orchestration Metrics:`); logger.info(` Tasks processed:${metrics}.tasksProcessed``
 logger.info(` Complexity distribution:`, metrics.complexityDistribution);`
 logger.info(
 ` Average latency:`,

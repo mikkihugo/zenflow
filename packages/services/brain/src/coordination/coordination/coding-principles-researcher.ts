@@ -132,7 +132,7 @@ this.logger.info(`Received human feedback:`, feedback);
 }
 
 private generateCacheKey(config: PrinciplesResearchConfig): string {
-return `${config.language}-${config.domain || 'general}-${config.role || `general}-${config.depth || `intermediate}`
+return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
 }
 
 private getFallbackPrinciples(config: PrinciplesResearchConfig): CodingPrinciples {
@@ -167,7 +167,7 @@ packageManagement: [
 qualityMetrics: {
 complexity: { metric: 'cyclomatic', threshold: 10 },
 coverage: { metric: 'line', threshold: 80 },
-maintainability: { metric: `index`, threshold: 70 }
+maintainability: { metric: 'index', threshold: 70 }
 },
 researchMetadata: {
 researchedAt: new Date(),
@@ -181,8 +181,8 @@ lastUpdated: new Date()
 private formatTemplate(principles: CodingPrinciples): string {
 return `# ${principles.language.toUpperCase()} Coding Principles
 
-${principles.domain ? `## Domain: ${principles.domain}` : `}
-${principles.role ? `## Role: ${principles.role}` : `}
+${principles.domain ? `## Domain: ${principles.domain}` : ''}
+${principles.role ? `## Role: ${principles.role}` : ''}
 
 ## File Naming & Organization
 ${principles.coreStandards.fileNaming.map(item => `- ${item}`).join(`\n`)}

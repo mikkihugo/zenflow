@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
     "_prepublishOnly_disabled": "pnpm run clean && pnpm run build",
     "test": "vitest run",

@@ -90,7 +90,7 @@ async getDocument() {
 return { success: false, error: new Error('DocumentManager not available; } as const;
 }
 async searchDocuments() {
-return { success: false, error: new Error(`DocumentManager not available`) } as const;
+return { success: false, error: new Error(`DocumentManager not available); } as const;
 }
 async initialize() { /* noop */ }
 async store() { /* noop */ }
@@ -580,7 +580,7 @@ const optimizationOpportunities:string[] = [];
 for (const goal of vision.strategicGoals) {
 const hasDoc = documentLinks.some((link) =>
 link.strategicGoals.some((sg) =>
-sg.includes(goal?.toLowerCase.replace(/\s+/g, '_`))`) )
+sg.includes(goal?.toLowerCase.replace(/\s+/g, '_`))); )
 );
 if (!hasDoc) {
 missingDocuments.push(`Documentation for:${goal}``
@@ -611,7 +611,7 @@ tasks.filter((task) => task.status === 'blocked').length >; tasks.length * .2
 )
 optimizationOpportunities.push(
 'High number of blocked tasks - review dependencies and bottlenecks').if (vision.businessValue < .6||vision.technicalImpact < .6) {
-optimizationOpportunities.push(`Strategic vision could be strengthened with more detailed documentation`) );
+optimizationOpportunities.push(`Strategic vision could be strengthened with more detailed documentation); );
 }
 
 return {
@@ -642,7 +642,7 @@ ${task}.outcomes.map((outcome) => `- ${outcome}`).join(`\n`)`)`
 ## Success Metrics
 ${task}.metrics.map((metric) => `- ${metric}`).join(`\n`)`)`
 ## Dependencies
-${task}.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join(`\n`) :` No dependencies`)`
+${task}.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join(`\n); :` No dependencies`)`
 ## Status
 Current Status:${task}.status
 ${task}.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :}`)${task}.assignedTo ? `Assigned To:${task.assignedTo}` :}`)`

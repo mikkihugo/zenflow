@@ -279,7 +279,7 @@ throw error;
 * Create predefined strategy sets for common scenarios
 */
 createStrategySet(
-scenario:`performance|quality|innovation|comprehensive`) ):ABTestStrategy[] {
+scenario:`performance|quality|innovation|comprehensive); ):ABTestStrategy[] {
 switch (scenario) {
 case 'performance': '). return [
 {
@@ -422,7 +422,7 @@ willLimitTo:maxWorktrees,
 }
 
 const strategiesToProcess = strategies.slice(0, maxWorktrees);
-logger.info(` Creating ${strategiesToProcess.length} git worktrees...`, {`
+logger.info(` Creating ${strategiesToProcess.length} git worktrees...`, {
 baseBranch,
 branchPrefix,
 cleanupAfterTest,
@@ -434,7 +434,7 @@ const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}``
 const worktreePath = joinPath(getHomeDirectory(), `.claude-zen`, 'tmp', `ab-test-worktrees`, branchName);`
 
 // Log worktree creation with gitConfig details
-logger.debug(` Creating worktree for ${strategy.name}`, {`
+logger.debug(` Creating worktree for ${strategy.name}`, {
 strategyId:strategy.id,
 branchName,
 worktreePath,
@@ -451,7 +451,7 @@ logger.info(` Created worktree for ${strategy.name}:${worktreePath}``
 
 // Log final worktree configuration summary
 logger.info(`Git worktree preparation completed`, {
-`) totalWorktrees:Object.keys(worktreePaths).length,
+); totalWorktrees:Object.keys(worktreePaths).length,
 cleanupAfterTest,
 worktreeIds:Object.keys(worktreePaths),
 });

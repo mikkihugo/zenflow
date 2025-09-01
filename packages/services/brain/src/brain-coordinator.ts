@@ -300,14 +300,14 @@ this.logger.info(
 // Initialize EventBus first
 const eventBusResult = await super.initialize();
 if (eventBusResult.isErr()) {
-throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`
+throw new Error(`EventBus initialization failed: ${eventBusResult.error?.message}`);
 }
 
 // Initialize monitoring components through operations facade
 // 100% EVENT-BASED:Request external systems via events only
 // No direct imports or function calls - pure event coordination
 await this.emitSafe(`brain:request_performance_tracker`, {
-config:{
+config: {
 enablePerformanceMonitoring:true,
 monitoringInterval:5000,
 },
@@ -367,41 +367,37 @@ throw error;
 /**
 * Shutdown the Intelligence Orchestrator with event broadcasting
 */
-async shutdown():Promise<void> {
+async shutdown(): Promise<void> {
 if (!this.initialized) return;
 
-this.logger.info(' Shutting down Intelligence Orchestrator...').
+this.logger.info('Shutting down Intelligence Orchestrator...');
 
 // Emit shutdown event before cleanup
 await this.emitSafe('intelligence:shutdown', {
-sessionId:this.config.sessionId,
-timestamp:Date.now(),
-}); this.initialized = false;
+sessionId: this.config.sessionId,
+timestamp: Date.now(),
+});
+this.initialized = false;
 this.performanceTracker = null;
 this.agentMonitor = null;
 
 // Allow event loop to process cleanup
 await new Promise(resolve => setTimeout(resolve, 0));
 
-this.logger.info(' Intelligence Orchestrator shutdown complete').').
-
-/**
-* Check if initialized
-*/
-isInitialized():boolean {
-return this.initialized;
-}
+this.logger.info('Intelligence Orchestrator shutdown complete');
 
 /**
 * Optimize a prompt using AI coordination
 */
 async optimizePrompt(
-request:PromptOptimizationRequest
-):Promise<PromptOptimizationResult> {
+request: PromptOptimizationRequest
+): Promise<PromptOptimizationResult> {
 if (!this.initialized) {
 throw new ContextError(
-'Intelligence Orchestrator not initialized. Call initialize() first.', {
-code: 'INTELLIGENCE_NOT_INITIALIZED',}
+'Intelligence Orchestrator not initialized. Call initialize() first.',
+{
+code: 'INTELLIGENCE_NOT_INITIALIZED',
+}
 );
 }
 

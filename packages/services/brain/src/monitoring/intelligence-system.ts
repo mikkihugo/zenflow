@@ -231,7 +231,7 @@ responseTime:agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond 
 throughput:agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput').,
 lastChecked:Date.now(),
 issues:
-status !== 'healthy`) ? [`${agentId.type} agent showing reduced performance`]`
+status !== 'healthy); ? [`${agentId.type} agent showing reduced performance`]`
 :[],
 };
 

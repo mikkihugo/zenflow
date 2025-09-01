@@ -423,7 +423,7 @@ const func: BeamFunction = {
 name: functionName,
 arity: arity,
 visibility: isPrivate ? 'private' : `public`,
-signature: `${functionName}(${params})`,
+signature: functionName + '(' + params + ')',
 lineNumber: lineNumber,
 attributes: isMacro ? [`macro`] : [],
 };
@@ -589,7 +589,7 @@ const types:BeamType[] = [];
 const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
 let match;
 while ((match = typeRegex.exec(content)) !== null) {
-const lineNumber = content.substring(0, match.index).split(`\n').length;') types.push(
+const lineNumber = content.substring(0, match.index).split(`\n').length;'); types.push({
 name:match[1],
 definition:match[2].trim(),
 lineNumber:lineNumber,
@@ -600,7 +600,7 @@ category: 'custom'});
 const opaqueRegex =
 /-opaque\s+([_a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
 while ((match = opaqueRegex.exec(content)) !== null) {
-const lineNumber = content.substring(0, match.index).split('\n').length;') types.push(
+const lineNumber = content.substring(0, match.index).split('\n').length;'); types.push({
 name:match[1],
 definition:match[2].trim(),
 lineNumber:lineNumber,
@@ -610,7 +610,7 @@ category: 'opaque'});
 // -spec definitions
 const specRegex = /-spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
 while ((match = specRegex.exec(content)) !== null) {
-const lineNumber = content.substring(0, match.index).split('\n').length;') types.push(
+const lineNumber = content.substring(0, match.index).split('\n').length;'); types.push({
 name:match[1],
 definition:match[2].trim(),
 lineNumber:lineNumber,
@@ -627,7 +627,7 @@ const lines = content.split('\n');')
 for (const line of lines) {
 const trimmed = line.trim();
 if (trimmed.startsWith('%%') && trimmed.length > 3) {
-') docs.push(trimmed.substring(2).trim())();
+); docs.push(trimmed.substring(2).trim())();
 }
 }
 
@@ -664,7 +664,7 @@ const exportRegex = /-export\s*\(\s*\[([^\]]+)]\s*\)/g;
 
 let match;
 while ((match = exportRegex.exec(content)) !== null) {
-const funcs = match[1].split(', ').map((f) => f.trim())();') exports.push(...funcs);
+const funcs = match[1].split(', ').map((f) => f.trim())(); exports.push(...funcs);
 }
 
 return exports;
@@ -705,7 +705,7 @@ const otpBehaviours = [
 'gen_server', 'gen_statem', 'supervisor', 'application'
 ];
 return otpBehaviours.some((behaviour) =>
-content.includes(`-behaviour(${behaviour})`)
+content.includes('-behaviour(' + behaviour + ')')
 );
 }
 
@@ -726,8 +726,8 @@ const isPublic = content
 const func: BeamFunction = {
 name: functionName,
 arity: arity,
-visibility: isPublic ? 'public' : `private`;
-signature: `${functionName}(${params})`,
+visibility: isPublic ? 'public' : 'private',
+signature: functionName + '(' + params + ')',
 lineNumber: lineNumber,
 };
 
@@ -752,17 +752,19 @@ const typeRegex =
 /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
 let match;
 while ((match = typeRegex.exec(content)) !== null) {
-const lineNumber = content.substring(0, match.index).split(`\n`).length;') types.push(
-name:match[1],
-definition:match[2].trim(),
-lineNumber:lineNumber,
-category: 'custom'});
+const lineNumber = content.substring(0, match.index).split('\n').length;
+types.push({
+name: match[1],
+definition: match[2].trim(),
+lineNumber: lineNumber,
+category: 'custom'
+});
 }
 
 // Type aliases
 const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
 while ((match = aliasRegex.exec(content)) !== null) {
-const lineNumber = content.substring(0, match.index).split('\n').length;') types.push(
+const lineNumber = content.substring(0, match.index).split('\n').length;'); types.push({
 name:match[1],
 definition:match[2].trim(),
 lineNumber:lineNumber,
@@ -840,7 +842,7 @@ return complexity;
 }
 
 private findFunctionEnd(content:string, start:number): number {
-// Simple heuristic to find function end - look for next 'def' or ' end'const fromStart = content.substring(start);') const nextDef = fromStart.search(/\n\s*(?:def|end)/);
+// Simple heuristic to find function end - look for next 'def' or ' end'const fromStart = content.substring(start);); const nextDef = fromStart.search(/\n\s*(?:def|end)/);
 return nextDef > 0 ? start + nextDef:content.length;
 }
 

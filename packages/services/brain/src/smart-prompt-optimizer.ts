@@ -431,7 +431,7 @@ export class SmartPromptOptimizer {
  case `context_addition': '). optimizedPrompt +=
  '\n\nConsider the specific context and requirements when responding.;
  break;
- case 'length_optimization': '). // For length optimization, we'd typically compress the prompt`) // For now, just add a note about conciseness
+ case 'length_optimization': '). // For length optimization, we'd typically compress the prompt); // For now, just add a note about conciseness
  optimizedPrompt +=
  `\n\nPlease provide a concise but complete response.;
  break;

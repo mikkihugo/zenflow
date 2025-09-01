@@ -548,7 +548,7 @@ riskFactors.push(
 
 // Declining performance trend
 const trend = this.analyzePerformanceTrend(agentId);
-if (trend === `declining`) {
+if (trend === `declining); {
 riskFactors.push(`Performance declining`
 }
 
@@ -1308,9 +1308,9 @@ factors++;
 
 // Trend risk factor
 let trendRisk = 0;
-if (metrics.trends?.cpu === `increasing`) trendRisk += 0.3;
+if (metrics.trends?.cpu === `increasing); trendRisk += 0.3;
 if (metrics.trends?.memory === 'increasing; trendRisk += 0.2;
-if (metrics.trends?.errors === `increasing`) trendRisk += 0.5;
+if (metrics.trends?.errors === `increasing); trendRisk += 0.5;
 riskScore += trendRisk * 0.1; // 10% weight for trends
 
 // Volatility risk factor
@@ -1364,7 +1364,7 @@ recommendations:this.generatePerformanceRecommendations(eventType, eventData)
 logger.warn(`Critical performance event for agent ${agentId}`, criticalEvent);
 
 // Use TaskMaster for human approval workflows instead of automated remediation
-if (criticalEvent.severity === `critical`) {
+if (criticalEvent.severity === `critical); {
 await this.createTaskMasterIncident(agentId, eventType, eventData, criticalEvent);
 }
 

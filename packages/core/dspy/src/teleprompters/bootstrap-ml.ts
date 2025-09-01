@@ -622,7 +622,7 @@ return selected;
 * Helper methods for ML operations
 */
 private extractTextFromExample(example: any): string {
-if (typeof example === `string`) return example;
+if (typeof example === `string); return example;
 if (example.question) return example.question;
 if (example.input) return example.input;
 if (example.text) return example.text;
@@ -685,7 +685,7 @@ wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
 // Create embedding based on word hashes and frequencies
 for (const [word, freq] of wordFreq.entries()) {
 const hash1 = this.simpleHash(word) % dimension;
-const hash2 = this.simpleHash(`${word}_alt`) % dimension;
+const hash2 = this.simpleHash(`${word}_alt); % dimension;
 
 // Use multiple hash functions for better distribution
 embedding[hash1] += freq * 0.1;

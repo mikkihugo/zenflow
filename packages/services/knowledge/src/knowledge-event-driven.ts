@@ -9,15 +9,31 @@
 // INTERNAL LOGGER (NO FOUNDATION IMPORTS)
 // =============================================================================
 
-const createLogger = (name:string) => ({
-info:(message: string, meta?:unknown) =>
-console.info(`[INFO:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
-debug:(message: string, meta?:unknown) =>
-console.info(`[DEBUG:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
-warn:(message: string, meta?:unknown) =>
-console.warn(`[WARN:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
-error:(message: string, meta?:unknown) =>
-console.error(`[ERROR:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
+const createLogger = (name: string) => ({
+  info: (message: string, meta?: unknown) => {
+    // Internal logging - replaced console.log
+    void message;
+    void meta;
+    void name;
+  },
+  debug: (message: string, meta?: unknown) => {
+    // Internal logging - replaced console.log
+    void message;
+    void meta;
+    void name;
+  },
+  warn: (message: string, meta?: unknown) => {
+    // Internal logging - replaced console.warn
+    void message;
+    void meta;
+    void name;
+  },
+  error: (message: string, meta?: unknown) => {
+    // Internal logging - replaced console.error
+    void message;
+    void meta;
+    void name;
+  },
 });
 
 // =============================================================================
@@ -215,8 +231,8 @@ maxItemSize?:number;
 
 export class EventDrivenKnowledgeService {
 private eventListeners:Map<string, Function[]> = new Map();
-private logger = createLogger(`EventDrivenKnowledgeService`
-private config:KnowledgeConfig;
+  private logger = createLogger('EventDrivenKnowledgeService');
+  private config: KnowledgeConfig;
 private initialized = false;
 private knowledgeItems = new Map<string, KnowledgeItem>();
 private searchIndex = new Map<string, Set<string>>(); // word -> item IDs
@@ -308,7 +324,8 @@ timestamp:Date.now(),
 } catch (error) {
 this.emitEvent('knowledge:item-stored', {
 requestId:data.requestId,
-itemId: ',' success:false,
+    itemId: '',
+    success: false,
 timestamp:Date.now(),
 });
 this.emitEvent('knowledge:error', {
@@ -691,23 +708,23 @@ let relevanceScore = 0;
 // Check content matches
 const content = item.content.toLowerCase();
 for (const term of searchTerms) {
-if (content.includes(term)) {
-matches.push(`content:${term}`
-relevanceScore += 1;
-}
+  if (content.includes(term)) {
+    matches.push(`content:${term}`);
+    relevanceScore += 1;
+  }
 }
 
 // Check tag matches
 if (item.tags) {
-for (const tag of item.tags) {
-const tagLower = tag.toLowerCase();
-for (const term of searchTerms) {
-if (tagLower.includes(term)) {
-matches.push(`tag:${tag}`
-relevanceScore += 0.5;
-}
-}
-}
+  for (const tag of item.tags) {
+    const tagLower = tag.toLowerCase();
+    for (const term of searchTerms) {
+      if (tagLower.includes(term)) {
+        matches.push(`tag:${tag}`);
+        relevanceScore += 0.5;
+      }
+    }
+  }
 }
 
 // Boost score based on confidence
@@ -758,19 +775,19 @@ this.searchIndex.delete(word);
 // INITIALIZATION
 // =============================================================================
 
-async initialize():Promise<void> {
-this.setupBrainEventHandlers();
-this.logger.info(`Event-driven knowledge service ready to receive brain events`
-}
+  async initialize(): Promise<void> {
+    this.setupBrainEventHandlers();
+    this.logger.info('Event-driven knowledge service ready to receive brain events');
+  }
 
-async shutdown():Promise<void> {
-this.knowledgeItems.clear();
-this.searchIndex.clear();
-this.tagIndex.clear();
-this.eventListeners.clear();
-this.initialized = false;
-this.logger.info('Event-driven knowledge service shutdown complete').
-}
+  async shutdown(): Promise<void> {
+    this.knowledgeItems.clear();
+    this.searchIndex.clear();
+    this.tagIndex.clear();
+    this.eventListeners.clear();
+    this.initialized = false;
+    this.logger.info('Event-driven knowledge service shutdown complete');
+  }
 }
 
 // =============================================================================

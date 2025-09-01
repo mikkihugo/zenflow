@@ -243,7 +243,7 @@
 * // Combine into ensemble for best performance
 * const ensemble = new Ensemble({
 * programs:[bootstrap_optimized, mipro_optimized, copro_optimized],
-* strategy: 'vote', // or ' average', `weighted`) * weights:[0.3, 0.5, 0.2] // Based on validation performance
+* strategy: 'vote', // or ' average', `weighted); * weights:[0.3, 0.5, 0.2] // Based on validation performance
 *});
 *
 * // Production-ready classifier with ensemble power

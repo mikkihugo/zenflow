@@ -16,7 +16,7 @@
  *
  * function validateEmail(email:string): ValidationError|null {
  *   if (!email.includes('@')) {
- *     return createValidationError('Invalid email format', { field: ' email`});
+ *     return createValidationError('Invalid email format', { field: ' email});
  *}
  *   return null;
  *}

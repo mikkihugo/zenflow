@@ -1,4 +1,5 @@
 <script lang="ts">
+import { clearInterval } from 'timers';
   import { onMount, onDestroy } from 'svelte';
   import { toast } from '@zerodevx/svelte-toast';
   
@@ -32,7 +33,7 @@
     systemHealth: 'healthy'
   };
   
-  let updateInterval: NodeJS.Timer;
+  let updateInterval: NodeJS.Timeout;
   let isConnected = false;
   let websocket: WebSocket | null = null;
   

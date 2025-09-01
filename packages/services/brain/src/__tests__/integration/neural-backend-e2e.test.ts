@@ -182,8 +182,8 @@ expect(similarities[0].document).toContain('Machine learning').; expect(similari
 });
 
 describe('Performance and Scaling Scenarios', () => {
-`) it(`should handle high-throughput embedding generation`, async () => {
-`) const batchSize = 50;
+); it(`should handle high-throughput embedding generation`, async () => {
+); const batchSize = 50;
 const texts = Array.from(
 { length:batchSize},
 (_, i) =>
@@ -286,7 +286,7 @@ expect(result2.success).toBe(true);
 });
 
 it(`should handle memory pressure gracefully`, async () => {
-`) // Fill cache to near capacity
+); // Fill cache to near capacity
 const maxCacheSize = e2eConfig.neural?.smartBackend?.maxCacheSize || 1000;
 const texts = Array.from(
 { length:maxCacheSize + 10},
@@ -316,7 +316,7 @@ describe(`Quality Assurance Scenarios`, () => {
 text: 'This is a medium-length text that contains several words and should generate a meaningful embedding vector for semantic analysis purposes.', type: 'medium',},
 {
 text:
-'This is a very long text document that contains extensive information about various topics including machine learning, neural networks, artificial intelligence, software engineering, and many other technical subjects that might be encountered in a typical enterprise application. ' +; 'It continues with more detailed explanations and examples. `.repeat(`) 10
+'This is a very long text document that contains extensive information about various topics including machine learning, neural networks, artificial intelligence, software engineering, and many other technical subjects that might be encountered in a typical enterprise application. ' +; 'It continues with more detailed explanations and examples. `.repeat(); 10
 ),
 type: `long`,},
 ];

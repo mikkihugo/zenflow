@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
+    "type-check": "tsc --noEmit",
     "build:rust": "cd neural-core && cargo build --release",
     "test": "vitest run",
     "test:rust": "cd neural-core && cargo test",

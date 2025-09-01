@@ -27,18 +27,18 @@
 * @version 1.0.0
 */
 
-import type { Logger} from "@claude-zen/foundation";
-import { EventEmitter, getLogger} from "@claude-zen/foundation";
+import type { Logger } from "@claude-zen/foundation";
+import { EventEmitter, getLogger } from "@claude-zen/foundation";
 import { DSPyBrainMLBridge} from "../ml-bridge/dspy-brain-ml-bridge";
 // Removed unused import:import type { Teleprompter} from `../teleprompters/teleprompter`
 
 // Task analysis interfaces
 export interface OptimizationTask {
-	id:string;
+	id: string;
 	signature:any;
-	examples:any[];
-	description?:string;
-	domain?:TaskDomain;
+	examples: any[];
+	description?: string;
+	domain?: TaskDomain;
 	complexity?:TaskComplexity;
 	requirements?:TaskRequirements;
 	constraints?:TaskConstraints;

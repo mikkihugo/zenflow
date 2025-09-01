@@ -16,7 +16,7 @@ type FactSearchResult,
 } from './fact-system';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('coordination-api').
+const logger = getLogger('coordination-api');
 
 // Re-export types for coordination layer
 export type { CoordinationFact, CoordinationFactQuery, FactSearchResult };

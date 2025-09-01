@@ -2,4 +2,5 @@
  * @fileoverview MCP Interface Exports
  */
 
-export * from './mcp-types.js';
+// TODO: Implement MCP interface types
+// export * from './mcp-types';

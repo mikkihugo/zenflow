@@ -39,30 +39,31 @@ useCase:['time_series', 'text_generation'],
 export class GraphNeuralNetwork {
 constructor(public config:any = {}) {}
 
-async train(data:any): Promise<void> {
-logger.info('Training Graph Neural Network with data:', data);').
+async train(data: any): Promise<void> {
+logger.info('Training Graph Neural Network with data:', data);
+}
 
-async predict(input:any): Promise<any> {
-logger.info('Graph Neural Network prediction for input:', input); return { prediction: 'graph_output'};').
+async predict(input: any): Promise<any> {
+logger.info('Graph Neural Network prediction for input:', input);
+return { prediction: 'graph_output' };
 }
 
 export class TransformerModel {
-constructor(public config:any = {}) {}
+constructor(public config: any = {}) {}
 
-async train(data:any): Promise<void> {
-logger.info('Training Transformer Model with data:', data);').
-
-async predict(input:any): Promise<any> {
-logger.info('Transformer Model prediction for input:', input); return { prediction: 'transformer_output'};').
+async train(data: any): Promise<void> {
+logger.info('Training Transformer Model with data:', data);
+async predict(input: any): Promise<any> {
+logger.info('Transformer Model prediction for input:', input);
+return { prediction: 'transformer_output' };
 }
 
 export class VAEModel {
-constructor(public config:any = {}) {}
+constructor(public config: any = {}) {}
 
-async train(data:any): Promise<void> {
-logger.info('Training VAE Model with data:', data);').
-
-async predict(input:any): Promise<any> {
+async train(data: any): Promise<void> {
+logger.info('Training VAE Model with data:', data);
+}async predict(input:any): Promise<any> {
 logger.info('VAE Model prediction for input:', input); return { prediction: 'vae_output'};').
 }
 

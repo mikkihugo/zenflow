@@ -251,7 +251,7 @@ logger.info(`Document segmented into ${segments}.lengthsegments (${processingTim
 
 return result;
 } catch (error) {
-logger.error(`Error during document segmentation:`, error);`) throw new Error(`Document segmentation failed:${error}``
+logger.error(`Error during document segmentation:`, error);); throw new Error(`Document segmentation failed:${error}``
 }
 }
 
@@ -375,7 +375,7 @@ if (text.includes('procedure; || text.includes(' function; || text.includes(' de
 }
 
 // Check for code implementations
-if (text.includes('```; || text.includes(' code; || text.includes(' implementation'). {`
+if (text.includes('```; || text.includes(' code; || text.includes(' implementation'). {
 ; return 'implementation;
 }
 

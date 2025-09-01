@@ -11,6 +11,7 @@
     "build:rust": "echo 'Rust build temporarily disabled due to workspace conflicts'",
     "build:wasm": "cd src/rust && wasm-pack build --target nodejs --out-dir ../../wasm",
     "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
     "clean": "rm -rf dist wasm target",
     "_prepublishOnly_disabled": "pnpm run clean && pnpm run build",
     "test": "vitest run",

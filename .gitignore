@@ -30,6 +30,12 @@ bin/claude-zen-node-pkg
 *.exe
 *.bin
 
+# Compiled JavaScript and TypeScript declaration files in src/
+**/src/**/*.js
+**/src/**/*.d.ts
+**/src/**/*.js.map
+**/src/**/*.d.ts.map
+
 # Rust/Cargo artifacts
 Cargo.lock
 **/target/

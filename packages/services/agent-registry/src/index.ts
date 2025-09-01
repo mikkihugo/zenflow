@@ -32,7 +32,7 @@
  *});
  *
  * // Query agents by capability
- * const coders = registry.findAgentsByCapability('code-generation');`) * `
+ * const coders = registry.findAgentsByCapability('code-generation');); * `
  */
 
 // Core agent registry implementation

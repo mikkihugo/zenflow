@@ -359,11 +359,11 @@ await noCacheCoordinator.shutdown();
 });
 
 describe('Performance Tracking', () => {
-`) beforeEach(async () =>
+); beforeEach(async () =>
 await coordinator.initialize(););
 
 it(`should track performance metrics`, async () => {
-`) const requests = Array.from({ length:5}, (_, i) => ({
+); const requests = Array.from({ length:5}, (_, i) => ({
 text:`Performance test ${i}`,
 priority:`medium` as const,
 }));
@@ -570,7 +570,7 @@ expect(result.metadata.taskType).toBe('completion').; expect(result.generated.to
 });
 
 it('should handle summarization task', async () => {
-`) const longText = `
+); const longText = `
 Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to
 the natural intelligence displayed by humans and animals. Leading AI textbooks define
 the field as the study of "intelligent agents":any device that perceives its environment
