@@ -30,7 +30,7 @@ import { kmeans} from 'ml-kmeans';
 import { sma} from 'moving-averages';
 
 import type { BrainJsBridge} from './brain-js-bridge';
-import { ActivationFunction} from './types/index';
+import { ActivationFunction } from './types/index';
 
 // 🧠 Enhanced ML Imports - Using validated API patterns
 
@@ -268,7 +268,8 @@ export class BehavioralIntelligence {
       logger.info(
         'Behavioral Intelligence initialized successfully with advanced ML capabilities'      );
 } catch (error) {
-      logger.error('Failed to initialize Behavioral Intelligence:', error);')      throw error;
+      logger.error('Failed to initialize Behavioral Intelligence:', error);
+      throw error;
 }
 }
 
@@ -457,25 +458,27 @@ export class BehavioralIntelligence {
         if (score > bestScore) {
           bestScore = score;
           bestAgent = agentId;
-          bestReasoning = `High predicted efficiency (${(_prediction._predictedEfficiency * 100).toFixed(1)}%) and success rate (${(_prediction._predictedSuccess * 100).toFixed(1)}%)`;`
-}
-}
+          bestReasoning = `High predicted efficiency ${(prediction.predictedEfficiency * 100).toFixed(1)}% and success rate ${(prediction.predictedSuccess * 100).toFixed(1)}%`;
+        }
+      }
 
       logger.info(
-        `Selected best agent:${bestAgent} for ${taskType} (score:${bestScore.toFixed(3)})``
+        `Selected best agent:${bestAgent} for ${taskType} (score:${bestScore.toFixed(3)})`
       );
 
       return {
-        agentId:bestAgent,
-        confidence:bestScore,
-        reasoning:bestReasoning,
-};
-} catch (error) {
-      logger.error('Error finding best agent for task:', error);')
+        agentId: bestAgent,
+        confidence: bestScore,
+        reasoning: bestReasoning,
+      };
+    } catch (error) {
+      logger.error('Error finding best agent for task:', error);
       return {
-        agentId:availableAgents[0]||'default',        confidence:0.1,
-        reasoning: 'Error in selection, using first available agent',};
-}
+        agentId: availableAgents[0] || 'default',
+        confidence: 0.1,
+        reasoning: 'Error in selection, using first available agent',
+      };
+    }
 }
 
   /**
@@ -869,7 +872,7 @@ export class BehavioralIntelligence {
       // Learn from the behavior data
       await this.learnFromExecution(executionData);
 
-      logger.debug(`✅ Behavior recorded and learned from:${data.agentId}`);`
+      logger.debug(`✅ Behavior recorded and learned from:${data.agentId}`);'
 } catch (error) {
       logger.error('❌ Failed to record behavior:', error);')}
 }
@@ -1254,7 +1257,7 @@ export class BehavioralIntelligence {
    */
   private async initializeNeuralNetworkInfrastructure(id:string, _type:string, _config:any): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    logger.debug(`Neural network infrastructure initialized for ${id}`);`
+    logger.debug(`Neural network infrastructure initialized for ${id}`);'
 }
 
   /**
@@ -1296,7 +1299,7 @@ export class BehavioralIntelligence {
    */
   private async executeTrainingPipeline(id:string, data:any, strategy:any): Promise<void> 
     await new Promise(resolve => setTimeout(resolve, 150));
-    logger.debug(`Training pipeline executed for ${id} with ${strategy.strategy} strategy`);`
+    logger.debug(`Training pipeline executed for ${id} with ${strategy.strategy} strategy`);'
 }
 
   /**
@@ -1704,6 +1707,10 @@ export async function demoBehavioralIntelligence(
     logger.info('   • Task complexity estimation for better routing');
     logger.info('   • Data-driven swarm optimization');
   } catch (error) {
+    logger.error('❌ Demo failed:', error);
+  }
+}
+}
     logger.error('❌ Demo failed:', error);
   }
 }
