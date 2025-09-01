@@ -367,44 +367,47 @@ ${enhancedStandards.contextualIntro}
 - **Step-by-step logic**: Break down complex operations into clear steps
 - **Variable naming**: Use descriptive names in pseudocode`;
 
-      case 'architecture': ')'        return ``
+      case 'architecture':
+        return `
 ### 🏗️ Architecture Phase Guidelines:
-- **Modular design**:Create loosely coupled, highly cohesive modules
-- **Separation of concerns**:Separate business logic from presentation/data layers
-- **Dependency injection**:Use DI for testability and flexibility
-- **Interface segregation**:Create focused, specific interfaces
-- **Package structure**:Organize code into logical packages/folders
-- **Scalability patterns**:Design for future growth and changes`;`
+- **Modular design**: Create loosely coupled, highly cohesive modules
+- **Separation of concerns**: Separate business logic from presentation/data layers
+- **Dependency injection**: Use DI for testability and flexibility
+- **Interface segregation**: Create focused, specific interfaces
+- **Package structure**: Organize code into logical packages/folders
+- **Scalability patterns**: Design for future growth and changes`;
 
-      case 'refinement': ')'        return ``
+      case 'refinement':
+        return `
 ### ⚡ Refinement Phase Guidelines:
-- **Performance optimization**:Profile and optimize critical paths
-- **Code review practices**:Focus on readability and maintainability
-- **Testing coverage**:Aim for 80%+ test coverage
-- **Documentation**:Add comprehensive documentation for public APIs
-- **Refactoring**:Eliminate code smells and technical debt
-- **Error handling**:Robust error handling and logging`;`
+- **Performance optimization**: Profile and optimize critical paths
+- **Code review practices**: Focus on readability and maintainability
+- **Testing coverage**: Aim for 80%+ test coverage
+- **Documentation**: Add comprehensive documentation for public APIs
+- **Refactoring**: Eliminate code smells and technical debt
+- **Error handling**: Robust error handling and logging`;
 
-      case 'completion': ')'        return ``
+      case 'completion':
+        return `
 ### ✅ Completion Phase Guidelines:
-- **Production readiness**:Ensure error handling, logging, monitoring
-- **Security validation**:Check for common security vulnerabilities
-- **Performance benchmarks**:Meet defined performance criteria
-- **Documentation completeness**:README, API docs, deployment guides
-- **CI/CD pipeline**:Automated testing and deployment
-- **Monitoring**:Implement proper monitoring and alerting`;`
+- **Production readiness**: Ensure error handling, logging, monitoring
+- **Security validation**: Check for common security vulnerabilities
+- **Performance benchmarks**: Meet defined performance criteria
+- **Documentation completeness**: README, API docs, deployment guides
+- **CI/CD pipeline**: Automated testing and deployment
+- **Monitoring**: Implement proper monitoring and alerting`;
 
       default:
-        return ``
+        return `
 ### 🎯 General Development Guidelines:
-- **Code quality**:Follow established coding standards
-- **Documentation**:Write clear, comprehensive documentation
-- **Testing**:Implement thorough testing strategies
-- **Performance**:Consider performance implications
-- **Security**:Follow security best practices
-- **Maintainability**:Write code that's easy to maintain and extend`;`
-}
-}
+- **Code quality**: Follow established coding standards
+- **Documentation**: Write clear, comprehensive documentation
+- **Testing**: Implement thorough testing strategies
+- **Performance**: Consider performance implications
+- **Security**: Follow security best practices
+- **Maintainability**: Write code that's easy to maintain and extend`;
+    }
+  }
 
   /**
    * Generate quality metrics for the phase
@@ -414,21 +417,35 @@ ${enhancedStandards.contextualIntro}
     config:Required<CodingStandardsConfig>
   ):string[] {
     const baseMetrics = [
-      `Cyclomatic complexity:< ${config.maxComplexity}`,`
-      `Function length:< ${config.maxLinesPerFunction} lines`,`
-      `Parameter count:< ${config.maxParameters}`,`
-      'Code coverage:> 80%',      'Documentation coverage:> 90%',];
+      `Cyclomatic complexity: < ${config.maxComplexity}`,
+      `Function length: < ${config.maxLinesPerFunction} lines`,
+      `Parameter count: < ${config.maxParameters}`,
+      'Code coverage: > 80%',
+      'Documentation coverage: > 90%'
+    ];
 
     switch (phase) {
-      case 'specification': ')'        return [
+      case 'specification':
+        return [
           ...baseMetrics,
-          'Requirements clarity:100%',          'Testable requirements:100%',          'Domain model completeness:> 95%',];
-      case 'architecture': ')'        return [
+          'Requirements clarity: 100%',
+          'Testable requirements: 100%',
+          'Domain model completeness: > 95%'
+        ];
+      case 'architecture':
+        return [
           ...baseMetrics,
-          'Module coupling:Low',          'Module cohesion:High',          'Interface segregation:100%',];
-      case 'completion': ')'        return [
+          'Module coupling: Low',
+          'Module cohesion: High',
+          'Interface segregation: 100%'
+        ];
+      case 'completion':
+        return [
           ...baseMetrics,
-          'Security scan:0 vulnerabilities',          'Performance benchmarks:Met',          'Production readiness:100%',];
+          'Security scan: 0 vulnerabilities',
+          'Performance benchmarks: Met',
+          'Production readiness: 100%'
+        ];
       default:
         return baseMetrics;
 }
@@ -443,21 +460,22 @@ ${enhancedStandards.contextualIntro}
     codingStandards:string,
     phaseGuidelines:string
   ):string {
-    return ``
-# 🚀 $phase.charAt(0).toUpperCase() + phase.slice(1)Phase Development Prompt
+    return `
+# 🚀 ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase Development Prompt
 
 ## 📋 Project Context:
-- **Project**:$context.name
-- **Domain**:$context.domain
-- **Requirements**:$context.requirements?.length || 0defined
-- **Tech Stack**:$context.techStack?.join(',    ') || ' To be determined')
-$codingStandards
+- **Project**: ${context.name}
+- **Domain**: ${context.domain}
+- **Requirements**: ${context.requirements?.length || 0} defined
+- **Tech Stack**: ${context.techStack?.join(', ') || 'To be determined'}
 
-$phaseGuidelines
+${codingStandards}
+
+${phaseGuidelines}
 
 ## 🎯 Implementation Focus:
 1. **Follow naming conventions** - Use descriptive, purpose-driven filenames
-2. **Maintain function _complexity** - Keep functions simple and focused
+2. **Maintain function complexity** - Keep functions simple and focused
 3. **Ensure type safety** - Use explicit typing throughout
 4. **Write clean code** - Self-documenting, maintainable code
 5. **Plan for testing** - Design with testability in mind
@@ -465,14 +483,14 @@ $phaseGuidelines
 ## 🔍 Quality Checklist:
 - [] Descriptive filenames that indicate purpose
 - [] Single responsibility per file/function
-- [] Appropriate _complexity levels
+- [] Appropriate complexity levels
 - [] Comprehensive error handling
 - [] Clear documentation and comments
 - [] Type safety (for TypeScript)
 - [] Performance considerations
 - [] Security best practices
 
-Remember:Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.`;`
+Remember: Write code that tells a story - it should be self-documenting and easy for other developers to understand and maintain.`;
 }
 
   /**
@@ -532,13 +550,15 @@ Remember:Write code that tells a story - it should be self-documenting and easy 
 
       // Create coordination task with DSPy examples for prompt generation
       const __promptTask = {
-        id:`prompt-gen-${phase}-${Date.now()}`,`
-        type:'generation' as const,
-        input:`Generate a high-quality development prompt for ${phase} phase.`
+        id: `prompt-gen-${phase}-${Date.now()}`,
+        type: 'generation' as const,
+        input: `Generate a high-quality development prompt for ${phase} phase.
 
-Project:"${context.name}" in ${context.domain} domain
-Language:$config.language
-Requirements:$context.requirements?.join(',    ') || ' To be determined')Tech Stack:$context.techStack?.join(',    ') || ' To be determined')
+Project: "${context.name}" in ${context.domain} domain
+Language: ${config.language}
+Requirements: ${context.requirements?.join(', ') || 'To be determined'}
+Tech Stack: ${context.techStack?.join(', ') || 'To be determined'}
+
 The prompt should include:
 1. Project context section
 2. Coding standards for ${config.language}
@@ -546,7 +566,7 @@ The prompt should include:
 4. Critical instructions emphasizing descriptive filenames
 5. Quality metrics (complexity < ${config.maxComplexity}, length < ${config.maxLinesPerFunction} lines)
 
-Generate a complete, ready-to-use development prompt.`,`
+Generate a complete, ready-to-use development prompt.`,
           phase,
           projectName:context.name,
           domain:context.domain,
@@ -611,13 +631,13 @@ Generate a complete, ready-to-use development prompt.`,`
   ):Array<{ input: string; output: string}> {
     return [
       {
-        input:`Generate $phasephase prompt for e-commerce API project in rest-api domain using $config.language`,`
-        output:`# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`,`
-},
+        input: `Generate ${phase} phase prompt for e-commerce API project in rest-api domain using ${config.language}`,
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Keep functions simple and focused\n3. Follow ${config.language} best practices`
+      },
       {
-        input:`Generate $phasephase prompt for mobile app project in mobile domain using $config.language`,`
-        output:`# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`,`
-},
+        input: `Generate ${phase} phase prompt for mobile app project in mobile domain using ${config.language}`,
+        output: `# Development Prompt for ${phase} Phase\n\n## 📋 Project Context\n## 🎯 Coding Standards\n## 📝 CRITICAL INSTRUCTIONS\n1. Use descriptive, purpose-driven filenames\n2. Optimize for mobile performance\n3. Follow ${config.language} best practices`
+      }
 ];
 }
 
@@ -893,7 +913,7 @@ Remember:This prompt learns from your execution. The better you follow and provi
    * Generate principles ID for tracking
    */
   private generatePrinciplesId(config:any): string {
-    return `${config.language}-${config.domain || 'general'}-${config.role || ' general'}-${config.depth || ' intermediate'}`;`
+    return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
 }
 
   /**
