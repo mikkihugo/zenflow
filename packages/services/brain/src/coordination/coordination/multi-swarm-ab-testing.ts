@@ -139,8 +139,8 @@ winner:ABTestStrategy;
 /** Confidence in winner selection (0-1) */
 confidence:number;
 /** Statistical significance */
-significance: 'high|medium|low|none;
-' /** Performance differences */
+significance: `high|medium|low|none;
+` /** Performance differences */
 performanceDelta:Record<string, number>;
 };
 /** Execution metadata */
@@ -206,7 +206,7 @@ const startTime = new Date();
 
 logger.info(` Starting A/B test:$testId`);`
 logger.info(` Task:${taskDescription}`);`
-logger.info(` Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(', ')`);`
+logger.info(` Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(`, `)`);`
 
 try {
 // Prepare git worktrees if configured
@@ -279,7 +279,7 @@ throw error;
 * Create predefined strategy sets for common scenarios
 */
 createStrategySet(
-scenario:'performance|quality|innovation|comprehensive') ):ABTestStrategy[] {
+scenario:`performance|quality|innovation|comprehensive`) ):ABTestStrategy[] {
 switch (scenario) {
 case 'performance': ')' return [
 {
@@ -350,7 +350,7 @@ if (this.testHistory.length === 0) {
 return {
 recommendedStrategy:null,
 confidence:0,
-reasoning:['No historical data available for recommendations'],
+reasoning:[`No historical data available for recommendations`],
 };
 }
 
@@ -368,7 +368,7 @@ recommendedStrategy:mostSuccessful,
 confidence:0.3,
 reasoning:[
 `No specific data for "${taskType}" tasks`,`
-'Recommendation based on general performance across all task types', 'Consider running A/B test for this specific task type',],
+`Recommendation based on general performance across all task types`, `Consider running A/B test for this specific task type`,],
 };
 }
 
@@ -400,13 +400,13 @@ gitConfig?:GitTreeConfig
 const worktreePaths:Record<string, string> = {};
 
 if (!gitConfig?.useGitWorktrees) {
-logger.debug('Git worktrees disabled, using current working directory');') return worktreePaths;
+logger.debug(`Git worktrees disabled, using current working directory`);') return worktreePaths;
 }
 
 // Use gitConfig parameters for comprehensive worktree setup
 const maxWorktrees = gitConfig.maxWorktrees || 10;
-const baseBranch = gitConfig.baseBranch || 'main;
-const branchPrefix = gitConfig.branchPrefix || 'ab-test;
+const baseBranch = gitConfig.baseBranch || `main;
+const branchPrefix = gitConfig.branchPrefix || `ab-test;
 const cleanupAfterTest = gitConfig.cleanupAfterTest ?? true;
 
 // Validate git configuration
@@ -431,7 +431,7 @@ maxWorktrees,
 
 for (const strategy of strategiesToProcess) {
 const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`
-const worktreePath = joinPath(getHomeDirectory(), '.claude-zen', 'tmp', 'ab-test-worktrees', branchName);`
+const worktreePath = joinPath(getHomeDirectory(), `.claude-zen`, 'tmp', `ab-test-worktrees`, branchName);`
 
 // Log worktree creation with gitConfig details
 logger.debug(` Creating worktree for ${strategy.name}`, {`
@@ -450,8 +450,8 @@ logger.info(` Created worktree for ${strategy.name}:${worktreePath}`);`
 }
 
 // Log final worktree configuration summary
-logger.info('Git worktree preparation completed', {
-') totalWorktrees:Object.keys(worktreePaths).length,
+logger.info(`Git worktree preparation completed`, {
+`) totalWorktrees:Object.keys(worktreePaths).length,
 cleanupAfterTest,
 worktreeIds:Object.keys(worktreePaths),
 });
@@ -525,7 +525,7 @@ results.push(result);
 
 if (enableProgressLogging) {
 logger.info(
-` Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED'})``
+` Strategy ${i + 1} completed:${strategy.name} (${result.success ?'SUCCESS' : ' FAILED`})``
 );
 }
 } catch (error) {
@@ -584,11 +584,11 @@ return results;
 
 private recordCleanupMetrics(strategyId:string, path:string): void {
 // Record cleanup metrics for monitoring and analytics
-logger.debug('Recording cleanup metrics', {
+logger.debug(`Recording cleanup metrics`, {
 ') strategyId,
 pathLength:path.length,
 timestamp:Date.now(),
-cleanupType: 'git_worktree',});
+cleanupType: `git_worktree`,});
 }
 
 private async persistTestResult(testResult:ABTestResult): Promise<void> {
@@ -602,7 +602,7 @@ logger.info(` Persisted A/B test result:${testResult.testId}`);`
 */
 export async function quickABTest(
 taskDescription:string,
-scenario:|performance|quality|innovation|'comprehensive' = ' comprehensive', options:{
+scenario:|performance|quality|innovation|`comprehensive` = ' comprehensive', options:{
 useGitTrees?:boolean;
 timeoutMs?:number;
 } = {}

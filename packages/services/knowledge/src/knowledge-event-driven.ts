@@ -11,13 +11,13 @@
 
 const createLogger = (name:string) => ({
 info:(message: string, meta?:unknown) =>
-console.info(`[INFO:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+console.info(`[INFO:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
 debug:(message: string, meta?:unknown) =>
-console.info(`[DEBUG:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+console.info(`[DEBUG:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
 warn:(message: string, meta?:unknown) =>
-console.warn(`[WARN:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+console.warn(`[WARN:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
 error:(message: string, meta?:unknown) =>
-console.error(`[ERROR:${name}] ${message}`, meta ? JSON.stringify(meta) :''),
+console.error(`[ERROR:${name}] ${message}`, meta ? JSON.stringify(meta) :``),
 });
 
 // =============================================================================
@@ -215,7 +215,7 @@ maxItemSize?:number;
 
 export class EventDrivenKnowledgeService {
 private eventListeners:Map<string, Function[]> = new Map();
-private logger = createLogger('EventDrivenKnowledgeService');
+private logger = createLogger(`EventDrivenKnowledgeService`);
 private config:KnowledgeConfig;
 private initialized = false;
 private knowledgeItems = new Map<string, KnowledgeItem>();
@@ -270,7 +270,7 @@ error:error instanceof Error ? error.message : String(error)
 
 private setupBrainEventHandlers():void {
 // Handle brain initialization requests
-this.addEventListener('brain:knowledge:initialize', async (data) => {
+this.addEventListener(`brain:knowledge:initialize`, async (data) => {
 try {
 if (data.config) {
 this.config = { ...this.config, ...data.config};
@@ -450,7 +450,7 @@ timestamp:Date.now(),
 private async initializeInternal():Promise<void> {
 if (this.initialized) return;
 
-this.logger.info('Event-driven knowledge service initialized', { config:this.config});
+this.logger.info(`Event-driven knowledge service initialized`, { config:this.config});
 this.initialized = true;
 }
 
@@ -494,7 +494,7 @@ this.tagIndex.get(tag)!.add(itemId);
 }
 }
 
-this.logger.debug('Knowledge item stored', { itemId, type:item.type, confidence:item.confidence});
+this.logger.debug(`Knowledge item stored`, { itemId, type:item.type, confidence:item.confidence});
 return itemId;
 }
 
@@ -650,7 +650,7 @@ const averageConfidence = activeItems.length > 0 ? totalConfidence / activeItems
 // Simple storage health calculation
 const storageHealth:KnowledgeStats['storageHealth'] =
 activeItems.length > 10000 ? 'degraded' :
-activeItems.length > 0 ? 'healthy' : ' unhealthy';
+activeItems.length > 0 ? 'healthy' : ` unhealthy`;
 
 return {
 totalItems:activeItems.length,
@@ -760,7 +760,7 @@ this.searchIndex.delete(word);
 
 async initialize():Promise<void> {
 this.setupBrainEventHandlers();
-this.logger.info('Event-driven knowledge service ready to receive brain events');
+this.logger.info(`Event-driven knowledge service ready to receive brain events`);
 }
 
 async shutdown():Promise<void> {

@@ -1,24 +1,24 @@
 /**
- * @fileoverview BootstrapFewShot Teleprompter Implementation
- *
- * Production-grade implementation with 100% Stanford DSPy API compatibility.
- * Core teleprompter for generating few-shot demonstrations by running a teacher model
- * on training examples and collecting successful traces.
- *
- * Key Features:
- * - Exact Stanford DSPy BootstrapFewShot API compatibility
- * - Teacher/Student model coordination for bootstrapping
- * - Metric-based validation of generated examples
- * - Iterative trace collection and compilation
- * - Integration with labeled examples
- * - Error handling and robust execution
- *
- * @author Claude Code Zen Team
- * @version 2.0.0
- * @since 1.0.0-alpha.47
- *
- * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
- */
+* @fileoverview BootstrapFewShot Teleprompter Implementation
+*
+* Production-grade implementation with 100% Stanford DSPy API compatibility.
+* Core teleprompter for generating few-shot demonstrations by running a teacher model
+* on training examples and collecting successful traces.
+*
+* Key Features:
+* - Exact Stanford DSPy BootstrapFewShot API compatibility
+* - Teacher/Student model coordination for bootstrapping
+* - Metric-based validation of generated examples
+* - Iterative trace collection and compilation
+* - Integration with labeled examples
+* - Error handling and robust execution
+*
+* @author Claude Code Zen Team
+* @version 2.0.0
+* @since 1.0.0-alpha.47
+*
+* @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
+*/
 
 import type { MetricFunction} from "../interfaces/types";
 import { Example} from "../primitives/example";
@@ -26,9 +26,9 @@ import type { DSPyModule} from "../primitives/module";
 import { Teleprompter} from "./teleprompter";
 
 /**
- * LabeledFewShot teleprompter matching Stanford DSPy vanilla.py implementation
- * Used as a component in Bootstrap and other teleprompters
- */
+* LabeledFewShot teleprompter matching Stanford DSPy vanilla.py implementation
+* Used as a component in Bootstrap and other teleprompters
+*/
 export class LabeledFewShot extends Teleprompter {
 	private k:number;
 
@@ -68,50 +68,50 @@ export class LabeledFewShot extends Teleprompter {
 }
 
 /**
- * BootstrapFewShot Teleprompter with exact Stanford DSPy API compatibility
- *
- * A Teleprompter class that composes a set of demos/examples to go into a predictor's prompt.
- * These demos come from a combination of labeled examples in the training set, and bootstrapped demos.
- *
- * Matches Stanford DSPy BootstrapFewShot implementation exactly.
- *
- * @example
- * '''typescript`
- * // Basic bootstrapping with default settings
- * const bootstrap = new BootstrapFewShot();
- * const optimizedProgram = await bootstrap.compile(studentProgram, {
- *   trainset:trainingExamples,
- *   teacher:teacherProgram
- *});
- *
- * // Advanced bootstrapping with custom configuration
- * const bootstrap = new BootstrapFewShot({
- *   metric:accuracyMetric,
- *   metric_threshold:0.8,
- *   max_bootstrapped_demos:8,
- *   max_labeled_demos:16,
- *   max_rounds:3,
- *   max_errors:10
- *});
- *
- * const result = await bootstrap.compile(studentProgram, {
- *   trainset:trainingData,
- *   teacher:teacherModel,
- *   valset:validationData
- *});
- *
- * // Self-bootstrapping (student teaches itself)
- * const selfBootstrap = new BootstrapFewShot({
- *   max_bootstrapped_demos:4,
- *   max_labeled_demos:8
- *});
- *
- * const improved = await selfBootstrap.compile(myProgram, {
- *   trainset:examples
- *   // No teacher specified - program teaches itself
- *});
- * `
- */
+* BootstrapFewShot Teleprompter with exact Stanford DSPy API compatibility
+*
+* A Teleprompter class that composes a set of demos/examples to go into a predictor's prompt.
+* These demos come from a combination of labeled examples in the training set, and bootstrapped demos.
+*
+* Matches Stanford DSPy BootstrapFewShot implementation exactly.
+*
+* @example
+* '``typescript`
+* // Basic bootstrapping with default settings
+* const bootstrap = new BootstrapFewShot();
+* const optimizedProgram = await bootstrap.compile(studentProgram, {
+* trainset:trainingExamples,
+* teacher:teacherProgram
+*});
+*
+* // Advanced bootstrapping with custom configuration
+* const bootstrap = new BootstrapFewShot({
+* metric:accuracyMetric,
+* metric_threshold:0.8,
+* max_bootstrapped_demos:8,
+* max_labeled_demos:16,
+* max_rounds:3,
+* max_errors:10
+*});
+*
+* const result = await bootstrap.compile(studentProgram, {
+* trainset:trainingData,
+* teacher:teacherModel,
+* valset:validationData
+*});
+*
+* // Self-bootstrapping (student teaches itself)
+* const selfBootstrap = new BootstrapFewShot({
+* max_bootstrapped_demos:4,
+* max_labeled_demos:8
+*});
+*
+* const improved = await selfBootstrap.compile(myProgram, {
+* trainset:examples
+* // No teacher specified - program teaches itself
+*});
+* `
+*/
 export class BootstrapFewShot extends Teleprompter {
 	private metric?:MetricFunction | null;
 	private metric_threshold?:number | null;
@@ -296,8 +296,8 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 		logger.info(
-			'Bootstrapped ' + (Object.keys(bootstrapped).length) + ` full traces after ${this.trainset.length} examples ` +
-				'for up to ' + (this.max_rounds) + ` rounds, amounting to ${bootstrap_attempts} attempts.`,
+			`Bootstrapped ` + (Object.keys(bootstrapped).length) + ` full traces after ${this.trainset.length} examples ` +
+				`for up to ` + (this.max_rounds) + ` rounds, amounting to ${bootstrap_attempts} attempts.`,
 		);
 
 		// Unbootstrapped training examples
@@ -409,7 +409,7 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 			logger.error(
-				'Failed to run or to evaluate example ' + (JSON.stringify(example)) + ' with ' + (this.metric) + ` due to ${error}.`,
+				`Failed to run or to evaluate example ` + (JSON.stringify(example)) + ' with ' + (this.metric) + ` due to ${error}.`,
 			);
 			return false;
 }

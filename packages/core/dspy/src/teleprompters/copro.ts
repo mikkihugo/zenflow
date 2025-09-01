@@ -1,24 +1,24 @@
 /**
- * @fileoverview COPRO (Constraint-Only Prompt Optimization) Teleprompter
- *
- * Production-grade implementation with 100% Stanford DSPy API compatibility.
- * Optimizes DSPy module signatures using constraint-only prompt optimization,
- * focusing on improving instructions and output prefixes without demonstrations.
- *
- * Key Features:
- * - Exact Stanford DSPy COPRO API compatibility
- * - Iterative instruction generation with breadth/depth search
- * - LLM-based instruction improvement using previous attempts
- * - Automatic duplicate detection and filtering
- * - Statistics tracking for optimization analysis
- * - Multi-predictor support with cross-predictor evaluation
- *
- * @author Claude Code Zen Team
- * @version 2.0.0
- * @since 1.0.0-alpha.47
- *
- * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
- */
+* @fileoverview COPRO (Constraint-Only Prompt Optimization) Teleprompter
+*
+* Production-grade implementation with 100% Stanford DSPy API compatibility.
+* Optimizes DSPy module signatures using constraint-only prompt optimization,
+* focusing on improving instructions and output prefixes without demonstrations.
+*
+* Key Features:
+* - Exact Stanford DSPy COPRO API compatibility
+* - Iterative instruction generation with breadth/depth search
+* - LLM-based instruction improvement using previous attempts
+* - Automatic duplicate detection and filtering
+* - Statistics tracking for optimization analysis
+* - Multi-predictor support with cross-predictor evaluation
+*
+* @author Claude Code Zen Team
+* @version 2.0.0
+* @since 1.0.0-alpha.47
+*
+* @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
+*/
 
 import type { MetricFunction} from "../interfaces/types";
 import type { Example} from "../primitives/example";
@@ -26,9 +26,9 @@ import type { DSPyModule} from "../primitives/module";
 import { Teleprompter} from "./teleprompter";
 
 /**
- * Signature for basic instruction generation
- * Matches Stanford DSPy BasicGenerateInstruction exactly
- */
+* Signature for basic instruction generation
+* Matches Stanford DSPy BasicGenerateInstruction exactly
+*/
 export interface BasicGenerateInstructionSignature {
 	basic_instruction:string;
 	proposed_instruction:string;
@@ -36,9 +36,9 @@ export interface BasicGenerateInstructionSignature {
 }
 
 /**
- * Signature for instruction generation with previous attempts
- * Matches Stanford DSPy GenerateInstructionGivenAttempts exactly
- */
+* Signature for instruction generation with previous attempts
+* Matches Stanford DSPy GenerateInstructionGivenAttempts exactly
+*/
 export interface GenerateInstructionGivenAttemptsSignature {
 	attempted_instructions:string[];
 	proposed_instruction:string;
@@ -46,16 +46,16 @@ export interface GenerateInstructionGivenAttemptsSignature {
 }
 
 /**
- * Instruction completions structure matching Stanford DSPy
- */
+* Instruction completions structure matching Stanford DSPy
+*/
 export interface InstructionCompletions {
 	proposed_instruction:string[];
 	proposed_prefix_for_output_field:string[];
 }
 
 /**
- * Optimization candidate exactly matching Stanford DSPy format
- */
+* Optimization candidate exactly matching Stanford DSPy format
+*/
 export interface CoproCandidate {
 	program:DSPyModule;
 	instruction:string;
@@ -65,8 +65,8 @@ export interface CoproCandidate {
 }
 
 /**
- * Statistics tracking structure matching Stanford DSPy
- */
+* Statistics tracking structure matching Stanford DSPy
+*/
 export interface CoproStats {
 	results_best:Record<
 		string,
@@ -92,46 +92,46 @@ export interface CoproStats {
 }
 
 /**
- * COPRO Teleprompter with exact Stanford DSPy API compatibility
- *
- * Constraint-Only Prompt Optimization teleprompter that optimizes instructions
- * and output prefixes through iterative LLM-based generation and evaluation.
- *
- * Matches Stanford DSPy COPRO implementation exactly.
- *
- * @example
- * '''typescript'
- * // Basic COPRO optimization
- * const copro = new COPRO({
- *   prompt_model:gpt4,
- *   metric:accuracyMetric
- *});
- *
- * const optimized = await copro.compile(program, {
- *   trainset:trainingData
- *});
- *
- * // Advanced COPRO with custom search parameters
- * const advancedCopro = new COPRO({
- *   prompt_model:gpt4,
- *   metric:f1ScoreMetric,
- *   breadth:10,        // Generate 10 candidates per round
- *   depth:5,           // Search 5 levels deep
- *   init_temperature:1.4,
- *   track_stats:true   // Enable detailed statistics
- *});
- *
- * const result = await advancedCopro.compile(complexProgram, {
- *   trainset:examples,
- *   valset:validation,
- *   eval_kwargs:{ num_threads: 4}
- *});
- *
- * // Access optimization statistics
- * const __stats = advancedCopro.getStats();
- * logger.info('Total LM calls:` + stats.total_calls);
- * `
- */
+* COPRO Teleprompter with exact Stanford DSPy API compatibility
+*
+* Constraint-Only Prompt Optimization teleprompter that optimizes instructions
+* and output prefixes through iterative LLM-based generation and evaluation.
+*
+* Matches Stanford DSPy COPRO implementation exactly.
+*
+* @example
+* ```typescript`
+* // Basic COPRO optimization
+* const copro = new COPRO({
+* prompt_model:gpt4,
+* metric:accuracyMetric
+*});
+*
+* const optimized = await copro.compile(program, {
+* trainset:trainingData
+*});
+*
+* // Advanced COPRO with custom search parameters
+* const advancedCopro = new COPRO({
+* prompt_model:gpt4,
+* metric:f1ScoreMetric,
+* breadth:10, // Generate 10 candidates per round
+* depth:5, // Search 5 levels deep
+* init_temperature:1.4,
+* track_stats:true // Enable detailed statistics
+*});
+*
+* const result = await advancedCopro.compile(complexProgram, {
+* trainset:examples,
+* valset:validation,
+* eval_kwargs:{ num_threads: 4}
+*});
+*
+* // Access optimization statistics
+* const __stats = advancedCopro.getStats();
+* logger.info(`Total LM calls:${stats.total_calls}`);
+* ```
+*/
 export class COPRO extends Teleprompter {
 	private metric?:MetricFunction | null;
 	private breadth:number;
@@ -243,11 +243,11 @@ export class COPRO extends Teleprompter {
 
 		// For each iteration in depth...
 		for (let d = 0; d < this.depth; d++) {
-			logger.info('Iteration Depth:' + (d + 1) + `/${this.depth}.`);
+			logger.info(`Iteration Depth:${d + 1}/${this.depth}.`);
 
 			const latest_scores:number[] = [];
 
-			// Go through our module's predictors
+			// Go through our module`s predictors
 			const moduleClonePredictors = module_clone.predictors();
 
 			for (let p_i = 0; p_i < modulePredictors.length; p_i++) {
@@ -279,18 +279,18 @@ export class COPRO extends Teleprompter {
 					this._updateSignature(p_new, instruction, prefix);
 
 					logger.info(
-						'At Depth ' + (d + 1) + '/' + (this.depth) + ', Evaluating Prompt Candidate #' + (c_i + 1) + `/${candidates_.proposed_instruction.length} for ` +
-							'Predictor ' + (p_i + 1) + ` of ${modulePredictors.length}.`,
+						`At Depth ${d + 1}/${this.depth}, Evaluating Prompt Candidate #${c_i + 1}/${candidates_.proposed_instruction.length} for ` +
+							`Predictor ${p_i + 1} of ${modulePredictors.length}.`,
 					);
 
 					// Score the instruction / prefix
 					const score = await evaluate(module_clone, trainset);
 					this.total_calls++;
 
-					const candidateKey = (instruction) + '|||' + prefix;
+					const candidateKey = `${instruction}|||${prefix}`;
 					let replace_entry = true;
 
-					if (evaluated_candidates[predictorId][candidateKey] && 
+					if (evaluated_candidates[predictorId][candidateKey] &&
 							evaluated_candidates[predictorId][candidateKey].score >= score
 						) {
 							replace_entry = false;
@@ -316,7 +316,7 @@ export class COPRO extends Teleprompter {
 					this._updateLatestStats(predictorId, d, latest_scores);
 }
 
-				// Now that we've evaluated the candidates, set this predictor to the best performing version
+				// Now that we`ve evaluated the candidates, set this predictor to the best performing version
 				const best_candidate = this._getBestCandidate(
 					evaluated_candidates[predictorId],
 				);
@@ -454,7 +454,7 @@ export class COPRO extends Teleprompter {
 		const prefixes:string[] = [];
 
 		for (let i = 0; i < this.breadth - 1; i++) {
-			instructions.push((basic_instruction) + ' (variation ' + i + 1 + ')');
+			instructions.push(`${basic_instruction} (variation ${i + 1})`);
 			prefixes.push("Answer:");
 }
 
@@ -475,7 +475,7 @@ export class COPRO extends Teleprompter {
 		const prefixes:string[] = [];
 
 		for (let i = 0; i < this.breadth; i++) {
-			instructions.push('Improved instruction based on attempts (' + i + 1 + ')');
+			instructions.push(`Improved instruction based on attempts (${i + 1})`);
 			prefixes.push("Answer:");
 }
 
@@ -504,9 +504,9 @@ export class COPRO extends Teleprompter {
 		for (let i = shortest_len - 1; i >= 0; i--) {
 			const candidate = best_predictors[i];
 			const rank = shortest_len - i;
-			attempts.push('Instruction #' + (rank) + ':' + candidate.instruction);
-			attempts.push('Prefix #' + (rank) + ':' + candidate.prefix);
-			attempts.push('Resulting Score #' + (rank) + ':' + candidate.score);
+			attempts.push(`Instruction #${rank}:${candidate.instruction}`);
+			attempts.push(`Prefix #${rank}:${candidate.prefix}`);
+			attempts.push(`Resulting Score #${rank}:${candidate.score}`);
 }
 
 		return attempts;

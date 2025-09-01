@@ -1,36 +1,36 @@
 /**
- * @fileoverview Autonomous Teleprompter Selector - Intelligent ML Selection
- *
- * Provides autonomous selection between basic mathematical teleprompters and
- * ML-enhanced variants using the DSPy-Brain ML Bridge for intelligent analysis.
- * This system automatically determines whether to use standard optimization
- * or advanced ML capabilities based on task characteristics and performance history.
- *
- * Key Features:
- * -  Autonomous teleprompter selection using ML analysis
- * -  Performance-based decision making with historical data
- * -  Integration with DSPy-Brain ML Bridge for intelligent recommendations
- * -  Adaptive learning from usage patterns and success rates
- * -  Multi-objective optimization (accuracy, speed, memory, complexity)
- * -  Confidence scoring and uncertainty quantification
- * -  Fallback mechanisms for robust operation
- *
- * Architecture:
- * - Task analysis using natural language processing and pattern recognition
- * - Historical performance tracking for each teleprompter variant
- * - ML-powered recommendation engine using DSPy-Brain Bridge
- * - Confidence-based selection with fallback to proven alternatives
- * - Real-time adaptation based on success/failure feedback
- *
- * @author Claude Code Zen Team
- * @since 2.1.0
- * @version 1.0.0
- */
+* @fileoverview Autonomous Teleprompter Selector - Intelligent ML Selection
+*
+* Provides autonomous selection between basic mathematical teleprompters and
+* ML-enhanced variants using the DSPy-Brain ML Bridge for intelligent analysis.
+* This system automatically determines whether to use standard optimization
+* or advanced ML capabilities based on task characteristics and performance history.
+*
+* Key Features:
+* - Autonomous teleprompter selection using ML analysis
+* - Performance-based decision making with historical data
+* - Integration with DSPy-Brain ML Bridge for intelligent recommendations
+* - Adaptive learning from usage patterns and success rates
+* - Multi-objective optimization (accuracy, speed, memory, complexity)
+* - Confidence scoring and uncertainty quantification
+* - Fallback mechanisms for robust operation
+*
+* Architecture:
+* - Task analysis using natural language processing and pattern recognition
+* - Historical performance tracking for each teleprompter variant
+* - ML-powered recommendation engine using DSPy-Brain Bridge
+* - Confidence-based selection with fallback to proven alternatives
+* - Real-time adaptation based on success/failure feedback
+*
+* @author Claude Code Zen Team
+* @since 2.1.0
+* @version 1.0.0
+*/
 
 import type { Logger} from "@claude-zen/foundation";
 import { EventEmitter, getLogger} from "@claude-zen/foundation";
 import { DSPyBrainMLBridge} from "../ml-bridge/dspy-brain-ml-bridge";
-// Removed unused import:import type { Teleprompter} from '../teleprompters/teleprompter';
+// Removed unused import:import type { Teleprompter} from `../teleprompters/teleprompter`;
 
 // Task analysis interfaces
 export interface OptimizationTask {
@@ -190,11 +190,11 @@ export interface PerformanceHistory {
 }
 
 /**
- * Autonomous Teleprompter Selector - Intelligent ML Selection System
- *
- * This class provides autonomous selection between basic mathematical teleprompters
- * and ML-enhanced variants using sophisticated analysis and machine learning.
- */
+* Autonomous Teleprompter Selector - Intelligent ML Selection System
+*
+* This class provides autonomous selection between basic mathematical teleprompters
+* and ML-enhanced variants using sophisticated analysis and machine learning.
+*/
 export class AutonomousTeleprompterSelector extends EventEmitter {
 	private logger:Logger;
 	private mlBridge:DSPyBrainMLBridge;
@@ -272,7 +272,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 
 		const startTime = Date.now();
 		this.logger.info(
-			' Analyzing task for optimal teleprompter selection:' + task.id,
+			` Analyzing task for optimal teleprompter selection:` + task.id,
 		);
 
 		try {
@@ -318,7 +318,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			this.selectionHistory.push(finalSelection);
 
 			this.logger.info(
-				' Selected teleprompter:' + (finalSelection.selectedTeleprompter.name) + ' (confidence:' + (finalSelection.confidence * 100).toFixed(1) + '%)',
+				` Selected teleprompter:' + (finalSelection.selectedTeleprompter.name) + ' (confidence:${ + (finalSelection.confidence * 100).toFixed(1) + }%)',
 			);
 
 			this.emit("teleprompter:selected", {
@@ -334,7 +334,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 			// Fallback to safest option
 			const fallbackSelection = this.createFallbackSelection(task);
 			this.logger.warn(
-				' Using fallback selection:' + fallbackSelection.selectedTeleprompter.name,
+				` Using fallback selection:` + fallbackSelection.selectedTeleprompter.name,
 			);
 
 			return fallbackSelection;
@@ -387,7 +387,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		await this.adaptSelectionParameters(record);
 
 		this.logger.info(
-			' Recorded performance for ' + (teleprompterName) + ':accuracy=' + (actualPerformance.accuracy.toFixed(3)) + ', success=' + actualPerformance.success,
+			` Recorded performance for ` + (teleprompterName) + ':accuracy=' + (actualPerformance.accuracy.toFixed(3)) + `, success=` + actualPerformance.success,
 		);
 
 		this.emit("performance:recorded", { record});
@@ -557,7 +557,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 
 	private generateTaskDescription(task:OptimizationTask): string {
 		return (
-			'Domain: ' + (task.domain?.type || "general") + ' (' + (task.domain?.specificArea || "general") + ')\n' +
+			`Domain: ` + (task.domain?.type || "general") + ' (' + (task.domain?.specificArea || "general") + ')\n' +
 			'Data: ' + (task.domain?.dataCharacteristics?.size || "medium") + ' size, ' + (task.domain?.dataCharacteristics?.quality || "good") + ' quality, ' + (task.domain?.dataCharacteristics?.complexity || "moderate") + ' complexity\n' +
 			'Computational: ' + (task.complexity?.computational || "moderate") + ' computation, ' + (task.complexity?.algorithmic || "moderate") + ' algorithm complexity\n' +
 			'Requirements: ' + (task.requirements?.minimumAccuracy || 0.8) + ' min accuracy, ' + (task.requirements?.maximumLatency || 5000) + 'ms max latency\n' +
@@ -1041,7 +1041,7 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 		mlRecommendation:any,
 		score:number,
 	): string {
-		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ' with ' + ((mlRecommendation.confidence * 100).toFixed(1)) + '% confidence. Variant offers ' + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`;
+		return 'Selected ' + (variant.name) + ' based on optimal fit (score: ' + (score.toFixed(3)) + '). ML analysis recommends ' + (mlRecommendation.recommendedTeleprompter) + ` with ${ + ((mlRecommendation.confidence * 100).toFixed(1)) + }% confidence. Variant offers ` + (variant.capabilities.join(", ")) + ` capabilities with ${variant.type} implementation approach.`;
 	}
 
 	private generateDecisionFactors(
@@ -1231,8 +1231,8 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 }
 
 /**
- * Factory function to create Autonomous Teleprompter Selector.
- */
+* Factory function to create Autonomous Teleprompter Selector.
+*/
 export function createAutonomousTeleprompterSelector():AutonomousTeleprompterSelector {
 	return new AutonomousTeleprompterSelector();
 }

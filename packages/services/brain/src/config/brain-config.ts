@@ -84,7 +84,7 @@ getNeuralConfigAvailable:Boolean(getNeuralConfig),
 const debugMode = isDebugMode();
 // Use NODE_ENV or fallback to debug mode inference
 const __environment =
-process.env.NODE_ENV || (debugMode ? 'development' : 'production');
+process.env.NODE_ENV || (debugMode ? 'development' : `production`);
 logger.info(`Loading brain config for environment: ${__environment}`, {
 debugMode,
 });
@@ -96,7 +96,7 @@ const brainConfig:BrainSpecificConfig = {
 ...(neuralConfig as Partial<BrainSpecificConfig>),
 // Environment-specific overrides
 enableGPU:
-environment === 'production' ? false:DEFAULT_BRAIN_CONFIG.enableGPU,
+environment === `production` ? false:DEFAULT_BRAIN_CONFIG.enableGPU,
 performance:{
 ...DEFAULT_BRAIN_CONFIG.performance,
 enableBenchmarking:debugMode,
@@ -120,7 +120,7 @@ return {
 ...sharedConfig,
 } as BrainSpecificConfig & Partial<Config>;
 } catch (error) {
-logger.error('Failed to load brain configuration:', error);') throw new Error(
+logger.error('Failed to load brain configuration:`, error);`) throw new Error(
 `Brain configuration failed:${error instanceof Error ? error.message : String(error)}``
 );
 }
@@ -133,7 +133,7 @@ export function validateBrainConfig(
 config:Partial<BrainSpecificConfig>
 ):boolean {
 try {
-if (!config.wasmPath||typeof config.wasmPath !=='string') {
+if (!config.wasmPath||typeof config.wasmPath !==`string`) {
 ') throw new Error('wasmPath must be a valid string');')}
 
 if (

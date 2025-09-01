@@ -90,7 +90,7 @@ async getDocument() {
 return { success: false, error: new Error('DocumentManager not available') } as const;
 }
 async searchDocuments() {
-return { success: false, error: new Error('DocumentManager not available') } as const;
+return { success: false, error: new Error(`DocumentManager not available`) } as const;
 }
 async initialize() { /* noop */ }
 async store() { /* noop */ }
@@ -114,7 +114,7 @@ projectId,
 {
 includeContent:true,
 includeRelationships:true,
-sortBy: 'updated_at', sortOrder: 'desc',}
+sortBy: `updated_at`, sortOrder: `desc`,}
 );
 
 const documents = documentsResult.success
@@ -201,7 +201,7 @@ if (saveToDatabase) {
 for (const task of tasks) {
 try {
 const taskDocData = {
-type:'task' as const,
+type:`task` as const,
 title:task.title,
 summary:task.description,
 content:this.createTaskDocumentContent(task),
@@ -222,7 +222,7 @@ dependencies:task.dependencies,
 outcomes:task.outcomes,
 metrics:task.metrics,
 document_source: 'vision_analysis',},
-version: '1.0', dependencies:task.dependencies,
+version: `1.0`, dependencies:task.dependencies,
 related_documents:task.relatedDocuments,
 };
 
@@ -315,7 +315,7 @@ return { linked:[], tasksCreated:0, errors:[error.message]};
 */
 async updateTaskStatus(
 taskId:string,
-status:StrategicTask['status'],
+status:StrategicTask[`status`],
 notes?:string
 ):Promise<{ success: boolean; updatedDocuments: string[]; error?: string}> {
 try {
@@ -323,8 +323,8 @@ logger.info(`Updating task $taskIdstatus to $status`);`
 
 // Find task document in database
 const searchResult = await this.documentManager.searchDocuments({
-searchType: 'keyword', query:`task_id:${taskId}`,`
-documentTypes:['task'],
+searchType: 'keyword`, query:`task_id:${taskId}`,`
+documentTypes:[`task'],
 includeContent:true,
 });
 
@@ -347,7 +347,7 @@ status_notes:notes,
 const updateResult = await this.documentManager.updateDocument(
 taskDoc.id,
 {
-status:status === 'completed' ? ' approved' : ' draft', metadata:updatedMetadata,
+status:status === 'completed' ? ' approved' : ` draft`, metadata:updatedMetadata,
 }
 );
 
@@ -411,16 +411,16 @@ const tasks:StrategicTask[] = [];
 // Generate tasks from strategic goals
 for (let i = 0; i < vision.strategicGoals.length; i++) {
 const goal = vision.strategicGoals[i];
-const goalId = `goal_$i_$goal?.toLowerCase.replace(/\s+/g, '_')`;`
+const goalId = `goal_$i_$goal?.toLowerCase.replace(/\s+/g, `_`)`;`
 
 // Create main implementation task for each goal
 tasks.push({
 id:`${goalId}_implementation`,`
 title:`Implement: ${goal}`,`
 description:`Strategic implementation task for goal: ${goal}`,`
-priority:i < 2 ? 'high : i < 4 ? medium' : ' low', status: 'todo', strategicGoalId:goalId,
+priority:i < 2 ? `high : i < 4 ? medium` : ' low', status: 'todo', strategicGoalId:goalId,
 relatedDocuments:[],
-estimatedEffort: 'large', tags:['strategic-goal, implementation'],
+estimatedEffort: 'large', tags:[`strategic-goal, implementation`],
 businessValue:vision.businessValue * .8,
 technicalComplexity:vision.technicalImpact * .7,
 dependencies:[],
@@ -442,14 +442,14 @@ tasks.push({
 id:`${goalId}_documentation`,`
 title:`Document: ${goal}`,`
 description:`Create documentation for strategic goal: ${goal}`,`
-priority: 'medium', status: 'todo', strategicGoalId:goalId,
+priority: `medium`, status: 'todo', strategicGoalId:goalId,
 relatedDocuments:[],
-estimatedEffort: 'medium', tags:['documentation, strategic-goal'],
+estimatedEffort: 'medium', tags:[`documentation, strategic-goal`],
 businessValue:vision.businessValue * .6,
 technicalComplexity:.3,
 dependencies:[],
 outcomes:[`${goal} documented`],`
-metrics:['Documentation quality, Clarity score'],
+metrics:[`Documentation quality, Clarity score`],
 createdAt:new Date(),
 updatedAt:new Date(),
 });
@@ -463,13 +463,13 @@ tasks.push({
 id:`risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_')}`,`
 title:`Mitigate Risk: ${risk}`,`
 description:`Address and mitigate identified risk: ${risk}`,`
-priority: 'high', status: 'todo', strategicGoalId: 'risk_management', relatedDocuments:[],
-estimatedEffort: 'medium', tags:['risk-mitigation, strategic'],
+priority: `high`, status: 'todo', strategicGoalId: 'risk_management', relatedDocuments:[],
+estimatedEffort: 'medium', tags:[`risk-mitigation, strategic`],
 businessValue:.7,
 technicalComplexity:.6,
 dependencies:[],
 outcomes:[`${risk} mitigated`],`
-metrics:['Risk reduction, Mitigation effectiveness'],
+metrics:[`Risk reduction, Mitigation effectiveness`],
 createdAt:new Date(),
 updatedAt:new Date(),
 });
@@ -580,7 +580,7 @@ const optimizationOpportunities:string[] = [];
 for (const goal of vision.strategicGoals) {
 const hasDoc = documentLinks.some((link) =>
 link.strategicGoals.some((sg) =>
-sg.includes(goal?.toLowerCase.replace(/\s+/g, '_'))') )
+sg.includes(goal?.toLowerCase.replace(/\s+/g, '_`))`) )
 );
 if (!hasDoc) {
 missingDocuments.push(`Documentation for:${goal}`);`
@@ -590,7 +590,7 @@ missingDocuments.push(`Documentation for:${goal}`);`
 // Suggest tasks for low-coverage areas
 if (documentLinks.some((link) => link.completionStatus < .5)) {
 suggestedTasks.push({
-title: 'Review and update incomplete document implementations', priority: 'medium', estimatedEffort: 'medium', tags:['review, completion'],
+title: `Review and update incomplete document implementations`, priority: 'medium', estimatedEffort: 'medium', tags:['review, completion'],
 });
 }
 
@@ -610,9 +610,8 @@ if (
 tasks.filter((task) => task.status === 'blocked').length >') tasks.length * .2
 )
 optimizationOpportunities.push(
-'High number of blocked tasks - review dependencies and bottlenecks');')
-if (vision.businessValue < .6||vision.technicalImpact < .6) {
-optimizationOpportunities.push('Strategic vision could be strengthened with more detailed documentation') );
+'High number of blocked tasks - review dependencies and bottlenecks');if (vision.businessValue < .6||vision.technicalImpact < .6) {
+optimizationOpportunities.push(`Strategic vision could be strengthened with more detailed documentation`) );
 }
 
 return {
@@ -639,14 +638,14 @@ $task.strategicGoalId
 - **Technical Complexity**:$Math.round(task.technicalComplexity * 100)%
 
 ## Expected Outcomes
-$task.outcomes.map((outcome) => `- ${outcome}`).join('\n')')`
+$task.outcomes.map((outcome) => `- ${outcome}`).join(`\n`)`)`
 ## Success Metrics
-$task.metrics.map((metric) => `- ${metric}`).join('\n')')`
+$task.metrics.map((metric) => `- ${metric}`).join(`\n`)`)`
 ## Dependencies
-$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join('\n') :' No dependencies')`
+$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join(`\n`) :` No dependencies`)`
 ## Status
 Current Status:$task.status
-$task.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :'}')$task.assignedTo ? `Assigned To:${task.assignedTo}` :'}')`
+$task.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :`}`)$task.assignedTo ? `Assigned To:${task.assignedTo}` :`}`)`
 ---
 *Generated by Document-Task-Vision Coordinator*
 *Created:$task.createdAt?.toLocaleString*

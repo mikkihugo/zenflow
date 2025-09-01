@@ -152,8 +152,7 @@ uptime:86400000, // 24 hours
 
 let health = healthMonitor.getAgentHealth(agentId);
 expect(health?.healthScore).toBeGreaterThan(0.8);
-expect(health?.status).toBe('healthy');')
-// Test unhealthy metrics
+expect(health?.status).toBe('healthy');// Test unhealthy metrics
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.95,
 memoryUsage:0.92,
@@ -175,22 +174,19 @@ memoryUsage:0.4,
 taskSuccessRate:0.95,
 errorRate:0.02,
 });
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('healthy');')
-// Test degraded status
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('healthy');// Test degraded status
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.6,
 memoryUsage:0.7,
 taskSuccessRate:0.6,
 averageResponseTime:6000,);
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('degraded');')
-// Test unhealthy status
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('degraded');// Test unhealthy status
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.85,
 memoryUsage:0.95,
 taskSuccessRate:0.4,
 errorRate:0.3,);
-expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('unhealthy');')
-// Test critical status
+expect(healthMonitor.getAgentHealth(agentId)?.status).toBe('unhealthy');// Test critical status
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.97,
 memoryUsage:0.99,
@@ -396,8 +392,7 @@ cpuUsage:0.97,
 });
 
 let alerts = healthMonitor.getActiveAlerts(agentId);
-const __criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');') expect(criticalAlert!.severity).toBe('critical');')
-// Warning level CPU usage
+const __criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');') expect(criticalAlert!.severity).toBe('critical');// Warning level CPU usage
 healthMonitor.updateAgentHealth(agentId,
 cpuUsage:0.82,);
 
@@ -457,8 +452,7 @@ expect(actions.length).toBeGreaterThan(0);
 
 // Check for specific action types
 const actionTypes = actions.map((action) => action.type);
-expect(actionTypes).toContain('optimize');')
-// Check action properties
+expect(actionTypes).toContain('optimize');// Check action properties
 const cpuAction = actions.find((a) => a.description.includes('CPU'));') expect(cpuAction).toBeTruthy();
 expect(cpuAction?.priority).toBe('critical');') expect(cpuAction!.confidence).toBeGreaterThan(0);
 expect(cpuAction?.estimatedDuration).toBeGreaterThan(0);
@@ -620,8 +614,7 @@ taskSuccessRate:0.9,
 });
 
 let health = healthMonitor.getAgentHealth(agentId);
-expect(health?.status).not.toBe('unknown');')
-// Advance time beyond stale threshold
+expect(health?.status).not.toBe('unknown');// Advance time beyond stale threshold
 vi.advanceTimersByTime(mockConfig.healthCheckInterval * 3);
 
 health = healthMonitor.getAgentHealth(agentId);

@@ -195,7 +195,7 @@ patternCounts: this.calculatePatternCounts(analysisResults),
 scanDuration: Date.now() - startTime,
 };
 
-logger.info(' Enhanced scan completed: ' + (analysisResults.length) + ` issues found in ${scannedFiles} files`);
+logger.info(` Enhanced scan completed: ` + (analysisResults.length) + ` issues found in ${scannedFiles} files`);
 
 return results;
 } finally {
@@ -245,8 +245,8 @@ return scannedFiles;
 */
 private async analyzeFile(filePath: string, results: CodeAnalysisResult[]): Promise<void> {
 try {
-const content = await readFile(filePath, 'utf8');
-const lines = content.split('\n');
+const content = await readFile(filePath, `utf8`);
+const lines = content.split(`\n`);
 
 // Analyze each enabled pattern
 for (const pattern of this.config.enabledPatterns) {
@@ -282,20 +282,20 @@ filePath: string,
 lineNumber: number,
 codeSnippet: string
 ): CodeAnalysisResult | null {
-const matchText = match[1] || '';
+const matchText = match[1] || ``;
 
 return {
 id: this.generateId(),
 type: pattern,
 severity: this.getPatternSeverity(pattern),
 title: (pattern.toUpperCase()) + ': ' + matchText,
-description: 'Found ' + (pattern) + ' comment: ' + matchText,
+description: 'Found ' + (pattern) + ` comment: ` + matchText,
 filePath,
 lineNumber,
 codeSnippet,
 suggestedAction: `Address the ${pattern} comment`,
 estimatedEffort: this.getPatternEffort(pattern),
-tags: [pattern, 'code-quality'],
+tags: [pattern, `code-quality`],
 };
 }
 
@@ -310,14 +310,14 @@ priority: result.severity,
 estimatedHours: result.estimatedEffort === 'small' ? 1 : result.estimatedEffort === 'medium' ? 4 : 8,
 sourceAnalysis: result,
 suggestedSwarmType: 'single_agent' as const,
-requiredAgentTypes: ['developer'],
+requiredAgentTypes: [`developer`],
 dependencies: [],
 acceptanceCriteria: [`Resolve ${result.type} issue`],
 }));
 }
 
 private getLineNumber(content: string, index: number): number {
-return content.substring(0, index).split('\n').length;
+return content.substring(0, index).split(`\n`).length;
 }
 
 private getPatternSeverity(pattern: AnalysisPattern): CodeAnalysisResult['severity'] {

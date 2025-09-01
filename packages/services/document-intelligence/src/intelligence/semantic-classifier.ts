@@ -154,12 +154,12 @@ patterns,
 recommendedStrategy
 };
 
-this.emit('classification_complete', classification);
+this.emit(`classification_complete`, classification);
 logger.info(`Document classified as:$documentType(confidence: ${confidence.toFixed(2)})`);`
 
 return classification;
 } catch (error) {
-logger.error('Error during document classification:', error);') throw new Error(`Semantic classification failed:$error`);`
+logger.error(`Error during document classification:`, error);`) throw new Error(`Semantic classification failed:$error`);`
 }
 }
 
@@ -192,7 +192,7 @@ for (const term of terms) {
 maxPossibleScore += weight;
 
 // Count occurrences with context awareness
-const regex = new RegExp(`\\b${term}\\b`, 'gi');') const matches = content.match(regex);
+const regex = new RegExp(`\\b${term}\\b`, `gi');') const matches = content.match(regex);
 const count = matches ? matches.length:0;
 
 if (count > 0) {
@@ -209,8 +209,8 @@ return maxPossibleScore > 0 ? totalScore / maxPossibleScore:0;
 /**
 * Determine document type based on category scores
 */
-private determineDocumentType(categoryScores:Record<string, number>):DocumentClassification['documentType'] {
-') const sortedCategories = Object.entries(categoryScores)
+private determineDocumentType(categoryScores:Record<string, number>):DocumentClassification['documentType`] {
+`) const sortedCategories = Object.entries(categoryScores)
 .sort(([, a], [, b]) => b - a);
 
 const [topCategory, topScore] = sortedCategories[0];
@@ -221,7 +221,7 @@ logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)
 }
 
 // Map categories to document types
-const categoryMap:Record<string, DocumentClassification['documentType']> = {
+const categoryMap:Record<string, DocumentClassification[`documentType`]> = {
 ') algorithm: 'algorithm', technical: 'technical', ') implementation: 'implementation', research: 'research', strategic: 'strategic'};')
 return categoryMap[topCategory]||'technical;
 }
@@ -361,7 +361,7 @@ algorithmDensity:number,
 conceptComplexity:number,
 technicalDepth:number
 ):DocumentClassification['recommendedStrategy'] {
-') // DeepCode-style strategy selection logic
+// DeepCode-style strategy selection logic
 if (documentType === 'research' && algorithmDensity > 0.3) {
 ') return 'semantic_research_focused;
 }
@@ -374,7 +374,7 @@ if (conceptComplexity > 0.4 && technicalDepth > 0.3) {
 return 'concept_implementation_hybrid;
 }
 
-if (documentType === 'strategic') {
+if (documentType === 'strategic{
 ') return 'strategic_vision_analysis;
 }
 

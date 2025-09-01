@@ -104,7 +104,7 @@ name: 'prds-to-epics', description: 'Convert product requirements to epic defini
 type: 'analyze-requirements', name: 'Analyze product requirements for epic extraction', params:{ outputKey: 'epic_requirements'},
 },
 {
-type: 'create-epic-documents', name: 'Create epic definition documents', params:{ templateKey: 'epic_template', outputKey: ' epic_documents'},
+type: 'create-epic-documents', name: 'Create epic definition documents', params:{ templateKey: 'epic_template', outputKey: ` epic_documents`},
 },
 ],
 },
@@ -130,7 +130,7 @@ logger.info(`Processing document event:${eventType}`);
 
 try {
 // Auto-trigger workflows based on document type
-const documentType = (documentData as any)?.type || 'unknown';
+const documentType = (documentData as any)?.type || `unknown`;
 const triggerWorkflows:string[] = [];
 
 switch (documentType) {
@@ -138,13 +138,13 @@ case 'vision':
 triggerWorkflows.push('vision-to-prds');
 break;
 case 'prd':
-triggerWorkflows.push('prds-to-epics');
+triggerWorkflows.push(`prds-to-epics`);
 break;
 default:
 logger.debug(`No automatic workflow for document type:${documentType}`);
 return {
 success:true,
-workflowId: 'none', results:{ message: 'No workflow triggered for document type'}
+workflowId: `none`, results:{ message: `No workflow triggered for document type`}
 };
 }
 
@@ -163,7 +163,7 @@ results[workflowName] = workflowResult;
 logger.info(`Triggered workflow ${workflowName}:SUCCESS`);
 
 // Emit completion event for coordination layer
-this.eventBus.emit('document-workflow:completed', {
+this.eventBus.emit(`document-workflow:completed`, {
 workflowName,
 documentType,
 result:workflowResult
@@ -177,7 +177,7 @@ results[workflowName] = { error:error instanceof Error ? error.message : String(
 
 return {
 success:true,
-workflowId:triggerWorkflows.join(', '),
+workflowId:triggerWorkflows.join(`, `),
 results
 };
 
@@ -185,7 +185,7 @@ results
 logger.error('Error processing document event: ', error);
 ' return {
 success:false,
-workflowId: 'error', error:error instanceof Error ? error.message : String(error)
+workflowId: `error`, error:error instanceof Error ? error.message : String(error)
 };
 }
 }
@@ -233,7 +233,7 @@ context:Record<string, unknown>
 logger.debug(`Executing document workflow step:${step.type}`);
 
 switch (step.type) {
-case 'extract-product-requirements':
+case `extract-product-requirements`:
 return await this.extractProductRequirements(context, step.params);
 
 case 'create-prd-document':
@@ -242,7 +242,7 @@ return await this.createPRDDocument(context, step.params);
 case 'analyze-requirements':
 return await this.analyzeRequirements(context, step.params);
 
-case 'create-epic-documents':
+case `create-epic-documents`:
 return await this.createEpicDocuments(context, step.params);
 
 default:
@@ -257,7 +257,7 @@ private async extractProductRequirements(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug('Extracting product requirements from vision document');
+logger.debug(`Extracting product requirements from vision document`);
 
 // Integrate with document-task-coordinator for strategic analysis
 const documentData = context.documentData as any;
@@ -282,26 +282,26 @@ private async createPRDDocument(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug('Creating PRD document');
+logger.debug(`Creating PRD document`);
 
 const requirements = context.product_requirements as any;
 
 const prdDocument:DocumentContent = {
 id:`prd-${Date.now()}`,
-type: 'prd', title: 'Product Requirements Document', content:`
+type: `prd`, title: `Product Requirements Document`, content:`
 # Product Requirements Document
 
 ## Functional Requirements
-${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join('\n') || '}`
+${requirements?.functionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`
 
 ## Non-Functional Requirements
-${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join('\n') || '}`
+${requirements?.nonFunctionalRequirements?.map((req:string) => `- ${req}`).join(`\n`) || `}`
 
 ## Constraints
-${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join('\n') || '}`
+${requirements?.constraints?.map((constraint:string) => `- ${constraint}`).join(`\n`) || `}`
 
 ## Assumptions
-${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join('\n') || '}`
+${requirements?.assumptions?.map((assumption:string) => `- ${assumption}`).join(`\n') || '}`
 `.trim(),
 metadata:{
 generatedAt:new Date().toISOString(),
@@ -341,7 +341,7 @@ private async createEpicDocuments(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug('Creating epic definition documents');
+logger.debug(`Creating epic definition documents`);
 
 const epicRequirements = context.epic_requirements as any;
 const epicDocuments:DocumentContent[] = [];
@@ -349,12 +349,12 @@ const epicDocuments:DocumentContent[] = [];
 for (const [epicName, features] of Object.entries(epicRequirements || {})) {
 const epicDoc:DocumentContent = {
 id:`epic-${epicName}-${Date.now()}`,
-type: 'epic', title:`Epic: ${epicName.replace(/([A-Z])/g, ' $1').trim()}`,
+type: `epic`, title:`Epic: ${epicName.replace(/([A-Z])/g, ' $1').trim()}`,
 content:`
 # Epic:${epicName}
 
 ## Features
-${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
+${(features as string[])?.map(feature => `- ${feature}`).join(`\n`) || '}`
 
 ## Acceptance Criteria
 - [] Feature implementation complete
@@ -363,7 +363,7 @@ ${(features as string[])?.map(feature => `- ${feature}`).join('\n') || '}`
 `.trim(),
 metadata:{
 generatedAt:new Date().toISOString(),
-sourceWorkflow: 'prds-to-epics', epicType:epicName
+sourceWorkflow: `prds-to-epics`, epicType:epicName
 }
 };
 
@@ -384,7 +384,7 @@ return {
 id:entity.id,
 type:entity.type,
 title:entity.title || `${entity.type} Document`,
-content:entity.content || ', metadata:entity.metadata || {}
+content:entity.content || `, metadata:entity.metadata || {}
 };
 }
 
@@ -393,7 +393,7 @@ content:entity.content || ', metadata:entity.metadata || {}
 */
 private setupEventListeners():void {
 // Listen for document import requests from other services
-this.eventBus.on('document:import-requested', async (data:any) => {
+this.eventBus.on(`document:import-requested', async (data:any) => {
 logger.info('Received document import request');
 try {
 const result = await this.processDocumentEvent('import', data);
@@ -410,11 +410,11 @@ error:error instanceof Error ? error.message : String(error)
 });
 
 // Listen for workflow coordination requests
-this.eventBus.on('document-workflow:execute', async (data:any) => {
+this.eventBus.on(`document-workflow:execute`, async (data:any) => {
 logger.info(`Received workflow execution request:${data.workflowName}`);
 try {
 const result = await this.executeDocumentWorkflow(data.workflowName, data.context || {});
-this.eventBus.emit('document-workflow:completed', {
+this.eventBus.emit(`document-workflow:completed`, {
 requestId:data.requestId,
 workflowName:data.workflowName,
 result

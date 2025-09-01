@@ -92,15 +92,15 @@ eventData: unknown,
 agentId?: string
 ): Promise<string> {
 return await knowledgeFactSystem.storeFact({
-type: 'coordination_event',
+type: `coordination_event`,
 data: {
 eventType,
 eventData,
 agentId,
 },
-source: agentId ? `agent:${agentId}`: 'system',
+source: agentId ? `agent:${agentId}`: `system`,
 confidence: 1.0,
-tags: ['coordination', 'event', eventType],
+tags: ['coordination', `event`, eventType],
 });
 }
 
@@ -124,7 +124,7 @@ type,
 data,
 source: `agent:${agentId}`,
 confidence,
-tags: ['agent',...tags],
+tags: [`agent`,...tags],
 });
 }
 

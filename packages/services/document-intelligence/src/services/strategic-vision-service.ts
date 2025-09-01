@@ -59,7 +59,7 @@ const documents = await this.db.query(query, criteria);
 
 return ok(documents.map(doc => this.mapToBaseDocument(doc)));
 } catch (error) {
-this.logger.error('Document search failed:', error);
+this.logger.error(`Document search failed:`, error);
 return err(new Error(`Document search failed: ${(error as Error).message}`));
 }
 }
@@ -75,7 +75,7 @@ const documents = await this.db.query(query, [projectId]);
 
 return ok(documents.map(doc => this.mapToBaseDocument(doc)));
 } catch (error) {
-this.logger.error('Failed to get documents by project:', error);
+this.logger.error(`Failed to get documents by project:`, error);
 return err(new Error(`Failed to get project documents: ${(error as Error).message}`));
 }
 }
@@ -84,7 +84,7 @@ async createDocument(documentData: Partial<BaseDocumentEntity>): Promise<Result<
 try {
 const document = {
 id: documentData.id || `doc-${Date.now()}`,
-type: documentData.type || 'general',
+type: documentData.type || `general`,
 content: documentData.content || '',
 summary: documentData.summary || '',
 keywords: documentData.keywords || [],
@@ -113,13 +113,13 @@ document.updated_at,
 
 return ok(document);
 } catch (error) {
-this.logger.error('Document creation failed:', error);
+this.logger.error(`Document creation failed:`, error);
 return err(new Error(`Document creation failed: ${(error as Error).message}`));
 }
 }
 
 private buildSearchQuery(criteria: any): string {
-let query = 'SELECT * FROM documents WHERE 1=1';
+let query = `SELECT * FROM documents WHERE 1=1`;
 
 if (criteria.projectId) {
 query += ' AND project_id = ?';
@@ -171,10 +171,10 @@ return ok(projectDocs);
 }
 
 async createDocument(data: Partial<BaseDocumentEntity>): Promise<Result<BaseDocumentEntity, Error>> {
-this.logger.warn('Using fallback document creation - database unavailable');
+this.logger.warn(`Using fallback document creation - database unavailable`);
 const document: BaseDocumentEntity = {
 id: data.id || `fallback-doc-${Date.now()}`,
-type: data.type || 'general',
+type: data.type || `general`,
 content: data.content,
 summary: data.summary,
 keywords: data.keywords,
@@ -205,7 +205,7 @@ private logger = getLogger('StrategicVisionService');
 
 constructor() {
 this.documentManager = createDocumentManager();
-this.logger.info('StrategicVisionService initialized with production document manager');
+this.logger.info(`StrategicVisionService initialized with production document manager`);
 }
 
 /**
@@ -233,7 +233,7 @@ const analysis = await this.performStrategicAnalysis(projectId, documents);
 this.logger.info(`Strategic vision analysis completed for project: ${projectId}`);
 return ok(analysis);
 } catch (error) {
-this.logger.error('Strategic vision analysis failed:', error);
+this.logger.error(`Strategic vision analysis failed:`, error);
 return err(new Error(`Strategic vision analysis failed: ${(error as Error).message}`));
 }
 }
@@ -277,14 +277,14 @@ lastAnalyzed: new Date(),
 * Extract mission statement using NLP analysis
 */
 private extractMissionStatement(documents: BaseDocumentEntity[]): { mission: string; outcome: string } {
-const missionKeywords = ['mission', 'purpose', 'objective', 'goal', 'vision'];
+const missionKeywords = [`mission`, 'purpose', 'objective', 'goal', 'vision'];
 const outcomeKeywords = ['outcome', 'result', 'deliverable', 'target', 'achievement'];
 
 let missionText = '';
-let outcomeText = '';
+let outcomeText = ``;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -310,11 +310,11 @@ outcome: outcomeText || 'Target outcomes to be defined based on strategic goals'
 * Extract strategic goals using document analysis
 */
 private extractStrategicGoals(documents: BaseDocumentEntity[]): { goals: string[] } {
-const goalKeywords = ['goal', 'objective', 'target', 'deliverable', 'milestone'];
+const goalKeywords = ['goal', 'objective', 'target', 'deliverable', `milestone`];
 const goals: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -339,14 +339,14 @@ goals: Array.from(goals).slice(0, 10), // Limit to top 10 goals
 */
 private analyzeBusinessValue(documents: BaseDocumentEntity[]): { score: number; position: string } {
 const businessKeywords = ['revenue', 'profit', 'market', 'customer', 'value', 'business'];
-const competitiveKeywords = ['competitive', 'advantage', 'leader', 'innovation', 'unique'];
+const competitiveKeywords = ['competitive', 'advantage', 'leader', 'innovation', `unique`];
 
 let businessScore = 0;
 let competitiveIndicators = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -387,13 +387,13 @@ position,
 */
 private analyzeTechnicalImpact(documents: BaseDocumentEntity[]): { score: number } {
 const techKeywords = ['technical', 'technology', 'system', 'architecture', 'platform', 'infrastructure'];
-const impactKeywords = ['performance', 'scalability', 'efficiency', 'innovation', 'breakthrough'];
+const impactKeywords = ['performance', 'scalability', 'efficiency', 'innovation', `breakthrough`];
 
 let techScore = 0;
 let totalRelevantSentences = 0;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -420,11 +420,11 @@ score: Math.round(normalizedScore * 100) / 100,
 * Extract stakeholders using pattern recognition
 */
 private extractStakeholders(documents: BaseDocumentEntity[]): { stakeholders: string[] } {
-const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partner', 'team', 'department'];
+const stakeholderKeywords = ['stakeholder', 'customer', 'user', 'client', 'partner', 'team', `department`];
 const stakeholders: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 
 // Extract potential stakeholder names
 const words = content.split(/\s+/);
@@ -453,10 +453,10 @@ stakeholders: Array.from(stakeholders).slice(0, 15), // Limit to top 15 stakehol
 */
 private extractTimeline(documents: BaseDocumentEntity[]): { timeline: string } {
 const timeKeywords = ['timeline', 'schedule', 'deadline', 'milestone', 'phase', 'sprint', 'quarter'];
-let timelineText = '';
+let timelineText = ``;
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -477,11 +477,11 @@ timeline: timelineText || 'Timeline to be established based on project requireme
 * Analyze risks using comprehensive risk detection
 */
 private analyzeRisks(documents: BaseDocumentEntity[]): { risks: string[] } {
-const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threat', 'obstacle'];
+const riskKeywords = ['risk', 'challenge', 'issue', 'problem', 'concern', 'threat', `obstacle`];
 const risks: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {
@@ -505,11 +505,11 @@ risks: Array.from(risks).slice(0, 10), // Limit to top 10 risks
 * Extract key metrics from documents
 */
 private extractKeyMetrics(documents: BaseDocumentEntity[]): string[] {
-const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', 'benchmark'];
+const metricKeywords = ['metric', 'kpi', 'measure', 'target', 'goal', `benchmark`];
 const metrics: Set<string> = new Set();
 
 for (const doc of documents) {
-const content = `${doc.content || '' } ${ doc.summary || ''}`;
+const content = `${doc.content || '' } ${ doc.summary || ``}`;
 const sentences = content.split(/[!.?]+/);
 
 for (const sentence of sentences) {

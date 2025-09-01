@@ -1,32 +1,32 @@
 /**
- * @fileoverview DSPy Engine - Standalone Prompt Optimization
- *
- * Lightweight DSPy (Distributed System Programming) implementation for prompt optimization,
- * few-shot learning, and neural pattern coordination. Uses @claude-zen/foundation for LLM,
- * logging, and storage when available, with fallback implementations.
- *
- * ## Core Features
- * - **Prompt Optimization**:Systematic iterative improvement
- * - **Few-Shot Learning**:Automatic example selection and optimization
- * - **Pattern Recognition**:Learn from successful optimization patterns
- * - **Fallback Architecture**:Works standalone or with shared infrastructure
- *
- * @example
- * '''typescript'
- * import { DSPyEngine} from './engine';
- *
- * const engine = new DSPyEngine({
- *   maxIterations:10,
- *   fewShotExamples:5
- *});
- *
- * const optimized = await engine.optimizePrompt('task description', examples);
- * '
- *
- * @author Claude Code Zen Team
- * @version 1.0.0
- * @license MIT
- */
+* @fileoverview DSPy Engine - Standalone Prompt Optimization
+*
+* Lightweight DSPy (Distributed System Programming) implementation for prompt optimization,
+* few-shot learning, and neural pattern coordination. Uses @claude-zen/foundation for LLM,
+* logging, and storage when available, with fallback implementations.
+*
+* ## Core Features
+* - **Prompt Optimization**:Systematic iterative improvement
+* - **Few-Shot Learning**:Automatic example selection and optimization
+* - **Pattern Recognition**:Learn from successful optimization patterns
+* - **Fallback Architecture**:Works standalone or with shared infrastructure
+*
+* @example
+* '''typescript'
+* import { DSPyEngine} from './engine';
+*
+* const engine = new DSPyEngine({
+* maxIterations:10,
+* fewShotExamples:5
+*});
+*
+* const optimized = await engine.optimizePrompt('task description', examples);
+* '
+*
+* @author Claude Code Zen Team
+* @version 1.0.0
+* @license MIT
+*/
 
 // import { z} from 'zod'; // For future validation features
 import type {
@@ -50,8 +50,8 @@ const logger = {
 };
 
 /**
- * Simple KV storage interface for DSPy persistence
- */
+* Simple KV storage interface for DSPy persistence
+*/
 export interface DSPyKV {
 	get(key:string): Promise<any>;
 	set(key:string, value:any): Promise<void>;
@@ -60,8 +60,8 @@ export interface DSPyKV {
 }
 
 /**
- * In-memory KV implementation for standalone DSPy
- */
+* In-memory KV implementation for standalone DSPy
+*/
 class InMemoryDSPyKV implements DSPyKV {
 	private data = new Map<string, any>();
 
@@ -83,11 +83,11 @@ class InMemoryDSPyKV implements DSPyKV {
 }
 
 /**
- * DSPy Engine - Standalone Prompt Optimization
- *
- * Lightweight implementation that uses @claude-zen/foundation when available,
- * falls back to simple implementations when standalone.
- */
+* DSPy Engine - Standalone Prompt Optimization
+*
+* Lightweight implementation that uses @claude-zen/foundation when available,
+* falls back to simple implementations when standalone.
+*/
 export class DSPyEngine {
 	private config:DSPyConfig;
 	private kv:DSPyKV | null = null;
@@ -252,20 +252,20 @@ export class DSPyEngine {
 		// const fewShotPrompt = this.createFewShotPrompt(program, examples);
 
 		try {
-			const optimizationPrompt = 
-				'Improve this prompt for better results:\n\n' +
+			const optimizationPrompt =
+				`Improve this prompt for better results:\n\n` +
 				`Current prompt: "${program.prompt}"\n\n` +
-				'Few-shot examples:\n' +
+				`Few-shot examples:\n` +
 				examples
 					.slice(0, this.config.fewShotExamples)
 					.map((ex) => `Input: ${ex.input}\nExpected: ` + ex.output)
 					.join("\n\n") +
-				'\n\nGenerate an improved version that:\n' +
+				`\n\nGenerate an improved version that:\n` +
 				'1. Is more specific and clear\n' +
 				'2. Provides better guidance\n' +
-				'3. Includes relevant context\n' +
+				`3. Includes relevant context\n${ +
 				'4. Maintains the same task objective\n\n' +
-				'Improved prompt:';
+				}Improved prompt:';
 
 			const response = await llm.analyze(optimizationPrompt);
 
@@ -278,7 +278,7 @@ export class DSPyEngine {
 		} catch (_error) {
 			logger.warn("Failed to generate prompt variation, using fallback");
 			return {
-				prompt: program.prompt + ' (Please be specific and detailed in your response.)',
+				prompt: program.prompt + ` (Please be specific and detailed in your response.)`,
 				strategy: "fallback",
 				iteration: 0,
 				score: 0,
@@ -334,12 +334,12 @@ export class DSPyEngine {
 	 * Create few-shot prompt from examples (available for future enhancement)
 	 */
 	// private createFewShotPrompt(program:DSPyProgram, examples:DSPyExample[]): string {
-	//   const fewShot = examples
-	//     .slice(0, this.config.fewShotExamples)
-	//     .map(ex => `Input:${ex.input}\nOutput:` + ex.output)'
-	//     .join('\n\n');
+	// const fewShot = examples
+	// .slice(0, this.config.fewShotExamples)
+	// .map(ex => `Input:${ex.input}\nOutput:` + ex.output)`
+	// .join(`\n\n`);
 	//
-	//   return (program.prompt) + `\n\nExamples:\n${fewShot}\n\nNow complete:`;
+	// return (program.prompt) + `\n\nExamples:\n${fewShot}\n\nNow complete:`;
 	//}
 
 	/**
@@ -388,7 +388,7 @@ export class DSPyEngine {
 	):Promise<void> {
 		try {
 			const kv = await this.getKV();
-			const key = 'dspy-optimization:' + (task) + ':' + result.timestamp.getTime();
+			const key = `dspy-optimization:${ + (task) + }:' + result.timestamp.getTime();
 			await kv.set(key, result);
 
 			// Update history
@@ -396,7 +396,7 @@ export class DSPyEngine {
 			history.push(result);
 			this.optimizationHistory.set(task, history);
 
-			logger.debug('Stored DSPy optimization result:' + key);
+			logger.debug(`Stored DSPy optimization result:` + key);
 } catch (error) {
 			logger.warn("Failed to store optimization result:", error);
 }
@@ -566,15 +566,15 @@ export class DSPyEngine {
 }
 
 /**
- * Create DSPy engine instance with default configuration
- */
+* Create DSPy engine instance with default configuration
+*/
 export function createDSPyEngine(config?:Partial<DSPyConfig>): DSPyEngine {
 	return new DSPyEngine(config);
 }
 
 /**
- * DSPy utility functions
- */
+* DSPy utility functions
+*/
 export const dspyUtils = {
 	/**
 	 * Create training examples from data
@@ -583,7 +583,7 @@ export const dspyUtils = {
 		data:Array<{ input: string; output: string}>,
 	):DSPyExample[] {
 		return data.map((item, index) => ({
-			id:'example-' + index,
+			id:`example-` + index,
 			input:item.input,
 			output:item.output,
 			metadata:{ createdAt: new Date()},

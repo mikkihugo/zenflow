@@ -68,7 +68,7 @@ this.setupDocumentHandlers();
 */
 async initialize():Promise<void> {
 logger.info(' Initializing SAFe Artifact Intelligence System');')
-logger.info(' SAFe Artifact Intelligence ready');') this.emit('initialized', timestamp:new Date() );')}
+logger.info(' SAFe Artifact Intelligence ready');') this.emit('initialized`, timestamp:new Date() );`)}
 
 /**
 * Load existing workspace with documents.
@@ -81,7 +81,7 @@ const workspaceId = `safe-workspace-${Date.now()}`;`
 const workspace:SafeWorkspace = {
 workspaceId,
 name:workspaceName,
-safeConfiguration: 'essential', // SAFe 6.0 Essential by default') databases:{
+safeConfiguration: `essential`, // SAFe 6.0 Essential by default') databases:{
 artifacts:databaseConnections.artifacts || 'safe_artifacts.db', relationships:databaseConnections.relationships || 'safe_relationships.db', ') analytics:databaseConnections.analytics || 'safe_analytics.db',}
 };
 
@@ -98,7 +98,7 @@ this.workspaces.set(workspaceId, context);
 await this.loadArtifactsFromDatabase(workspaceId);
 
 logger.info(` Loaded SAFe workspace:$workspaceName`);`
-this.emit('workspace:loaded', { workspaceId, name:workspaceName});
+this.emit(`workspace:loaded`, { workspaceId, name:workspaceName});
 
 return workspaceId;
 }
@@ -117,7 +117,7 @@ const context = this.workspaces.get(workspaceId);
 if (!context) throw new Error(`Workspace ${workspaceId} not found`);`
 
 const docType = this.getDocumentType(docPath);
-const content = await readFile(docPath, 'utf8');')
+const content = await readFile(docPath, `utf8`);')
 logger.info(` Processing $docTypedocument:$docPath`);`
 
 const doc:VisionaryDocument = {

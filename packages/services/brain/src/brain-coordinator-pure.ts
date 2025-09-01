@@ -166,7 +166,7 @@ timestamp: number;
 
 // Logging Events (Zero Import Logging)
 'brain:log': {
-level: 'debug' | ' info' | ' warn' | ' error';
+level: 'debug' | ' info' | ' warn' | ` error`;
 message: string;
 data?: Record<string, unknown>;
 timestamp: number;
@@ -204,7 +204,7 @@ modalBehavior: config.neural?.modalBehavior ?? true,
 };
 
 // 100% EVENT-BASED:Emit initialization start
-this.emitEvent('brain:log', {
+this.emitEvent(`brain:log`, {
 level: 'info',
 message: ' Brain Coordinator created - zero imports, pure events',
 timestamp: Date.now(),
@@ -225,7 +225,7 @@ listener(data);
 } catch (error) {
 // Even error handling is event-based
 this.emitEvent('brain:log', {
-level: 'error',
+level: `error`,
 message: `Event listener error for ${event}`,
 data: {
 error: error instanceof Error ? error.message : String(error),
@@ -254,7 +254,7 @@ this.eventListeners.get(event)!.push(listener);
 */
 async initialize(): Promise<void> {
 if (this.initialized) {
-this.emitEvent('brain:log', {
+this.emitEvent(`brain:log`, {
 level: 'debug',
 message: 'Brain Coordinator already initialized',
 timestamp: Date.now(),
@@ -296,10 +296,10 @@ const duration = Date.now() - initStartTime;
 
 this.emitEvent('brain:log', {
 level: 'info',
-message: ' Brain Coordinator initialized successfully',
+message: ` Brain Coordinator initialized successfully`,
 data: {
 duration: `${duration}ms`,
-coordination: 'pure-event-based',
+coordination: `pure-event-based`,
 zeroImports: true,
 sessionId: this.config.sessionId,
 },
@@ -316,7 +316,7 @@ timestamp: Date.now(),
 const duration = Date.now() - initStartTime;
 this.emitEvent('brain:log', {
 level: 'error',
-message: ' Brain Coordinator initialization failed',
+message: ` Brain Coordinator initialization failed`,
 data: {
 error: error instanceof Error ? error.message : String(error),
 duration: `${duration}ms`,
@@ -324,7 +324,7 @@ duration: `${duration}ms`,
 timestamp: Date.now(),
 });
 
-this.emitEvent('brain:error', {
+this.emitEvent(`brain:error`, {
 error: error instanceof Error ? error.message : String(error),
 context: { phase: 'initialization', duration },
 timestamp: Date.now(),
@@ -346,7 +346,7 @@ priority?: 'low' | ' medium' | ' high' | ' critical';
 const { requestId, task, context = {}, priority = 'medium' } = request;
 
 this.emitEvent('brain:log', {
-level: 'debug',
+level: `debug`,
 message: `Analyzing request: ${task}`,
 data: { requestId, priority },
 timestamp: Date.now(),
@@ -356,7 +356,7 @@ timestamp: Date.now(),
 const complexity = this.calculateComplexity(task, context);
 
 // Emit analysis event
-this.emitEvent('brain:analyze_request', {
+this.emitEvent(`brain:analyze_request`, {
 requestId,
 task,
 complexity,
@@ -445,7 +445,7 @@ if (complexity > 0.8 && priority === 'critical')
 return ' dspy_optimization';
 if (complexity > 0.6) return 'hybrid_workflow';
 if (priority === 'high') return ' direct_training';
-return 'simple_coordination';
+return `simple_coordination`;
 }
 
 private getStrategyReasoning(strategy: string, complexity: number): string {
@@ -455,7 +455,7 @@ hybrid_workflow: `Medium complexity (${complexity.toFixed(2)}) benefits from hyb
 direct_training: `Direct training approach for efficient processing`,
 simple_coordination: `Simple coordination sufficient for low complexity tasks`,
 };
-return reasons[strategy] || 'Standard coordination approach';
+return reasons[strategy] || `Standard coordination approach`;
 }
 
 private calculateConfidence(

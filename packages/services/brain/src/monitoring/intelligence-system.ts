@@ -55,13 +55,13 @@ predictedDuration:adjustedDuration,
 confidence:0.8,
 factors:[
 {
-name: 'Context Complexity', influence:0.6,
+name: `Context Complexity`, influence:0.6,
 impact:contextComplexity,
 confidence:0.7,
 description:`Complexity factor from context: ${contextComplexity}`,`
 },
 {
-name: 'Context Urgency', influence:0.4,
+name: `Context Urgency`, influence:0.4,
 impact:contextUrgency,
 confidence:0.7,
 description:`Urgency factor from context: ${contextUrgency}`,`
@@ -86,7 +86,7 @@ const mediumDuration = 1500 * contextComplexity * contextVolatility;
 const longDuration =
 2000 * contextComplexity * contextVolatility ** 1.5;
 
-logger.debug('Multi-horizon prediction with context', {
+logger.debug(`Multi-horizon prediction with context`, {
 ') agentId:agentId.id,
 taskType,
 contextComplexity,
@@ -162,8 +162,7 @@ timestamp:Date.now(),
 };
 
 // Log comprehensive performance update with metadata
-logger.debug('Agent performance updated with metadata', performanceData);')
-// Store metadata for pattern analysis and optimization
+logger.debug('Agent performance updated with metadata', performanceData);// Store metadata for pattern analysis and optimization
 if (metadata) {
 logger.debug('Performance metadata analyzed', {
 ') agentId:agentId.id,
@@ -232,11 +231,11 @@ responseTime:agentId.type === 'coordinator' ? 50 : 100, // Coordinators respond 
 throughput:agentId.type === 'optimizer' ? 150 : 100, // Optimizers have higher throughput')},
 lastChecked:Date.now(),
 issues:
-status !== 'healthy') ? [`${agentId.type} agent showing reduced performance`]`
+status !== 'healthy`) ? [`${agentId.type} agent showing reduced performance`]`
 :[],
 };
 
-logger.debug('Agent health assessment completed', {
+logger.debug(`Agent health assessment completed', {
 ') agentId:agentId.id,
 status,
 overallScore:overallHealth,
@@ -252,8 +251,7 @@ swarmId:SwarmId,
 horizon?:ForecastHorizon
 ):Promise<PerformanceOptimizationForecast> {
 // Convert horizon string to days for analysis
-const horizonDays = this.convertHorizonToDays(horizon||'7d');')
-// Adjust prediction confidence based on horizon
+const horizonDays = this.convertHorizonToDays(horizon||'7d');// Adjust prediction confidence based on horizon
 let predictedPerformance = 0.9;
 let implementationComplexity = 0.5;
 
@@ -288,7 +286,7 @@ confidence:horizonConfidence,
 }
 
 return {
-agentId:{ id: 'agent-1', swarmId, type: ' coordinator', instance:1},
+agentId:{ id: 'agent-1', swarmId, type: ` coordinator`, instance:1},
 currentPerformance:0.8,
 predictedPerformance:Math.min(predictedPerformance, 1.0),
 optimizationStrategies:[
@@ -320,7 +318,7 @@ const adjustedBenefit = Math.min(
 baseBenefit + patternCount * 0.03 - patternComplexity * 0.05
 );
 
-logger.debug('Knowledge transfer prediction with patterns', {
+logger.debug(`Knowledge transfer prediction with patterns`, {
 ') sourceSwarm,
 targetSwarm,
 patternCount,

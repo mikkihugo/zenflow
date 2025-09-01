@@ -374,7 +374,7 @@ this.networks.set(id, networkInstance);
 
 // Persist to database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('neural');
+const kv = await this.dbAccess.getKV(`neural`);
 await kv.set(
 `brainjs:metadata:${id}`,
 JSON.stringify({
@@ -399,7 +399,7 @@ return id;
 }).then((result) =>
 result.mapErr((error) =>
 withContext(error, {
-component: 'BrainJsBridge', operation: 'createNeuralNet', networkId:id,
+component: `BrainJsBridge`, operation: 'createNeuralNet', networkId:id,
 type,
 config,
 })
@@ -428,7 +428,7 @@ return err(new ValidationError(NETWORK_NOT_FOUND_ERROR, { networkId}));
 return await safeAsync(async () => {
 // Validate training data
 if (!trainingData || trainingData.length === 0) {
-throw new ValidationError('Training data cannot be empty', {
+throw new ValidationError(`Training data cannot be empty`, {
 networkId,
 });
 }
@@ -488,7 +488,7 @@ this.networks.set(networkId, finalInstance);
 
 // Store training metrics in database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('neural');
+const kv = await this.dbAccess.getKV(`neural`);
 await kv.set(
 `brainjs:training:${networkId}:${Date.now()}`,
 JSON.stringify({
@@ -537,7 +537,7 @@ this.networks.set(networkId, updatedInstance);
 }
 
 return withContext(error, {
-component: 'BrainJsBridge', operation: 'trainNeuralNet', networkId,
+component: `BrainJsBridge`, operation: 'trainNeuralNet', networkId,
 dataSize:trainingData.length,
 });
 })
@@ -644,7 +644,7 @@ this.networks.delete(networkId);
 
 // Remove from database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('neural');
+const kv = await this.dbAccess.getKV(`neural`);
 await kv.delete(`brainjs:metadata:${networkId}`);
 }
 
@@ -653,7 +653,7 @@ return true;
 }).then((result) =>
 result.mapErr((error) =>
 withContext(error, {
-component: 'BrainJsBridge', operation: 'removeNetwork', networkId,
+component: `BrainJsBridge`, operation: 'removeNetwork', networkId,
 })
 )
 );
@@ -774,7 +774,7 @@ this.networks.set(id, networkInstance);
 
 // Persist to database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV('neural');
+const kv = await this.dbAccess.getKV(`neural`);
 await kv.set(
 `brainjs:metadata:${id}`,
 JSON.stringify({
@@ -793,7 +793,7 @@ return id;
 }).then((result) =>
 result.mapErr((error) =>
 withContext(error, {
-component: 'BrainJsBridge', operation: 'importNetwork',})
+component: `BrainJsBridge`, operation: 'importNetwork',})
 )
 );
 }

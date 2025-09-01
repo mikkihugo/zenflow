@@ -1,14 +1,14 @@
 /**
- * @fileoverview GRPO (Gradient-based Reward Policy Optimization) Teleprompter Implementation
- *
- * Production-grade implementation with 100% Stanford DSPy API compatibility.
- * Advanced teleprompter that combines bootstrap methodology with reinforcement learning
- * using gradient-based reward policy optimization.
- *
- * @author Claude Code Zen Team
- * @version 2.0.0
- * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
- */
+* @fileoverview GRPO (Gradient-based Reward Policy Optimization) Teleprompter Implementation
+*
+* Production-grade implementation with 100% Stanford DSPy API compatibility.
+* Advanced teleprompter that combines bootstrap methodology with reinforcement learning
+* using gradient-based reward policy optimization.
+*
+* @author Claude Code Zen Team
+* @version 2.0.0
+* @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
+*/
 
 import { ChatAdapter} from "../adapters/chat-adapter";
 import type { Adapter} from "../interfaces/adapter";
@@ -32,8 +32,8 @@ const all_predictors_have_lms = {} as any;
 const assert_structural_equivalency = {} as any;
 
 /**
- * GRPO Configuration exactly matching Stanford DSPy API
- */
+* GRPO Configuration exactly matching Stanford DSPy API
+*/
 export interface GRPOConfig {
 	metric?:MetricFunction | null;
 	multitask?:boolean;
@@ -58,8 +58,8 @@ export interface GRPOConfig {
 }
 
 /**
- * Frequency counter for shuffled dataset management
- */
+* Frequency counter for shuffled dataset management
+*/
 class Counter {
 	private counts = new Map<number, number>();
 
@@ -77,10 +77,10 @@ class Counter {
 }
 
 /**
- * GRPO (Gradient-based Reward Policy Optimization) Teleprompter
- *
- * Exact implementation matching Stanford DSPy GRPO teleprompter with 100% API compatibility.
- */
+* GRPO (Gradient-based Reward Policy Optimization) Teleprompter
+*
+* Exact implementation matching Stanford DSPy GRPO teleprompter with 100% API compatibility.
+*/
 export class GRPO extends FinetuneTeleprompter {
 	private metric:MetricFunction | null;
 	private multitask:boolean;
@@ -181,7 +181,7 @@ export class GRPO extends FinetuneTeleprompter {
 				!["randint", "max"].includes(variably_invoked_predictor_fill_strategy)
 			) {
 				throw new Error(
-					"variably_invoked_predictor_fill_strategy must be either 'randint' or ' max'",
+					"variably_invoked_predictor_fill_strategy must be either 'randint' or ` max`",
 				);
 }
 }
@@ -240,7 +240,7 @@ export class GRPO extends FinetuneTeleprompter {
 			);
 
 			if (!("trace" in trace_data[0][0][0])) {
-				throw new Error("Trace data does not contain the 'trace' key");
+				throw new Error("Trace data does not contain the `trace` key");
 }
 			if (trace_data[0][0][0].trace.length === 0) {
 				throw new Error("Trace data is empty");
@@ -583,7 +583,7 @@ export class GRPO extends FinetuneTeleprompter {
 },
 	):Promise<DSPyModule> {
 		let { trainset, teacher = null, valset = null} = config;
- // eslint-disable-next-line no-console
+// eslint-disable-next-line no-console
 		const logger = { info:console.log, warning:console.warn};
 
 		logger.info(
@@ -1045,8 +1045,8 @@ export class GRPO extends FinetuneTeleprompter {
 }
 
 /**
- * Disable LM cache for all predictors in the program exactly matching Stanford implementation
- */
+* Disable LM cache for all predictors in the program exactly matching Stanford implementation
+*/
 function disable_lm_cache(
 	program:DSPyModule,
 	lm_cache_dict:Map<any, boolean>,
@@ -1065,8 +1065,8 @@ function disable_lm_cache(
 }
 
 /**
- * Recover LM caches for all predictors in the program exactly matching Stanford implementation
- */
+* Recover LM caches for all predictors in the program exactly matching Stanford implementation
+*/
 function recover_lm_cache(
 	program:DSPyModule,
 	lm_cache_dict:Map<any, boolean>,

@@ -144,7 +144,7 @@ expect(result.metadata.context).toBe('code-analysis');') expect(result.metadata.
 });
 
 it('should handle semantic search scenario', async () => {
-') // Build a semantic search index
+// Build a semantic search index
 const documents = [
 'Machine learning algorithms for neural network optimization', 'Deep learning techniques using TensorFlow and PyTorch', 'Natural language processing with transformer models', 'Computer vision applications in autonomous vehicles', 'Reinforcement learning for game AI development',];
 
@@ -182,7 +182,7 @@ expect(similarities[0].document).toContain('Machine learning');') expect(similar
 });
 
 describe('Performance and Scaling Scenarios', () => {
-') it('should handle high-throughput embedding generation`, async () => {
+`) it(`should handle high-throughput embedding generation`, async () => {
 `) const batchSize = 50;
 const texts = Array.from(
 { length:batchSize},
@@ -195,7 +195,7 @@ const startTime = Date.now();
 const results = await Promise.all(
 texts.map((text) =>
 brainCoordinator.generateEmbedding(text, {
-context: 'high-throughput-test', priority: 'low', // Use low priority for batch processing')})
+context: `high-throughput-test`, priority: 'low', // Use low priority for batch processing')})
 )
 );
 
@@ -252,7 +252,7 @@ expect(result.metadata.priority).toBe(tasks[index].priority);
 
 describe('Error Recovery Scenarios', () => {
 ') it('should recover from temporary failures', async () => {
-') // Simulate a temporary failure by mocking the pipeline to fail once
+// Simulate a temporary failure by mocking the pipeline to fail once
 let failCount = 0;
 const originalMock = vi.mocked(require('@xenova/transformers').pipeline);')
 vi.mocked(require('@xenova/transformers').pipeline).mockImplementation(') async (...args) => {
@@ -264,7 +264,7 @@ return originalMock(...args);
 );
 
 // First request might fail but system should recover
-const text = 'Recovery test after temporary failure';
+const text = 'Recovery test after temporary failure`;
 
 try {
 const result = await brainCoordinator.generateEmbedding(text);
@@ -285,7 +285,7 @@ const result2 = await brainCoordinator.generateEmbedding(text);
 expect(result2.success).toBe(true);
 });
 
-it('should handle memory pressure gracefully`, async () => {
+it(`should handle memory pressure gracefully`, async () => {
 `) // Fill cache to near capacity
 const maxCacheSize = e2eConfig.neural?.smartBackend?.maxCacheSize || 1000;
 const texts = Array.from(
@@ -308,7 +308,7 @@ expect(stats.stats.cache.evictions).toBeGreaterThan(0);
 });
 });
 
-describe('Quality Assurance Scenarios', () => {
+describe(`Quality Assurance Scenarios`, () => {
 ') it('should maintain embedding quality across different text types', async () => {
 ') const __testCases = [
 { text: 'Short text', type: ' short'},
@@ -316,7 +316,7 @@ describe('Quality Assurance Scenarios', () => {
 text: 'This is a medium-length text that contains several words and should generate a meaningful embedding vector for semantic analysis purposes.', type: 'medium',},
 {
 text:
-'This is a very long text document that contains extensive information about various topics including machine learning, neural networks, artificial intelligence, software engineering, and many other technical subjects that might be encountered in a typical enterprise application. ' +') 'It continues with more detailed explanations and examples. '.repeat(') 10
+'This is a very long text document that contains extensive information about various topics including machine learning, neural networks, artificial intelligence, software engineering, and many other technical subjects that might be encountered in a typical enterprise application. ' +') 'It continues with more detailed explanations and examples. `.repeat(`) 10
 ),
 type: `long`,},
 ];
@@ -325,7 +325,7 @@ const results = await Promise.all(
 testCases.map((testCase) =>
 brainCoordinator.generateEmbedding(testCase.text, {
 context:`quality-test-${testCase.type}`,`
-qualityLevel: 'standard',})
+qualityLevel: `standard`,})
 )
 );
 

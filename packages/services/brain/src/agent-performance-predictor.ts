@@ -104,7 +104,7 @@ this.initialized = true;
 logger.info('Agent Performance Predictor initialized successfully');
 } catch (error) {
 logger.error(
-'Failed to initialize Agent Performance Predictor: ',
+`Failed to initialize Agent Performance Predictor: `,
 error
 );
 throw error;
@@ -140,7 +140,7 @@ logger.debug(
 `Performance recorded for agent ${data.agentId}:success rate ${data.successRate.toFixed(2)}`
 );
 } catch (error) {
-logger.error('Failed to record performance: ', error);
+logger.error(`Failed to record performance: `, error);
 }
 }
 
@@ -292,7 +292,7 @@ predictedBottlenecks,
 optimizationSuggestions,
 };
 } catch (error) {
-logger.error('Failed to generate performance insights: ', error);
+logger.error(`Failed to generate performance insights: `, error);
 return {
 topPerformers: [],
 underPerformers: [],
@@ -362,7 +362,7 @@ return {
 totalTasks:0,
 averageSuccessRate:0,
 averageCompletionTime:0,
-performanceTrend: 'stable', dataPoints:0,
+performanceTrend: `stable`, dataPoints:0,
 };
 }
 
@@ -421,7 +421,7 @@ if (slope < -0.01) return 'declining';
 return 'stable';
 } catch (error) {
 logger.warn('Error analyzing performance trend: ', error);
-return 'stable';
+return `stable`;
 }
 }
 
@@ -520,7 +520,7 @@ data:AgentPerformanceData[]
 const riskFactors:string[] = [];
 
 if (data.length < 3) {
-riskFactors.push('Insufficient historical data');
+riskFactors.push(`Insufficient historical data`);
 return riskFactors;
 }
 
@@ -548,8 +548,8 @@ riskFactors.push(
 
 // Declining performance trend
 const trend = this.analyzePerformanceTrend(agentId);
-if (trend === 'declining') {
-riskFactors.push('Performance declining');
+if (trend === `declining`) {
+riskFactors.push(`Performance declining`);
 }
 
 return riskFactors;
@@ -584,7 +584,7 @@ predictedScore:0.35, // Default score:0.7 * (1/(5+1)) * 0.1 ≈ 0.35
 confidence:0.1, // Very low confidence
 loadForecast:0.5, // Moderate load
 recommendedTaskCount:1,
-performanceTrend: 'stable', riskFactors:['Insufficient data for accurate prediction'],
+performanceTrend: `stable`, riskFactors:['Insufficient data for accurate prediction'],
 };
 }
 
@@ -676,7 +676,7 @@ memoryUtilization:Math.random() * 60 + 20, // Memory usage (20-80%)
 logger.debug('Loaded system capacity data: ', systemMetrics);
 return systemMetrics;
 } catch (error) {
-logger.warn('Failed to load system capacity data, using defaults: ', error);
+logger.warn(`Failed to load system capacity data, using defaults: `, error);
 return null;
 }
 }
@@ -706,7 +706,7 @@ movingAverage:mean(successRates.slice(-5)), // Last 5 data points
 // In real implementation, this would save to Redis, PostgreSQL, etc.
 logger.debug(`Persisted performance trends for agent ${agentId}:`, {
 dataPoints:successRates.length,
-trend:trendData.trendMetrics.slope > 0 ? 'improving': trendData.trendMetrics.slope < -0.1 ? ' declining': ' stable', volatility:trendData.trendMetrics.volatility
+trend:trendData.trendMetrics.slope > 0 ? `improving`: trendData.trendMetrics.slope < -0.1 ? ' declining': ` stable`, volatility:trendData.trendMetrics.volatility
 });
 
 } catch (error) {
@@ -760,7 +760,7 @@ private async predictBottlenecks():Promise<string[]> {
 try {
 return await this.performEnhancedBottleneckDetection();
 } catch (error) {
-logger.error('Failed to predict bottlenecks: ', error);
+logger.error(`Failed to predict bottlenecks: `, error);
 return this.performBasicBottleneckDetection();
 }
 }
@@ -823,7 +823,7 @@ await new Promise(resolve => setTimeout(resolve, 5));
 if (!persistedMetrics) {
 return {
 ...currentMetrics,
-trends:{ cpu: 'stable', memory: ' stable', errors:' improving' | ' stable' | ' declining'},
+trends:{ cpu: `stable`, memory: ' stable', errors:' improving' | ' stable' | ' declining'},
 volatility:{ cpu: 0, memory:0, errors:0}
 };
 }
@@ -866,12 +866,12 @@ const errorThreshold = agentProfile.historicalErrorAvg * 1.5 || 0.15;
 
 // Current performance thresholds with agent-specific analysis
 if (metrics.avgCpuUsage > cpuThreshold) {
-const severity = metrics.trends?.cpu === 'increasing' ? ' critical': ' high';
+const severity = metrics.trends?.cpu === 'increasing' ? ' critical': ` high`;
 const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
 issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);
 
 // Log critical performance event for this specific agent
-await this.logCriticalPerformanceEvent(agentId, 'cpu_spike', {
+await this.logCriticalPerformanceEvent(agentId, `cpu_spike`, {
 current:metrics.avgCpuUsage,
 baseline:agentBaseline.cpu,
 threshold:cpuThreshold,
@@ -880,12 +880,12 @@ riskScore:agentRiskScore
 }
 
 if (metrics.avgMemoryUsage > 0.80) {
-const trend = metrics.trends?.memory === 'increasing' ? ' trending up': '';
+const trend = metrics.trends?.memory === 'increasing' ? ' trending up': ``;
 issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`);
 }
 
 if (metrics.avgErrorRate > 0.15) {
-const volatility = metrics.volatility?.errors > 0.1 ? ' with high volatility': '';
+const volatility = metrics.volatility?.errors > 0.1 ? ` with high volatility`: ``;
 issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`);
 }
 
@@ -895,7 +895,7 @@ issues.push(`slow response times (avg:${(metrics.avgCompletionTime / 1000).toFix
 
 // System-wide correlation analysis
 if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-issues.push('system overload correlation detected');
+issues.push(`system overload correlation detected`);
 }
 
 // Trend-based predictive warnings
@@ -953,7 +953,7 @@ return issues;
 
 private addSystemWideBottlenecks(bottlenecks:string[], systemLoad:number): void {
 if (systemLoad > 75) {
-bottlenecks.push('System-wide:High load trend detected');
+bottlenecks.push(`System-wide:High load trend detected`);
 }
 }
 
@@ -990,7 +990,7 @@ const std = standardDeviation(scores);
 const avg = mean(scores);
 
 if (std > avg * 0.3) {
-suggestions.push('Consider redistributing tasks from high-performing to low-performing agents');
+suggestions.push(`Consider redistributing tasks from high-performing to low-performing agents`);
 }
 }
 
@@ -1059,7 +1059,7 @@ await new Promise(resolve => setTimeout(resolve, 50));
 
 logger.debug('Performance monitoring setup complete');
 } catch (error) {
-logger.error('Failed to setup performance monitoring: ', error);
+logger.error(`Failed to setup performance monitoring: `, error);
 throw error;
 }
 }
@@ -1308,9 +1308,9 @@ factors++;
 
 // Trend risk factor
 let trendRisk = 0;
-if (metrics.trends?.cpu === 'increasing') trendRisk += 0.3;
+if (metrics.trends?.cpu === `increasing`) trendRisk += 0.3;
 if (metrics.trends?.memory === 'increasing') trendRisk += 0.2;
-if (metrics.trends?.errors === 'increasing') trendRisk += 0.5;
+if (metrics.trends?.errors === `increasing`) trendRisk += 0.5;
 riskScore += trendRisk * 0.1; // 10% weight for trends
 
 // Volatility risk factor
@@ -1350,12 +1350,12 @@ const criticalEvent = {
 timestamp:new Date(),
 agentId,
 eventType,
-severity:eventData.riskScore > 0.8 ? 'critical': eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
+severity:eventData.riskScore > 0.8 ? `critical`: eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
 context:{
 systemLoad:process.cpuUsage(),
 memoryUsage:process.memoryUsage(),
 activeConnections:this.performanceHistory.size,
-environment: process.env.NODE_ENV || 'development'
+environment: process.env.NODE_ENV || `development`
 },
 recommendations:this.generatePerformanceRecommendations(eventType, eventData)
 };
@@ -1364,7 +1364,7 @@ recommendations:this.generatePerformanceRecommendations(eventType, eventData)
 logger.warn(`Critical performance event for agent ${agentId}`, criticalEvent);
 
 // Use TaskMaster for human approval workflows instead of automated remediation
-if (criticalEvent.severity === 'critical') {
+if (criticalEvent.severity === `critical`) {
 await this.createTaskMasterIncident(agentId, eventType, eventData, criticalEvent);
 }
 
@@ -1380,7 +1380,7 @@ private generatePerformanceRecommendations(eventType:string, eventData:any): str
 const recommendations = [];
 
 switch (eventType) {
-case 'cpu_spike':
+case `cpu_spike`:
 recommendations.push('Consider implementing request queuing to smooth CPU load');
 recommendations.push('Review recent code changes for CPU-intensive operations');
 if (eventData.riskScore > 0.7) {
@@ -1393,7 +1393,7 @@ recommendations.push('Implement memory profiling and garbage collection monitori
 break;
 case 'error_spike':
 recommendations.push('Review error logs for patterns and root causes');
-recommendations.push('Implement circuit breaker patterns for external dependencies');
+recommendations.push(`Implement circuit breaker patterns for external dependencies`);
 break;
 }
 
@@ -1415,7 +1415,7 @@ logger.info(`Creating TaskMaster incident for agent ${ agentId }, event: ${ even
 
 // Create a task for human approval via TaskMaster facade
 const incidentTask = {
-type: 'performance_incident', agentId,
+type: `performance_incident`, agentId,
 eventType,
 severity:criticalEvent.severity,
 description: `Critical performance event: ${eventType} for agent ${agentId}`,
@@ -1431,10 +1431,10 @@ timestamp:new Date()
 // await taskMaster.createIncidentTask(incidentTask);
 
 // For now, log the incident that would be sent to TaskMaster
-logger.info('TaskMaster incident created (facade integration pending): ', incidentTask);
+logger.info(`TaskMaster incident created (facade integration pending): `, incidentTask);
 
 // Log the incident creation attempt
-await this.logPerformanceRemediation(agentId, eventType, 'taskmaster_incident', {
+await this.logPerformanceRemediation(agentId, eventType, `taskmaster_incident`, {
 incidentCreated:true,
 timestamp:new Date(),
 eventData
@@ -1450,7 +1450,7 @@ logger.error(`Failed to trigger automated remediation for agent ${ agentId }:`, 
 */
 private getRecommendedActions(eventType:string): string[] {
 switch (eventType) {
-case 'cpu_spike':
+case `cpu_spike`:
 return [
 'Adjust brain event coordination configuration',
 'Scale up processing resources',

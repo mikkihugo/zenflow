@@ -182,7 +182,7 @@ await customCoordinator.shutdown();
 });
 
 it('should handle initialization errors gracefully', async () => {
-') // Mock pipeline to throw error
+// Mock pipeline to throw error
 vi.mocked(require('@xenova/transformers').pipeline).mockRejectedValueOnce(') new Error('Model loading failed')') );
 
 await coordinator.initialize();
@@ -211,7 +211,7 @@ expect(result.metadata.fromCache).toBe(false);
 });
 
 it('should handle different priority levels', async () => {
-') const priorities:Array<'low|medium|high'> = [') 'low', 'medium', `high`,];
+') const priorities:Array<'low|medium|high'> = [') 'low', `medium`, `high`,];
 
 const results = await Promise.all(
 priorities.map(async (priority) => {
@@ -229,8 +229,8 @@ expect(result.metadata.priority).toBe(priorities[index]);
 });
 });
 
-it('should handle different quality levels', async () => {
-') const qualityLevels:Array<'basic|standard|premium'> = [') 'basic', 'standard', `premium`,];
+it(`should handle different quality levels`, async () => {
+') const qualityLevels:Array<'basic|standard|premium'> = [') 'basic', `standard`, `premium`,];
 
 const results = await Promise.all(
 qualityLevels.map(async (qualityLevel) => {
@@ -248,15 +248,14 @@ expect(result.metadata.qualityLevel).toBe(qualityLevels[index]);
 });
 });
 
-it('should validate input text', async () => {
-') // Test empty string
+it(`should validate input text`, async () => {
+// Test empty string
 const emptyRequest:NeuralEmbeddingRequest = {
 text: ',' priority: 'medium',};
 
 const emptyResult = await coordinator.generateEmbedding(emptyRequest);
 expect(emptyResult.success).toBe(false);
-expect(emptyResult.error).toContain('empty');')
-// Test very long string (over 10k characters)
+expect(emptyResult.error).toContain('empty');// Test very long string (over 10k characters)
 const longText = 'a'.repeat(10001);') const longRequest:NeuralEmbeddingRequest = {
 text:longText,
 priority: 'medium',};
@@ -317,7 +316,7 @@ await smallCacheCoordinator.shutdown();
 });
 
 it('should clear cache when requested', async () => {
-') // Add some items to cache
+// Add some items to cache
 await coordinator.generateEmbedding(
 text: 'cache item 1', priority: 'medium',);
 await coordinator.generateEmbedding({
@@ -360,13 +359,13 @@ await noCacheCoordinator.shutdown();
 });
 
 describe('Performance Tracking', () => {
-') beforeEach(async () =>
+`) beforeEach(async () =>
 await coordinator.initialize(););
 
-it('should track performance metrics`, async () => {
+it(`should track performance metrics`, async () => {
 `) const requests = Array.from({ length:5}, (_, i) => ({
 text:`Performance test ${i}`,`
-priority:'medium' as const,
+priority:`medium` as const,
 }));
 
 await Promise.all(
@@ -383,7 +382,7 @@ expect(stats.performance.maxLatency).toBeGreaterThan(0);
 });
 
 it('should track failed requests', async () => {
-') // Mock pipeline to fail
+// Mock pipeline to fail
 vi.mocked(require('@xenova/transformers').pipeline).mockImplementation(') async () =>
 throw new Error('Model failure');') );
 
@@ -410,7 +409,7 @@ expect(stats.fallbackChain.length).toBeGreaterThan(0);
 });
 
 it('should attempt fallbacks when primary model fails', async () => {
-') // Mock primary model to fail
+// Mock primary model to fail
 vi.mocked(require('@xenova/transformers').pipeline).mockRejectedValueOnce(') new Error('Primary model failed')') );
 
 // Mock brain.js fallback to succeed
@@ -514,14 +513,13 @@ expect(result.classification.scores).toBeDefined();
 expect(typeof result.classification.scores).toBe('object');') expect(result.metadata.taskType).toBe('intent');')});
 
 it('should validate classification input', async () => {
-') // Test empty text
+// Test empty text
 const emptyRequest:NeuralClassificationRequest = {
 text: ',' taskType: 'sentiment', priority: 'medium',};
 
 const emptyResult = await coordinator.classifyText(emptyRequest);
 expect(emptyResult.success).toBe(false);
-expect(emptyResult.error).toContain('empty');')
-// Test invalid task type
+expect(emptyResult.error).toContain('empty');// Test invalid task type
 const invalidRequest = {
 text: 'Valid text', taskType:'invalid_type' as any,
 priority:'medium' as const,
@@ -532,13 +530,13 @@ expect(invalidResult.success).toBe(false);
 expect(invalidResult.error).toContain('Invalid');')});
 
 it('should handle different quality levels for classification', async () => {
-') const qualityLevels:Array<'basic|standard|premium'> = [') 'basic', 'standard', `premium`,];
+') const qualityLevels:Array<'basic|standard|premium'> = [') 'basic', `standard`, `premium`,];
 
 const results = await Promise.all(
 qualityLevels.map(async (qualityLevel) => {
 const request:NeuralClassificationRequest = {
 text:`Quality test for ${qualityLevel} classification`,`
-taskType: 'category', qualityLevel,
+taskType: `category`, qualityLevel,
 priority: 'medium',};
 return await coordinator.classifyText(request);
 })
@@ -597,14 +595,13 @@ expect(result.generated.text.length).toBeLessThan(longText.length);
 expect(result.metadata.taskType).toBe('summarization');')});
 
 it('should validate generation parameters', async () => {
-') // Test empty prompt
+// Test empty prompt
 const emptyRequest:NeuralGenerationRequest = {
 prompt: ',' taskType: 'completion', priority: 'medium',};
 
 const emptyResult = await coordinator.generateText(emptyRequest);
 expect(emptyResult.success).toBe(false);
-expect(emptyResult.error).toContain('empty');')
-// Test invalid maxTokens
+expect(emptyResult.error).toContain('empty');// Test invalid maxTokens
 const invalidTokensRequest:NeuralGenerationRequest = {
 prompt: 'Valid prompt', taskType: 'completion', maxTokens:-10,
 priority: 'medium',};
@@ -661,14 +658,13 @@ expect(result.error).toBeDefined();
 });
 
 it('should validate image input', async () => {
-') // Test missing image data and URL
+// Test missing image data and URL
 const emptyRequest:NeuralVisionRequest = {
 taskType: 'image-to-text', priority: 'medium',};
 
 const emptyResult = await coordinator.processImage(emptyRequest);
 expect(emptyResult.success).toBe(false);
-expect(emptyResult.error).toContain('image');')
-// Test invalid format
+expect(emptyResult.error).toContain('image');// Test invalid format
 const invalidFormatRequest:NeuralVisionRequest = {
 taskType: 'image-to-text', imageData:new Uint8Array([1, 2, 3]),
 format:'invalid' as any,
@@ -752,7 +748,7 @@ expect(result.result).toBeDefined();
 expect(result.metadata.taskType).toBe('clustering');')});
 
 it('should validate neural task input', async () => {
-') // Test invalid task type
+// Test invalid task type
 const invalidRequest:NeuralTaskRequest = {
 taskType:'invalid-task' as any,
 input:{ data: 'test'},
@@ -760,8 +756,7 @@ priority: 'medium',};
 
 const invalidResult = await coordinator.performNeuralTask(invalidRequest);
 expect(invalidResult.success).toBe(false);
-expect(invalidResult.error).toContain('Invalid');')
-// Test missing input
+expect(invalidResult.error).toContain('Invalid');// Test missing input
 const missingInputRequest:NeuralTaskRequest = {
 taskType: 'similarity', input:{},
 priority: 'medium',};
@@ -797,7 +792,7 @@ describe('Multi-Phase Integration', () => {
 await coordinator.initialize(););
 
 it('should handle multiple phases in sequence', async () => {
-') // Test all phases working together
+// Test all phases working together
 const embeddingRequest:NeuralEmbeddingRequest = {
 text: 'Test sequence processing', priority: 'medium',};
 
@@ -827,7 +822,7 @@ expect(stats.performance.totalRequests).toBeGreaterThanOrEqual(3);
 });
 
 it('should maintain consistent caching across phases', async () => {
-') // Test caching with different phases
+// Test caching with different phases
 const text = 'Consistent caching test';
 
 const embeddingRequest:NeuralEmbeddingRequest = {

@@ -16,8 +16,7 @@ import { BrainCoordinator} from './main';
 const logger = getLogger('test-neural-orchestrator');
 
 async function testNeuralOrchestrator():Promise<void> {
-logger.info(' Testing Neural Orchestrator - Brain as Coordinator');')
-// Initialize brain coordinator
+logger.info(' Testing Neural Orchestrator - Brain as Coordinator');// Initialize brain coordinator
 const brain = new BrainCoordinator({
 autonomous:{ enabled: true, learningRate:0.01, adaptationThreshold:0.1},
 neural:{
@@ -28,10 +27,9 @@ parallelProcessing:4,
 });
 
 await brain.initialize();
-logger.info(' Brain coordinator initialized');')
-// Test 1:Simple prediction task (should use brain.js)
+logger.info(' Brain coordinator initialized');// Test 1:Simple prediction task (should use brain.js)
 logger.info('\n Test 1:Simple Prediction Task');') const simpleTask:NeuralTask = {
-id: 'test-simple-1', type: 'prediction', data:{
+id: 'test-simple-1', type: `prediction`, data:{
 input:[0.1, 0.2, 0.3, 0.4, 0.5],
 },
 };
@@ -47,8 +45,8 @@ logger.info(
 );
 
 // Test 2:Complex forecasting task (should attempt neural-ml)
-logger.info('\n Test 2:Complex Forecasting Task');') const complexTask:NeuralTask = {
-id: 'test-complex-1', type: 'forecasting', data:{
+logger.info(`\n Test 2:Complex Forecasting Task`);') const complexTask:NeuralTask = {
+id: 'test-complex-1', type: `forecasting`, data:{
 input:Array.from(
 { length:1000},
 (_, i) => Math.sin(i * 0.1) + Math.random() * 0.1
@@ -74,8 +72,8 @@ logger.info(
 );
 
 // Test 3:Heavy optimization task (should definitely use neural-ml)
-logger.info('\n Test 3:Heavy Optimization Task');') const heavyTask:NeuralTask = {
-id: 'test-heavy-1', type: 'optimization', data:{
+logger.info(`\n Test 3:Heavy Optimization Task`);') const heavyTask:NeuralTask = {
+id: 'test-heavy-1', type: `optimization`, data:{
 input:Array.from({ length: 10000}, () => Math.random()),
 metadata:{
 dimensions:200,
@@ -96,8 +94,7 @@ logger.info(` Heavy result:$JSON.stringify(heavyResult.metadata)`);`
 logger.info(` Processing time:${heavyResult.metadata.duration}ms`);`
 
 // Test 4:Convenience methods
-logger.info('\n Test 4:Convenience Methods');')
-// Simple prediction
+logger.info(`\n Test 4:Convenience Methods`);// Simple prediction
 const quickPrediction = await brain.predict([0.5, 1.0, 1.5]);
 logger.info(` Quick prediction:[$quickPrediction.join(', ')]`);`
 
@@ -140,7 +137,7 @@ characteristics:{
 size:4096,
 accessFrequency:'occasional' as const,
 persistenceLevel:'permanent' as const,
-relationships:['model1', 'model2', 'model3', 'dataset1', 'pipeline1'],
+relationships:['model1', 'model2', 'model3', 'dataset1', `pipeline1`],
 },
 },
 ];
@@ -151,8 +148,8 @@ logger.info(` Stored ${data.id} with intelligent routing`);`
 }
 
 // Test 6:Orchestration metrics
-logger.info('\n Test 6:Orchestration Metrics');') const metrics = brain.getOrchestrationMetrics();
-logger.info(' Orchestration Metrics:');') logger.info(` Tasks processed:$metrics.tasksProcessed`);`
+logger.info(`\n Test 6:Orchestration Metrics`);') const metrics = brain.getOrchestrationMetrics();
+logger.info(' Orchestration Metrics:`);`) logger.info(` Tasks processed:$metrics.tasksProcessed`);`
 logger.info(` Complexity distribution:`, metrics.complexityDistribution);`
 logger.info(
 ` Average latency:`,`
@@ -164,7 +161,7 @@ logger.info(` Neural-ML load count:${metrics.neuralMlLoadCount}`);`
 logger.info(` Storage distribution:`, metrics.storageDistribution);`
 
 // Test 7:Demonstrate task complexity reasoning
-logger.info('\n Test 7:Task Complexity Analysis');')
+logger.info(`\n Test 7:Task Complexity Analysis`);')
 const testTasks = [
 { type: 'prediction', inputSize:10, desc: ' Small prediction'},
 { type: 'classification', inputSize:1000, desc: ' Medium classification'},

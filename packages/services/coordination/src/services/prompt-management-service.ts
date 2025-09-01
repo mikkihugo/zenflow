@@ -16,13 +16,13 @@ const versionId = generateUUID();
 // Create initial version
 const initialVersion: {
 id: 'Initial version,',
-' createdBy,', createdAt: 'draft,',
-' performance: {
+' createdBy,', createdAt: 'draft,`,
+` performance: {
 id: await this.getPromptTemplate(promptId);
 if (!template) {
-throw new Error(`Prompt template `${promptId} not found``);')};;
+throw new Error(`Prompt template `${promptId} not found``);`)};;
 // Check permissions
-await this.checkPermission(template, createdBy,'edit');
+await this.checkPermission(template, createdBy,`edit');
 // Generate next version number
 const nextVersion = this.generateNextVersion(template.versions);
 const newVersion: {
@@ -34,9 +34,9 @@ await this.startApprovalWorkflow(template, newVersion, createdBy);
 }
 // Create audit entry
 await this.createAuditEntry(promptId, updated, createdBy, auditContext, {
-reason : 'New version created,'
+reason : `New version created,`
 version: await this.getPromptTemplate(promptId);) if (!template) {
-`) throw new Error(`Prompt template ${p}romptIdnot found``);')};) await this.checkPermission(template, createdBy,'edit');
+`) throw new Error(`Prompt template ${p}romptIdnot found``);`)};) await this.checkPermission(template, createdBy,`edit');
 // Validate traffic allocation
 const currentAllocation = template.variants
 .filter((v) => v.isActive);
@@ -47,21 +47,21 @@ if (currentAllocation + data.trafficAllocation > 1.0) {
 const variant: {
 id: new Date();
 await this.createAuditEntry(';)';
-promptId,') 'variant_created,
+promptId,`) `variant_created,
 createdBy,
 auditContext,
 {
 variantName: await this.getPromptTemplate(promptId);
 if (!template) {
-`) throw new Error(`Prompt template ${promptId} not found``);')};) await this.checkPermission(template, authorId,'edit');
+`) throw new Error(`Prompt template ${promptId} not found``);`)};) await this.checkPermission(template, authorId,`edit');
 const draft: {
-id: 'pending,',
+id: `pending,`,
 createdAt: await this.getPromptTemplate(promptId);
 if (!template) {
-`) throw new Error(`Prompt _template ${p}romptIdnot found``);')};) await this.checkPermission(template, approvedBy,'approve);
+`) throw new Error(`Prompt _template ${p}romptIdnot found``);`)};) await this.checkPermission(template, approvedBy,`approve);
 const version = template.versions.find((v) => v.id === versionId);
 if (!version) {
-`) throw new Error(`Version ${versionId} not found``);')};) // Update version status') version.status = 'approved') version.approvedBy = approvedBy;';
+`) throw new Error(`Version ${versionId} not found``);`)};) // Update version status`) version.status = 'approved') version.approvedBy = approvedBy;';
 version.approvedAt = new Date();
 // Make this the active version
 template.activeVersionId = versionId;
@@ -127,11 +127,11 @@ await this.updatePromptTemplate(template);
 }
 // Private helper methods
 private async checkPermission(
-template: 'view| edit| approve',) ): Promise<void> {';
+template: 'view| edit| approve',) ): Promise<void> {`;
 const { accessControl} = template;
 const hasPermission = false;
 switch (action) {
-case'view = ;
+case`view = ;
 hasPermission = [
 ...accessControl.owners,
 ...accessControl.editors,
@@ -151,10 +151,10 @@ case`approve: [`
 break;
 }
 if (!hasPermission) {
-throw new Error(`User `${userId} does not have ${action} permission``);')};;
+throw new Error(`User `${userId} does not have ${action} permission``);`)};;
 }
 private generateNextVersion(versions: versions[versions.length - 1];
-const [major, minor, patch] = latest.version.split('.').map(Number);`) return `${major.${m}inor.${p}atch + 1};)};;
+const [major, minor, patch] = latest.version.split(`.`).map(Number);`) return `${major.${m}inor.${p}atch + 1};)};;
 private selectVariant(template: template.variants.filter((v) => v.isActive);
 if (activeVariants.length === 0) return undefined;
 const random = Math.random();
@@ -171,7 +171,7 @@ private async createAuditEntry(
 promptId: {}
 ): Promise<void> {
 const auditEntry: {
-id: 'prompt_draft,',
+id: `prompt_draft,',
 ' collaborators: draft.collaborators,';
 permissions: {
 canEdit: true,
@@ -231,7 +231,7 @@ table') .foreign('prompt_id')') .references('prompt_templates.id')') .onDelete('
 );
 private async storePromptTemplate(template: PromptTemplate): Promise<void>
 await this.database.transaction(async (trx: any) => {
-') // Insert template') await trx('prompt_templates').insert({';
+// Insert template') await trx('prompt_templates').insert({';
 id: template.id,
 name: template.name,
 description: template.description,

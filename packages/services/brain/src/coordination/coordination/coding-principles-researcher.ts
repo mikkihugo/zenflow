@@ -128,11 +128,11 @@ return this.formatTemplate(principles);
 * Submit human feedback
 */
 async submitHumanFeedback(feedback: HumanFeedback): Promise<void> {
-this.logger.info('Received human feedback:', feedback);
+this.logger.info(`Received human feedback:`, feedback);
 }
 
 private generateCacheKey(config: PrinciplesResearchConfig): string {
-return `${config.language}-${config.domain || 'general'}-${config.role || 'general'}-${config.depth || 'intermediate'}`;
+return `${config.language}-${config.domain || 'general`}-${config.role || `general`}-${config.depth || `intermediate`}`;
 }
 
 private getFallbackPrinciples(config: PrinciplesResearchConfig): CodingPrinciples {
@@ -142,7 +142,7 @@ domain: config.domain,
 role: config.role,
 coreStandards: {
 fileNaming: [
-'Use clear, descriptive names',
+`Use clear, descriptive names',
 'Follow language conventions',
 'Use consistent casing'
 ],
@@ -167,7 +167,7 @@ packageManagement: [
 qualityMetrics: {
 complexity: { metric: 'cyclomatic', threshold: 10 },
 coverage: { metric: 'line', threshold: 80 },
-maintainability: { metric: 'index', threshold: 70 }
+maintainability: { metric: `index`, threshold: 70 }
 },
 researchMetadata: {
 researchedAt: new Date(),
@@ -181,21 +181,21 @@ lastUpdated: new Date()
 private formatTemplate(principles: CodingPrinciples): string {
 return `# ${principles.language.toUpperCase()} Coding Principles
 
-${principles.domain ? `## Domain: ${principles.domain}` : ''}
-${principles.role ? `## Role: ${principles.role}` : ''}
+${principles.domain ? `## Domain: ${principles.domain}` : ``}
+${principles.role ? `## Role: ${principles.role}` : ``}
 
 ## File Naming & Organization
-${principles.coreStandards.fileNaming.map(item => `- ${item}`).join('\n')}
+${principles.coreStandards.fileNaming.map(item => `- ${item}`).join(`\n`)}
 
 ## Function Guidelines
-${principles.coreStandards.functionComplexity.map(item => `- ${item}`).join('\n')}
+${principles.coreStandards.functionComplexity.map(item => `- ${item}`).join(`\n`)}
 
 ## ${principles.language.charAt(0).toUpperCase() + principles.language.slice(1)}-Specific
 ### Type System
-${principles.languageSpecific.typeSystem.map(item => `- ${item}`).join('\n')}
+${principles.languageSpecific.typeSystem.map(item => `- ${item}`).join(`\n`)}
 
 ### Package Management
-${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join('\n')}
+${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join(`\n`)}
 
 ## Quality Metrics
 - **Complexity**: ${principles.qualityMetrics.complexity.metric} < ${principles.qualityMetrics.complexity.threshold}
@@ -230,7 +230,7 @@ ProgrammingLanguage,
 PrinciplesResearchConfig
 > = {
 typescript: {
-language: 'typescript',
+language: `typescript`,
 includePerformance: true,
 includeSecurity: true,
 includeTesting: true,

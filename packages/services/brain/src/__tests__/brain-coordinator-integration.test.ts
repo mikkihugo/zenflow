@@ -349,7 +349,7 @@ brainCoordinator.storeNeuralData(neuralData)
 });
 
 it('should provide orchestration metrics', async () => {
-') // Process some tasks to generate metrics
+// Process some tasks to generate metrics
 await brainCoordinator.predict([1, 2, 3]);
 await brainCoordinator.forecast([1, 2, 3, 4, 5], 3);
 
@@ -442,7 +442,7 @@ describe('Neural Bridge Integration', () => {
 await brainCoordinator.initialize(););
 
 it('should work with neural bridge for predictions', async () => {
-') // Test neural bridge functionality through brain coordinator
+// Test neural bridge functionality through brain coordinator
 const input = [0.5, -0.3, 1.2, -0.8, 0.0];
 
 const result = await brainCoordinator.predict(input, 'prediction');')
@@ -460,7 +460,7 @@ expect(typeof value).toBe('number');') expect(isFinite(value)).toBe(true);
 });
 
 it('should handle classification tasks', async () => {
-') // Test classification through neural processing
+// Test classification through neural processing
 const input = [1.0, 0.0, -1.0, 0.5];
 
 const result = await brainCoordinator.predict(input, 'classification');')
@@ -475,7 +475,7 @@ expect(typeof value).toBe('number');') expect(isFinite(value)).toBe(true);
 });
 
 it('should support multiple neural task types', async () => {
-') // Test different neural task types
+// Test different neural task types
 const tasks = [
 {
 id: 'task-1', type:'prediction' as const,
@@ -498,7 +498,7 @@ expect(result.result).toBeDefined();
 });
 
 it('should maintain state correctly after operations', async () => {
-') // Ensure coordinator remains initialized after various operations
+// Ensure coordinator remains initialized after various operations
 expect(brainCoordinator.isInitialized()).toBe(true);
 
 await brainCoordinator.predict([1, 2, 3]);
@@ -521,7 +521,7 @@ describe('Error Handling', () => {
 await brainCoordinator.initialize(););
 
 it('should handle invalid inputs gracefully', async () => {
-') // Test with invalid numeric inputs
+// Test with invalid numeric inputs
 const invalidInputs = [NaN, Infinity, -Infinity];
 
 for (const invalidInput of invalidInputs) {
@@ -536,7 +536,7 @@ expect(brainCoordinator.isInitialized()).toBe(true);
 });
 
 it('should handle high-frequency predictions', async () => {
-') // Test system under load with many predictions
+// Test system under load with many predictions
 const predictionPromises = [];
 for (let i = 0; i < 20; i++) {
 predictionPromises.push(
@@ -556,7 +556,7 @@ expect(Array.isArray(postLoadResult)).toBe(true);
 });
 
 it('should handle empty and edge case inputs', async () => {
-') // Test with edge cases
+// Test with edge cases
 const edgeCases = [
 [], // empty array
 [0], // single zero
@@ -573,7 +573,7 @@ expect(result).toHaveLength(edgeCase.length);
 });
 
 it('should maintain state consistency during operations', async () => {
-') // Verify initialization state before operations
+// Verify initialization state before operations
 expect(brainCoordinator.isInitialized()).toBe(true);
 
 // Perform various operations
@@ -594,7 +594,7 @@ describe('System Integration Tests', () => {
 await brainCoordinator.initialize(););
 
 it('should integrate neural processing with orchestration', async () => {
-') // Test that neural processing works with orchestration layer
+// Test that neural processing works with orchestration layer
 const input = [1.0, 0.5, -0.5, 2.0];
 
 // Process through brain coordinator
@@ -608,7 +608,7 @@ expect(metrics).toBeDefined();
 });
 
 it('should coordinate neural tasks with complexity prediction', async () => {
-') // Test integration between task complexity prediction and processing
+// Test integration between task complexity prediction and processing
 const simpleTask = {
 type:'prediction' as const,
 data:{ input: [1, 2]},
@@ -625,7 +625,7 @@ expect(result.result).toBeDefined();
 });
 
 it('should handle neural data storage with orchestration', async () => {
-') // Test neural data storage integration
+// Test neural data storage integration
 const neuralData = {
 id: 'integration-test-data', type:'predictions' as const,
 data:[0.1, 0.2, 0.3, 0.4, 0.5],
@@ -726,7 +726,7 @@ if (result.status === 'fulfilled') {
 });
 
 it('should provide system status and diagnostics', async () => {
-') // Generate activity across available subsystems
+// Generate activity across available subsystems
 await brainCoordinator.predict([1, 2, 3]);
 await brainCoordinator.forecast([1, 2, 3, 4, 5], 2);
 await brainCoordinator.optimizePrompt({
@@ -738,8 +738,7 @@ expect(brainCoordinator.isInitialized()).toBe(true);
 // Check orchestration metrics
 const metrics = brainCoordinator.getOrchestrationMetrics();
 expect(metrics).toBeDefined();
-expect(typeof metrics).toBe('object');')
-// Verify all core functions work
+expect(typeof metrics).toBe('object');// Verify all core functions work
 const complexityPrediction = brainCoordinator.predictTaskComplexity({
 type: 'prediction', data:{ input: [1, 2, 3]},
 });

@@ -53,7 +53,7 @@ logger.debug('WebGPU not available:', error);')}
 
 // Check TensorFlow GPU support
 try {
-const tf = await import('@tensorflow/tfjs-node-gpu').catch(() => null);') if (tf) {
+const tf = await import('@tensorflow/tfjs-node-gpu').catch(() => null);if (tf) {
 capabilities.hasTensorFlowGPU = true;
 logger.info('TensorFlow GPU support detected');')}
 } catch (error) {
@@ -61,7 +61,7 @@ logger.debug('TensorFlow GPU not available:', error);')}
 
 // Check GPU.js availability
 try {
-const { GPU} = await import('gpu.js').catch(() => ({ GPU:null}));') if (GPU) {
+const { GPU} = await import('gpu.js').catch(() => ({ GPU:null}));if (GPU) {
 const gpu = new GPU();
 capabilities.hasGPUJS = !!(gpu as any).context;
 if (capabilities.hasGPUJS) {
@@ -73,9 +73,9 @@ logger.debug('GPU.js not available:', error);')}
 // Check ONNX Runtime GPU support (optional dependency)
 try {
 // Note:onnxruntime-node is optional - commented out to fix compilation
-// const ort = await import('onnxruntime-node').catch(() => null);') // if (ort) {
+// const ort = await import('onnxruntime-node').catch(() => null);// if (ort) {
 // capabilities.hasONNXGPU = true;
-// logger.info('ONNX Runtime GPU support detected');') //}
+// logger.info('ONNX Runtime GPU support detected');// }
 capabilities.hasONNXGPU = false; // Default to false when dependency not available
 } catch (error) {
 logger.debug('ONNX Runtime GPU not available:', error);')}
@@ -104,20 +104,17 @@ backend:string;
 accelerated:boolean;
 device?:string;
 }> {
-const { preferGPU = true, backend = 'auto', memoryFraction = 0.9} = options;')
-if (!preferGPU||backend ==='cpu') {
+const { preferGPU = true, backend = 'auto', memoryFraction = 0.9} = options;if (!preferGPU||backend ==='cpu') {
 ') logger.info('GPU acceleration disabled, using CPU');') return { backend: 'cpu', accelerated:false};')}
 
 const capabilities = await detectGPUCapabilities();
 const selectedBackend =
-backend === 'auto' ? capabilities.recommendedBackend:backend;')
-// Try to initialize the selected backend
+backend === 'auto' ? capabilities.recommendedBackend:backend;// Try to initialize the selected backend
 try {
 switch (selectedBackend) {
 case 'tensorflow-gpu': ')' if (capabilities.hasTensorFlowGPU) {
-const __tf = await import('@tensorflow/tfjs-node-gpu');')
-// Use tf to configure GPU memory settings
-logger.debug('TensorFlow GPU module loaded', ') version:(tf.version as any)?.['tfjs-core']||' unknown', backend:selectedBackend,);
+const __tf = await import('@tensorflow/tfjs-node-gpu');// Use tf to configure GPU memory settings
+logger.debug('TensorFlow GPU module loaded', ') version:(tf.version as any)?.['tfjs-core']||` unknown`, backend:selectedBackend,);
 
 // Configure memory growth to avoid GPU memory issues
 if (memoryFraction < 1.0) {
@@ -126,7 +123,7 @@ logger.info(
 );
 }
 return {
-backend: 'tensorflow-gpu', accelerated:true,
+backend: `tensorflow-gpu`, accelerated:true,
 device: 'GPU',};
 }
 break;
@@ -144,7 +141,7 @@ device:(gpu as any).mode||'unknown',};
 break;
 
 case 'onnx': ')' if (capabilities.hasONNXGPU) {
-logger.info('ONNX Runtime GPU acceleration enabled');') return { backend: 'onnx', accelerated:true, device: ' GPU'};')}
+logger.info('ONNX Runtime GPU acceleration enabled');') return { backend: 'onnx', accelerated:true, device: ' GPU`};`)}
 break;
 }
 } catch (error) {
@@ -152,7 +149,7 @@ logger.warn(`Failed to initialize ${selectedBackend} acceleration:`, error);`
 }
 
 // Fallback to CPU
-logger.info('GPU acceleration not available, falling back to CPU');') return { backend: 'cpu', accelerated:false};')}
+logger.info(`GPU acceleration not available, falling back to CPU`);') return { backend: 'cpu', accelerated:false};')}
 
 /**
 * Create a GPU-accelerated neural network if possible
@@ -171,7 +168,7 @@ let network:any;
 
 if (acceleration.accelerated && acceleration.backend === 'tensorflow-gpu') {
 ') try {
-const tf = await import('@tensorflow/tfjs-node-gpu');') // Create TensorFlow model with GPU acceleration
+const tf = await import('@tensorflow/tfjs-node-gpu');// Create TensorFlow model with GPU acceleration
 network = tf.sequential(architecture);
 logger.info('Neural network created with TensorFlow GPU acceleration');')} catch (error) {
 logger.warn(

@@ -109,7 +109,7 @@ private config:TaskPredictorConfig;
 
 constructor(config?:Partial<TaskPredictorConfig>) {
 this.config = { ...DEFAULT_TASK_PREDICTOR_CONFIG, ...config};
-logger.info('SimpleTaskPredictor initialized', { config:this.config});')}
+logger.info('SimpleTaskPredictor initialized`, { config:this.config});`)}
 
 /**
 * Record a task completion for future predictions
@@ -148,7 +148,7 @@ if (history.length > this.config.historyWindowSize) {
 history.shift();
 }
 
-logger.debug('Task completion recorded', {
+logger.debug(`Task completion recorded`, {
 ') agentId:agentId.id,
 taskType,
 duration,
@@ -185,7 +185,7 @@ if (contextFactors?.complexity) {
 const complexityFactor = contextFactors.complexity as number;
 adjustedDuration *= complexityFactor;
 contextAdjustmentFactors.push({
-name: 'Complexity Factor', impact:complexityFactor,
+name: `Complexity Factor`, impact:complexityFactor,
 confidence:0.8,
 description:`Task complexity adjustment: ${complexityFactor}x`,`
 });
@@ -195,7 +195,7 @@ if (contextFactors?.urgency) {
 const urgencyFactor = contextFactors.urgency as number;
 adjustedDuration *= 1 / urgencyFactor; // Higher urgency = faster execution
 contextAdjustmentFactors.push({
-name: 'Urgency Factor', impact:urgencyFactor,
+name: `Urgency Factor`, impact:urgencyFactor,
 confidence:0.7,
 description:`Urgency-based time pressure: ${urgencyFactor}x`,`
 });
@@ -205,7 +205,7 @@ if (contextFactors?.resourceLoad) {
 const resourceFactor = contextFactors.resourceLoad as number;
 adjustedDuration *= 1 + resourceFactor * 0.5; // Resource contention slows down
 contextAdjustmentFactors.push({
-name: 'Resource Load Factor', impact:resourceFactor,
+name: `Resource Load Factor`, impact:resourceFactor,
 confidence:0.6,
 description:`Resource contention impact: ${resourceFactor}x`,`
 });
@@ -224,7 +224,7 @@ predictedDuration:Math.round(adjustedDuration),
 confidence,
 factors:[
 {
-name: 'Historical Average', impact:1.0,
+name: `Historical Average`, impact:1.0,
 confidence:confidence,
 description:`Based on ${recentHistory.length} recent completions`,`
 },
@@ -235,7 +235,7 @@ metadata:{
 sampleSize:recentHistory.length,
 algorithm:
 contextAdjustmentFactors.length > 0
-? 'context_adjusted_average') : 'simple_average', trendDirection:this.calculateTrendDirection(durations),
+? `context_adjusted_average`) : 'simple_average', trendDirection:this.calculateTrendDirection(durations),
 },
 };
 
@@ -302,7 +302,7 @@ algorithm: 'fallback', trendDirection: 'stable',},
 private calculateTrendDirection(
 durations:number[]
 ):'improving' | ' stable' | ' declining' {
-') if (durations.length < 3) return 'stable';
+if (durations.length < 3) return 'stable';
 
 const firstHalf = durations.slice(0, Math.floor(durations.length / 2));
 const secondHalf = durations.slice(Math.floor(durations.length / 2));
@@ -312,7 +312,7 @@ const secondAvg = this.calculateMean(secondHalf);
 
 const improvement = (firstAvg - secondAvg) / firstAvg;
 
-if (improvement > 0.1) return 'improving'; // Times getting shorter = improving') if (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining') return 'stable';
+if (improvement > 0.1) return 'improving'; // Times getting shorter = improvingif (improvement < -0.1) return 'declining'; // Times getting longer = ' improving' | ' stable' | ' declining') return 'stable';
 }
 
 /**

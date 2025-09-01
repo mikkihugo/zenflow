@@ -1,12 +1,12 @@
 /**
- * @fileoverview Chat Adapter - Production Grade
- *
- * Chat-based adapter for formatting DSPy data for chat-based language models.
- * 100% compatible with Stanford DSPy's chat formatting system.
- *
- * @version 1.0.0
- * @author Claude Code Zen Team
- */
+* @fileoverview Chat Adapter - Production Grade
+*
+* Chat-based adapter for formatting DSPy data for chat-based language models.
+* 100% compatible with Stanford DSPy's chat formatting system.
+*
+* @version 1.0.0
+* @author Claude Code Zen Team
+*/
 
 import {
 	BaseAdapter,
@@ -17,8 +17,8 @@ import {
 import type { Prediction} from "../primitives/prediction";
 
 /**
- * Chat adapter configuration
- */
+* Chat adapter configuration
+*/
 export interface ChatAdapterConfig {
 	/** Whether to include system messages */
 	include_system?:boolean;
@@ -35,8 +35,8 @@ export interface ChatAdapterConfig {
 }
 
 /**
- * Chat message interface
- */
+* Chat message interface
+*/
 export interface ChatMessage {
 	role:"system" | "user" | "assistant";
 	content:string;
@@ -44,9 +44,9 @@ export interface ChatMessage {
 }
 
 /**
- * Chat adapter for formatting data as conversation messages
- * Compatible with OpenAI Chat API, Anthropic Claude, and other chat-based models
- */
+* Chat adapter for formatting data as conversation messages
+* Compatible with OpenAI Chat API, Anthropic Claude, and other chat-based models
+*/
 export class ChatAdapter extends BaseAdapter {
 	private chatConfig:Required<ChatAdapterConfig>;
 
@@ -163,7 +163,7 @@ export class ChatAdapter extends BaseAdapter {
 
 		// For multiple inputs, format as key-value pairs
 		return inputPairs
-			.map(([key, value]) => (this.capitalizeFirst(key)) + ': ' + value)
+			.map(([key, value]) => `${this.capitalizeFirst(key)}: ${value}`)
 			.join("\n");
 	}
 
@@ -199,7 +199,7 @@ export class ChatAdapter extends BaseAdapter {
 
 		// For multiple outputs, format as key-value pairs
 		return outputPairs
-			.map(([key, value]) => (this.capitalizeFirst(key)) + ': ' + value)
+			.map(([key, value]) => `${this.capitalizeFirst(key)}: ${value}`)
 			.join("\n");
 	}
 
@@ -271,7 +271,7 @@ export class ChatAdapter extends BaseAdapter {
 		return messages
 			.map((msg) => {
 				const roleLabel = msg.role.toUpperCase();
-				return (roleLabel) + ': ' + msg.content;
+				return `${roleLabel}: ${msg.content}`;
 })
 			.join("\n\n");
 }
@@ -303,7 +303,7 @@ export class ChatAdapter extends BaseAdapter {
 	 * Get adapter configuration
 	 */
 	override getConfig():ChatAdapterConfig {
-		return {...this.chatConfig};
+		return { ...this.chatConfig};
 }
 
 	/**

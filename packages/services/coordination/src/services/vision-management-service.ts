@@ -153,7 +153,7 @@ const dbSystem = await DatabaseProvider.create();') this.database = dbSystem.cre
 // Create vision management tables
 await this.createVisionTables();
 // Load existing visions
-await this.loadExistingVisions();') this.logger.info('Vision Management Service initialized successfully,{';
+await this.loadExistingVisions();') this.logger.info(`Vision Management Service initialized successfully,{`;
 visionsLoaded: `vision-`${Date.now()}-${Math.random().toString(36).substr(2, 9)}) this.logger.info(``Creating new vision artifact,{`
 visionId,
 level: {
@@ -193,7 +193,7 @@ await this.persistVision(vision);
 return {
 success: this.visions.get(visionId);
 if (!vision) {
-`) throw new Error(`Vision not found: `vision-board-${v}isionId`') const visionBoard: {`
+`) throw new Error(`Vision not found: `vision-board-${v}isionId``) const visionBoard: {`
 id: this.visions.get(visionId);
 if (!vision) {
 `) throw new Error(`Vision not found: this.calculateStakeholderAlignment(`
@@ -219,7 +219,7 @@ teamAlignment,
 strategicAlignment,
 architecturalAlignment;
 );
-const criticalIssues = alignmentGaps') .filter((gap) => gap.impact == = 'high)`;
+const criticalIssues = alignmentGaps`) .filter((gap) => gap.impact == = `high)`;
 .map((gap) => gap.gap);
 // Create alignment assessment
 const alignment: {
@@ -243,13 +243,13 @@ const hierarchies = await Promise.all(
 solutionVisions.map((v) => this.buildVisionHierarchy(v.id, allVisions));
 );
 // Combine all hierarchies
-return this.combineVisionHierarchies(hierarchies)';
+return this.combineVisionHierarchies(hierarchies)`;
 }
 }
 // ============================================================================
 // PRIVATE IMPLEMENTATION METHODS
 // ============================================================================
-private async createVisionTables(): Promise<void> ') // Create vision artifacts table') await this.database.schema.createTableIfNotExists('vision_artifacts,')';
+private async createVisionTables(): Promise<void> // Create vision artifacts table') await this.database.schema.createTableIfNotExists('vision_artifacts,')';
 (table: any) => {
 ') table.string('id').primary(');) table.string('level').notNullable(');') table.string('state').notNullable(');') table.string('title').notNullable(');') table.text('description');') table.text('vision_statement').notNullable(');') table.text('problem_statement');') table.json('target_customers');') table.text('value_proposition');') table.json('success_metrics');') table.string('parent_vision_id').nullable(');') table.json('child_vision_ids');') table.json('strategic_theme_alignment');') table.json('architectural_requirements');') table.json('stakeholders');') table.string('approval_gate_id').nullable(');') table.string('owner').notNullable(');') table.json('contributors');') table.json('reviewers');') table.timestamp('created_at').notNullable(');') table.timestamp('last_updated_at').notNullable(');') table.timestamp('approved_at').nullable(');') table.timestamp('next_review_date').notNullable(');') table.json('tags');') table.json('attachments');') table.index(['level,' state]);') table.index(['owner]);') table.index(['parent_vision_id]);'];;
 }
@@ -297,7 +297,7 @@ vision: VisionArtifact,
 updates: any,
 changeImpact: string
 ):boolean {
-// Major or breaking changes require new approval') if (changeImpact ==='major'|| changeImpact ===breaking){';
+// Major or breaking changes require new approvalif (changeImpact ==='major'|| changeImpact ===breaking){';
 return true;
 }
 // Changes to core vision elements require approval') const coreFields = [') 'visionStatement,';

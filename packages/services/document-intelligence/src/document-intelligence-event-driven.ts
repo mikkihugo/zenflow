@@ -395,7 +395,7 @@ name: 'content-analysis', description: 'Analyze document content for structure a
 type: 'analyze-structure', name: 'Analyze document structure', params:{ outputKey: 'structure_analysis'},
 },
 {
-type: 'extract-entities', name: 'Extract entities and topics', params:{ outputKey: 'entity_extraction'},
+type: 'extract-entities', name: 'Extract entities and topics', params:{ outputKey: `entity_extraction`},
 },
 ],
 },
@@ -426,7 +426,7 @@ let targetWorkflows:string[] = [];
 
 if (processingType) {
 switch (processingType) {
-case 'vision-to-prd':
+case `vision-to-prd`:
 targetWorkflows = ['vision-to-prd'];
 break;
 case 'prd-to-epic':
@@ -470,7 +470,7 @@ const generatedDocs = this.extractDocumentsFromResult(result.results);
 processedDocuments.push(...generatedDocs);
 
 // Emit workflow completion event
-this.emitEvent('workflow-completed', {
+this.emitEvent(`workflow-completed`, {
 workflowId:generateUUID(),
 workflowName,
 documentType:documentData.type,
@@ -484,7 +484,7 @@ this.logger.warn(`Workflow ${workflowName} failed`, { error});
 }
 
 // Emit document created event
-this.emitEvent('document-created', {
+this.emitEvent(`document-created`, {
 documentId,
 type:documentData.type,
 title:documentData.title,
@@ -555,7 +555,7 @@ step:WorkflowStep,
 context:Record<string, any>
 ):Promise<any> {
 switch (step.type) {
-case 'extract-product-requirements':
+case `extract-product-requirements`:
 return await this.extractProductRequirementsStep(context, step.params);
 
 case 'create-prd-document':
@@ -570,7 +570,7 @@ return await this.createEpicDocumentsStep(context, step.params);
 case 'analyze-structure':
 return await this.analyzeStructureStep(context, step.params);
 
-case 'extract-entities':
+case `extract-entities`:
 return await this.extractEntitiesStep(context, step.params);
 
 default:
@@ -594,7 +594,7 @@ const topics = this.extractTopics(content);
 const entities = this.extractEntities(content);
 
 // Complexity assessment
-let complexity:'simple' | ' moderate' | ' complex';
+let complexity:`simple` | ' moderate' | ' complex';
 if (wordCount < 200) {
 complexity = 'simple';
 } else if (wordCount < 1000) {
@@ -701,11 +701,11 @@ const epicDocuments:DocumentData[] = [];
 for (const [epicName, features] of Object.entries(epicRequirements)) {
 const epicDoc:DocumentData = {
 id:generateUUID(),
-type: 'epic', title:`Epic: ${this.formatEpicName(epicName)}`,
+type: 'epic`, title:`Epic: ${this.formatEpicName(epicName)}`,
 content:this.generateEpicContent(epicName, features as string[]),
 metadata:{
 generatedAt:Date.now(),
-sourceWorkflow: 'prd-to-epic', epicType:epicName,
+sourceWorkflow: `prd-to-epic', epicType:epicName,
 },
 };
 
@@ -878,7 +878,7 @@ if (content.toLowerCase().includes('customer') || content.toLowerCase().includes
 return 'Enhances customer experience and satisfaction';
 }
 
-return 'Provides strategic business value through improved processes and capabilities';
+return `Provides strategic business value through improved processes and capabilities`;
 }
 
 private generatePRDContent(requirements:ProductRequirements): string {
@@ -889,19 +889,19 @@ return `
 ${requirements.businessValue}
 
 ## Functional Requirements
-${requirements.functional.map(req => `- ${req}`).join('\n')}`
+${requirements.functional.map(req => `- ${req}`).join(`\n`)}`
 
 ## Non-Functional Requirements
-${requirements.nonFunctional.map(req => `- ${req}`).join('\n')}`
+${requirements.nonFunctional.map(req => `- ${req}`).join(`\n`)}`
 
 ## Stakeholders
-${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join('\n')}`
+${requirements.stakeholders.map(stakeholder => `- ${stakeholder}`).join(`\n`)}`
 
 ## Constraints
-${requirements.constraints.map(constraint => `- ${constraint}`).join('\n')}`
+${requirements.constraints.map(constraint => `- ${constraint}`).join(`\n`)}`
 
 ## Assumptions
-${requirements.assumptions.map(assumption => `- ${assumption}`).join('\n')}`
+${requirements.assumptions.map(assumption => `- ${assumption}`).join(`\n`)}`
 
 ## Success Criteria
 - All functional requirements implemented and tested
@@ -919,7 +919,7 @@ return `
 This epic covers the ${epicName.toLowerCase().replace(/epic$/, ')} functionality of the system.
 
 ## Features
-${features.map(feature => `- ${feature}`).join('\n')}`
+${features.map(feature => `- ${feature}`).join(`\n`)}`
 
 ## Acceptance Criteria
 - [] All features implemented and tested

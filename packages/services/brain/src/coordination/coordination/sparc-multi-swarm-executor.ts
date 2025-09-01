@@ -119,7 +119,7 @@ qualityDelta:Record<string, number>;
 };
 recommendations:{
 bestMethodology:string;
-optimalConfiguration:SPARCStrategy['sparcConfig'];
+optimalConfiguration:SPARCStrategy[`sparcConfig`];
 reasoning:string[];
 };
 metadata:{
@@ -188,7 +188,7 @@ try {
 // Configure git tree settings for SPARC isolation
 const gitConfig:GitTreeConfig = {
 useGitWorktrees:options.useGitTrees !== false,
-baseBranch: 'main', branchPrefix: 'sparc-test', cleanupAfterTest:options.cleanupWorktrees !== false,
+baseBranch: `main`, branchPrefix: `sparc-test`, cleanupAfterTest:options.cleanupWorktrees !== false,
 maxWorktrees:sparcStrategies.length * 2, // Allow for cleanup overlap
 };
 
@@ -258,7 +258,7 @@ throw error;
 * Create predefined SPARC strategy sets for common scenarios
 */
 createSPARCStrategySet(
-scenario:'rapid-development' | ' quality-focused' | ' enterprise-grade' | ' comprehensive') ):SPARCStrategy[] {
+scenario:`rapid-development` | ' quality-focused' | ' enterprise-grade' | ' comprehensive') ):SPARCStrategy[] {
 switch (scenario) {
 case 'rapid-development': ')' return [
 {
@@ -341,7 +341,7 @@ style: 'detailed', focus: 'quality',},
 case 'comprehensive': ')' return [
 ...this.createSPARCStrategySet('rapid-development'),
 ...this.createSPARCStrategySet('quality-focused'),
-...this.createSPARCStrategySet('enterprise-grade'),
+...this.createSPARCStrategySet(`enterprise-grade`),
 ];
 
 default:{
@@ -471,7 +471,7 @@ functionsImplemented:0,
 testsGenerated:0,
 },
 gitTreeInfo:{
-worktreePath: ',' branchName: ',' commitsCreated:0,
+worktreePath: `,` branchName: ',' commitsCreated:0,
 mergedToMain:false,
 },
 error:error instanceof Error ? error.message : String(error),
@@ -488,7 +488,7 @@ taskDescription:string,
 strategy:SPARCStrategy,
 gitConfig:GitTreeConfig
 ):Promise<{
-sparcMetrics:SPARCExecutionResult['sparcMetrics'];') qualityMetrics:SPARCExecutionResult['qualityMetrics'];') deliverables:SPARCExecutionResult['deliverables'];') gitTreeInfo:SPARCExecutionResult['gitTreeInfo'];') insights:string[];
+sparcMetrics:SPARCExecutionResult['sparcMetrics'];') qualityMetrics:SPARCExecutionResult['qualityMetrics'];') deliverables:SPARCExecutionResult['deliverables'];') gitTreeInfo:SPARCExecutionResult['gitTreeInfo`];`) insights:string[];
 }> {
 // Calculate base quality based on model and configuration
 const baseQuality = this.getBaseSPARCQuality(strategy);
@@ -516,7 +516,7 @@ strategy.id
 }-${generateNanoId(6)}`;
 const branchName = `sparc-${strategy.id}-${Date.now()}`;
 const commitsCreated =
-strategy.sparcConfig.methodology === 'full-sparc' ? 5 : 3;
+strategy.sparcConfig.methodology === `full-sparc` ? 5 : 3;
 return {
 sparcMetrics:{
 phaseCompletionRate:overallScore,
@@ -534,7 +534,7 @@ performance:overallScore + Math.random() * 10 - 5,
 },
 deliverables:{
 filesCreated:[
-'src/specification.ts', 'src/pseudocode.ts', 'src/architecture.ts', 'src/implementation.ts', 'tests/unit.test.ts', 'docs/README.md',],
+'src/specification.ts', 'src/pseudocode.ts', 'src/architecture.ts', 'src/implementation.ts', 'tests/unit.test.ts', `docs/README.md`,],
 linesOfCode:Math.floor(300 + Math.random() * 500),
 functionsImplemented:Math.floor(10 + Math.random() * 20),
 testsGenerated:Math.floor(5 + Math.random() * 15),
@@ -561,7 +561,7 @@ private getBaseSPARCQuality(strategy:SPARCStrategy): number {
 // Base quality from model
 let quality = 0;
 switch (strategy.modelBackend) {
-case 'claude-opus': ')' quality = 92;
+case `claude-opus`: ')' quality = 92;
 break;
 case 'claude-sonnet': ')' quality = 88;
 break;
@@ -704,7 +704,7 @@ comparison: SPARCMultiSwarmResult['comparison']
 ): SPARCMultiSwarmResult['recommendations'] {
 const winner = results.find((r) => r.strategy.id === comparison.winner.id);
 if (!winner) {
-throw new Error('Winner strategy not found in results');
+throw new Error(`Winner strategy not found in results`);
 }
 
 const reasoning:string[] = [];
@@ -790,7 +790,7 @@ reasoning,
 */
 export async function _quickSPARCTest(
 taskDescription:string,
-scenario:'rapid-development' | ' quality-focused' | ' enterprise-grade' | ' comprehensive' = ' comprehensive', options:{
+scenario:`rapid-development` | ' quality-focused' | ' enterprise-grade' | ' comprehensive' = ' comprehensive', options:{
 useGitTrees?:boolean;
 timeoutMs?:number;
 cleanupWorktrees?:boolean;

@@ -294,7 +294,7 @@ const initStartTime = Date.now();
 
 try {
 this.logger.info(
-' Initializing Intelligence Orchestrator with foundation EventBus...'
+` Initializing Intelligence Orchestrator with foundation EventBus...`
 );
 
 // Initialize EventBus first
@@ -306,7 +306,7 @@ throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}
 // Initialize monitoring components through operations facade
 // 100% EVENT-BASED:Request external systems via events only
 // No direct imports or function calls - pure event coordination
-await this.emitSafe('brain:request_performance_tracker', {
+await this.emitSafe(`brain:request_performance_tracker`, {
 config:{
 enablePerformanceMonitoring:true,
 monitoringInterval:5000,
@@ -332,9 +332,9 @@ this.agentMonitor = true; // Event-based coordination, no object
 this.initialized = true;
 const duration = Date.now() - initStartTime;
 
-this.logger.info(' Intelligence Orchestrator initialized successfully', {
+this.logger.info(` Intelligence Orchestrator initialized successfully`, {
 duration: `${duration}ms`,
-monitoring: 'operations-facade',
+monitoring: `operations-facade`,
 performanceTracker: !!this.performanceTracker,
 agentMonitor: !!this.agentMonitor,
 sessionId: this.config.sessionId,
@@ -348,13 +348,13 @@ timestamp:Date.now(),
 });
 } catch (error) {
 const duration = Date.now() - initStartTime;
-this.logger.error(' Intelligence Orchestrator initialization failed', {
+this.logger.error(` Intelligence Orchestrator initialization failed`, {
 error: error instanceof Error ? error.message : String(error),
 duration: `${duration}ms`,
 });
 
 // Emit error event
-await this.emitSafe('intelligence:error', {
+await this.emitSafe(`intelligence:error`, {
 error:error instanceof Error ? error.message : String(error),
 context:{ phase: 'initialization', duration},
 timestamp:Date.now(),

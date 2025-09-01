@@ -159,7 +159,7 @@ export class MLEnterpriseCoordinator {
 	 * Initialize ML-specific dedicated databases - foundation redirects to database package
 	 */
 	private async initializeMLDatabases():Promise<void> {
-		this.logger.debug(' Initializing ML-specific dedicated databases...');
+		this.logger.debug(` Initializing ML-specific dedicated databases...`);
 
 		try {
 			// Check database capability through foundation
@@ -168,7 +168,7 @@ export class MLEnterpriseCoordinator {
 
 			// Initialize ML model storage (dedicated vector store for ML model embeddings)
 			const mlModelStoreResult = await createVectorStore({
-				namespace: 'ml-models',				collection: 'model-embeddings',				dimensions:2048, // ML-specific dimensions (larger than brain)
+				namespace: `ml-models`,				collection: 'model-embeddings',				dimensions:2048, // ML-specific dimensions (larger than brain)
 				indexType: 'ivf', // Optimized for ML model similarity search
 				metadata:{
 					owner: 'ml-coordinator',					purpose: 'ml-model-storage',					created:Date.now()
@@ -239,7 +239,7 @@ export class MLEnterpriseCoordinator {
 			this.logger.info(' ML-specific database storage initialization complete');
 
 } catch (error) {
-			this.logger.warn('⚠️ ML database storage initialization failed, using fallbacks', {
+			this.logger.warn(`⚠️ ML database storage initialization failed, using fallbacks`, {
 				error:error instanceof Error ? error.message : String(error)
 });
 			// Continue with fallbacks - ML coordinator can still function
@@ -319,7 +319,7 @@ export class MLEnterpriseCoordinator {
 	async startTrainingJob(
 		modelId:string,
 		config:any,
-		sparc_phase:'specification' | ' pseudocode' | ' architecture' | ' refinement' | ' completion' = this.config.default_sparc_phase
+		sparc_phase:`specification` | ' pseudocode' | ' architecture' | ' refinement' | ` completion` = this.config.default_sparc_phase
 	):Promise<string> {
 		if (!this.initialized) {
 			throw new Error("ML Enterprise Coordinator not initialized");
@@ -330,7 +330,7 @@ export class MLEnterpriseCoordinator {
 		// Create workflow state event
 		const workflowEvent:MLWorkflowStateEvent = {
 			workflowId:trainingId,
-			state: 'training',			sparc_phase,
+			state: `training`,			sparc_phase,
 			taskmaster_approval_required:sparc_phase === 'completion', // Require approval for deployment
 			timestamp:Date.now(),
 			metadata:{ modelId, config}
@@ -366,7 +366,7 @@ export class MLEnterpriseCoordinator {
 			const validationData = await this.database.query({
 				table: 'ml_validation_samples',				filters:{ modelType: modelId, active:true},
 				limit:Math.floor((config.batchSize || 10000) * 0.2), // 20% for validation
-				orderBy:'random()')});
+				orderBy:`random()`)});
 
 			// Fast model training with direct data access
 			await this.performHighPerformanceTraining(trainingId, modelId, {
@@ -414,7 +414,7 @@ export class MLEnterpriseCoordinator {
 		// PERFORMANCE:Direct Rust neural-ml integration (if available)
 		try {
 			// Import Rust neural-ml for high performance
-			const rustNeuralML = await import('@claude-zen/neural-ml');
+			const rustNeuralML = await import(`@claude-zen/neural-ml`);
 			
 			// Create model configuration
 			const modelConfig = {
@@ -486,7 +486,7 @@ export class MLEnterpriseCoordinator {
 					accuracy:trainingData.length > 0 ? 0.95 : 0.5
 },
 				sparc_phase,
-				status: 'completed',				timestamp:Date.now()
+				status: `completed`,				timestamp:Date.now()
 });
 
 } catch (error) {
@@ -586,7 +586,7 @@ export class MLEnterpriseCoordinator {
 		// Update workflow state
 		const workflow = this.workflowStates.get(trainingId);
 		if (workflow) {
-			workflow.state = 'completed';
+			workflow.state = `completed`;
 			workflow.timestamp = Date.now();
 			if (this.config.enable_event_emission) {
 				this.emit("ml_workflow_state_changed", workflow);
@@ -667,7 +667,7 @@ export class MLEnterpriseCoordinator {
 	 */
 	async validateModel(
 		modelId:string,
-		validationType:'unit_test' | ' integration_test' | ' performance_test' | ' a_b_test',		sparc_phase:'specification' | ' pseudocode' | ' architecture' | ' refinement' | ' completion',		testData:any[]
+		validationType:`unit_test` | ' integration_test' | ' performance_test' | ' a_b_test',		sparc_phase:'specification' | ' pseudocode' | ' architecture' | ' refinement' | ` completion`,		testData:any[]
 	):Promise<MLModelValidationEvent> {
 		if (!this.initialized) {
 			throw new Error("ML Enterprise Coordinator not initialized");
@@ -682,7 +682,7 @@ export class MLEnterpriseCoordinator {
 			const validationEvent:MLModelValidationEvent = {
 				modelId,
 				validation_type:validationType,
-				status:validationResult.passed ? 'passed' : ' failed',				metrics:validationResult.metrics,
+				status:validationResult.passed ? `passed` : ' failed',				metrics:validationResult.metrics,
 				thresholds:this.getValidationThresholds(sparc_phase),
 				sparc_phase,
 				timestamp:Date.now()
@@ -696,7 +696,7 @@ export class MLEnterpriseCoordinator {
 }
 			
 			// If validation failed in completion phase, require TaskMaster approval
-			if (!validationResult.passed && sparc_phase === 'completion' && this.config.enable_taskmaster_integration) {
+			if (!validationResult.passed && sparc_phase === `completion` && this.config.enable_taskmaster_integration) {
 				this.emit("ml_taskmaster_approval_required", {
 					modelId,
 					validationId,
@@ -738,7 +738,7 @@ export class MLEnterpriseCoordinator {
 			operation,
 			metadata,
 			timestamp:Date.now(),
-			requester:'MLEnterpriseCoordinator')};
+			requester:`MLEnterpriseCoordinator`)};
 		
 		// Emit approval request
 		if (this.config.enable_event_emission) {
@@ -862,7 +862,7 @@ export class MLEnterpriseCoordinator {
 
 		// SPARC quality gates
 		switch (progress.sparc_phase) {
-			case 'specification':
+			case `specification`:
 				return progress.accuracy > 0.5; // Basic functionality
 			case 'pseudocode':
 				return progress.accuracy > 0.7 && progress.loss < 1.0;
@@ -870,7 +870,7 @@ export class MLEnterpriseCoordinator {
 				return progress.accuracy > 0.8 && progress.loss < 0.5;
 			case 'refinement':
 				return progress.accuracy > 0.9 && progress.loss < 0.3;
-			case 'completion':
+			case `completion`:
 				return progress.accuracy > 0.95 && progress.loss < 0.1 &&
 					 progress.validationAccuracy && progress.validationAccuracy > 0.93;
 			default:
@@ -914,7 +914,7 @@ export class MLEnterpriseCoordinator {
 
 		// SPARC-specific thresholds
 		switch (sparc_phase) {
-			case 'specification':return { accuracy: 0.5, precision:0.5, recall:0.5};
+			case `specification`:return { accuracy: 0.5, precision:0.5, recall:0.5};
 			case 'pseudocode':return { accuracy: 0.7, precision:0.65, recall:0.7};
 			case 'architecture':return { accuracy: 0.8, precision:0.75, recall:0.8};
 			case 'refinement':return { accuracy: 0.9, precision:0.85, recall:0.9};

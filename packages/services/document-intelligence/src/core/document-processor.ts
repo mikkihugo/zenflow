@@ -215,15 +215,14 @@ this.setupEventHandlers();
 async initialize():Promise<void> {
 if (this.initialized) return;
 
-logger.info('Initializing document processor');')
-// Initialize default workspace if workspace root exists
+logger.info('Initializing document processor');// Initialize default workspace if workspace root exists
 if (existsSync(this.config.workspaceRoot)) {
 await this.loadWorkspace(this.config.workspaceRoot);
 }
 
 this.initialized = true;
 this.emit('initialized', {});
-logger.info('Document processor ready');')}
+logger.info('Document processor ready`);`)}
 
 /**
 * Load or create a document workspace.
@@ -244,7 +243,7 @@ epics:join(workspacePath, this.config.documentDirs.epics!),
 features:join(workspacePath, this.config.documentDirs.features!),
 tasks:join(workspacePath, this.config.documentDirs.tasks!),
 specs:join(workspacePath, this.config.documentDirs.specs!),
-implementation:join(workspacePath, 'src'),
+implementation:join(workspacePath, `src`),
 };
 
 // Create processing context
@@ -269,8 +268,8 @@ this.setupDocumentWatchers(workspaceId);
 logger.info(
 `Loaded workspace:$workspacePath($context.activeDocuments.sizedocuments)``
 );
-this.emit('workspace:loaded', {
-') workspaceId,
+this.emit('workspace:loaded`, {
+`) workspaceId,
 path:workspacePath,
 documentCount:context.activeDocuments.size,
 });
@@ -305,7 +304,7 @@ throw new Error(`Workspace not found:${workspaceId}`);`
 
 try {
 const docType = this.getDocumentType(documentPath);
-const content = await readFile(documentPath, 'utf8');') const metadata = await this.extractMetadata(content);
+const content = await readFile(documentPath, `utf8`);') const metadata = await this.extractMetadata(content);
 
 logger.info(`Processing $docTypedocument:$documentPath`);`
 
@@ -340,8 +339,8 @@ context:{ workspaceId},
 logger.warn('Workflow processing failed:', error);')}
 }
 
-this.emit('document:processed', {
-') workspaceId,
+this.emit('document:processed`, {
+`) workspaceId,
 document,
 suggestedNextSteps:this.getSuggestedNextSteps(docType),
 });
@@ -372,7 +371,7 @@ await this.ensureInitialized();
 if (!workspaceId) {
 workspaceId = Array.from(this.workspaces.keys())[0];
 if (!workspaceId) {
-throw new Error('No workspace available. Load a workspace first.');')}
+throw new Error(`No workspace available. Load a workspace first.`);`)}
 }
 
 const context = this.workspaces.get(workspaceId);
@@ -388,8 +387,7 @@ const filePath = join(dirPath, fileName);
 const documentContent = this.generateDocumentContent(title, content, type);
 
 // Write file
-await writeFile(filePath, documentContent, 'utf8');')
-// Process the created document
+await writeFile(filePath, documentContent, `utf8');// Process the created document
 await this.processDocument(filePath, workspaceId);
 
 const document = context.activeDocuments.get(filePath);
@@ -433,10 +431,9 @@ return Array.from(this.workspaces.keys())();
 * Shutdown the document processor.
 */
 async shutdown():Promise<void> {
-logger.info('Shutting down document processor...');')
-// Stop all file watchers
+logger.info('Shutting down document processor...');// Stop all file watchers
 for (const [_id, watcher] of this.documentWatchers) {
-if (watcher && typeof watcher.close === 'function') {
+if (watcher && typeof watcher.close === 'function{
 ') watcher.close();
 }
 }

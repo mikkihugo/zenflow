@@ -210,14 +210,13 @@ expect(stats2.stats.cache.size).toBe(0);
 
 describe('Error Handling Integration', () => {
 ') it('should handle embedding generation errors gracefully', async () => {
-') // Mock a failure in the transformers pipeline
+// Mock a failure in the transformers pipeline
 const __mockPipeline = vi
 .fn()
 .mockRejectedValue(new Error('Model loading failed'));') vi.doMock('@xenova/transformers', () => (') pipeline:mockPipeline,));
 
 try {
-const __result = await brainCoordinator.generateEmbedding('test text');')
-// Should still return a result with fallback
+const __result = await brainCoordinator.generateEmbedding('test text');// Should still return a result with fallback
 expect(result).toBeDefined();
 // In a real scenario, this might fall back to brain.js or basic features
 } catch (error) {
@@ -282,7 +281,7 @@ expect(stats.stats.performance.totalRequests).toBeGreaterThanOrEqual(5);
 
 describe('Fallback System Integration', () => {
 ') it('should use fallback systems when primary model fails', async () => {
-') // This test would require more complex mocking to simulate model failures
+// This test would require more complex mocking to simulate model failures
 // For now, we verify the fallback configuration is in place
 const __stats = smartNeuralCoordinator.getCoordinatorStats();
 expect(stats.configuration.enableFallbacks).toBe(true);
@@ -293,7 +292,7 @@ expect(stats.fallbackChain.length).toBeGreaterThan(0);
 
 describe('System Statistics Integration', () => {
 ') it('should provide comprehensive system statistics', async () => {
-') // Generate some activity
+// Generate some activity
 await brainCoordinator.generateEmbedding('Statistics test 1');') await brainCoordinator.generateEmbedding('Statistics test 2');')
 const brainStats = brainCoordinator.getSmartNeuralStats();
 const bridgeStats = neuralBridge.getSmartNeuralStats();
@@ -315,7 +314,7 @@ expect(coordinatorStats.models.primary.status).toBeDefined();
 
 describe('Lifecycle Integration', () => {
 ') it('should handle shutdown gracefully', async () => {
-') // This test verifies that all components can be shut down cleanly
+// This test verifies that all components can be shut down cleanly
 const testBrainCoordinator = new BrainCoordinator(testConfig);
 await testBrainCoordinator.initialize();
 
@@ -323,8 +322,7 @@ await testBrainCoordinator.initialize();
 expect(testBrainCoordinator).toBeDefined();
 
 // Generate some activity
-await testBrainCoordinator.generateEmbedding('Lifecycle test');')
-// Shutdown should complete without errors
+await testBrainCoordinator.generateEmbedding('Lifecycle test');// Shutdown should complete without errors
 await expect(testBrainCoordinator.shutdown()).resolves.not.toThrow();
 });
 });

@@ -100,8 +100,8 @@ hasPostconditions:boolean;
 relatedDescription:{
 startIndex:number;
 endIndex:number;
-relationType: 'explanation | example|proof | context;
-'} | null;
+relationType: `explanation | example|proof | context;
+`} | null;
 extractedElements:{
 variables:string[];
 functions:string[];
@@ -246,12 +246,12 @@ conceptClustersFound:this.countConceptClusters(segments)
 }
 };
 
-this.emit('segmentation_complete', result);
+this.emit(`segmentation_complete`, result);
 logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);`
 
 return result;
 } catch (error) {
-logger.error('Error during document segmentation:', error);') throw new Error(`Document segmentation failed:${error}`);`
+logger.error(`Error during document segmentation:`, error);`) throw new Error(`Document segmentation failed:${error}`);`
 }
 }
 
@@ -262,12 +262,12 @@ private adaptConfigForClassification(classification:DocumentClassification): Seg
 const adapted = { ...this.config};
 
 // Adjust segment sizes based on document type
-if (classification.documentType === 'algorithm' || classification.algorithmDensity > 0.5) {
+if (classification.documentType === `algorithm' || classification.algorithmDensity > 0.5) {
 ') adapted.maxSegmentSize = Math.max(adapted.maxSegmentSize, 15000);
 adapted.algorithmPreservationThreshold = 0.2; // More sensitive
 }
 
-if (classification.documentType === 'research') {
+if (classification.documentType === 'research{
 ') adapted.maxSegmentSize = Math.min(adapted.maxSegmentSize, 8000);
 adapted.conceptClusteringThreshold = 0.3; // More clustering
 }
@@ -425,8 +425,7 @@ const mathNotationCount = (text.match(/[∀∃∈∉⊆⊇∪∩∑∏∫∂∇�
 const mathBonus = Math.min(mathNotationCount * 0.1, 0.3);
 
 // Formula detection bonus
-const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}')) ? 0.2:0;')
-// Code block detection bonus
+const formulaBonus = (text.includes('$$') || text.includes('\\begin{equation}')) ? 0.2:0;// Code block detection bonus
 const codeBonus = text.includes('```') ? 0.15:0;') `
 // Structural completeness bonus
 const hasInputOutput = text.includes('input') && text.includes(' output') ? 0.1:0;') const hasControlFlow = /\b(for|while|if|loop)\b/.test(text) ? 0.1:0;
@@ -496,8 +495,7 @@ return null;
 * Find sentence boundary for clean text extraction
 */
 private findSentenceBoundary(content:string, startPosition:number, direction:'forward | backward'): number {
-') const sentenceEnders = ['.', '!', '?', '\n\n'];')
-if (direction === 'forward') {
+') const sentenceEnders = ['.', '!', '?', '\n\n'];if (direction === 'forward{
 ') for (let i = startPosition; i < content.length; i++) {
 if (sentenceEnders.includes(content[i])) {
 return i + 1;
@@ -716,7 +714,7 @@ return segments;
 private createSegment(
 content:string,
 startPosition:number,
-segmentType:DocumentSegment['segmentType'],
+segmentType:DocumentSegment[`segmentType`],
 algorithmBlocks:AlgorithmBlock[]
 ):DocumentSegment {
 const __id = `segment_${startPosition}_${Date.now()}`;`
@@ -732,7 +730,7 @@ id,
 content:content.trim(),
 startPosition,
 endPosition,
-segmentType:hasAlgorithm ? 'algorithm' : segmentType,
+segmentType:hasAlgorithm ? `algorithm` : segmentType,
 importance:this.calculateSegmentImportance(content, segmentType),
 preserveIntegrity:hasAlgorithm || segmentType === 'algorithm', relatedSegments:[], // Will be populated by post-processing
 confidenceScore:this.calculateSegmentConfidence(content, segmentType),
@@ -808,14 +806,14 @@ const searchEnd = Math.min(content.length, position + searchRadius);
 
 // Look for paragraph breaks first
 for (let i = position; i < searchEnd; i++) {
-if (content.substring(i, i + 2) === '\n\n') {
+if (content.substring(i, i + 2) === '\n\n{
 ') return i;
 }
 }
 
 // Look for sentence endings
 for (let i = position; i < searchEnd; i++) {
-if (['.', '!', '?'].includes(content[i]) && content[i + 1] === ' ') {
+if (['.', '!', '?'].includes(content[i]) && content[i + 1] === ' {
 ') return i + 1;
 }
 }
@@ -829,7 +827,7 @@ content:string,
 algorithmBlocks:AlgorithmBlock[],
 startPosition:number
 ):DocumentSegment['segmentType'] {
-') // Check if segment overlaps with algorithm blocks
+// Check if segment overlaps with algorithm blocks
 const overlapsAlgorithm = algorithmBlocks.some(block =>
 !(block.endIndex <= startPosition || block.startIndex >= startPosition + content.length)
 );
@@ -876,7 +874,7 @@ return Math.min(baseImportance + (algorithmDensity * 0.1) + (conceptComplexity *
 }
 
 private calculateSegmentConfidence(content:string, segmentType:DocumentSegment['segmentType']): number {
-') // Simple confidence calculation based on content characteristics
+// Simple confidence calculation based on content characteristics
 const wordCount = content.split(/s+/).length;
 const sentenceCount = content.split(/[.!?]+/).length;
 
@@ -1001,7 +999,7 @@ const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));') return count + 
 }, 1); // Base complexity is 1
 
 // Algorithmic complexity detection (Big O notation)
-const algorithmicComplexity = 'O(1)'; // Default') if (text.includes('o(n²)') || text.includes(' o(n^2)') || text.includes(' nested loop')) {
+const algorithmicComplexity = 'O(1)'; // Defaultif (text.includes('o(n²)') || text.includes(' o(n^2)') || text.includes(' nested loop')) {
 ') algorithmicComplexity = 'O(n²)';
 } else if (text.includes('o(n log n)') || text.includes(' divide and conquer')) {
 ') algorithmicComplexity = 'O(n log n)';
@@ -1066,8 +1064,7 @@ const variables = [...new Set(variableMatches)].filter(v => v.length > 1).slice(
 
 // Extract function names
 const functionMatches = text.match(/\b[a-zA-Z][a-zA-Z0-9_]*\s*\(/g) || [];
-const functions = [...new Set(functionMatches.map(f => f.replace(/\s*\($/, ')))].slice(0, 10);')
-// Extract constants (numbers and UPPERCASE words)
+const functions = [...new Set(functionMatches.map(f => f.replace(/\s*\($/, ')))].slice(0, 10);// Extract constants (numbers and UPPERCASE words)
 const constantMatches = text.match(/\b(\d+\.?\d*|[A-Z][A-Z_0-9]+)\b/g) || [];
 const constants = [...new Set(constantMatches)].slice(0, 10);
 

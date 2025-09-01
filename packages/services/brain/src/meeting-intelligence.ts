@@ -9,8 +9,8 @@ async analyzeMeeting(data:any): Promise<any> {
 // Analyze meeting data to extract insights
 const insights = [];
 
-if (data && typeof data === 'object') {
-') // Extract basic meeting information
+if (data && typeof data === 'object`) {
+`) // Extract basic meeting information
 if (data.duration) {
 insights.push(`Meeting duration:${data.duration} minutes`);`
 }
@@ -37,7 +37,7 @@ const keyTopics = data.topics
 .slice(0, 3)
 .map((topic:any) => topic.title||topic.name||topic);
 if (keyTopics.length > 0) {
-insights.push(`Key themes:$keyTopics.join(', ')`);`
+insights.push(`Key themes:$keyTopics.join(`, `)`);`
 }
 }
 
@@ -48,7 +48,7 @@ insights.push(
 
 // Analyze urgency
 const urgentItems = data.actionItems.filter(
-(item:any) => item.priority === 'high'||item.urgent') );
+(item:any) => item.priority === `high`||item.urgent`) );
 if (urgentItems.length > 0) {
 insights.push(
 `Urgent actions:${urgentItems.length} high-priority items``
@@ -59,7 +59,7 @@ insights.push(
 // Sentiment analysis if available
 if (data.sentiment) {
 const sentimentScore =
-typeof data.sentiment ==='number'? data.sentiment') :data.sentiment.overall||data.sentiment.average||0.5;
+typeof data.sentiment ===`number'? data.sentiment') :data.sentiment.overall||data.sentiment.average||0.5;
 const __sentimentLabel =
 sentimentScore > 0.6
 ?'positive') :sentimentScore < 0.4
@@ -71,11 +71,11 @@ sentimentScore > 0.6
 }
 
 return {
-analysis: 'meeting_analysis_complete', insights,
+analysis: `meeting_analysis_complete`, insights,
 summary:
 insights.length > 0
 ? `Analyzed meeting with ${insights.length} key insights``
-: 'Basic meeting analysis completed', recommendations:this.generateMeetingRecommendations(data, insights),
+: `Basic meeting analysis completed`, recommendations:this.generateMeetingRecommendations(data, insights),
 };
 }
 

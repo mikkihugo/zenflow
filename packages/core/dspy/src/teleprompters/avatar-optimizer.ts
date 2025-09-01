@@ -1,23 +1,23 @@
 /**
- * @fileoverview Avatar Optimizer Teleprompter
- *
- * Production-grade implementation with 100% Stanford DSPy API compatibility.
- * Avatar optimizer for tool-using agents that optimizes instructions based on
- * performance feedback from positive and negative examples.
- *
- * Key Features:
- * - Exact Stanford DSPy AvatarOptimizer API compatibility
- * - Multi-threaded evaluation with parallel processing
- * - Feedback-based instruction generation
- * - Positive/negative example analysis
- * - Tool usage optimization
- *
- * @author Claude Code Zen Team
- * @version 2.0.0
- * @since 1.0.0-alpha.47
- *
- * @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
- */
+* @fileoverview Avatar Optimizer Teleprompter
+*
+* Production-grade implementation with 100% Stanford DSPy API compatibility.
+* Avatar optimizer for tool-using agents that optimizes instructions based on
+* performance feedback from positive and negative examples.
+*
+* Key Features:
+* - Exact Stanford DSPy AvatarOptimizer API compatibility
+* - Multi-threaded evaluation with parallel processing
+* - Feedback-based instruction generation
+* - Positive/negative example analysis
+* - Tool usage optimization
+*
+* @author Claude Code Zen Team
+* @version 2.0.0
+* @since 1.0.0-alpha.47
+*
+* @see {@link https://github.com/stanfordnlp/dspy} Stanford DSPy Documentation
+*/
 
 import type { MetricFunction} from "../interfaces/types";
 import type { Example} from "../primitives/example";
@@ -25,13 +25,13 @@ import type { DSPyModule} from "../primitives/module";
 import { Teleprompter} from "./teleprompter";
 
 /**
- * Default maximum examples for sampling
- */
+* Default maximum examples for sampling
+*/
 const DEFAULT_MAX_EXAMPLES = 10;
 
 /**
- * Evaluation result with actions exactly matching Stanford DSPy EvalResult
- */
+* Evaluation result with actions exactly matching Stanford DSPy EvalResult
+*/
 export interface EvalResult {
 	example:Record<string, any>;
 	score:number;
@@ -39,8 +39,8 @@ export interface EvalResult {
 }
 
 /**
- * Action output from Avatar execution exactly matching Stanford DSPy ActionOutput
- */
+* Action output from Avatar execution exactly matching Stanford DSPy ActionOutput
+*/
 export interface ActionOutput {
 	action:string;
 	input:any;
@@ -49,9 +49,9 @@ export interface ActionOutput {
 }
 
 /**
- * Comparator signature for analyzing positive vs negative examples
- * Exactly matches Stanford DSPy Comparator signature
- */
+* Comparator signature for analyzing positive vs negative examples
+* Exactly matches Stanford DSPy Comparator signature
+*/
 export interface ComparatorSignature {
 	instruction:string;
 	actions:string[];
@@ -61,9 +61,9 @@ export interface ComparatorSignature {
 }
 
 /**
- * Feedback-based instruction generation signature
- * Exactly matches Stanford DSPy FeedbackBasedInstruction signature
- */
+* Feedback-based instruction generation signature
+* Exactly matches Stanford DSPy FeedbackBasedInstruction signature
+*/
 export interface FeedbackBasedInstructionSignature {
 	previous_instruction:string;
 	feedback:string;
@@ -71,8 +71,8 @@ export interface FeedbackBasedInstructionSignature {
 }
 
 /**
- * Avatar module interface exactly matching Stanford DSPy expectations
- */
+* Avatar module interface exactly matching Stanford DSPy expectations
+*/
 export interface AvatarModule extends DSPyModule {
 	actor:{
 		signature:{
@@ -87,13 +87,13 @@ export interface AvatarModule extends DSPyModule {
 }
 
 /**
- * Avatar Optimizer Teleprompter with exact Stanford DSPy API compatibility
- *
- * Optimizes tool-using agent instructions by analyzing performance patterns
- * between positive and negative examples through iterative feedback generation.
- *
- * Matches Stanford DSPy AvatarOptimizer implementation exactly.
- */
+* Avatar Optimizer Teleprompter with exact Stanford DSPy API compatibility
+*
+* Optimizes tool-using agent instructions by analyzing performance patterns
+* between positive and negative examples through iterative feedback generation.
+*
+* Matches Stanford DSPy AvatarOptimizer implementation exactly.
+*/
 export class AvatarOptimizer extends Teleprompter {
 	private metric:MetricFunction;
 	private max_iters:number;
@@ -168,7 +168,7 @@ export class AvatarOptimizer extends Teleprompter {
 			logger.info('Positive examples:' + pos_inputs.length);
 			logger.info('Negative examples:' + neg_inputs.length);
 			logger.info(
-				'Sampling ' + (this.max_positive_inputs) + ` positive examples and ${this.max_negative_inputs} negative examples`,
+				`Sampling ` + (this.max_positive_inputs) + ` positive examples and ${this.max_negative_inputs} negative examples`,
 			);
 
 			// Sample examples exactly matching Stanford implementation
@@ -206,7 +206,7 @@ export class AvatarOptimizer extends Teleprompter {
 
 			const {new_instruction} = new_instruction_result;
 
-			logger.info('Generated new instruction:' + new_instruction);
+			logger.info(`Generated new instruction:' + new_instruction);
 
 			// Update best actor exactly matching Stanford logic
 			const should_update =
@@ -301,7 +301,7 @@ export class AvatarOptimizer extends Teleprompter {
 		const avg_score = evaluation_result.score;
 		const {results} = evaluation_result;
 
-		logger.info('Average Score:' + avg_score);
+		logger.info('Average Score:${ + avg_score);
 
 		for (const { example, prediction, score} of results) {
 			if (score >= this.upper_bound) {
@@ -342,8 +342,8 @@ export class AvatarOptimizer extends Teleprompter {
 			// Simulate LLM-based feedback generation
 			const feedback =
 				'Based on the analysis of positive vs negative examples, ' +
-				'the tool usage needs improvement. Focus on better action selection and ' +
-				'more effective instruction following for the problematic cases.';
+				}the tool usage needs improvement. Focus on better action selection and ' +
+				`more effective instruction following for the problematic cases.`;
 
 			return { feedback };
 		};
@@ -358,7 +358,7 @@ export class AvatarOptimizer extends Teleprompter {
 			// Simulate instruction improvement
 			const new_instruction =
 				(inputs.previous_instruction) + `\n\nBased on feedback: ${inputs.feedback}\n` +
-				'Please pay special attention to tool selection and action planning to improve performance on challenging cases.';
+				`Please pay special attention to tool selection and action planning to improve performance on challenging cases.`;
 
 			return { new_instruction };
 		};

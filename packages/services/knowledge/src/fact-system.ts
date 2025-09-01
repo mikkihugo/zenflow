@@ -229,8 +229,8 @@ INDEX idx_fact_source_type (source, type)
 
 logger.info(' Fact schema created with coordinated indexes');
 } catch (error) {
-logger.warn('Failed to create fact schema: ', error);
-'}
+logger.warn('Failed to create fact schema: `, error);
+`}
 }
 
 /**
@@ -253,7 +253,7 @@ throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}
 
 // Initialize the high-performance Rust fact bridge
 await this.factBridge.initialize();
-logger.info(' Rust fact bridge initialized successfully');
+logger.info(` Rust fact bridge initialized successfully`);
 
 // Initialize TypeScript fallback client for when Rust bridge fails
 this.factClient = await createSQLiteFactClient();
@@ -514,7 +514,7 @@ sql += ` AND (`;
 for (let index = 0; index < query.tags.length; index++) {
 const tag = query.tags[index];
 if (index > 0) sql += ` OR `;
-sql += `JSON_EXTRACT(tags, '$') LIKE ?`;
+sql += `JSON_EXTRACT(tags, `$`) LIKE ?`;
 params.push(`%"${tag}"%`);
 }
 sql += `)`;
@@ -542,7 +542,7 @@ async getFact(id:string): Promise<CoordinationFact|null> {
 await this.ensureInitialized();
 
 if (!this.factDatabase) {
-logger.warn('No unified fact database available for fact retrieval');
+logger.warn(`No unified fact database available for fact retrieval`);
 // Fallback to in-memory search
 const fact = this.coordinationFacts.get(id) || null;
 
@@ -681,7 +681,7 @@ if (query.trim()) {
 sql += ` AND (`
 JSON_EXTRACT(data, '$') LIKE ? OR
 source LIKE ? OR
-JSON_EXTRACT(tags, '$') LIKE ?
+JSON_EXTRACT(tags, `$`) LIKE ?
 )`;
 const searchTerm = `%${query.toLowerCase()}%`;
 params.push(searchTerm, searchTerm, searchTerm);
@@ -710,7 +710,7 @@ confidence:row.confidence,
 tags:JSON.parse(row.tags)
 }));
 
-logger.debug('Database search completed', { resultCount:results.length, query, searchType});
+logger.debug(`Database search completed`, { resultCount:results.length, query, searchType});
 return results;
 } catch (error) {
 logger.warn('Database search failed, falling back to in-memory search', { error});
@@ -737,7 +737,7 @@ JSON.stringify(fact.data).toLowerCase(),
 fact.type.toLowerCase(),
 fact.source.toLowerCase(),
 ...fact.tags.map((tag) => tag.toLowerCase()),
-].join(' ');
+].join(` `);
 
 return searchTerms.some((term) => searchableText.includes(term));
 });
@@ -762,21 +762,21 @@ const externalResults = await this.factBridge.searchFacts();
 for (const extResult of externalResults) {
 results.push({
 id:`ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-type:searchType || (extResult as { factType?: string}).factType || 'external-knowledge', data:(extResult as { metadata?: unknown}).metadata || extResult,
+type:searchType || (extResult as { factType?: string}).factType || `external-knowledge`, data:(extResult as { metadata?: unknown}).metadata || extResult,
 timestamp:new Date(),
 source: 'rust-fact-bridge', confidence:(extResult as { score?: number}).score || 0.8,
 tags:['external', 'search', 'rust-bridge'],
 });
 }
 } catch (error) {
-logger.warn('Rust bridge search failed, trying foundation fallback: ', error);
-'
+logger.warn('Rust bridge search failed, trying foundation fallback: `, error);
+`
 try {
 const fallbackResults = await this.searchExternalFacts(query, undefined, remainingLimit);
 for (const extResult of fallbackResults) {
 results.push({
 id:`ext-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
-type:searchType || 'external-knowledge', data:extResult as unknown,
+type:searchType || `external-knowledge`, data:extResult as unknown,
 timestamp:new Date(),
 source: 'foundation-fallback', confidence:0.7,
 tags:['external', 'search', 'fallback'],
@@ -834,7 +834,7 @@ this.listeners.delete(listener);
 */
 clear():void {
 this.coordinationFacts.clear();
-logger.info('Cleared coordination facts');
+logger.info(`Cleared coordination facts`);
 }
 
 /**
@@ -874,7 +874,7 @@ fallbackError
 );
 }
 } else {
-logger.warn('Foundation fact client not available for NPM lookup');
+logger.warn(`Foundation fact client not available for NPM lookup`);
 }
 
 return null;
@@ -911,7 +911,7 @@ fallbackError
 );
 }
 } else {
-logger.warn('Foundation fact client not available for GitHub lookup');
+logger.warn(`Foundation fact client not available for GitHub lookup`);
 }
 
 return null;

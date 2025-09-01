@@ -431,7 +431,7 @@ context:Record<string, any>;
 // Status events
 'brain-service:status': {
 serviceId:string;
-status:'initializing' | ' ready' | ' busy' | ' error';
+status:'initializing' | ' ready' | ' busy' | ` error`;
 metrics:Record<string, any>;
 };
 }
@@ -477,7 +477,7 @@ this.eventBus = new TypedEventBase<BrainServiceEvents>();
 
 // Initialize circuit breakers
 this.promptOptimizationBreaker = createCircuitBreaker({
-name: 'prompt-optimization', failureThreshold:5,
+name: `prompt-optimization`, failureThreshold:5,
 resetTimeout:30000,
 monitoringPeriod:60000,
 });
@@ -545,12 +545,12 @@ behavioralModels:Object.keys(this.behavioralModels),
 },
 });
 
-this.logger.info('EventDrivenBrain service initialized successfully');
+this.logger.info(`EventDrivenBrain service initialized successfully`);
 return ok();
 } catch (error) {
 const errorMessage = `Failed to initialize brain service:${error}`;
 this.logger.error(errorMessage, { error, serviceId:this.serviceId});
-recordMetric('brain_service_init_error', 1, { serviceId:this.serviceId});
+recordMetric(`brain_service_init_error`, 1, { serviceId:this.serviceId});
 
 this.eventBus.emit('brain-service:status', {
 serviceId:this.serviceId,
@@ -624,7 +624,7 @@ processingTime
 });
 
 this.eventBus.emit('brain-service:prompt-optimized', result);
-this.logger.info('Prompt optimization completed', {
+this.logger.info(`Prompt optimization completed`, {
 requestId:request.requestId,
 strategy:result.strategy,
 confidence:result.confidence
@@ -638,7 +638,7 @@ await this.learnFromOptimization(request, result);
 } catch (error) {
 const errorMessage = `Prompt optimization failed:${error}`;
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric('brain_prompt_optimization_error', 1, {
+recordMetric(`brain_prompt_optimization_error`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -674,7 +674,7 @@ processingTime
 });
 
 this.eventBus.emit('brain-service:complexity-estimated', result);
-this.logger.info('Complexity estimation completed', {
+this.logger.info(`Complexity estimation completed`, {
 requestId:request.requestId,
 complexity:result.overallComplexity,
 strategy:result.recommendations.optimizationStrategy
@@ -683,7 +683,7 @@ strategy:result.recommendations.optimizationStrategy
 } catch (error) {
 const errorMessage = `Complexity estimation failed:${error}`;
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric('brain_complexity_estimation_error', 1, {
+recordMetric(`brain_complexity_estimation_error`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -720,7 +720,7 @@ processingTime
 });
 
 this.eventBus.emit('brain-service:performance-predicted', result);
-this.logger.info('Performance prediction completed', {
+this.logger.info(`Performance prediction completed`, {
 requestId:request.requestId,
 agentId:request.agentId,
 horizons:Object.keys(result.predictions)
@@ -729,7 +729,7 @@ horizons:Object.keys(result.predictions)
 } catch (error) {
 const errorMessage = `Performance prediction failed:${error}`;
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric('brain_performance_prediction_error', 1, {
+recordMetric(`brain_performance_prediction_error`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -765,7 +765,7 @@ processingTime
 });
 
 this.eventBus.emit('brain-service:autonomous-coordinated', result);
-this.logger.info('Autonomous coordination completed', {
+this.logger.info(`Autonomous coordination completed`, {
 requestId:request.requestId,
 strategy:result.decisions.strategy,
 confidence:result.confidence
@@ -774,7 +774,7 @@ confidence:result.confidence
 } catch (error) {
 const errorMessage = `Autonomous coordination failed:${error}`;
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric('brain_autonomous_coordination_error', 1, {
+recordMetric(`brain_autonomous_coordination_error`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -810,7 +810,7 @@ processingTime
 });
 
 this.eventBus.emit('brain-service:behavioral-analyzed', result);
-this.logger.info('Behavioral analysis completed', {
+this.logger.info(`Behavioral analysis completed`, {
 requestId:request.requestId,
 agentId:request.agentId,
 patterns:Object.keys(result.patterns)
@@ -819,7 +819,7 @@ patterns:Object.keys(result.patterns)
 } catch (error) {
 const errorMessage = `Behavioral analysis failed:${error}`;
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric('brain_behavioral_analysis_error', 1, {
+recordMetric(`brain_behavioral_analysis_error`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -855,7 +855,7 @@ processingTime
 });
 
 this.eventBus.emit('brain-service:neural-processed', result);
-this.logger.info('Neural processing completed', {
+this.logger.info(`Neural processing completed`, {
 requestId:request.requestId,
 taskType:request.taskType,
 throughput:result.performance.throughput
@@ -864,7 +864,7 @@ throughput:result.performance.throughput
 } catch (error) {
 const errorMessage = `Neural processing failed:${error}`;
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric('brain_neural_processing_error', 1, {
+recordMetric(`brain_neural_processing_error`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -887,7 +887,7 @@ context:{ taskType: request.taskType},
 */
 private async performPromptOptimization(request:PromptOptimizationRequest): Promise<PromptOptimizationResult> {
 const complexity = request.context?.complexity || this.estimatePromptComplexity(request.prompt);
-const priority = request.context?.priority || 'medium';
+const priority = request.context?.priority || `medium`;
 const timeLimit = request.context?.timeLimit || 30000;
 const qualityRequirement = request.context?.qualityRequirement || 0.8;
 
@@ -1079,7 +1079,7 @@ const modelUsed = await this.selectNeuralModel(taskType, modelConfig);
 // Process based on task type
 let output:any;
 switch (taskType) {
-case 'embedding':
+case `embedding`:
 output = await this.processEmbedding(inputData, modelUsed, processingOptions);
 break;
 case 'inference':
@@ -1088,7 +1088,7 @@ break;
 case 'training':
 output = await this.processTraining(inputData, modelUsed, processingOptions);
 break;
-case 'optimization':
+case `optimization`:
 output = await this.processOptimization(inputData, modelUsed, processingOptions);
 break;
 default:
@@ -1122,7 +1122,7 @@ performance
 // =============================================================================
 
 private async initializeNeuralBackends():Promise<void> {
-this.logger.info('Initializing neural backends');
+this.logger.info(`Initializing neural backends`);
 
 // Initialize based on configuration
 if (this.config.neural?.rustAcceleration) {
@@ -1218,13 +1218,13 @@ return 'basic';
 private async applyOptimizationStrategy(prompt:string, strategy:string, context:any): Promise<string> {
 // Simulate strategy-specific optimization
 switch (strategy) {
-case 'dspy':
+case `dspy`:
 return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context)}`;
-case 'hybrid':
+case `hybrid`:
 return `[Hybrid Optimized] ${prompt}\n\nOptimization:Advanced ML + DSPy techniques applied`;
-case 'ml':
+case `ml`:
 return `[ML Optimized] ${prompt}\n\nML Enhancement:Pattern-based optimization applied`;
-case 'basic':
+case `basic`:
 default:
 return `[Optimized] ${prompt}\n\nBasic optimization applied`;
 }
@@ -1233,7 +1233,7 @@ return `[Optimized] ${prompt}\n\nBasic optimization applied`;
 private predictOptimizationPerformance(prompt:string, strategy:string, complexity:number): any {
 const baseAccuracy = 0.7;
 const strategyBonus = {
-'dspy':0.15,
+`dspy`:0.15,
 'hybrid':0.12,
 'ml':0.08,
 'basic':0.03
@@ -1252,7 +1252,7 @@ const strategyConfidence = {
 'dspy':0.25,
 'hybrid':0.20,
 'ml':0.15,
-'basic':0.05
+`basic`:0.05
 }[strategy] || 0;
 
 return Math.min(0.95, baseConfidence + strategyConfidence - complexity * 0.1 + prediction.expectedAccuracy * 0.1);
@@ -1284,7 +1284,7 @@ return Math.min(1.0, (opTerms + processTerms) / 15);
 
 private analyzeBusinessComplexity(content:string, context:any): number {
 const businessTerms = (content.match(/\b(requirement|stakeholder|compliance|governance|audit)\b/gi) || []).length;
-const scaleIndicators = context?.scale === 'global' ? 0.3:context?.scale === ' large' ? 0.2 : 0.1;
+const scaleIndicators = context?.scale === `global` ? 0.3:context?.scale === ' large' ? 0.2 : 0.1;
 return Math.min(1.0, businessTerms / 10 + scaleIndicators);
 }
 
@@ -1355,7 +1355,7 @@ const factors = [];
 if (complexity > 0.7) factors.push('High task complexity');
 if (context.workload === 'heavy') factors.push(' Heavy workload');
 if (context.urgency === 'high') factors.push(' Time pressure');
-if (context.collaboration === true) factors.push('Collaborative environment');
+if (context.collaboration === true) factors.push(`Collaborative environment`);
 return factors;
 }
 
@@ -1371,7 +1371,7 @@ recommendations.push(`Increase monitoring for ${horizon} predictions`);
 }
 }
 
-if (context.urgency === 'high') {
+if (context.urgency === `high`) {
 recommendations.push('Prioritize task decomposition to manage urgency');
 }
 
@@ -1494,13 +1494,13 @@ return Math.min(0.95, confidence);
 
 private generateImplementationPlan(decisions:any, complexityAnalysis:any): string[] {
 const plan = [
-'Initialize coordination parameters', 'Allocate computational resources', 'Configure scaling policies')];
+'Initialize coordination parameters', 'Allocate computational resources', `Configure scaling policies`)];
 
 decisions.optimizationActions.forEach((action:string) => {
 plan.push(`Implement:${action}`);
 });
 
-plan.push('Monitor system metrics');
+plan.push(`Monitor system metrics`);
 plan.push('Validate performance improvements');
 
 return plan;
@@ -1566,7 +1566,7 @@ private async selectNeuralModel(taskType:string, modelConfig:any): Promise<any> 
 const availableModels = Array.from(this.neuralNetworks.values());
 
 if (taskType === 'embedding' || taskType === ' inference') {
-return availableModels.find(m => m.type === 'gpu') || availableModels[0];
+return availableModels.find(m => m.type === `gpu`) || availableModels[0];
 }
 
 return availableModels[0];
@@ -1654,7 +1654,7 @@ timestamp:Date.now()
 
 this.performanceHistory.set(historyKey, currentHistory);
 
-this.logger.debug('Learned from optimization', {
+this.logger.debug(`Learned from optimization`, {
 task:request.task,
 strategy:result.strategy,
 confidence:result.confidence
