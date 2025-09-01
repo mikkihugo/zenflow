@@ -2755,7 +2755,7 @@ export class SmartNeuralCoordinator {
  let fallbackResult: any;
 
  switch (request.taskType) {
- case`question_answering`: ')' fallbackResult = {
+ case'question_answering': ')' fallbackResult = {
  answer: 'Unable to process question at this time', confidence:0.1,
 };
  break;

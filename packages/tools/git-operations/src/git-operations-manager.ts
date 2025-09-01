@@ -765,7 +765,7 @@ const strategy =
 options.strategy || this.branchStrategy.defaultMergeStrategy;
 
 switch (strategy) {
-case `merge`:
+case 'merge':
 await git.merge([sourceBranch]);
 break;
 case 'squash':

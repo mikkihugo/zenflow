@@ -706,7 +706,7 @@ movingAverage:mean(successRates.slice(-5)), // Last 5 data points
 // In real implementation, this would save to Redis, PostgreSQL, etc.
 logger.debug(`Persisted performance trends for agent ${agentId}:`, {
 dataPoints:successRates.length,
-trend:trendData.trendMetrics.slope > 0 ? `improving`: trendData.trendMetrics.slope < -0.1 ? ' declining': ` stable`, volatility:trendData.trendMetrics.volatility
+trend:trendData.trendMetrics.slope > 0 ? 'improving': trendData.trendMetrics.slope < -0.1 ? ' declining': ` stable`, volatility:trendData.trendMetrics.volatility
 });
 
 } catch (error) {
@@ -1350,7 +1350,7 @@ const criticalEvent = {
 timestamp:new Date(),
 agentId,
 eventType,
-severity:eventData.riskScore > 0.8 ? `critical`: eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
+severity:eventData.riskScore > 0.8 ? 'critical': eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
 context:{
 systemLoad:process.cpuUsage(),
 memoryUsage:process.memoryUsage(),
@@ -1380,7 +1380,7 @@ private generatePerformanceRecommendations(eventType:string, eventData:any): str
 const recommendations = [];
 
 switch (eventType) {
-case `cpu_spike`:
+case 'cpu_spike':
 recommendations.push('Consider implementing request queuing to smooth CPU load');
 recommendations.push('Review recent code changes for CPU-intensive operations');
 if (eventData.riskScore > 0.7) {
@@ -1450,7 +1450,7 @@ logger.error(`Failed to trigger automated remediation for agent ${ agentId }:`, 
 */
 private getRecommendedActions(eventType:string): string[] {
 switch (eventType) {
-case `cpu_spike`:
+case 'cpu_spike':
 return [
 'Adjust brain event coordination configuration',
 'Scale up processing resources',

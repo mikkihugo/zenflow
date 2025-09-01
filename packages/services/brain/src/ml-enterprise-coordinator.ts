@@ -862,7 +862,7 @@ export class MLEnterpriseCoordinator {
 
 		// SPARC quality gates
 		switch (progress.sparc_phase) {
-			case `specification`:
+			case 'specification':
 				return progress.accuracy > 0.5; // Basic functionality
 			case 'pseudocode':
 				return progress.accuracy > 0.7 && progress.loss < 1.0;
@@ -870,7 +870,7 @@ export class MLEnterpriseCoordinator {
 				return progress.accuracy > 0.8 && progress.loss < 0.5;
 			case 'refinement':
 				return progress.accuracy > 0.9 && progress.loss < 0.3;
-			case `completion`:
+			case 'completion':
 				return progress.accuracy > 0.95 && progress.loss < 0.1 &&
 					 progress.validationAccuracy && progress.validationAccuracy > 0.93;
 			default:
@@ -914,7 +914,7 @@ export class MLEnterpriseCoordinator {
 
 		// SPARC-specific thresholds
 		switch (sparc_phase) {
-			case `specification`:return { accuracy: 0.5, precision:0.5, recall:0.5};
+			case 'specification':return { accuracy: 0.5, precision:0.5, recall:0.5};
 			case 'pseudocode':return { accuracy: 0.7, precision:0.65, recall:0.7};
 			case 'architecture':return { accuracy: 0.8, precision:0.75, recall:0.8};
 			case 'refinement':return { accuracy: 0.9, precision:0.85, recall:0.9};

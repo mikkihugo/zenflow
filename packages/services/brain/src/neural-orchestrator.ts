@@ -276,7 +276,7 @@ export class NeuralOrchestrator {
 
  // Task type complexity
  const typeComplexity = {
- `prediction`: 1,
+ 'prediction': 1,
  'classification': 1,
  'clustering': 2,
  'pattern_recognition': 2,

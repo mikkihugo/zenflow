@@ -1079,7 +1079,7 @@ const modelUsed = await this.selectNeuralModel(taskType, modelConfig);
 // Process based on task type
 let output:any;
 switch (taskType) {
-case `embedding`:
+case 'embedding':
 output = await this.processEmbedding(inputData, modelUsed, processingOptions);
 break;
 case 'inference':
@@ -1088,7 +1088,7 @@ break;
 case 'training':
 output = await this.processTraining(inputData, modelUsed, processingOptions);
 break;
-case `optimization`:
+case 'optimization':
 output = await this.processOptimization(inputData, modelUsed, processingOptions);
 break;
 default:
@@ -1218,13 +1218,13 @@ return 'basic';
 private async applyOptimizationStrategy(prompt:string, strategy:string, context:any): Promise<string> {
 // Simulate strategy-specific optimization
 switch (strategy) {
-case `dspy`:
+case 'dspy':
 return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context)}`;
-case `hybrid`:
+case 'hybrid':
 return `[Hybrid Optimized] ${prompt}\n\nOptimization:Advanced ML + DSPy techniques applied`;
-case `ml`:
+case 'ml':
 return `[ML Optimized] ${prompt}\n\nML Enhancement:Pattern-based optimization applied`;
-case `basic`:
+case 'basic':
 default:
 return `[Optimized] ${prompt}\n\nBasic optimization applied`;
 }
@@ -1233,7 +1233,7 @@ return `[Optimized] ${prompt}\n\nBasic optimization applied`;
 private predictOptimizationPerformance(prompt:string, strategy:string, complexity:number): any {
 const baseAccuracy = 0.7;
 const strategyBonus = {
-`dspy`:0.15,
+'dspy':0.15,
 'hybrid':0.12,
 'ml':0.08,
 'basic':0.03
@@ -1252,7 +1252,7 @@ const strategyConfidence = {
 'dspy':0.25,
 'hybrid':0.20,
 'ml':0.15,
-`basic`:0.05
+'basic':0.05
 }[strategy] || 0;
 
 return Math.min(0.95, baseConfidence + strategyConfidence - complexity * 0.1 + prediction.expectedAccuracy * 0.1);

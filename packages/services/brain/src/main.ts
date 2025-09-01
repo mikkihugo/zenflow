@@ -89,7 +89,8 @@ message:string,
 context?:Record<string, unknown>,
 code?:string
 ) {
-super(message, { ...context, domain: 'brain'}, code);') this.name = 'BrainError';
+super(message, { ...context, domain: 'brain'}, code);
+ this.name = 'BrainError';
 }
 }
 
@@ -140,9 +141,10 @@ this.logger = getLogger('foundation-brain-coordinator');
 // Performance tracking initialization - lazy loaded via operations facade
 
 // Circuit breaker would be initialized from operations package
-this.circuitBreaker =
-execute:async (fn: () => any) => fn(),
-getState:() => 'closed',;
+this.circuitBreaker = {
+execute: async (fn: () => any) => fn(),
+getState: () => 'closed'
+};
 
 // Initialize neural orchestrator
 this.orchestrator = new NeuralOrchestrator();

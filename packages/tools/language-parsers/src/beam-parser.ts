@@ -190,13 +190,13 @@ return err(new Error(`Unsupported file extension: ${ext}`));
 let module:BeamModule;
 
 switch (language) {
-case `elixir`:
+case 'elixir':
 module = await this.parseElixirFile(filePath, content);
 break;
 case 'erlang':
 module = await this.parseErlangFile(filePath, content);
 break;
-case `gleam`:
+case 'gleam':
 module = await this.parseGleamFile(filePath, content);
 break;
 default:

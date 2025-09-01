@@ -122,7 +122,7 @@ throw new Error(`Unsupported file type: ${filePath}`);
 const factory = createParserFactory();
 
 switch (family) {
-case `beam`: {
+case 'beam': {
 const parser = factory.createBeamParser(options);
 return await parser.parseFile(filePath);
 }
@@ -131,7 +131,7 @@ case 'functional': {
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
-case `concurrent`: {
+case 'concurrent': {
 // Future:Add concurrent language parser support
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 return await parser.parseFile(filePath);
@@ -172,7 +172,7 @@ const allResults: unknown[] = [];
 const familyPromises = Array.from(filesByFamily.entries()).map(
 async ([family, paths]) => {
 switch (family) {
-case `beam`: {
+case 'beam': {
 const parser = factory.createBeamParser(options);
 const result = await parser.parseFiles(paths);
 return result.isOk() ? result._unsafeUnwrap() :[];
