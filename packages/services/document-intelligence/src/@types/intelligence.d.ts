@@ -1,25 +1,25 @@
 /**
- * @fileoverview intelligence.d.ts - Minimal Implementation
- */
+* @fileoverview intelligence.d.ts - Minimal Implementation
+*/
 
 export interface DefaultConfig {
-  enabled: boolean;
-  [key: string]: unknown;
+enabled: boolean;
+[key: string]: unknown;
 }
 
 export class DefaultImplementation {
-  private config: DefaultConfig;
+private config: DefaultConfig;
 
-  constructor(config: Partial<DefaultConfig> = {}) {
-    this.config = {
-      enabled: true,
-      ...config,
-    };
-  }
+constructor(config: Partial<DefaultConfig> = {}) {
+this.config = {
+enabled: true,
+...config,
+};
+}
 
-  isEnabled(): boolean {
-    return this.config.enabled;
-  }
+isEnabled(): boolean {
+return this.config.enabled;
+}
 }
 
 export default new DefaultImplementation();

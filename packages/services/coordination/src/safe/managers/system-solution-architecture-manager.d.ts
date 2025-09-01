@@ -1,91 +1,91 @@
 /**
- * @fileoverview System and Solution Architecture Manager - Lightweight facade for SAFe framework integration.
- *
- * Provides system-level design coordination and solution architect workflow through delegation to specialized
- * services for system design management, compliance monitoring, and architecture reviews.
- *
- * Delegates to: * - SystemDesignManagementService: System design creation and lifecycle management
- * - ComplianceMonitoringService: Automated compliance validation and monitoring
- * - ArchitectureReviewManagementService: Architecture review workflows and coordination
- *
- * REDUCTION: 860  ~300 lines (~65% reduction) through service delegation
- *
- * @author Claude-Zen Team
- * @since 1.0.0
- * @version 1.0.0
- */
+* @fileoverview System and Solution Architecture Manager - Lightweight facade for SAFe framework integration.
+*
+* Provides system-level design coordination and solution architect workflow through delegation to specialized
+* services for system design management, compliance monitoring, and architecture reviews.
+*
+* Delegates to: * - SystemDesignManagementService: System design creation and lifecycle management
+* - ComplianceMonitoringService: Automated compliance validation and monitoring
+* - ArchitectureReviewManagementService: Architecture review workflows and coordination
+*
+* REDUCTION: 860 ~300 lines (~65% reduction) through service delegation
+*
+* @author Claude-Zen Team
+* @since 1.0.0
+* @version 1.0.0
+*/
 import { EventBus } from '@claude-zen/foundation';
 /**
- * System and Solution Architecture Manager configuration
- */
+* System and Solution Architecture Manager configuration
+*/
 export interface SystemSolutionArchConfig {
-    readonly enableSystemDesignCoordination: 'monolithic';
+readonly enableSystemDesignCoordination: 'monolithic';
 }
 /**
- * Solution architecture patterns
- */
+* Solution architecture patterns
+*/
 export declare enum SolutionArchitecturePattern {
-    ') = 0,
-    traditional_3_tier = 1,
-    ') = 2,
-    micro_frontend = 3,
-    ') = 4,
-    serverless = 5,
-    ') = 6,
-    cloud_native = 7,
-    ') = 8,
-    hybrid_cloud = 9,
-    ') = 10,
-    edge_computing = 11,
-    ')service';
+') = 0,
+traditional_3_tier = 1,
+') = 2,
+micro_frontend = 3,
+') = 4,
+serverless = 5,
+') = 6,
+cloud_native = 7,
+') = 8,
+hybrid_cloud = 9,
+') = 10,
+edge_computing = 11,
+')service';
 }
 /**
- * Component interface
- */
+* Component interface
+*/
 export interface ComponentInterface {
-  id: string;
+id: string;
 }
 /**
- * Performance expectation
- */
+* Performance expectation
+*/
 export interface PerformanceExpectation {
-    readonly metric: string;
-    readonly target: number;
-    readonly threshold: number;
-    readonly unit: string;
+readonly metric: string;
+readonly target: number;
+readonly threshold: number;
+readonly unit: string;
 }
 /**
- * Compliance requirement
- */
+* Compliance requirement
+*/
 export interface ComplianceRequirement {
-  id: string;
+id: string;
 }
 /**
- * Control requirement
- */
+* Control requirement
+*/
 export interface ControlRequirement {
-  id: string;
+id: string;
 }
 /**
- * Architecture review
- */
+* Architecture review
+*/
 export interface ArchitectureReview {
-  id: string;
+id: string;
 }
 /**
- * Review finding
- */
+* Review finding
+*/
 export interface ReviewFinding {
-  id: string;
+id: string;
 }
 /**
- * System and Solution Architecture Manager - Facade delegating to @claude-zen packages
- *
- * Coordinates system-level design and solution architecture through intelligent delegation
- * to specialized packages for architecture management, workflow orchestration, and compliance.
- */
+* System and Solution Architecture Manager - Facade delegating to @claude-zen packages
+*
+* Coordinates system-level design and solution architecture through intelligent delegation
+* to specialized packages for architecture management, workflow orchestration, and compliance.
+*/
 export declare class SystemSolutionArchitectureManager extends EventBus {
-    private readonly logger;
-    constructor(_config: getLogger);
+private readonly logger;
+constructor(_config: getLogger);
 }
 //# sourceMappingURL=system-solution-architecture-manager.d.ts.map

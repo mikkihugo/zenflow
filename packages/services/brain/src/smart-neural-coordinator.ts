@@ -531,7 +531,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.info(
-            ` SmartNeuralCoordinator initialized successfully in ${initTime}ms``
+            `✅ SmartNeuralCoordinator initialized successfully in ${initTime}ms``
           );
 
           recordEvent('smart-neural-coordinator-initialized', {
@@ -552,7 +552,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.error(
-            ' Failed to initialize SmartNeuralCoordinator: ','            error
+            '❌ Failed to initialize SmartNeuralCoordinator: ','            error
           );
           throw new ContextError(
             `SmartNeuralCoordinator initialization failed: ${error}`,`
@@ -644,7 +644,7 @@ export class SmartNeuralCoordinator {
             const processingTime = Date.now() - startTime;
 
             this.logger.debug(
-              ` Using cached embedding for request (${processingTime}ms)``
+              `📦 Using cached embedding for request (${processingTime}ms)``
             );
 
             recordMetric('smart_neural_embedding_generated', 1, {
@@ -775,7 +775,7 @@ export class SmartNeuralCoordinator {
             'neural.embedding.processing_time_ms':processingTime,
 });
 
-          this.logger.error(' Failed to generate neural embedding:', error);')
+          this.logger.error('❌ Failed to generate neural embedding:', error);')
           // Return a basic fallback result
           return {
             success: false,
@@ -1358,7 +1358,7 @@ export class SmartNeuralCoordinator {
         'neural.cache.cleared':true,
 });
 
-      this.logger.info(' SmartNeuralCoordinator cache cleared', {
+      this.logger.info('🗑️ SmartNeuralCoordinator cache cleared', {
     ')        previousSize: cacheSize,
 });
 
@@ -1375,7 +1375,7 @@ export class SmartNeuralCoordinator {
     return withAsyncTrace(
       'smart-neural-coordinator-shutdown',      async (span: Span) => {
         try {
-          this.logger.info(' Shutting down SmartNeuralCoordinator...');')
+          this.logger.info('🛑 Shutting down SmartNeuralCoordinator...');')
           // Clear caches
           await this.clearCache();
 
@@ -1397,7 +1397,7 @@ export class SmartNeuralCoordinator {
             'neural.shutdown.cache_cleared':true,
 });
 
-          this.logger.info(' SmartNeuralCoordinator shutdown completed');')
+          this.logger.info('✅ SmartNeuralCoordinator shutdown completed');')
           recordEvent('smart-neural-coordinator-shutdown-complete',    ')            status: 'success',);
 } catch (error) {
           recordMetric('smart_neural_coordinator_shutdown', 1, {
@@ -1410,7 +1410,7 @@ export class SmartNeuralCoordinator {
 });
 
           this.logger.error(
-            ' Failed to shutdown SmartNeuralCoordinator: ','            error
+            '❌ Failed to shutdown SmartNeuralCoordinator: ','            error
           );
           throw error;
 }
@@ -1435,7 +1435,7 @@ export class SmartNeuralCoordinator {
 
   private async initializeLazyLoading():Promise<void> {
     this.logger.info(
-      ' Initialized lazy loading mode - models will load on demand')    );
+      '🔄 Initialized lazy loading mode - models will load on demand')    );
 
     // Mark basic fallback as always available
     const basicStatus = this.modelStatus.get('basic');')    if (basicStatus) {
@@ -1446,7 +1446,7 @@ export class SmartNeuralCoordinator {
 
   private async initializeEagerLoading():Promise<void> {
     this.logger.info(
-      ' Eager loading mode - attempting to load all models...')    );
+      '⚡ Eager loading mode - attempting to load all models...')    );
 
     // Load primary model first
     await this.loadTransformersModel();
@@ -1481,7 +1481,7 @@ export class SmartNeuralCoordinator {
 }
 
       this.logger.info(
-        ` OpenAI client initialized for premium features (${loadingTime}ms)``
+        `✨ OpenAI client initialized for premium features (${loadingTime}ms)``
       );
 } catch (error) {
       const openaiStatus = this.modelStatus.get('openai');')      if (openaiStatus) {
@@ -1513,7 +1513,7 @@ export class SmartNeuralCoordinator {
 }
 
       this.logger.info(
-        ` Transformers model loaded: ${this.config.primaryModel} (${loadingTime}ms)``
+        `✅ Transformers model loaded: ${this.config.primaryModel} (${loadingTime}ms)``
       );
 } catch (error) {
       const transformersStatus = this.modelStatus.get('transformers');')      if (transformersStatus) {
@@ -1543,7 +1543,7 @@ export class SmartNeuralCoordinator {
         brainJsStatus.loadingTime = loadingTime;
 }
 
-      this.logger.info(` Brain.js model loaded (${loadingTime}ms)`);`
+      this.logger.info(`✅ Brain.js model loaded (${loadingTime}ms)`);`
 } catch (error) {
       const brainJsStatus = this.modelStatus.get('brain-js');')      if (brainJsStatus) {
         brainJsStatus.loaded = false;
@@ -1570,7 +1570,7 @@ export class SmartNeuralCoordinator {
         onnxStatus.loadingTime = loadingTime;
 }
 
-      this.logger.info(` ONNX runtime loaded ($loadingTimems)`);`
+      this.logger.info(`✅ ONNX runtime loaded ($loadingTimems)`);`
 } catch (error) {
       const onnxStatus = this.modelStatus.get('onnx');')      if (onnxStatus) {
         onnxStatus.loaded = false;
@@ -1587,7 +1587,7 @@ export class SmartNeuralCoordinator {
       this.performPerformanceOptimization();
 }, 60000); // Every minute
 
-    this.logger.info(' Performance monitoring started');')}
+    this.logger.info('📊 Performance monitoring started');')}
 
   private async generateNewEmbedding(request: NeuralEmbeddingRequest,
     span: Span
@@ -1917,13 +1917,13 @@ export class SmartNeuralCoordinator {
     if (this.config.cache.performanceBasedEviction) {
       const cacheEfficiency = this.calculateCacheEfficiency();
       if (cacheEfficiency < 0.5) {
-        this.logger.info(' Cache efficiency low, performing optimization...');')        this.performCacheEviction();
+        this.logger.info('📊 Cache efficiency low, performing optimization...');')        this.performCacheEviction();
 }
 }
 
     // Log performance metrics
     const __stats = this.getCoordinatorStats();
-    this.logger.debug(' Performance metrics: ', {
+    this.logger.debug('📊 Performance metrics: ', {
 '    ')      averageLatency: stats.performance.averageLatency,
       cacheEfficiency: stats.systemHealth.cacheEfficiency,
       averageQuality: stats.systemHealth.averageQuality,

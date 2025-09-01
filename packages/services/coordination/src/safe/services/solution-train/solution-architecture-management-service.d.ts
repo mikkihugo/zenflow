@@ -1,128 +1,128 @@
 /**
- * @fileoverview Solution Architecture Management Service
- *
- * Service for solution-level architecture management and governance.
- * Handles architectural runway management, technology standards, and cross-ART architectural alignment.
- *
- * SINGLE RESPONSIBILITY: dateFns;';
+* @fileoverview Solution Architecture Management Service
+*
+* Service for solution-level architecture management and governance.
+* Handles architectural runway management, technology standards, and cross-ART architectural alignment.
+*
+* SINGLE RESPONSIBILITY: dateFns;';
 import {
-  filter,
-  orderBy,
+filter,
+orderBy,
 } from 'lodash-es')../../types');
- * Solution architecture configuration
- */
+* Solution architecture configuration
+*/
 export interface SolutionArchitectureConfig {
-    readonly configId: 'business';
+readonly configId: 'business';
 }
 /**
- * Quality attribute
- */
+* Quality attribute
+*/
 export interface QualityAttribute {
-    readonly attributeId: 'critical';
+readonly attributeId: 'critical';
 }
 /**
- * Architectural constraint
- */
+* Architectural constraint
+*/
 export interface ArchitecturalConstraint {
-    readonly constraintId: 'technical';
+readonly constraintId: 'technical';
 }
 /**
- * Constraint impact
- */
+* Constraint impact
+*/
 export declare enum ConstraintImpact {
-    ') = 0,
-    high = 1,
-    ') = 2,
-    medium = 3,
-    ') = 4,
-    low = 5,
-    ')programming_language';
+') = 0,
+high = 1,
+') = 2,
+medium = 3,
+') = 4,
+low = 5,
+')programming_language';
 }
 /**
- * Standard scope
- */
+* Standard scope
+*/
 export declare enum StandardScope {
-    ') = 0,
-    mandatory = 1,
-    ') = 2,
-    recommended = 3,
-    ') = 4,
-    approved = 5,
-    ') = 6,
-    restricted = 7,
-    ') = 8,
-    deprecated = 9,
-    ')centralized';
+') = 0,
+mandatory = 1,
+') = 2,
+recommended = 3,
+') = 4,
+approved = 5,
+') = 6,
+restricted = 7,
+') = 8,
+deprecated = 9,
+')centralized';
 }
 /**
- * Decision right
- */
+* Decision right
+*/
 export interface DecisionRight {
-    readonly rightId: 'technology_adoption';
+readonly rightId: 'technology_adoption';
 }
 /**
- * Approval threshold
- */
+* Approval threshold
+*/
 export interface ApprovalThreshold {
 }
 /**
- * Review step
- */
+* Review step
+*/
 export interface ReviewStep {
-    readonly stepId: 'alignment';
+readonly stepId: 'alignment';
 }
 /**
- * Escalation path
- */
+* Escalation path
+*/
 export interface EscalationPath {
-    readonly pathId: 'continuous';
+readonly pathId: 'continuous';
 }
 /**
- * Runway management
- */
+* Runway management
+*/
 export interface RunwayManagement {
-    readonly runwayId: 'continuous';
+readonly runwayId: 'continuous';
 }
 /**
- * Runway priority
- */
+* Runway priority
+*/
 export interface RunwayPriority {
-    readonly priorityId: 'infrastructure';
+readonly priorityId: 'infrastructure';
 }
 /**
- * Runway component
- */
+* Runway component
+*/
 export interface RunwayComponent {
-    readonly componentId: 'platform';
+readonly componentId: 'platform';
 }
 /**
- * Component status
- */
+* Component status
+*/
 export declare enum ComponentStatus {
-    ') = 0,
-    planned = 1,
-    ') = 2,
-    in_development = 3,
-    ') = 4,
-    available = 5,
-    ') = 6,
-    deprecated = 7,
-    ') = 8,
-    retired = 9,
-    ')}; 
-    /**
-     * Component lifecycle
-     */
-    = 10
-    /**
-     * Component lifecycle
-     */
-    ,
-    /**
-     * Component lifecycle
-     */
-    export = 11,
-    interface = 12,
-    ComponentLifecycle = 13
+') = 0,
+planned = 1,
+') = 2,
+in_development = 3,
+') = 4,
+available = 5,
+') = 6,
+deprecated = 7,
+') = 8,
+retired = 9,
+')};
+/**
+* Component lifecycle
+*/
+= 10
+/**
+* Component lifecycle
+*/
+,
+/**
+* Component lifecycle
+*/
+export = 11,
+interface = 12,
+ComponentLifecycle = 13
 }
 //# sourceMappingURL=solution-architecture-management-service.d.ts.map

@@ -4,16 +4,16 @@ import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('epic-lifecycle-service');
 
 export class Epiclifecycleservice extends EventEmitter {
-  constructor() {
-    super();
-    logger.info('Epiclifecycleservice initialized');
-  }
+constructor() {
+super();
+logger.info('Epiclifecycleservice initialized');
+}
 
-  async process(): Promise<void> {
-    // TODO: Implement service processing
-  }
+async process(): Promise<void> {
+// TODO: Implement service processing
+}
 
-  async execute(): Promise<void> {
-    // TODO: Implement service execution
-  }
+async execute(): Promise<void> {
+// TODO: Implement service execution
+}
 }

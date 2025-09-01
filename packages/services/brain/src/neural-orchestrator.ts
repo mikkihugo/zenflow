@@ -780,12 +780,12 @@ export class NeuralOrchestrator {
   async processNeuralTask(task:NeuralTask): Promise<NeuralResult> {
     const __startTime = Date.now();
     logger.debug(
-      ` Orchestrating neural task:${task.id} (type:${task.type})``
+      `🎯 Orchestrating neural task:${task.id} (type:${task.type})``
     );
 
     // Analyze task complexity
     const complexity = this.analyzeTaskComplexity(task);
-    logger.debug(` Task complexity analysis:${complexity}`);`
+    logger.debug(`📊 Task complexity analysis:${complexity}`);`
 
     let result:NeuralResult;
 
@@ -816,11 +816,11 @@ export class NeuralOrchestrator {
       result.metadata.complexity = complexity;
 
       logger.info(
-        ` Neural task completed:${task.id} (${complexity}, ${duration}ms)``
+        `✅ Neural task completed:${task.id} (${complexity}, ${duration}ms)``
       );
       return result;
 } catch (error) {
-      logger.error(` Neural task failed:${task.id}`, error);`
+      logger.error(`❌ Neural task failed:${task.id}`, error);`
       throw error;
 }
 }
@@ -985,7 +985,7 @@ export class NeuralOrchestrator {
    * Process complex tasks by lazy-loading neural-ml
    */
   private async processComplexTask(task:NeuralTask): Promise<NeuralResult> {
-    logger.debug(` Processing complex task - loading neural-ml:${task.id}`);`
+    logger.debug(`🔶 Processing complex task - loading neural-ml:${task.id}`);`
 
     const neuralMl = await this.loadNeuralML();
 
@@ -1016,7 +1016,7 @@ export class NeuralOrchestrator {
    * Process heavy tasks with full neural-ml capabilities
    */
   private async processHeavyTask(task:NeuralTask): Promise<NeuralResult> {
-    logger.debug(` Processing heavy task with full neural-ml:${task.id}`);`
+    logger.debug(`🔴 Processing heavy task with full neural-ml:${task.id}`);`
 
     const neuralMl = await this.loadNeuralML();
 
@@ -1051,17 +1051,17 @@ export class NeuralOrchestrator {
       return this.neuralMlCache;
 }
 
-    logger.info(' Lazy loading @claude-zen/neural-ml...');')
+    logger.info('📦 Lazy loading @claude-zen/neural-ml...');')
     try {
       // Dynamic import of neural-ml package
       const neuralMl = await import('@claude-zen/neural-ml');')      this.neuralMlCache = neuralMl;
       this.isNeuralMlLoaded = true;
       this.metrics.neuralMlLoadCount++;
 
-      logger.info(' Neural-ML package loaded successfully');')      return neuralMl;
+      logger.info('✅ Neural-ML package loaded successfully');')      return neuralMl;
 } catch (error) {
       logger.warn(
-        ' Neural-ML package not available, falling back to brain.js',        error
+        '⚠️ Neural-ML package not available, falling back to brain.js',        error
       );
       // Return a mock object for development
       return {
@@ -1101,7 +1101,7 @@ export class NeuralOrchestrator {
    */
   async storeNeuralData(data:NeuralData): Promise<void> {
     const strategy = this.determineStorageStrategy(data);
-    logger.debug(` Storing neural data with strategy:${strategy}`, {`
+    logger.debug(`💾 Storing neural data with strategy:${strategy}`, {`
       id:data.id,
       type:data.type,
       size:data.characteristics.size,
@@ -1130,7 +1130,7 @@ export class NeuralOrchestrator {
         break;
 }
 
-    logger.debug(` Neural data stored:${data.id} (strategy:${strategy})`);`
+    logger.debug(`✅ Neural data stored:${data.id} (strategy:${strategy})`);`
 }
 
   /**
@@ -1175,24 +1175,24 @@ export class NeuralOrchestrator {
    */
   private async storeInMemory(data:NeuralData): Promise<void> {
     // Use internal memory storage
-    logger.debug(` Storing in memory:${data.id}`);`
+    logger.debug(`💭 Storing in memory:${data.id}`);`
 }
 
   private async storeInDatabase(data:NeuralData): Promise<void> {
-    // Use foundation's SQLite storage')    logger.debug(` Storing in database:${data.id}`);`
+    // Use foundation's SQLite storage')    logger.debug(`🗃️ Storing in database:${data.id}`);`
 }
 
   private async storeInVectorDB(data:NeuralData): Promise<void> {
-    // Use foundation's LanceDB storage')    logger.debug(` Storing in vector DB:$data.id`);`
+    // Use foundation's LanceDB storage')    logger.debug(`📊 Storing in vector DB:$data.id`);`
 }
 
   private async storeInGraphDB(data:NeuralData): Promise<void> {
-    // Use foundation's Kuzu graph storage')    logger.debug(` Storing in graph DB:${data.id}`);`
+    // Use foundation's Kuzu graph storage')    logger.debug(`🕸️ Storing in graph DB:${data.id}`);`
 }
 
   private async storeInHybrid(data:NeuralData): Promise<void> {
     // Use multiple storage backends
-    logger.debug(` Storing in hybrid mode:$data.id`);`
+    logger.debug(`🔀 Storing in hybrid mode:$data.id`);`
     await Promise.all([this.storeInDatabase(data), this.storeInVectorDB(data)]);
 }
 

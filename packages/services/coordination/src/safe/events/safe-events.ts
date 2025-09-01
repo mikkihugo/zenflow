@@ -3,11 +3,11 @@ import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('safe-events');
 
 export class Safeevents {
-  constructor() {
-    logger.info('Safeevents initialized');
-  }
+constructor() {
+logger.info('Safeevents initialized');
+}
 
-  async execute(): Promise<void> {
-    // TODO: Implement functionality
-  }
+async execute(): Promise<void> {
+// TODO: Implement functionality
+}
 }

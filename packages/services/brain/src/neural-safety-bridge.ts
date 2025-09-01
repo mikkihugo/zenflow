@@ -86,7 +86,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
     this.aiDeceptionDetector = new AIDeceptionDetector();
     this.neuralDeceptionDetector = new NeuralDeceptionDetector();
 
-    this.logger.info('🧠 Neural Safety Bridge initialized', {
+    this.logger.info('🧠🛡️ Neural Safety Bridge initialized', {
       enhancedDetection: config.enhancedDetection,
       behavioralLearning: config.behavioralLearning,
       realTimeMonitoring: config.realTimeMonitoring,
@@ -104,7 +104,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     try {
       this.logger.info(
-        ' Initializing Neural Safety Bridge with brain integration...'
+        '🔧 Initializing Neural Safety Bridge with brain integration...'
       );
       
       // Async initialization of safety monitoring systems
@@ -134,7 +134,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 });
 
       this.logger.info(
-        ' Neural Safety Bridge initialized with brain system integration')      );
+        '✅ Neural Safety Bridge initialized with brain system integration')      );
 } catch (error) {
       this.logger.error('Failed to initialize Neural Safety Bridge:', error);')      throw error;
 }
@@ -474,11 +474,11 @@ export class NeuralSafetyBridge extends TypedEventBase {
    * Setup real-time monitoring for continuous safety assessment.
    */
   private setupRealTimeMonitoring():void {
-    this.logger.info(' Setting up real-time safety monitoring...');')
+    this.logger.info('🔄 Setting up real-time safety monitoring...');')
     // Set up event handlers for immediate response
     this.on('deception:detected', (result:EnhancedDeceptionResult) => {
     ')      this.logger.warn(
-        ' Deception detected by enhanced neural safety system',
+        '🚨 Deception detected by enhanced neural safety system',
         {
           confidence: result.combinedVerdict.confidence,
           standardAlerts: result.standardDetection.length,
@@ -494,7 +494,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
 
     this.on('intervention:required', (result: EnhancedDeceptionResult) => {
       this.logger.error(
-        ' INTERVENTION REQUIRED - Critical deception detected',
+        '🛑 INTERVENTION REQUIRED - Critical deception detected',
         {
           reasoning: result.combinedVerdict.reasoning,
           behavioralRisk: result.behavioralAnalysis.riskLevel,
@@ -507,7 +507,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
       });
     });
 
-    this.logger.info(' Real-time safety monitoring active');
+    this.logger.info('✅ Real-time safety monitoring active');
   }}
 
   /**
@@ -518,7 +518,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
     actualDeception: boolean,
     feedback: string
   ): Promise<void> {
-    this.logger.info(' Learning from safety feedback...', {
+    this.logger.info('📚 Learning from safety feedback...', {
       agentId: interactionData.agentId,
       actualDeception,
       feedback,
@@ -648,7 +648,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
    * Shutdown neural safety bridge.
    */
   async shutdown():Promise<void> {
-    this.logger.info(' Shutting down Neural Safety Bridge...');')
+    this.logger.info('🛑 Shutting down Neural Safety Bridge...');')
     // Async shutdown procedures
     await this.saveSystemState();
     await this.cleanupResources();
@@ -656,7 +656,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
     this.removeAllListeners();
     this.isInitialized = false;
 
-    this.logger.info(' Neural Safety Bridge shutdown complete');')}
+    this.logger.info('✅ Neural Safety Bridge shutdown complete');')}
 
   // Helper methods for enhanced async functionality
 

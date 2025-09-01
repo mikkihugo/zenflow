@@ -1,39 +1,39 @@
 /**
- * @fileoverview ML Enterprise Coordinator - Hybrid Architecture
- *
- * HYBRID APPROACH:Direct database access for ML performance + Event emission for coordination
- * 
- * This coordinator bridges high-performance ML operations (direct DB access) with
- * event-driven coordination for the brain and enterprise systems.
- *
- * Performance Strategy:
- * - Direct database access for training data (fast bulk operations)
- * - Direct model storage for persistence (fast saves)
- * - Event emission for coordination and monitoring
- * - No performance penalty for ML training pipeline
- *
- * Features:
- * - High-performance training with direct database queries
- * - Event emission for brain coordination
- * - SPARC methodology integration via events
- * - Enterprise monitoring and audit trails
- *
- * @author Claude Code Zen Team
- * @since 2.1.0
- * @version 1.0.0
- */
+* @fileoverview ML Enterprise Coordinator - Hybrid Architecture
+*
+* HYBRID APPROACH:Direct database access for ML performance + Event emission for coordination
+*
+* This coordinator bridges high-performance ML operations (direct DB access) with
+* event-driven coordination for the brain and enterprise systems.
+*
+* Performance Strategy:
+* - Direct database access for training data (fast bulk operations)
+* - Direct model storage for persistence (fast saves)
+* - Event emission for coordination and monitoring
+* - No performance penalty for ML training pipeline
+*
+* Features:
+* - High-performance training with direct database queries
+* - Event emission for brain coordination
+* - SPARC methodology integration via events
+* - Enterprise monitoring and audit trails
+*
+* @author Claude Code Zen Team
+* @since 2.1.0
+* @version 1.0.0
+*/
 
 // Foundation redirects to database package - ML gets its own dedicated databases
-import { 
- EventBus,
- getLogger,
- createKeyValueStore,
- createVectorStore,
- createGraphStore,
- getDatabaseCapability,
- type KeyValueStore,
- type VectorStore,
- type GraphStore
+import {
+EventBus,
+getLogger,
+createKeyValueStore,
+createVectorStore,
+createGraphStore,
+getDatabaseCapability,
+type KeyValueStore,
+type VectorStore,
+type GraphStore
 } from "@claude-zen/foundation";
 
 // =============================================================================
@@ -112,12 +112,12 @@ export interface MLEnterpriseConfig {
 // =============================================================================
 
 /**
- * ML Enterprise Coordinator - Hybrid Architecture
- *
- * HYBRID:Direct database access for ML performance + Event emission for coordination
- * - Fast ML training with direct database queries
- * - Event emission for brain and enterprise coordination
- */
+* ML Enterprise Coordinator - Hybrid Architecture
+*
+* HYBRID:Direct database access for ML performance + Event emission for coordination
+* - Fast ML training with direct database queries
+* - Event emission for brain and enterprise coordination
+*/
 export class MLEnterpriseCoordinator {
 	private config:MLEnterpriseConfig;
 	private initialized:boolean = false;
@@ -125,7 +125,7 @@ export class MLEnterpriseCoordinator {
 
 	// ML-specific dedicated databases - foundation redirects to database package
 	private mlModelStore:VectorStore | null = null; // For ML model embeddings/vectors
-	private mlTrainingDataStore:KeyValueStore | null = null; // For training data and checkpoints 
+	private mlTrainingDataStore:KeyValueStore | null = null; // For training data and checkpoints
 	private mlWorkflowGraph:GraphStore | null = null; // For ML pipeline relationships
 	private mlMetricsStore:KeyValueStore | null = null; // For performance metrics
 
@@ -179,7 +179,7 @@ export class MLEnterpriseCoordinator {
 				this.mlModelStore = mlModelStoreResult.data;
 				this.logger.info(' ML model store initialized - dedicated vector store for ML');
 } else {
-				this.logger.warn(' ML model store using fallback implementation', {
+				this.logger.warn('⚠️ ML model store using fallback implementation', {
 					error:mlModelStoreResult.error?.message
 });
 }
@@ -196,7 +196,7 @@ export class MLEnterpriseCoordinator {
 				this.mlTrainingDataStore = mlTrainingDataStoreResult.data;
 				this.logger.info(' ML training data store initialized - dedicated KV store for ML');
 } else {
-				this.logger.warn(' ML training data store using fallback implementation', {
+				this.logger.warn('⚠️ ML training data store using fallback implementation', {
 					error:mlTrainingDataStoreResult.error?.message
 });
 }
@@ -214,7 +214,7 @@ export class MLEnterpriseCoordinator {
 				this.mlWorkflowGraph = mlWorkflowGraphResult.data;
 				this.logger.info(' ML workflow graph initialized - dedicated graph store for ML');
 } else {
-				this.logger.warn(' ML workflow graph using fallback implementation', {
+				this.logger.warn('⚠️ ML workflow graph using fallback implementation', {
 					error:mlWorkflowGraphResult.error?.message
 });
 }
@@ -231,7 +231,7 @@ export class MLEnterpriseCoordinator {
 				this.mlMetricsStore = mlMetricsStoreResult.data;
 				this.logger.info(' ML metrics store initialized - dedicated KV store for ML');
 } else {
-				this.logger.warn(' ML metrics store using fallback implementation', {
+				this.logger.warn('⚠️ ML metrics store using fallback implementation', {
 					error:mlMetricsStoreResult.error?.message
 });
 }
@@ -239,7 +239,7 @@ export class MLEnterpriseCoordinator {
 			this.logger.info(' ML-specific database storage initialization complete');
 
 } catch (error) {
-			this.logger.warn(' ML database storage initialization failed, using fallbacks', {
+			this.logger.warn('⚠️ ML database storage initialization failed, using fallbacks', {
 				error:error instanceof Error ? error.message : String(error)
 });
 			// Continue with fallbacks - ML coordinator can still function
@@ -270,7 +270,7 @@ export class MLEnterpriseCoordinator {
 
 			// Event-driven notification - coordinator initialized
 			if (this.config.enable_event_emission) {
-				await this.eventBus.emit("MLCoordinatorInitialized", { 
+				await this.eventBus.emit("MLCoordinatorInitialized", {
 					config:this.config,
 					timestamp:Date.now(),
 					version:"1.0.0",
@@ -317,8 +317,8 @@ export class MLEnterpriseCoordinator {
 	 * Start ML training job with SPARC methodology integration
 	 */
 	async startTrainingJob(
-		modelId:string, 
-		config:any, 
+		modelId:string,
+		config:any,
 		sparc_phase:'specification' | ' pseudocode' | ' architecture' | ' refinement' | ' completion' = this.config.default_sparc_phase
 	):Promise<string> {
 		if (!this.initialized) {
@@ -871,7 +871,7 @@ export class MLEnterpriseCoordinator {
 			case 'refinement':
 				return progress.accuracy > 0.9 && progress.loss < 0.3;
 			case 'completion':
-				return progress.accuracy > 0.95 && progress.loss < 0.1 && 
+				return progress.accuracy > 0.95 && progress.loss < 0.1 &&
 					 progress.validationAccuracy && progress.validationAccuracy > 0.93;
 			default:
 				return false;
@@ -889,8 +889,8 @@ export class MLEnterpriseCoordinator {
 }
 
 	private async performValidation(
-		modelId:string, 
-		validationType:string, 
+		modelId:string,
+		validationType:string,
 		testData:any[]
 	):Promise<{ passed: boolean; metrics: Record<string, number>}> {
 		// Placeholder for actual validation implementation
@@ -936,8 +936,8 @@ export class MLEnterpriseCoordinator {
 // =============================================================================
 
 /**
- * Factory function to create ML Enterprise Coordinator with sensible defaults
- */
+* Factory function to create ML Enterprise Coordinator with sensible defaults
+*/
 export function createMLEnterpriseCoordinator(
 	overrides?:Partial<MLEnterpriseConfig>,
 ):MLEnterpriseCoordinator {

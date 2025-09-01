@@ -1,254 +1,254 @@
 /**
- * @fileoverview SAFe Framework Types
- *
- * Core type definitions for Scaled Agile Framework (SAFe) integration.
- */
+* @fileoverview SAFe Framework Types
+*
+* Core type definitions for Scaled Agile Framework (SAFe) integration.
+*/
 /**
- * Portfolio epic representing strategic initiatives
- */
+* Portfolio epic representing strategic initiatives
+*/
 export interface PortfolioEpic {
-  id: string;
+id: string;
 } /**';
 * Value stream in the SAFe framework
 */
 export interface ValueStream {
-  id: string;
+id: string;
 }
 /**
- * Value flow step in a value stream
- */
+* Value flow step in a value stream
+*/
 export interface ValueFlowStep {
-  id: string;
+id: string;
 }
 /**
- * Value stream metrics
- */
+* Value stream metrics
+*/
 export interface ValueStreamMetrics {
-    readonly flowEfficiency: number;
-    readonly leadTime: number;
-    readonly throughput: number;
-    readonly defectRate: number;
-    readonly customerSatisfaction: number;
+readonly flowEfficiency: number;
+readonly leadTime: number;
+readonly throughput: number;
+readonly defectRate: number;
+readonly customerSatisfaction: number;
 }
 /**
- * SAFe integration configuration
- */
+* SAFe integration configuration
+*/
 export interface SAFeIntegrationConfig {
-    readonly enableSAFeWorkflows: boolean;
-    readonly enablePIPlanning: boolean;
-    readonly enableValueStreamMapping: boolean;
-    readonly enableArchitectureRunway: boolean;
-    readonly enableLeanPortfolioManagement: boolean;
-    readonly piLengthWeeks: number;
-    readonly iterationLengthWeeks: number;
-    readonly ipIterationWeeks: number;
-    readonly maxARTsPerValueStream: number;
-    readonly maxTeamsPerART: number;
-    readonly maxFeaturesPerPI: number;
-    readonly piPlanningInterval: number;
-    readonly systemDemoInterval: number;
-    readonly inspectAdaptInterval: number;
+readonly enableSAFeWorkflows: boolean;
+readonly enablePIPlanning: boolean;
+readonly enableValueStreamMapping: boolean;
+readonly enableArchitectureRunway: boolean;
+readonly enableLeanPortfolioManagement: boolean;
+readonly piLengthWeeks: number;
+readonly iterationLengthWeeks: number;
+readonly ipIterationWeeks: number;
+readonly maxARTsPerValueStream: number;
+readonly maxTeamsPerART: number;
+readonly maxFeaturesPerPI: number;
+readonly piPlanningInterval: number;
+readonly systemDemoInterval: number;
+readonly inspectAdaptInterval: number;
 }
 /**
- * Program Increment (PI) planning and execution
- */
+* Program Increment (PI) planning and execution
+*/
 export interface ProgramIncrement {
-  id: string;
+id: string;
 }
 /**
- * PI Objective with business value
- */
+* PI Objective with business value
+*/
 export interface PIObjective {
-  id: string;
+id: string;
 }
 /**
- * Memory system interface for persisting data
- */
+* Memory system interface for persisting data
+*/
 export interface MemorySystem {
-    store(): void { getLogger } from '@claude-zen/foundation';
+store(): void { getLogger } from '@claude-zen/foundation';
 export interface MultiLevelOrchestrationManager {
-    id?: string;
+id?: string;
 }
 /**
- * SAFe framework configuration
- */
+* SAFe framework configuration
+*/
 export interface SafeConfiguration {
-    readonly enablePortfolioManagement: boolean;
-    readonly enablePIPlanning: boolean;
-    readonly enableValueStreams: boolean;
+readonly enablePortfolioManagement: boolean;
+readonly enablePIPlanning: boolean;
+readonly enableValueStreams: boolean;
 }
 /**
- * Portfolio configuration
- */
+* Portfolio configuration
+*/
 export interface PortfolioConfiguration {
-    readonly horizonWeights: Record<InvestmentHorizon, number>;
-    readonly budgetAllocation: number;
+readonly horizonWeights: Record<InvestmentHorizon, number>;
+readonly budgetAllocation: number;
 }
 /**
- * PI configuration
- */
+* PI configuration
+*/
 export interface PIConfiguration {
-    readonly duration: number;
-    readonly innovationWeeks: number;
-    readonly planningDays: number;
+readonly duration: number;
+readonly innovationWeeks: number;
+readonly planningDays: number;
 }
 /**
- * PI Status enumeration
- */
+* PI Status enumeration
+*/
 export declare enum PIStatus {
-    PLANNING = "planning",
-    ACTIVE = "active",
-    COMPLETED = "completed",
-    RETROSPECTIVE = "retrospective"
+PLANNING = "planning",
+ACTIVE = "active",
+COMPLETED = "completed",
+RETROSPECTIVE = "retrospective"
 }
 /**
- * Feature Status enumeration
- */
+* Feature Status enumeration
+*/
 export declare enum FeatureStatus {
-    ') = 0,
-    backlog = 1,
-    ') = 2,
-    analysis = 3,
-    ') = 4,
-    development = 5,
-    ') = 6,
-    testing = 7,
-    ') = 8,
-    done = 9,
-    ')backlog';
+') = 0,
+backlog = 1,
+') = 2,
+analysis = 3,
+') = 4,
+development = 5,
+') = 6,
+testing = 7,
+') = 8,
+done = 9,
+')backlog';
 }
 /**
- * Risk
- */
+* Risk
+*/
 export interface Risk {
-  id: string;
+id: string;
 }
 /**
- * System Demo
- */
+* System Demo
+*/
 export interface SystemDemo {
-  id: string;
+id: string;
 }
 /**
- * Demo Feedback
- */
+* Demo Feedback
+*/
 export interface DemoFeedback {
-    readonly source: string;
-    readonly feedback: string;
-    readonly actionItem?: string;
-    readonly priority: low;
+readonly source: string;
+readonly feedback: string;
+readonly actionItem?: string;
+readonly priority: low;
 }
 /**
- * Inspect and Adapt
- */
+* Inspect and Adapt
+*/
 export interface InspectAndAdapt {
-  id: string;
+id: string;
 }
 /**
- * Improvement
- */
+* Improvement
+*/
 export interface Improvement {
-  id: string;
+id: string;
 }
 /**
- * Problem Solving Items
- */
+* Problem Solving Items
+*/
 export interface ProblemSolvingItems {
-    readonly problem: string;
-    readonly rootCause: string;
-    readonly solution: string;
-    readonly actions: string[];
-    readonly owner: string;
-    readonly targetDate: Date;
+readonly problem: string;
+readonly rootCause: string;
+readonly solution: string;
+readonly actions: string[];
+readonly owner: string;
+readonly targetDate: Date;
 }
 /**
- * Shared Service
- */
+* Shared Service
+*/
 export interface SharedService {
-  id: string;
+id: string;
 }
 /**
- * Enterprise Architecture Manager configuration
- */
+* Enterprise Architecture Manager configuration
+*/
 export interface EnterpriseArchConfig {
-    readonly enablePrincipleValidation: 'approval_required';
+readonly enablePrincipleValidation: 'approval_required';
 }
 /**
- * System and Solution Architecture Manager configuration
- */
+* System and Solution Architecture Manager configuration
+*/
 export interface SystemSolutionArchConfig {
-    readonly enableSystemDesignCoordination: 'monolithic';
+readonly enableSystemDesignCoordination: 'monolithic';
 }
 /**
- * Solution architecture patterns
- */
+* Solution architecture patterns
+*/
 export declare enum SolutionArchitecturePattern {
-    ') = 0,
-    traditional_3_tier = 1,
-    ') = 2,
-    micro_frontend = 3,
-    ') = 4,
-    serverless = 5,
-    ') = 6,
-    cloud_native = 7,
-    ') = 8,
-    hybrid_cloud = 9,
-    ') = 10,
-    edge_computing = 11,
-    ')technical| business| regulatory' | ' organizational';
-    readonly description: string;
-    readonly rationale: string;
-    readonly implications: string[];
-    readonly compliance: ComplianceRequirement[];
+') = 0,
+traditional_3_tier = 1,
+') = 2,
+micro_frontend = 3,
+') = 4,
+serverless = 5,
+') = 6,
+cloud_native = 7,
+') = 8,
+hybrid_cloud = 9,
+') = 10,
+edge_computing = 11,
+')technical| business| regulatory' | ' organizational';
+readonly description: string;
+readonly rationale: string;
+readonly implications: string[];
+readonly compliance: ComplianceRequirement[];
 }
 /**
- * System component
- */
+* System component
+*/
 export interface SystemComponent {
-  id: string;
+id: string;
 }
 /**
- * Component interface
- */
+* Component interface
+*/
 export interface ComponentInterface {
-  id: string;
+id: string;
 }
 /**
- * Performance expectation
- */
+* Performance expectation
+*/
 export interface PerformanceExpectation {
-    readonly metric: string;
-    readonly target: number;
-    readonly threshold: number;
-    readonly unit: string;
+readonly metric: string;
+readonly target: number;
+readonly threshold: number;
+readonly unit: string;
 }
 /**
- * Compliance requirement
- */
+* Compliance requirement
+*/
 export interface ComplianceRequirement {
-  id: string;
+id: string;
 }
 /**
- * Control requirement
- */
+* Control requirement
+*/
 export interface ControlRequirement {
-  id: string;
+id: string;
 }
 /**
- * Architecture review
- */
+* Architecture review
+*/
 export interface ArchitectureReview {
-  id: string;
+id: string;
 }
 /**
- * Review finding
- */
+* Review finding
+*/
 export interface ReviewFinding {
-  id: string;
+id: string;
 }
 /**
- * Architecture Runway types - re-exported for convenience
- */
+* Architecture Runway types - re-exported for convenience
+*/
 export type { ArchitectureCapability, ArchitectureDecisionRecord, ArchitectureRunwayConfig, ArchitectureRunwayItem, CapabilityKPI, TechnicalDebtItem, } from './managers/architecture-runway-manager';
 export type { ActionItem, EventAgendaItem, EventDecision, EventExecutionContext, EventMetrics, EventOutcome, EventParticipant, EventSchedulingPattern, ParticipantFeedback, SAFeEventConfig, SAFeEventsManagerConfig, } from './managers/safe-events-manager';
 //# sourceMappingURL=types.d.ts.map

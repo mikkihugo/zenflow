@@ -123,7 +123,7 @@ export class NeuralBridge {
           this.config.smartNeuralBackend||{}
         );
         await this.smartNeuralCoordinator.initialize();
-        this.foundationLogger.info(' SmartNeuralCoordinator integrated successfully')        );
+        this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully')        );
 }
 
       // Load WASM module if available

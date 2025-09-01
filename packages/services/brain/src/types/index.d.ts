@@ -1,945 +1,945 @@
 /**
- * @fileoverview Brain Domain Types - Neural & AI Domain
- *
- * Comprehensive type definitions for neural networks, AI agents, cognitive patterns,
- * learning algorithms, and brain coordination systems. These types define the core
- * domain model for all neural and AI operations within the brain package.
- *
- * Dependencies:Only imports from @claude-zen/foundation for shared primitives.
- * Domain Independence:Self-contained neural/AI domain types.
- *
- * @package @claude-zen/brain
- * @since 2.1.0
- * @version 1.0.0
- */
+* @fileoverview Brain Domain Types - Neural & AI Domain
+*
+* Comprehensive type definitions for neural networks, AI agents, cognitive patterns,
+* learning algorithms, and brain coordination systems. These types define the core
+* domain model for all neural and AI operations within the brain package.
+*
+* Dependencies:Only imports from @claude-zen/foundation for shared primitives.
+* Domain Independence:Self-contained neural/AI domain types.
+*
+* @package @claude-zen/brain
+* @since 2.1.0
+* @version 1.0.0
+*/
 import type { Entity, LogLevel, NonEmptyArray, Priority, Result, Timestamp, UUID } from '@claude-zen/foundation/types';
 /**
- * Neural model types supported by the brain system
- */
+* Neural model types supported by the brain system
+*/
 export declare enum NeuralModelType {
-    FEEDFORWARD = "feedforward",
-    LSTM = "lstm",
-    RNN = "rnn",
-    CNN = "cnn",
-    AUTOENCODER = "autoencoder",
-    GAN = "gan",
-    TRANSFORMER = "transformer",
-    ATTENTION = "attention",
-    REINFORCEMENT = "reinforcement"
+FEEDFORWARD = "feedforward",
+LSTM = "lstm",
+RNN = "rnn",
+CNN = "cnn",
+AUTOENCODER = "autoencoder",
+GAN = "gan",
+TRANSFORMER = "transformer",
+ATTENTION = "attention",
+REINFORCEMENT = "reinforcement"
 }
 /**
- * Activation function types for neural networks
- */
+* Activation function types for neural networks
+*/
 export declare enum ActivationFunction {
-    SIGMOID = "sigmoid",
-    TANH = "tanh",
-    RELU = "relu",
-    LEAKY_RELU = "leaky_relu",
-    SWISH = "swish",
-    GELU = "gelu",
-    SOFTMAX = "softmax",
-    SOFTPLUS = "softplus",
-    LINEAR = "linear"
+SIGMOID = "sigmoid",
+TANH = "tanh",
+RELU = "relu",
+LEAKY_RELU = "leaky_relu",
+SWISH = "swish",
+GELU = "gelu",
+SOFTMAX = "softmax",
+SOFTPLUS = "softplus",
+LINEAR = "linear"
 }
 /**
- * Loss function types for training
- */
+* Loss function types for training
+*/
 export declare enum LossFunction {
-    MEAN_SQUARED_ERROR = "mse",
-    CROSS_ENTROPY = "cross_entropy",
-    BINARY_CROSS_ENTROPY = "binary_cross_entropy",
-    CATEGORICAL_CROSS_ENTROPY = "categorical_cross_entropy",
-    HUBER = "huber",
-    MAE = "mae",
-    HINGE = "hinge"
+MEAN_SQUARED_ERROR = "mse",
+CROSS_ENTROPY = "cross_entropy",
+BINARY_CROSS_ENTROPY = "binary_cross_entropy",
+CATEGORICAL_CROSS_ENTROPY = "categorical_cross_entropy",
+HUBER = "huber",
+MAE = "mae",
+HINGE = "hinge"
 }
 /**
- * Optimizer types for neural network training
- */
+* Optimizer types for neural network training
+*/
 export declare enum OptimizerType {
-    SGD = "sgd",
-    ADAM = "adam",
-    ADAMW = "adamw",
-    RMSPROP = "rmsprop",
-    ADAGRAD = "adagrad",
-    MOMENTUM = "momentum"
+SGD = "sgd",
+ADAM = "adam",
+ADAMW = "adamw",
+RMSPROP = "rmsprop",
+ADAGRAD = "adagrad",
+MOMENTUM = "momentum"
 }
 /**
- * Metric types for evaluation
- */
+* Metric types for evaluation
+*/
 export declare enum MetricType {
-    ACCURACY = "accuracy",
-    PRECISION = "precision",
-    RECALL = "recall",
-    F1_SCORE = "f1_score",
-    AUC = "auc",
-    MSE = "mse",
-    MAE = "mae",
-    RMSE = "rmse",
-    R2 = "r2",
-    LOSS = "loss"
+ACCURACY = "accuracy",
+PRECISION = "precision",
+RECALL = "recall",
+F1_SCORE = "f1_score",
+AUC = "auc",
+MSE = "mse",
+MAE = "mae",
+RMSE = "rmse",
+R2 = "r2",
+LOSS = "loss"
 }
 /**
- * Configuration for neural network architecture
- */
+* Configuration for neural network architecture
+*/
 /**
- * Network metadata
- */
+* Network metadata
+*/
 export interface NetworkMetadata {
-    version: string;
-    author?: string;
-    description?: string;
-    tags?: string[];
-    createdAt: Timestamp;
-    lastModified: Timestamp;
+version: string;
+author?: string;
+description?: string;
+tags?: string[];
+createdAt: Timestamp;
+lastModified: Timestamp;
 }
 /**
- * Retention policy for memory
- */
+* Retention policy for memory
+*/
 export interface RetentionPolicy {
-    duration: number;
-    priority: Priority;
-    decayRate: number;
+duration: number;
+priority: Priority;
+decayRate: number;
 }
 /**
- * Consolidation strategy for memory
- */
+* Consolidation strategy for memory
+*/
 export interface ConsolidationStrategy {
-    type: '...[proper format needed];
-    '  interval?:number;: any;
-    threshold?: number;
+type: '...[proper format needed];
+' interval?:number;: any;
+threshold?: number;
 }
 /**
- * Retrieval mechanism for memory
- */
+* Retrieval mechanism for memory
+*/
 export interface RetrievalMechanism {
-    type: '...[proper format needed];
-    '  similarity:number;: any;
-    context: boolean;
+type: '...[proper format needed];
+' similarity:number;: any;
+context: boolean;
 }
 /**
- * Adaptation configuration
- */
+* Adaptation configuration
+*/
 export interface AdaptationConfig {
-    enabled: boolean;
-    rate: number;
-    threshold: number;
-    strategy: 'gradual' | ' immediate' | ' batch';
+enabled: boolean;
+rate: number;
+threshold: number;
+strategy: 'gradual' | ' immediate' | ' batch';
 }
 /**
- * Feedback configuration
- */
+* Feedback configuration
+*/
 export interface FeedbackConfig {
-    enabled: boolean;
-    type: 'explicit' | ' implicit' | ' reinforcement';
-    weight: number;
-    delay?: number;
+enabled: boolean;
+type: 'explicit' | ' implicit' | ' reinforcement';
+weight: number;
+delay?: number;
 }
 /**
- * Evaluation criteria
- */
+* Evaluation criteria
+*/
 export interface EvaluationCriteria {
-    accuracy: number;
-    precision: number;
-    recall: number;
-    f1Score: number;
-    customMetrics?: Record<string, number>;
+accuracy: number;
+precision: number;
+recall: number;
+f1Score: number;
+customMetrics?: Record<string, number>;
 }
 /**
- * Benchmark configuration
- */
+* Benchmark configuration
+*/
 export interface BenchmarkConfig {
-    name: string;
-    version: string;
-    datasets: string[];
-    metrics: string[];
-    baseline: Record<string, number>;
+name: string;
+version: string;
+datasets: string[];
+metrics: string[];
+baseline: Record<string, number>;
 }
 /**
- * Benchmark comparison
- */
+* Benchmark comparison
+*/
 export interface BenchmarkComparison {
-    baseline: Record<string, number>;
-    current: Record<string, number>;
-    improvement: Record<string, number>;
-    significance: number;
+baseline: Record<string, number>;
+current: Record<string, number>;
+improvement: Record<string, number>;
+significance: number;
 }
 /**
- * Learning progress tracking
- */
+* Learning progress tracking
+*/
 export interface LearningProgress {
-    epoch: number;
-    loss: number;
-    metrics: Record<string, number>;
-    validationLoss?: number;
-    validationMetrics?: Record<string, number>;
+epoch: number;
+loss: number;
+metrics: Record<string, number>;
+validationLoss?: number;
+validationMetrics?: Record<string, number>;
 }
 /**
- * Adaptation event
- */
+* Adaptation event
+*/
 export interface AdaptationEvent {
-    type: 'parameter' | ' architecture' | ' strategy';
-    trigger: string;
-    changes: Record<string, any>;
-    timestamp: Timestamp;
-    impact: number;
+type: 'parameter' | ' architecture' | ' strategy';
+trigger: string;
+changes: Record<string, any>;
+timestamp: Timestamp;
+impact: number;
 }
 /**
- * Consensus algorithm
- */
+* Consensus algorithm
+*/
 export interface ConsensusAlgorithm {
-    type: '...[proper format needed];
-    '  threshold?:number;: any;
-    weights?: Record<string, number>;
+type: '...[proper format needed];
+' threshold?:number;: any;
+weights?: Record<string, number>;
 }
 /**
- * Synchronization strategy
- */
+* Synchronization strategy
+*/
 export interface SynchronizationStrategy {
-    type: '...[proper format needed];
-    '  interval?:number;: any;
-    tolerance?: number;
+type: '...[proper format needed];
+' interval?:number;: any;
+tolerance?: number;
 }
 /**
- * Fault tolerance configuration
- */
+* Fault tolerance configuration
+*/
 export interface FaultToleranceConfig {
-    enabled: boolean;
-    retries: number;
-    timeout: number;
-    fallback?: string;
+enabled: boolean;
+retries: number;
+timeout: number;
+fallback?: string;
 }
 /**
- * Attachment interface
- */
+* Attachment interface
+*/
 export interface Attachment {
-    id: UUID;
-    type: string;
-    name: string;
-    size: number;
-    url?: string;
-    data?: Buffer;
+id: UUID;
+type: string;
+name: string;
+size: number;
+url?: string;
+data?: Buffer;
 }
 /**
- * Feature specification
- */
+* Feature specification
+*/
 export interface FeatureSpec {
-    name: string;
-    type: '...[proper format needed];
-    '  description?:string;: any;
-    range?: [number, number];
-    categories?: string[];
+name: string;
+type: '...[proper format needed];
+' description?:string;: any;
+range?: [number, number];
+categories?: string[];
 }
 /**
- * Label specification
- */
+* Label specification
+*/
 export interface LabelSpec {
-    name: string;
-    type: 'binary' | ' multiclass' | ' regression';
-    classes?: string[];
-    range?: [number, number];
+name: string;
+type: 'binary' | ' multiclass' | ' regression';
+classes?: string[];
+range?: [number, number];
 }
 /**
- * Preprocessing configuration
- */
+* Preprocessing configuration
+*/
 export interface PreprocessingConfig {
-    normalization?: 'minmax' | ' zscore' | ' robust';
-    encoding?: 'onehot' | ' label' | ' binary';
-    featureSelection?: 'variance' | ' correlation' | ' mutual_info';
-    dimensionReduction?: 'pca' | ' tsne' | ' umap';
+normalization?: 'minmax' | ' zscore' | ' robust';
+encoding?: 'onehot' | ' label' | ' binary';
+featureSelection?: 'variance' | ' correlation' | ' mutual_info';
+dimensionReduction?: 'pca' | ' tsne' | ' umap';
 }
 /**
- * Validation configuration
- */
+* Validation configuration
+*/
 export interface ValidationConfig {
-    method: 'holdout|kfold|stratified|timeseries;;
-    '  splits:number;: any;
-    testSize: number;
-    randomState?: number;
+method: 'holdout|kfold|stratified|timeseries;;
+' splits:number;: any;
+testSize: number;
+randomState?: number;
 }
 /**
- * Training metrics
- */
+* Training metrics
+*/
 export interface TrainingMetrics {
-    loss: number[];
-    accuracy?: number[];
-    precision?: number[];
-    recall?: number[];
-    f1Score?: number[];
-    customMetrics?: Record<string, number[]>;
+loss: number[];
+accuracy?: number[];
+precision?: number[];
+recall?: number[];
+f1Score?: number[];
+customMetrics?: Record<string, number[]>;
 }
 /**
- * Coordination response
- */
+* Coordination response
+*/
 export interface CoordinationResponse {
-    success: boolean;
-    result?: any;
-    error?: string;
-    metrics?: Record<string, number>;
-    timestamp: Timestamp;
+success: boolean;
+result?: any;
+error?: string;
+metrics?: Record<string, number>;
+timestamp: Timestamp;
 }
 export interface NeuralNetworkConfig extends Entity {
-    modelType: NeuralModelType;
-    architecture: NetworkArchitecture;
-    training: TrainingConfiguration;
-    optimization: OptimizationConfig;
-    metadata: NetworkMetadata;
+modelType: NeuralModelType;
+architecture: NetworkArchitecture;
+training: TrainingConfiguration;
+optimization: OptimizationConfig;
+metadata: NetworkMetadata;
 }
 /**
- * Network architecture specification
- */
+* Network architecture specification
+*/
 export interface NetworkArchitecture {
-    inputSize: number;
-    outputSize: number;
-    hiddenLayers: NonEmptyArray<LayerConfig>;
-    activation: ActivationFunction;
-    outputActivation?: ActivationFunction;
-    dropout?: number;
-    batchNormalization?: boolean;
-    skipConnections?: boolean;
+inputSize: number;
+outputSize: number;
+hiddenLayers: NonEmptyArray<LayerConfig>;
+activation: ActivationFunction;
+outputActivation?: ActivationFunction;
+dropout?: number;
+batchNormalization?: boolean;
+skipConnections?: boolean;
 }
 /**
- * Layer configuration for neural networks
- */
+* Layer configuration for neural networks
+*/
 export interface LayerConfig {
-    type: '...[proper format needed];
-    '  size:number;: any;
-    activation?: ActivationFunction;
-    dropout?: number;
-    regularization?: RegularizationConfig;
-    parameters?: Record<string, unknown>;
+type: '...[proper format needed];
+' size:number;: any;
+activation?: ActivationFunction;
+dropout?: number;
+regularization?: RegularizationConfig;
+parameters?: Record<string, unknown>;
 }
 /**
- * Regularization configuration
- */
+* Regularization configuration
+*/
 export interface RegularizationConfig {
-    l1?: number;
-    l2?: number;
-    dropout?: number;
-    batchNorm?: boolean;
-    layerNorm?: boolean;
+l1?: number;
+l2?: number;
+dropout?: number;
+batchNorm?: boolean;
+layerNorm?: boolean;
 }
 /**
- * Training configuration for neural networks
- */
+* Training configuration for neural networks
+*/
 export interface TrainingConfiguration {
-    epochs: number;
-    batchSize: number;
-    learningRate: number;
-    validationSplit?: number;
-    earlyStop?: EarlyStoppingConfig;
-    scheduler?: LearningRateScheduler;
-    mixedPrecision?: boolean;
-    gradientClipping?: number;
+epochs: number;
+batchSize: number;
+learningRate: number;
+validationSplit?: number;
+earlyStop?: EarlyStoppingConfig;
+scheduler?: LearningRateScheduler;
+mixedPrecision?: boolean;
+gradientClipping?: number;
 }
 /**
- * Early stopping configuration
- */
+* Early stopping configuration
+*/
 export interface EarlyStoppingConfig {
-    enabled: boolean;
-    patience: number;
-    minDelta: number;
-    metric: 'loss' | ' accuracy' | ' f1' | ' precision' | ' recall;;
-    mode: 'min' | ' max;;
-    restoreBestWeights: boolean;
+enabled: boolean;
+patience: number;
+minDelta: number;
+metric: 'loss' | ' accuracy' | ' f1' | ' precision' | ' recall;;
+mode: 'min' | ' max;;
+restoreBestWeights: boolean;
 }
 /**
- * Learning rate scheduler configuration
- */
+* Learning rate scheduler configuration
+*/
 export interface LearningRateScheduler {
-    type: '...[proper format needed];
-    '  parameters:Record<string, number>;: any;
-    warmupSteps?: number;
+type: '...[proper format needed];
+' parameters:Record<string, number>;: any;
+warmupSteps?: number;
 }
 /**
- * Optimization configuration
- */
+* Optimization configuration
+*/
 export interface OptimizationConfig {
-    optimizer: OptimizerType;
-    lossFunction: LossFunction;
-    metrics: NonEmptyArray<MetricType>;
-    parameters: OptimizerParameters;
-    gradientNorm?: number;
-    weightDecay?: number;
+optimizer: OptimizerType;
+lossFunction: LossFunction;
+metrics: NonEmptyArray<MetricType>;
+parameters: OptimizerParameters;
+gradientNorm?: number;
+weightDecay?: number;
 }
 /**
- * Optimizer parameters
- */
+* Optimizer parameters
+*/
 export interface OptimizerParameters {
-    beta1?: number;
-    beta2?: number;
-    epsilon?: number;
-    momentum?: number;
-    rho?: number;
-    dampening?: number;
-    nesterov?: boolean;
+beta1?: number;
+beta2?: number;
+epsilon?: number;
+momentum?: number;
+rho?: number;
+dampening?: number;
+nesterov?: boolean;
 }
 /**
- * Neural agent - AI entity with cognitive capabilities
- */
+* Neural agent - AI entity with cognitive capabilities
+*/
 export interface NeuralAgent extends Entity {
-    agentType: AgentType;
-    cognitiveModel: CognitivePattern;
-    capabilities: AgentCapabilities;
-    learningConfig: LearningConfiguration;
-    performance: AgentPerformance;
-    state: AgentState;
+agentType: AgentType;
+cognitiveModel: CognitivePattern;
+capabilities: AgentCapabilities;
+learningConfig: LearningConfiguration;
+performance: AgentPerformance;
+state: AgentState;
 }
 /**
- * Types of neural agents
- */
+* Types of neural agents
+*/
 export declare enum AgentType {
-    RESEARCHER = "researcher",
-    CODER = "coder",
-    ANALYST = "analyst",
-    COORDINATOR = "coordinator",
-    OPTIMIZER = "optimizer",
-    EVALUATOR = "evaluator",
-    SPECIALIST = "specialist",
-    GENERALIST = "generalist"
+RESEARCHER = "researcher",
+CODER = "coder",
+ANALYST = "analyst",
+COORDINATOR = "coordinator",
+OPTIMIZER = "optimizer",
+EVALUATOR = "evaluator",
+SPECIALIST = "specialist",
+GENERALIST = "generalist"
 }
 /**
- * Cognitive patterns for neural agents
- */
+* Cognitive patterns for neural agents
+*/
 export interface CognitivePattern {
-    reasoningStyle: ReasoningStyle;
-    memoryModel: MemoryModel;
-    attentionMechanism: AttentionMechanism;
-    creativityLevel: number;
-    analyticalDepth: number;
-    collaborationStyle: CollaborationStyle;
+reasoningStyle: ReasoningStyle;
+memoryModel: MemoryModel;
+attentionMechanism: AttentionMechanism;
+creativityLevel: number;
+analyticalDepth: number;
+collaborationStyle: CollaborationStyle;
 }
 /**
- * Reasoning styles for cognitive processing
- */
+* Reasoning styles for cognitive processing
+*/
 export declare enum ReasoningStyle {
-    LOGICAL = "logical",
-    INTUITIVE = "intuitive",
-    ANALYTICAL = "analytical",
-    CREATIVE = "creative",
-    SYSTEMATIC = "systematic",
-    HEURISTIC = "heuristic",
-    ABDUCTIVE = "abductive",
-    INDUCTIVE = "inductive",
-    DEDUCTIVE = "deductive"
+LOGICAL = "logical",
+INTUITIVE = "intuitive",
+ANALYTICAL = "analytical",
+CREATIVE = "creative",
+SYSTEMATIC = "systematic",
+HEURISTIC = "heuristic",
+ABDUCTIVE = "abductive",
+INDUCTIVE = "inductive",
+DEDUCTIVE = "deductive"
 }
 /**
- * Memory model configuration
- */
+* Memory model configuration
+*/
 export interface MemoryModel {
-    type: '...[proper format needed];
-    '  capacity:number;: any;
-    retention: RetentionPolicy;
-    consolidation: ConsolidationStrategy;
-    retrieval: RetrievalMechanism;
+type: '...[proper format needed];
+' capacity:number;: any;
+retention: RetentionPolicy;
+consolidation: ConsolidationStrategy;
+retrieval: RetrievalMechanism;
 }
 /**
- * Attention mechanism configuration
- */
+* Attention mechanism configuration
+*/
 export interface AttentionMechanism {
-    type: '...[proper format needed];
-    '  scope:number; // attention span: any;
-    intensity: number;
-    adaptability: number;
+type: '...[proper format needed];
+' scope:number; // attention span: any;
+intensity: number;
+adaptability: number;
 }
 /**
- * Collaboration styles for multi-agent coordination
- */
+* Collaboration styles for multi-agent coordination
+*/
 export declare enum CollaborationStyle {
-    INDEPENDENT = "independent",
-    COOPERATIVE = "cooperative",
-    COMPETITIVE = "competitive",
-    HIERARCHICAL = "hierarchical",
-    CONSENSUS = "consensus",
-    DELEGATIVE = "delegative",
-    SUPPORTIVE = "supportive"
+INDEPENDENT = "independent",
+COOPERATIVE = "cooperative",
+COMPETITIVE = "competitive",
+HIERARCHICAL = "hierarchical",
+CONSENSUS = "consensus",
+DELEGATIVE = "delegative",
+SUPPORTIVE = "supportive"
 }
 /**
- * Agent capabilities and skills
- */
+* Agent capabilities and skills
+*/
 export interface AgentCapabilities {
-    primarySkills: NonEmptyArray<SkillType>;
-    secondarySkills: SkillType[];
-    learningAbilities: LearningAbility[];
-    adaptationRate: number;
-    specializationLevel: number;
-    generalKnowledge: number;
+primarySkills: NonEmptyArray<SkillType>;
+secondarySkills: SkillType[];
+learningAbilities: LearningAbility[];
+adaptationRate: number;
+specializationLevel: number;
+generalKnowledge: number;
 }
 /**
- * Skill types for neural agents
- */
+* Skill types for neural agents
+*/
 export declare enum SkillType {
-    CODE_GENERATION = "code_generation",
-    CODE_ANALYSIS = "code_analysis",
-    DEBUGGING = "debugging",
-    TESTING = "testing",
-    DOCUMENTATION = "documentation",
-    INFORMATION_GATHERING = "information_gathering",
-    DATA_ANALYSIS = "data_analysis",
-    PATTERN_RECOGNITION = "pattern_recognition",
-    HYPOTHESIS_GENERATION = "hypothesis_generation",
-    LITERATURE_REVIEW = "literature_review",
-    EXPLANATION = "explanation",
-    TEACHING = "teaching",
-    PERSUASION = "persuasion",
-    NEGOTIATION = "negotiation",
-    PRESENTATION = "presentation",
-    IDEA_GENERATION = "idea_generation",
-    PROBLEM_SOLVING = "problem_solving",
-    DESIGN = "design",
-    INNOVATION = "innovation",
-    SYNTHESIS = "synthesis"
+CODE_GENERATION = "code_generation",
+CODE_ANALYSIS = "code_analysis",
+DEBUGGING = "debugging",
+TESTING = "testing",
+DOCUMENTATION = "documentation",
+INFORMATION_GATHERING = "information_gathering",
+DATA_ANALYSIS = "data_analysis",
+PATTERN_RECOGNITION = "pattern_recognition",
+HYPOTHESIS_GENERATION = "hypothesis_generation",
+LITERATURE_REVIEW = "literature_review",
+EXPLANATION = "explanation",
+TEACHING = "teaching",
+PERSUASION = "persuasion",
+NEGOTIATION = "negotiation",
+PRESENTATION = "presentation",
+IDEA_GENERATION = "idea_generation",
+PROBLEM_SOLVING = "problem_solving",
+DESIGN = "design",
+INNOVATION = "innovation",
+SYNTHESIS = "synthesis"
 }
 /**
- * Learning abilities of neural agents
- */
+* Learning abilities of neural agents
+*/
 export declare enum LearningAbility {
-    SUPERVISED_LEARNING = "supervised",
-    UNSUPERVISED_LEARNING = "unsupervised",
-    REINFORCEMENT_LEARNING = "reinforcement",
-    TRANSFER_LEARNING = "transfer",
-    META_LEARNING = "meta",
-    FEW_SHOT_LEARNING = "few_shot",
-    ZERO_SHOT_LEARNING = "zero_shot",
-    ONLINE_LEARNING = "online",
-    CONTINUOUS_LEARNING = "continuous"
+SUPERVISED_LEARNING = "supervised",
+UNSUPERVISED_LEARNING = "unsupervised",
+REINFORCEMENT_LEARNING = "reinforcement",
+TRANSFER_LEARNING = "transfer",
+META_LEARNING = "meta",
+FEW_SHOT_LEARNING = "few_shot",
+ZERO_SHOT_LEARNING = "zero_shot",
+ONLINE_LEARNING = "online",
+CONTINUOUS_LEARNING = "continuous"
 }
 /**
- * Learning configuration for neural agents
- */
+* Learning configuration for neural agents
+*/
 export interface LearningConfiguration {
-    strategy: LearningStrategy;
-    parameters: LearningParameters;
-    evaluation: EvaluationConfig;
-    adaptation: AdaptationConfig;
-    feedback: FeedbackConfig;
+strategy: LearningStrategy;
+parameters: LearningParameters;
+evaluation: EvaluationConfig;
+adaptation: AdaptationConfig;
+feedback: FeedbackConfig;
 }
 /**
- * Learning strategies
- */
+* Learning strategies
+*/
 export declare enum LearningStrategy {
-    GRADIENT_DESCENT = "gradient_descent",
-    GENETIC_ALGORITHM = "genetic_algorithm",
-    PARTICLE_SWARM = "particle_swarm",
-    SIMULATED_ANNEALING = "simulated_annealing",
-    BAYESIAN_OPTIMIZATION = "bayesian_optimization",
-    EVOLUTIONARY_STRATEGY = "evolutionary_strategy",
-    NEUROEVOLUTION = "neuroevolution"
+GRADIENT_DESCENT = "gradient_descent",
+GENETIC_ALGORITHM = "genetic_algorithm",
+PARTICLE_SWARM = "particle_swarm",
+SIMULATED_ANNEALING = "simulated_annealing",
+BAYESIAN_OPTIMIZATION = "bayesian_optimization",
+EVOLUTIONARY_STRATEGY = "evolutionary_strategy",
+NEUROEVOLUTION = "neuroevolution"
 }
 /**
- * Learning parameters configuration
- */
+* Learning parameters configuration
+*/
 export interface LearningParameters {
-    learningRate: number;
-    adaptationThreshold: number;
-    explorationRate: number;
-    exploitationRate: number;
-    memoryRetention: number;
-    forgettingRate: number;
-    consolidationStrength: number;
+learningRate: number;
+adaptationThreshold: number;
+explorationRate: number;
+exploitationRate: number;
+memoryRetention: number;
+forgettingRate: number;
+consolidationStrength: number;
 }
 /**
- * Evaluation configuration for learning assessment
- */
+* Evaluation configuration for learning assessment
+*/
 export interface EvaluationConfig {
-    metrics: NonEmptyArray<MetricType>;
-    frequency: EvaluationFrequency;
-    criteria: EvaluationCriteria;
-    benchmarks: BenchmarkConfig[];
+metrics: NonEmptyArray<MetricType>;
+frequency: EvaluationFrequency;
+criteria: EvaluationCriteria;
+benchmarks: BenchmarkConfig[];
 }
 /**
- * Metric types for evaluation - Consolidated enum
- */
+* Metric types for evaluation - Consolidated enum
+*/
 export declare enum MetricTypeExtended {
-    PERPLEXITY = "perplexity",
-    BLEU = "bleu",
-    ROUGE = "rouge",
-    METEOR = "meteor",
-    CUSTOM = "custom"
+PERPLEXITY = "perplexity",
+BLEU = "bleu",
+ROUGE = "rouge",
+METEOR = "meteor",
+CUSTOM = "custom"
 }
 /**
- * Evaluation frequency settings
- */
+* Evaluation frequency settings
+*/
 export declare enum EvaluationFrequency {
-    EPOCH = "epoch",
-    BATCH = "batch",
-    STEP = "step",
-    TIME_BASED = "time_based",
-    PERFORMANCE_BASED = "performance_based",
-    ADAPTIVE = "adaptive"
+EPOCH = "epoch",
+BATCH = "batch",
+STEP = "step",
+TIME_BASED = "time_based",
+PERFORMANCE_BASED = "performance_based",
+ADAPTIVE = "adaptive"
 }
 /**
- * Agent performance metrics and tracking
- */
+* Agent performance metrics and tracking
+*/
 export interface AgentPerformance {
-    currentMetrics: PerformanceMetrics;
-    historicalTrends: PerformanceTrend[];
-    benchmarkComparisons: BenchmarkComparison[];
-    learningProgress: LearningProgress;
-    adaptationHistory: AdaptationEvent[];
+currentMetrics: PerformanceMetrics;
+historicalTrends: PerformanceTrend[];
+benchmarkComparisons: BenchmarkComparison[];
+learningProgress: LearningProgress;
+adaptationHistory: AdaptationEvent[];
 }
 /**
- * Performance metrics for neural agents
- */
+* Performance metrics for neural agents
+*/
 export interface PerformanceMetrics {
-    accuracy: number;
-    precision: number;
-    recall: number;
-    f1Score: number;
-    processingSpeed: number;
-    memoryEfficiency: number;
-    energyConsumption: number;
-    errorRate: number;
-    responseTime: number;
-    throughput: number;
-    reliability: number;
-    adaptability: number;
+accuracy: number;
+precision: number;
+recall: number;
+f1Score: number;
+processingSpeed: number;
+memoryEfficiency: number;
+energyConsumption: number;
+errorRate: number;
+responseTime: number;
+throughput: number;
+reliability: number;
+adaptability: number;
 }
 /**
- * Performance trend tracking
- */
+* Performance trend tracking
+*/
 export interface PerformanceTrend {
-    metric: MetricType;
-    timeWindow: TimeWindow;
-    values: TimeSeriesData[];
-    trend: 'increasing|decreasing|';
+metric: MetricType;
+timeWindow: TimeWindow;
+values: TimeSeriesData[];
+trend: 'increasing|decreasing|';
 }
 /**
- * Time series data for trends
- */
+* Time series data for trends
+*/
 export interface TimeSeriesData {
-    timestamp: Timestamp;
-    value: number;
-    metadata?: Record<string, unknown>;
+timestamp: Timestamp;
+value: number;
+metadata?: Record<string, unknown>;
 }
 /**
- * Time window specification
- */
+* Time window specification
+*/
 export interface TimeWindow {
-    start: Timestamp;
-    end: Timestamp;
-    granularity: 'second|minute|hour|day|week|month;;
+start: Timestamp;
+end: Timestamp;
+granularity: 'second|minute|hour|day|week|month;;
 }
 /**
- * Brain coordination system configuration
- */
+* Brain coordination system configuration
+*/
 export interface BrainCoordinationConfig {
-    topology: CoordinationTopology;
-    communication: CommunicationProtocol;
-    consensus: ConsensusAlgorithm;
-    synchronization: SynchronizationStrategy;
-    faultTolerance: FaultToleranceConfig;
+topology: CoordinationTopology;
+communication: CommunicationProtocol;
+consensus: ConsensusAlgorithm;
+synchronization: SynchronizationStrategy;
+faultTolerance: FaultToleranceConfig;
 }
 /**
- * Coordination topologies
- */
+* Coordination topologies
+*/
 export declare enum CoordinationTopology {
-    CENTRALIZED = "centralized",
-    DECENTRALIZED = "decentralized",
-    HIERARCHICAL = "hierarchical",
-    MESH = "mesh",
-    RING = "ring",
-    TREE = "tree",
-    HYBRID = "hybrid"
+CENTRALIZED = "centralized",
+DECENTRALIZED = "decentralized",
+HIERARCHICAL = "hierarchical",
+MESH = "mesh",
+RING = "ring",
+TREE = "tree",
+HYBRID = "hybrid"
 }
 /**
- * Communication protocols for neural agents
- */
+* Communication protocols for neural agents
+*/
 export interface CommunicationProtocol {
-    type: 'message_passing|shared_memory|event_driven|rpc|streaming;;
-    format: 'json|binary|protobuf|custom;;
-    '  encryption:boolean;: any;
-    compression: boolean;
-    reliability: ReliabilityLevel;
+type: 'message_passing|shared_memory|event_driven|rpc|streaming;;
+format: 'json|binary|protobuf|custom;;
+' encryption:boolean;: any;
+compression: boolean;
+reliability: ReliabilityLevel;
 }
 /**
- * Reliability levels for communication
- */
+* Reliability levels for communication
+*/
 export declare enum ReliabilityLevel {
-    BEST_EFFORT = "best_effort",
-    AT_LEAST_ONCE = "at_least_once",
-    AT_MOST_ONCE = "at_most_once",
-    EXACTLY_ONCE = "exactly_once"
+BEST_EFFORT = "best_effort",
+AT_LEAST_ONCE = "at_least_once",
+AT_MOST_ONCE = "at_most_once",
+EXACTLY_ONCE = "exactly_once"
 }
 /**
- * Message types for agent communication
- */
+* Message types for agent communication
+*/
 export interface AgentMessage {
-    id: UUID;
-    from: UUID;
-    to: UUID | UUID[];
-    type: MessageType;
-    payload: MessagePayload;
-    priority: Priority;
-    timestamp: Timestamp;
-    expiresAt?: Timestamp;
-    correlationId?: UUID;
-    replyTo?: UUID;
+id: UUID;
+from: UUID;
+to: UUID | UUID[];
+type: MessageType;
+payload: MessagePayload;
+priority: Priority;
+timestamp: Timestamp;
+expiresAt?: Timestamp;
+correlationId?: UUID;
+replyTo?: UUID;
 }
 /**
- * Message types for different communication purposes
- */
+* Message types for different communication purposes
+*/
 export declare enum MessageType {
-    TASK_ASSIGNMENT = "task_assignment",
-    TASK_RESULT = "task_result",
-    COORDINATION_REQUEST = "coordination_request",
-    STATUS_UPDATE = "status_update",
-    KNOWLEDGE_SHARING = "knowledge_sharing",
-    LEARNING_UPDATE = "learning_update",
-    ERROR_REPORT = "error_report",
-    HEARTBEAT = "heartbeat",
-    SHUTDOWN = "shutdown"
+TASK_ASSIGNMENT = "task_assignment",
+TASK_RESULT = "task_result",
+COORDINATION_REQUEST = "coordination_request",
+STATUS_UPDATE = "status_update",
+KNOWLEDGE_SHARING = "knowledge_sharing",
+LEARNING_UPDATE = "learning_update",
+ERROR_REPORT = "error_report",
+HEARTBEAT = "heartbeat",
+SHUTDOWN = "shutdown"
 }
 /**
- * Message payload structure
- */
+* Message payload structure
+*/
 export interface MessagePayload {
-    data: Record<string, unknown>;
-    metadata: MessageMetadata;
-    attachments?: Attachment[];
+data: Record<string, unknown>;
+metadata: MessageMetadata;
+attachments?: Attachment[];
 }
 /**
- * Message metadata
- */
+* Message metadata
+*/
 export interface MessageMetadata {
-    encoding: string;
-    size: number;
-    checksum: string;
-    compression?: string;
-    encryption?: string;
-    ttl?: number;
+encoding: string;
+size: number;
+checksum: string;
+compression?: string;
+encryption?: string;
+ttl?: number;
 }
 /**
- * Agent state information
- */
+* Agent state information
+*/
 export interface AgentState {
-    status: AgentStatus;
-    currentTask?: UUID;
-    workload: number;
-    health: HealthStatus;
-    resources: ResourceUsage;
-    lastActivity: Timestamp;
-    uptime: number;
+status: AgentStatus;
+currentTask?: UUID;
+workload: number;
+health: HealthStatus;
+resources: ResourceUsage;
+lastActivity: Timestamp;
+uptime: number;
 }
 /**
- * Agent status enumeration
- */
+* Agent status enumeration
+*/
 export declare enum AgentStatus {
-    INITIALIZING = "initializing",
-    READY = "ready",
-    BUSY = "busy",
-    LEARNING = "learning",
-    IDLE = "idle",
-    PAUSED = "paused",
-    ERROR = "error",
-    SHUTTING_DOWN = "shutting_down",
-    OFFLINE = "offline"
+INITIALIZING = "initializing",
+READY = "ready",
+BUSY = "busy",
+LEARNING = "learning",
+IDLE = "idle",
+PAUSED = "paused",
+ERROR = "error",
+SHUTTING_DOWN = "shutting_down",
+OFFLINE = "offline"
 }
 /**
- * Health status for neural agents
- */
+* Health status for neural agents
+*/
 export interface HealthStatus {
-    status: 'healthy|degraded|critical|unknown;;
-    '  score:number; // 0.0 - 1.0: any;
-    issues: HealthIssue[];
-    lastCheck: Timestamp;
-    nextCheck: Timestamp;
+status: 'healthy|degraded|critical|unknown;;
+' score:number; // 0.0 - 1.0: any;
+issues: HealthIssue[];
+lastCheck: Timestamp;
+nextCheck: Timestamp;
 }
 /**
- * Health issue tracking
- */
+* Health issue tracking
+*/
 export interface HealthIssue {
-    type: '...[proper format needed];
+type: '...[proper format needed];
 }
 /**
- * Resource usage tracking
- */
+* Resource usage tracking
+*/
 export interface ResourceUsage {
-    cpu: number;
-    memory: number;
-    gpu?: number;
-    network: NetworkUsage;
-    storage: StorageUsage;
+cpu: number;
+memory: number;
+gpu?: number;
+network: NetworkUsage;
+storage: StorageUsage;
 }
 /**
- * Network usage statistics
- */
+* Network usage statistics
+*/
 export interface NetworkUsage {
-    bytesIn: number;
-    bytesOut: number;
-    packetsIn: number;
-    packetsOut: number;
-    errors: number;
-    latency: number;
+bytesIn: number;
+bytesOut: number;
+packetsIn: number;
+packetsOut: number;
+errors: number;
+latency: number;
 }
 /**
- * Storage usage statistics
- */
+* Storage usage statistics
+*/
 export interface StorageUsage {
-    used: number;
-    available: number;
-    reads: number;
-    writes: number;
-    iops: number;
+used: number;
+available: number;
+reads: number;
+writes: number;
+iops: number;
 }
 /**
- * Training data specification
- */
+* Training data specification
+*/
 export interface TrainingDataset {
-    id: UUID;
-    name: string;
-    type: DatasetType;
-    format: DataFormat;
-    size: DatasetSize;
-    splits: DatasetSplits;
-    features: FeatureSpec[];
-    labels?: LabelSpec;
-    preprocessing: PreprocessingConfig;
-    validation: ValidationConfig;
+id: UUID;
+name: string;
+type: DatasetType;
+format: DataFormat;
+size: DatasetSize;
+splits: DatasetSplits;
+features: FeatureSpec[];
+labels?: LabelSpec;
+preprocessing: PreprocessingConfig;
+validation: ValidationConfig;
 }
 /**
- * Dataset types
- */
+* Dataset types
+*/
 export declare enum DatasetType {
-    SUPERVISED = "supervised",
-    UNSUPERVISED = "unsupervised",
-    REINFORCEMENT = "reinforcement",
-    SEMI_SUPERVISED = "semi_supervised",
-    MULTIMODAL = "multimodal",
-    TIME_SERIES = "time_series",
-    GRAPH = "graph",
-    TEXT = "text",
-    IMAGE = "image",
-    AUDIO = "audio"
+SUPERVISED = "supervised",
+UNSUPERVISED = "unsupervised",
+REINFORCEMENT = "reinforcement",
+SEMI_SUPERVISED = "semi_supervised",
+MULTIMODAL = "multimodal",
+TIME_SERIES = "time_series",
+GRAPH = "graph",
+TEXT = "text",
+IMAGE = "image",
+AUDIO = "audio"
 }
 /**
- * Data format specifications
- */
+* Data format specifications
+*/
 export declare enum DataFormat {
-    CSV = "csv",
-    JSON = "json",
-    PARQUET = "parquet",
-    NUMPY = "numpy",
-    TENSOR = "tensor",
-    HDF5 = "hdf5",
-    TFRECORD = "tfrecord",
-    CUSTOM = "custom"
+CSV = "csv",
+JSON = "json",
+PARQUET = "parquet",
+NUMPY = "numpy",
+TENSOR = "tensor",
+HDF5 = "hdf5",
+TFRECORD = "tfrecord",
+CUSTOM = "custom"
 }
 /**
- * Dataset size information
- */
+* Dataset size information
+*/
 export interface DatasetSize {
-    samples: number;
-    features: number;
-    bytes: number;
-    compressed: boolean;
-    estimatedMemory: number;
+samples: number;
+features: number;
+bytes: number;
+compressed: boolean;
+estimatedMemory: number;
 }
 /**
- * Dataset splits for training/validation/test
- */
+* Dataset splits for training/validation/test
+*/
 export interface DatasetSplits {
-    train: SplitInfo;
-    validation: SplitInfo;
-    test: SplitInfo;
-    stratified: boolean;
-    randomSeed?: number;
+train: SplitInfo;
+validation: SplitInfo;
+test: SplitInfo;
+stratified: boolean;
+randomSeed?: number;
 }
 /**
- * Split information
- */
+* Split information
+*/
 export interface SplitInfo {
-    size: number;
-    percentage: number;
-    samples: number;
+size: number;
+percentage: number;
+samples: number;
 }
 /**
- * Type guard for neural agents
- */
+* Type guard for neural agents
+*/
 export declare function isNeuralAgent(obj: unknown): obj is NeuralAgent;
 /**
- * Type guard for neural network config
- */
+* Type guard for neural network config
+*/
 export declare function isNeuralNetworkConfig(obj: unknown): obj is NeuralNetworkConfig;
 /**
- * Type guard for agent messages
- */
+* Type guard for agent messages
+*/
 export declare function isAgentMessage(obj: unknown): obj is AgentMessage;
 /**
- * Result types for brain-specific operations
- */
+* Result types for brain-specific operations
+*/
 export type NeuralAgentResult<T> = Result<T, NeuralError>;
 export type TrainingResult = Result<TrainingMetrics, TrainingError>;
 export type CoordinationResult = Result<CoordinationResponse, CoordinationError>;
 /**
- * Neural-specific error types
- */
+* Neural-specific error types
+*/
 export interface NeuralError extends Error {
-    readonly type: 'NeuralError;;
-    '  readonly message:string;: any;
-    readonly category: 'training|inference|coordination|configuration;;
-    readonly modelId?: UUID;
-    readonly agentId?: UUID;
-    readonly timestamp: Timestamp;
-    readonly code: string;
-    readonly errorId: UUID;
-    readonly context?: Record<string, unknown>;
-    readonly cause?: Error;
-    readonly retryable: boolean;
-    readonly logLevel: LogLevel;
-    readonly name: string;
-    readonly stack?: string;
+readonly type: 'NeuralError;;
+' readonly message:string;: any;
+readonly category: 'training|inference|coordination|configuration;;
+readonly modelId?: UUID;
+readonly agentId?: UUID;
+readonly timestamp: Timestamp;
+readonly code: string;
+readonly errorId: UUID;
+readonly context?: Record<string, unknown>;
+readonly cause?: Error;
+readonly retryable: boolean;
+readonly logLevel: LogLevel;
+readonly name: string;
+readonly stack?: string;
 }
 /**
- * Training-specific error types
- */
+* Training-specific error types
+*/
 export interface TrainingError extends NeuralError {
-    readonly category: 'training;;
-    '  readonly epochNumber?:number;: any;
-    readonly batchNumber?: number;
-    readonly lossValue?: number;
+readonly category: 'training;;
+' readonly epochNumber?:number;: any;
+readonly batchNumber?: number;
+readonly lossValue?: number;
 }
 /**
- * Coordination-specific error types
- */
+* Coordination-specific error types
+*/
 export interface CoordinationError extends NeuralError {
-    readonly category: 'coordination;;
-    '  readonly topology?:CoordinationTopology;: any;
-    readonly participantCount?: number;
+readonly category: 'coordination;;
+' readonly topology?:CoordinationTopology;: any;
+readonly participantCount?: number;
 }
 declare const _default: {
-    NeuralModelType: typeof NeuralModelType;
-    ActivationFunction: typeof ActivationFunction;
-    LossFunction: typeof LossFunction;
-    OptimizerType: typeof OptimizerType;
-    AgentType: typeof AgentType;
-    ReasoningStyle: typeof ReasoningStyle;
-    CollaborationStyle: typeof CollaborationStyle;
-    SkillType: typeof SkillType;
-    LearningAbility: typeof LearningAbility;
-    LearningStrategy: typeof LearningStrategy;
-    MetricType: typeof MetricType;
-    EvaluationFrequency: typeof EvaluationFrequency;
-    CoordinationTopology: typeof CoordinationTopology;
-    ReliabilityLevel: typeof ReliabilityLevel;
-    MessageType: typeof MessageType;
-    AgentStatus: typeof AgentStatus;
-    DatasetType: typeof DatasetType;
-    DataFormat: typeof DataFormat;
-    isNeuralAgent: typeof isNeuralAgent;
-    isNeuralNetworkConfig: typeof isNeuralNetworkConfig;
-    isAgentMessage: typeof isAgentMessage;
+NeuralModelType: typeof NeuralModelType;
+ActivationFunction: typeof ActivationFunction;
+LossFunction: typeof LossFunction;
+OptimizerType: typeof OptimizerType;
+AgentType: typeof AgentType;
+ReasoningStyle: typeof ReasoningStyle;
+CollaborationStyle: typeof CollaborationStyle;
+SkillType: typeof SkillType;
+LearningAbility: typeof LearningAbility;
+LearningStrategy: typeof LearningStrategy;
+MetricType: typeof MetricType;
+EvaluationFrequency: typeof EvaluationFrequency;
+CoordinationTopology: typeof CoordinationTopology;
+ReliabilityLevel: typeof ReliabilityLevel;
+MessageType: typeof MessageType;
+AgentStatus: typeof AgentStatus;
+DatasetType: typeof DatasetType;
+DataFormat: typeof DataFormat;
+isNeuralAgent: typeof isNeuralAgent;
+isNeuralNetworkConfig: typeof isNeuralNetworkConfig;
+isAgentMessage: typeof isAgentMessage;
 };
 export default _default;
 /**
- * Model metrics interface for brain.js bridge
- */
+* Model metrics interface for brain.js bridge
+*/
 export interface ModelMetrics {
-    accuracy: number;
-    loss: number;
-    iterations: number;
-    time: number;
-    errorRate: number;
-    convergence: boolean;
+accuracy: number;
+loss: number;
+iterations: number;
+time: number;
+errorRate: number;
+convergence: boolean;
 }
 //# sourceMappingURL=index.d.ts.map
