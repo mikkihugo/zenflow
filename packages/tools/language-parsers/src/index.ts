@@ -90,7 +90,7 @@ options?: import('./beam-parser').BeamParserOptions
 ): import('./beam-parser').BeamLanguageParser {
 // Temporarily disabled due to syntax issues in beam-parser.ts
 throw new Error('BeamLanguageParser is temporarily disabled due to syntax issues');
-// const { BeamLanguageParser } = require(`./beam-parser`);
+// const { BeamLanguageParser } = require(`./beam-parser`
 // return new BeamLanguageParser(options);
 }
 }
@@ -116,13 +116,13 @@ extractDocumentation?:boolean;
 const family = detectLanguageFamily(filePath);
 
 if (!family) {
-throw new Error(`Unsupported file type: ${filePath}`);
+throw new Error(`Unsupported file type: ${filePath}`
 }
 
 const factory = createParserFactory();
 
 switch (family) {
-case `beam`: {
+case 'beam': {
 const parser = factory.createBeamParser(options);
 return await parser.parseFile(filePath);
 }
@@ -131,13 +131,13 @@ case 'functional': {
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
-case `concurrent`: {
+case 'concurrent': {
 // Future:Add concurrent language parser support
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
 default:
-throw new Error(`Parser not implemented for language family: ${family}`);
+throw new Error(`Parser not implemented for language family: ${family}`
 }
 }
 
@@ -172,7 +172,7 @@ const allResults: unknown[] = [];
 const familyPromises = Array.from(filesByFamily.entries()).map(
 async ([family, paths]) => {
 switch (family) {
-case `beam`: {
+case 'beam': {
 const parser = factory.createBeamParser(options);
 const result = await parser.parseFiles(paths);
 return result.isOk() ? result._unsafeUnwrap() :[];

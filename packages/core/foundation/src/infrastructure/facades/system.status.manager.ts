@@ -9,7 +9,7 @@
  * import { getSystemStatus, getHealthSummary} from '@claude-zen/foundation/status-manager';
  *
  * const systemStatus = getSystemStatus();
- * logger.info(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`);
+ * logger.info(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`
  *
  * const health = getHealthSummary();
  * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
@@ -619,7 +619,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  }
 
  if (fallback) {
- logger.debug(`Using fallback for service ${serviceName}`);
+ logger.debug(`Using fallback for service ${serviceName}`
  return fallback();
  }
 
@@ -798,7 +798,7 @@ export class SystemStatusManager extends EventEmitter<ServiceStatusEvents> {
  }
 
  if (cleanedCount > 0) {
- logger.debug(`Cleaned up ${cleanedCount} expired cache entries`);
+ logger.debug(`Cleaned up ${cleanedCount} expired cache entries`
  }
  }
 

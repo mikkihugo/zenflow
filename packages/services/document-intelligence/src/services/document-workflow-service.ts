@@ -115,7 +115,7 @@ for (const workflow of documentWorkflows) {
 this.documentWorkflows.set(workflow.name, workflow);
 }
 
-logger.info(`Registered ${documentWorkflows.length} document workflows`);
+logger.info(`Registered ${documentWorkflows.length} document workflows`
 }
 
 /**
@@ -126,11 +126,11 @@ async processDocumentEvent(
 eventType:string,
 documentData:unknown
 ):Promise<DocumentWorkflowResult> {
-logger.info(`Processing document event:${eventType}`);
+logger.info(`Processing document event:${eventType}`
 
 try {
 // Auto-trigger workflows based on document type
-const documentType = (documentData as any)?.type || `unknown`;
+const documentType = (documentData as any)?.type || `unknown`
 const triggerWorkflows:string[] = [];
 
 switch (documentType) {
@@ -138,10 +138,10 @@ case 'vision':
 triggerWorkflows.push('vision-to-prds');
 break;
 case 'prd':
-triggerWorkflows.push(`prds-to-epics`);
+triggerWorkflows.push(`prds-to-epics`
 break;
 default:
-logger.debug(`No automatic workflow for document type:${documentType}`);
+logger.debug(`No automatic workflow for document type:${documentType}`
 return {
 success:true,
 workflowId: `none`, results:{ message: `No workflow triggered for document type`}
@@ -160,7 +160,7 @@ triggeredAt:new Date().toISOString(),
 
 results[workflowName] = workflowResult;
 
-logger.info(`Triggered workflow ${workflowName}:SUCCESS`);
+logger.info(`Triggered workflow ${workflowName}:SUCCESS`
 
 // Emit completion event for coordination layer
 this.eventBus.emit(`document-workflow:completed`, {
@@ -199,10 +199,10 @@ context:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
 const workflow = this.documentWorkflows.get(workflowName);
 if (!workflow) {
-throw new Error(`Document workflow not found:${workflowName}`);
+throw new Error(`Document workflow not found:${workflowName}`
 }
 
-logger.info(`Executing document workflow:${workflowName}`);
+logger.info(`Executing document workflow:${workflowName}`
 
 const results:Record<string, unknown> = {};
 
@@ -230,7 +230,7 @@ private async executeDocumentWorkflowStep(
 step:DocumentWorkflowStep,
 context:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug(`Executing document workflow step:${step.type}`);
+logger.debug(`Executing document workflow step:${step.type}`
 
 switch (step.type) {
 case `extract-product-requirements`:
@@ -246,7 +246,7 @@ case `create-epic-documents`:
 return await this.createEpicDocuments(context, step.params);
 
 default:
-throw new Error(`Unknown document workflow step type:${step.type}`);
+throw new Error(`Unknown document workflow step type:${step.type}`
 }
 }
 
@@ -257,7 +257,7 @@ private async extractProductRequirements(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug(`Extracting product requirements from vision document`);
+logger.debug(`Extracting product requirements from vision document`
 
 // Integrate with document-task-coordinator for strategic analysis
 const documentData = context.documentData as any;
@@ -282,7 +282,7 @@ private async createPRDDocument(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug(`Creating PRD document`);
+logger.debug(`Creating PRD document`
 
 const requirements = context.product_requirements as any;
 
@@ -341,7 +341,7 @@ private async createEpicDocuments(
 context:Record<string, unknown>,
 params:Record<string, unknown>
 ):Promise<Record<string, unknown>> {
-logger.debug(`Creating epic definition documents`);
+logger.debug(`Creating epic definition documents`
 
 const epicRequirements = context.epic_requirements as any;
 const epicDocuments:DocumentContent[] = [];
@@ -411,7 +411,7 @@ error:error instanceof Error ? error.message : String(error)
 
 // Listen for workflow coordination requests
 this.eventBus.on(`document-workflow:execute`, async (data:any) => {
-logger.info(`Received workflow execution request:${data.workflowName}`);
+logger.info(`Received workflow execution request:${data.workflowName}`
 try {
 const result = await this.executeDocumentWorkflow(data.workflowName, data.context || {});
 this.eventBus.emit(`document-workflow:completed`, {

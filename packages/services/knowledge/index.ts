@@ -93,8 +93,8 @@
  *}
  *});
  *
- * logger.info(`Transfer efficiency:${transferResult.efficiency}%`);`
- * logger.info(`Applicable patterns:${transferResult.applicablePatterns.length}`);`
+ * logger.info(`Transfer efficiency:${transferResult.efficiency}%``
+ * logger.info(`Applicable patterns:${transferResult.applicablePatterns.length}``
  * ````
  *
  * @example Distributed Learning Network
@@ -117,8 +117,8 @@
  *
  * // Execute federated learning
  * const result = await session.execute();
- * logger.info(`Final accuracy:${result.accuracy}`);`
- * logger.info(`Convergence iterations:${result.iterations}`);`
+ * logger.info(`Final accuracy:${result.accuracy}``
+ * logger.info(`Convergence iterations:${result.iterations}``
  * ````
  *
  * @example Knowledge Quality Management

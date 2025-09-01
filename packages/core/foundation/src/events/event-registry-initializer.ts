@@ -223,7 +223,7 @@ export class EventRegistryInitializer {
       0
     );
 
-    logger.info(`Initialized ${this.activeModules.length} active modules`);
+    logger.info(`Initialized ${this.activeModules.length} active modules`
   }
 
   /**

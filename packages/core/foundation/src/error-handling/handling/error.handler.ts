@@ -465,15 +465,15 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  private setupEventListeners(): void {
  // Cockatiel uses event listeners on the policy itself
  this.policy.onBreak(() => {
- logger.warn(`Circuit breaker ${this.name} opened`);
+ logger.warn(`Circuit breaker ${this.name} opened`
  });
 
  this.policy.onReset(() => {
- logger.info(`Circuit breaker ${this.name} closed`);
+ logger.info(`Circuit breaker ${this.name} closed`
  });
 
  this.policy.onHalfOpen(() => {
- logger.info(`Circuit breaker ${this.name} half-opened`);
+ logger.info(`Circuit breaker ${this.name} half-opened`
  });
 
  this.policy.onFailure((data: { reason?: unknown }) => {
@@ -482,7 +482,7 @@ export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
  });
 
  this.policy.onSuccess(() => {
- logger.debug(`Circuit breaker ${this.name} recorded success`);
+ logger.debug(`Circuit breaker ${this.name} recorded success`
  });
  }
 
@@ -568,7 +568,7 @@ export async function withTimeout<T>(
 
  // Add event listeners for monitoring
  const timeoutListener = timeoutPolicy.onTimeout(() => {
- logger.warn(`Operation timed out after ${timeoutMs}ms`);
+ logger.warn(`Operation timed out after ${timeoutMs}ms`
  });
 
  const failureListener = timeoutPolicy.onFailure(

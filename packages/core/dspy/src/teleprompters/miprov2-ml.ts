@@ -252,7 +252,7 @@ this.logger.info(
 );
 } catch (error) {
 this.logger.error(`Failed to initialize MIPROv2ML:`, error);
-throw new Error(`MIPROv2ML initialization failed:${error}`);
+throw new Error(`MIPROv2ML initialization failed:${error}`
 }
 }
 
@@ -364,7 +364,7 @@ convergenceAnalysis: await this.analyzeConvergence(),
 };
 } catch (error) {
 this.logger.error(`MIPROv2ML compilation failed:`, error);
-throw new Error(`MIPROv2ML compilation error:${error}`);
+throw new Error(`MIPROv2ML compilation error:${error}`
 }
 }
 
@@ -398,7 +398,7 @@ await this.evaluateMemoryUsage(student, params, options),
 const result = await this.multiObjectiveOptimizer?.optimize(objectives);
 
 if (!result || result.solutions.length === 0) {
-throw new Error(`Multi-objective optimization failed to find solutions`);
+throw new Error(`Multi-objective optimization failed to find solutions`
 }
 
 // Select best solution from Pareto front based on weighted objectives
@@ -499,7 +499,7 @@ const patterns = Array.isArray(patternResult)
 ? patternResult
 : patternResult.patterns || [];
 
-this.logger.info(`Detected ${patterns.length} optimization patterns`);
+this.logger.info(`Detected ${patterns.length} optimization patterns`
 
 return patterns;
 }
@@ -563,7 +563,7 @@ regression.rSquared + 0.05,
 });
 }
 
-this.logger.info(`Completed ${tests.length} statistical tests`);
+this.logger.info(`Completed ${tests.length} statistical tests`
 
 return tests;
 }
@@ -573,7 +573,7 @@ return tests;
 private selectBestSolution(paretoFront: ParetoFront, weights: number[]): any {
 const { solutions } = paretoFront;
 if (solutions.length === 0) {
-throw new Error(`Empty Pareto front`);
+throw new Error(`Empty Pareto front`
 }
 
 // Weighted sum approach to select best solution

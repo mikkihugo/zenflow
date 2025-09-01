@@ -207,7 +207,7 @@ export class ChatAdapter extends BaseAdapter {
 	 * Format prediction as assistant message content
 	 */
 	private formatPredictionAsAssistantMessage(
-		outputs:Prediction | Record<string, any>,
+		outputs: 'Prediction' | 'Record'<string, any>,
 	):string {
 		// Handle Prediction objects
 		if ("data" in outputs && outputs.data) {
@@ -271,7 +271,7 @@ export class ChatAdapter extends BaseAdapter {
 		return messages
 			.map((msg) => {
 				const roleLabel = msg.role.toUpperCase();
-				return `${roleLabel}: ${msg.content}`;
+				return `${roleLabel}: ${msg.content}`
 })
 			.join("\n\n");
 }

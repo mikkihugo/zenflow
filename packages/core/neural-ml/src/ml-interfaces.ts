@@ -460,7 +460,7 @@ export function createBayesianOptimizer(
  },
  async updateObservation(params: number[], value: number): Promise<void> {
  // In Rust implementation, this would update the Gaussian process
- console.debug(`Observed: params=${params}, value=${value}`);
+ console.debug(`Observed: params=${params}, value=${value}`
  },
  async observe(params: number[], value: number): Promise<void> {
  return this.updateObservation(params, value);

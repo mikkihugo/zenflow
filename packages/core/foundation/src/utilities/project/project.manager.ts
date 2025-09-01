@@ -313,7 +313,7 @@ export class ProjectManager {
     for (const dir of directories) {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
-        logger.info(`Created directory: ${dir}`);
+        logger.info(`Created directory: ${dir}`
       }
     }
   }
@@ -333,7 +333,7 @@ export class ProjectManager {
         await fsAsync.access(dir);
       } catch {
         await fsAsync.mkdir(dir, { recursive: true });
-        logger.info(`Created directory: ${dir}`);
+        logger.info(`Created directory: ${dir}`
       }
     }
   }
@@ -410,7 +410,7 @@ export class ProjectManager {
 # - Project-specific configuration
 # - User preferences and session data
 # - Logs and temporary processing files
-#`;
+#`
   }
 
   private createDefaultIgnoreSection(): string {
@@ -423,7 +423,7 @@ export class ProjectManager {
 */
 
 # Ignore all file types
-*.*`;
+*.*`
   }
 
   private createDatabaseProtectionSection(): string {
@@ -446,7 +446,7 @@ storage/
 # Specific database files from Claude Zen architecture
 coordination.db
 kuzu-graph.db
-lancedb-vectors.db`;
+lancedb-vectors.db`
   }
 
   private createMemoryCacheSection(): string {
@@ -465,7 +465,7 @@ temp/
 # Memory-specific files
 debug.json
 memory.json
-cache.json`;
+cache.json`
   }
 
   private createAuthSecuritySection(): string {
@@ -487,7 +487,7 @@ config.json
 *.p12
 *.pfx
 *.crt
-*.cert`;
+*.cert`
   }
 
   private createProjectWorkspaceSection(): string {
@@ -504,7 +504,7 @@ proj-*/
 workspace.db
 project.json
 workspace.json
-settings.json`;
+settings.json`
   }
 
   private createLogsArtifactsSection(): string {
@@ -526,7 +526,7 @@ logs/
 *.cache
 *.swap
 *.swp
-*.swo`;
+*.swo`
   }
 
   private createSystemOsSection(): string {
@@ -548,7 +548,7 @@ ehthumbs.db
 Desktop.ini
 
 # Linux
-.directory`;
+.directory`
   }
 
   private createIdeEditorSection(): string {
@@ -578,7 +578,7 @@ Desktop.ini
 
 # Sublime Text
 *.sublime-workspace
-*.sublime-project`;
+*.sublime-project`
   }
 
   private createDevBuildSection(): string {
@@ -599,7 +599,7 @@ __pycache__/
 *.egg-info/
 
 # Rust
-target/`;
+target/`
   }
 
   private createGitignoreFooter(): string {
@@ -611,7 +611,7 @@ target/`;
 # commits of sensitive Claude Zen data. If you need to commit something from
 # this directory (which should be rare), you'll need to explicitly force it
 # with 'git add -f filename' after careful consideration.
-#`;
+#`
   }
 
   /**
@@ -772,7 +772,7 @@ target/`;
    * Generate unique project ID
    */
   private generateProjectId(): string {
-    return `proj-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 9)}`;
+    return `proj-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 9)}`
   }
 
   /**
@@ -925,7 +925,7 @@ target/`;
       }
     }
 
-    logger.debug(`Created project directories for ${projectId}`);
+    logger.debug(`Created project directories for ${projectId}`
   }
 
   /**
@@ -1744,7 +1744,7 @@ target/`;
       try {
         await fsAsync.access(projectDir);
         await fsAsync.rm(projectDir, { recursive: true, force: true });
-        logger.info(`Deleted project database directory: ${projectDir}`);
+        logger.info(`Deleted project database directory: ${projectDir}`
       } catch {
         // Directory doesn't exist or can' t be deleted, that's okay
         logger.debug(
@@ -1753,7 +1753,7 @@ target/`;
       }
     }
 
-    logger.info(`Removed project: ${project.name} (${project.id})`);
+    logger.info(`Removed project: ${project.name} (${project.id})`
     return true;
   }
 
@@ -1774,14 +1774,14 @@ target/`;
     // Apply updates
     const existingProject = registry.projects[project.id];
     if (!existingProject) {
-      throw new Error(`Project ${project.id} not found in registry`);
+      throw new Error(`Project ${project.id} not found in registry`
     }
     Object.assign(existingProject, updates);
     existingProject.lastAccessedAt = new Date().toISOString();
 
     this.saveRegistry();
 
-    logger.info(`Updated project: ${project.name} (${project.id})`);
+    logger.info(`Updated project: ${project.name} (${project.id})`
     return await Promise.resolve(true);
   }
 }

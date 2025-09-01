@@ -166,7 +166,7 @@ timestamp: number;
 
 // Logging Events (Zero Import Logging)
 'brain:log': {
-level: 'debug' | ' info' | ' warn' | ` error`;
+level: 'debug' | ' info' | ' warn' | ` error`
 message: string;
 data?: Record<string, unknown>;
 timestamp: number;
@@ -445,7 +445,7 @@ if (complexity > 0.8 && priority === 'critical')
 return ' dspy_optimization';
 if (complexity > 0.6) return 'hybrid_workflow';
 if (priority === 'high') return ' direct_training';
-return `simple_coordination`;
+return `simple_coordination`
 }
 
 private getStrategyReasoning(strategy: string, complexity: number): string {
@@ -455,7 +455,7 @@ hybrid_workflow: `Medium complexity (${complexity.toFixed(2)}) benefits from hyb
 direct_training: `Direct training approach for efficient processing`,
 simple_coordination: `Simple coordination sufficient for low complexity tasks`,
 };
-return reasons[strategy] || `Standard coordination approach`;
+return reasons[strategy] || `Standard coordination approach`
 }
 
 private calculateConfidence(

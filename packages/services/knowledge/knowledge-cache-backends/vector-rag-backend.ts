@@ -130,7 +130,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  return;
  }
 
- const operationId = `init-${Date.now()}`;
+ const operationId = `init-${Date.now()}`
  logger.info('Initializing Vector RAG Backend', {
  vectorDimensions: this.config.vectorDimensions,
  embeddingModel: this.config.embeddingModel,
@@ -224,7 +224,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  timestamp TEXT,
  metadata TEXT
  )
- `;
+ `
  
  await this.vectorStorage.execute(createTableSQL);
  logger.debug('Vector table ensured', { tableName });
@@ -262,7 +262,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  }
  break;
  default:
- throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`);
+ throw new Error(`Unsupported embedding model: ${this.config.embeddingModel}`
  }
 
  logger.info('Embedding service initialized', { 
@@ -281,7 +281,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  throw new EnhancedError('NotInitialized', 'Vector RAG backend not initialized');
  }
 
- const operationId = `store-${entry.id}-${Date.now()}`;
+ const operationId = `store-${entry.id}-${Date.now()}`
  logger.debug('Storing knowledge entry with vector embedding', { 
  id: entry.id, 
  type: entry.knowledgeType,
@@ -342,7 +342,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  const insertSQL = `
  INSERT INTO ${tableName} (id, vector, query, source, knowledge_type, semantic_tags, timestamp, metadata)
  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
- `;
+ `
  
  await this.vectorStorage.execute(insertSQL, [
  entry.id,
@@ -408,7 +408,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  WHERE vector_similarity(vector, ?) >= ?
  ORDER BY similarity DESC
  LIMIT ?
- `;
+ `
 
  const vectorResults = await this.vectorStorage.query<any>(searchSQL, [
  queryEmbedding,
@@ -579,7 +579,7 @@ export class VectorRAGBackend extends TypedEventBase<VectorRAGEvents> implements
  await this.store(knowledge);
  }
 
- logger.info(`Ingested ${architecturalKnowledge.length} architectural knowledge entries`);
+ logger.info(`Ingested ${architecturalKnowledge.length} architectural knowledge entries`
  }
 
  /**
@@ -666,7 +666,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
  });
 
  if (!response.ok) {
- throw new Error(`OpenAI API error: ${response.statusText}`);
+ throw new Error(`OpenAI API error: ${response.statusText}`
  }
 
  const data = await response.json();
@@ -692,7 +692,7 @@ class OpenAIEmbeddingService implements EmbeddingService {
  });
 
  if (!response.ok) {
- throw new Error(`OpenAI API error: ${response.statusText}`);
+ throw new Error(`OpenAI API error: ${response.statusText}`
  }
 
  const data = await response.json();
@@ -758,7 +758,7 @@ class SentenceTransformersEmbeddingService implements EmbeddingService {
  });
 
  if (!response.ok) {
- throw new Error(`Sentence Transformers API error: ${response.statusText}`);
+ throw new Error(`Sentence Transformers API error: ${response.statusText}`
  }
 
  const data = await response.json();

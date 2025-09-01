@@ -374,7 +374,7 @@ this.networks.set(id, networkInstance);
 
 // Persist to database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
+const kv = await this.dbAccess.getKV(`neural`
 await kv.set(
 `brainjs:metadata:${id}`,
 JSON.stringify({
@@ -488,7 +488,7 @@ this.networks.set(networkId, finalInstance);
 
 // Store training metrics in database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
+const kv = await this.dbAccess.getKV(`neural`
 await kv.set(
 `brainjs:training:${networkId}:${Date.now()}`,
 JSON.stringify({
@@ -644,11 +644,11 @@ this.networks.delete(networkId);
 
 // Remove from database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
-await kv.delete(`brainjs:metadata:${networkId}`);
+const kv = await this.dbAccess.getKV(`neural`
+await kv.delete(`brainjs:metadata:${networkId}`
 }
 
-this.foundationLogger.info(`Removed brain.js network:${networkId}`);
+this.foundationLogger.info(`Removed brain.js network:${networkId}`
 return true;
 }).then((result) =>
 result.mapErr((error) =>
@@ -774,7 +774,7 @@ this.networks.set(id, networkInstance);
 
 // Persist to database
 if (this.dbAccess) {
-const kv = await this.dbAccess.getKV(`neural`);
+const kv = await this.dbAccess.getKV(`neural`
 await kv.set(
 `brainjs:metadata:${id}`,
 JSON.stringify({

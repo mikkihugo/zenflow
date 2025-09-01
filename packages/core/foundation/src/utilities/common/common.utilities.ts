@@ -31,7 +31,7 @@
  * DATABASE_URL:str()
  * });
  *
- * logger.info(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`);
+ * logger.info(`Server starting on port ${config.PORT} in ${config.NODE_ENV} mode`
  * ```
  *
  * @example Process Lifecycle Management
@@ -151,7 +151,7 @@ export function validateInput<T>(
  return ok(validated);
  } catch (error) {
  if (error instanceof z.ZodError) {
- const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
+ const message = `Validation failed: ${error.issues.map((e: { path: (string | number)[]; message: string }) => `${e.path.join('.')}: ${e.message}`).join(', ')}`
  return err(new Error(message));
  }
  return err(
@@ -203,7 +203,7 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * });
  *
  * // Type-safe access with intellisense
- * logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+ * logger.info(`Server running on port ${env.PORT} in ${env.NODE_ENV} mode`
  * ```
  */
 export function createEnvValidator<T extends Record<string, Spec<unknown>>>(

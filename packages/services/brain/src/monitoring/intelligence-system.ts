@@ -58,13 +58,13 @@ factors:[
 name: `Context Complexity`, influence:0.6,
 impact:contextComplexity,
 confidence:0.7,
-description:`Complexity factor from context: ${contextComplexity}`,`
+description:`Complexity factor from context: ${contextComplexity}`,
 },
 {
 name: `Context Urgency`, influence:0.4,
 impact:contextUrgency,
 confidence:0.7,
-description:`Urgency factor from context: ${contextUrgency}`,`
+description:`Urgency factor from context: ${contextUrgency}`,
 },
 ],
 lastUpdated:new Date(),
@@ -135,7 +135,7 @@ agentId.type === 'researcher') ? ['research', 'analysis']') :['coordination', 'e
 expertise:agentId.instance > 1 ? 0.8 : 0.6, // Senior instances have higher expertise
 lastUpdated:Date.now(),,
 adaptabilityScore:Math.min(0.9, 0.5 + agentId.instance * 0.1), // More experienced agents adapt better
-currentFocus:`$agentId.type-optimization`,`
+currentFocus:`${agentId}.type-optimization`,
 lastLearningUpdate:Date.now(),
 };
 
@@ -290,8 +290,8 @@ agentId:{ id: 'agent-1', swarmId, type: ` coordinator`, instance:1},
 currentPerformance:0.8,
 predictedPerformance:Math.min(predictedPerformance, 1.0),
 optimizationStrategies:[
-`Optimize for ${horizonDays}-day horizon`,`
-`Target confidence:${(horizonConfidence * 100).toFixed(1)}%`,`
+`Optimize for ${horizonDays}-day horizon`,
+`Target confidence:${(horizonConfidence * 100).toFixed(1)}%`,
 ],
 implementationComplexity:Math.min(implementationComplexity, 1.0),
 };
@@ -336,7 +336,7 @@ targetAgent:{
 id: 'target-1', swarmId:targetSwarm,
 type: 'coder', instance:1,
 },
-knowledge:`patterns-$patternCount-items`,`
+knowledge:`patterns-${patternCount}-items`,
 transferProbability:adjustedProbability,
 expectedBenefit:adjustedBenefit,
 };
@@ -394,11 +394,16 @@ lastUpdated:Date.now(),
 */
 private convertHorizonToDays(horizon:ForecastHorizon): number {
 switch (horizon) {
-case '1h': ')' return 1 / 24;
-case '6h': ')' return 6 / 24;
-case '24h': ')' return 1;
-case '7d': ')' return 7;
-case '30d': ')' return 30;
+case '1h':
+          ' return 1 / 24;
+case '6h':
+          ' return 6 / 24;
+case '24h':
+          ' return 1;
+case '7d':
+          ' return 7;
+case '30d':
+          ' return 30;
 default:
 return 7; // default to 7 days
 }

@@ -82,9 +82,9 @@ const bridge = createCodeQLBridge(options.config);
 const languages = options.languages||['typescript', 'javascript'];') const securityQueryPacks:import('./types/codeql-types`).QueryPack[] = [];`)
 for (const language of languages) {
 securityQueryPacks.push({
-name:`${language}-security-extended`,`
+name:`${language}-security-extended`,
 version: `latest`, metadata:{
-description:`Security queries for ${language}`,`
+description:`Security queries for ${language}`,
 category: `security`, focus: 'vulnerability-detection',},
 });
 }
@@ -114,7 +114,7 @@ queryPacks?:import('./types/codeql-types').QueryPack[];') config?:Partial<import
 // Detect language from file extension
 const language = detectLanguageFromPath(filePath);
 if (!language) {
-throw new Error(`Unsupported file type:${filePath}`);`
+throw new Error(`Unsupported file type:${filePath}``
 }
 
 const queryPacks =
@@ -146,31 +146,36 @@ projectType:'web-app' | ' library' | ' api' | ' cli' | ' monorepo')):Partial<imp
 ') const baseConfig = { ...DEFAULT_CODEQL_CONFIG};
 
 switch (projectType) {
-case 'web-app': ')' return {
+case 'web-app':
+          ' return {
 ...baseConfig,
 maxMemory:6144,
 timeout:600000, // 10 minutes for larger web apps
 };
 
-case 'library': ')' return {
+case 'library':
+          ' return {
 ...baseConfig,
 maxMemory:2048,
 timeout:180000, // 3 minutes for smaller libraries
 };
 
-case 'api': ')' return {
+case 'api':
+          ' return {
 ...baseConfig,
 maxMemory:4096,
 timeout:300000, // 5 minutes for APIs
 };
 
-case 'cli': ')' return {
+case 'cli':
+          ' return {
 ...baseConfig,
 maxMemory:1024,
 timeout:120000, // 2 minutes for CLI tools
 };
 
-case 'monorepo': ')' return {
+case 'monorepo':
+          ' return {
 ...baseConfig,
 maxMemory:8192,
 timeout:1200000, // 20 minutes for large monorepos
@@ -191,18 +196,18 @@ languages:import('./types/codeql-types').CodeQLLanguage[]')):import('./types/cod
 for (const language of languages) {
 // OWASP Top 10 queries
 queryPacks.push({
-name:`$language-security-extended`,`
+name:`${language}-security-extended`,
 version: `latest`, metadata:
-description:`OWASP Top 10 security queries for ${language}`,`
+description:`OWASP Top 10 security queries for ${language}`,
 category: `security`, tags:['owasp', 'top-10'],
 },
 });
 
 // CWE-specific queries
 queryPacks.push({
-name:`$language-security-and-quality`,`
+name:`${language}-security-and-quality`,
 version: `latest`, metadata:
-description:`CWE-based security and quality queries for ${language}`,`
+description:`CWE-based security and quality queries for ${language}`,
 category: `security`, tags:['cwe', 'quality'],
 },
 });

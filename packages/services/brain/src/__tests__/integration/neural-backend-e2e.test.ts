@@ -264,7 +264,7 @@ return originalMock(...args);
 );
 
 // First request might fail but system should recover
-const text = 'Recovery test after temporary failure`;
+const text = 'Recovery test after temporary failure`
 
 try {
 const result = await brainCoordinator.generateEmbedding(text);
@@ -324,7 +324,7 @@ type: `long`,},
 const results = await Promise.all(
 testCases.map((testCase) =>
 brainCoordinator.generateEmbedding(testCase.text, {
-context:`quality-test-${testCase.type}`,`
+context:`quality-test-${testCase.type}`,
 qualityLevel: `standard`,})
 )
 );

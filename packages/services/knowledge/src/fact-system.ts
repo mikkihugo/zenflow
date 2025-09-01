@@ -147,7 +147,7 @@ private listeners = new Set<(fact:CoordinationFact) => void>();
 private eventBus = new EventBus();
 
 // Unified fact database - single source with coordinated indexing
-private factDatabase:DatabaseConnection | null = null; // Primary database with unified indexes
+private factDatabase: 'DatabaseConnection' | 'null' = null; // Primary database with unified indexes
 
 constructor() {
 // Initialize high-performance Rust FactBridge with production configuration
@@ -225,7 +225,7 @@ INDEX idx_fact_timestamp (timestamp),
 INDEX idx_fact_type_confidence (type, confidence),
 INDEX idx_fact_source_type (source, type)
 )
-`);
+`
 
 logger.info(' Fact schema created with coordinated indexes');
 } catch (error) {
@@ -248,12 +248,12 @@ await this.initializeFactDatabases();
 // Initialize EventBus
 const eventBusResult = await this.eventBus.initialize();
 if (eventBusResult.isErr()) {
-throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
+throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`
 }
 
 // Initialize the high-performance Rust fact bridge
 await this.factBridge.initialize();
-logger.info(` Rust fact bridge initialized successfully`);
+logger.info(` Rust fact bridge initialized successfully`
 
 // Initialize TypeScript fallback client for when Rust bridge fails
 this.factClient = await createSQLiteFactClient();
@@ -496,39 +496,39 @@ let sql = `
 SELECT id, type, data, timestamp, source, confidence, tags
 FROM coordination_facts
 WHERE 1=1
-`;
+`
 const params:unknown[] = [];
 
 if (query.type) {
-sql += ` AND type = ?`;
+sql += ` AND type = ?`
 params.push(query.type);
 }
 
 if (query.source) {
-sql += ` AND source = ?`;
+sql += ` AND source = ?`
 params.push(query.source);
 }
 
 if (query.tags && query.tags.length > 0) {
-sql += ` AND (`;
+sql += ` AND (`
 for (let index = 0; index < query.tags.length; index++) {
 const tag = query.tags[index];
-if (index > 0) sql += ` OR `;
-sql += `JSON_EXTRACT(tags, `$`) LIKE ?`;
-params.push(`%"${tag}"%`);
+if (index > 0) sql += ` OR `
+sql += `JSON_EXTRACT(tags, `$`) LIKE ?`
+params.push(`%"${tag}"%`
 }
-sql += `)`;
+sql += `)`
 }
 
 if (query.minConfidence !== undefined) {
-sql += ` AND confidence >= ?`;
+sql += ` AND confidence >= ?`
 params.push(query.minConfidence);
 }
 
-sql += ` ORDER BY confidence DESC, timestamp DESC`;
+sql += ` ORDER BY confidence DESC, timestamp DESC`
 
 if (query.limit) {
-sql += ` LIMIT ?`;
+sql += ` LIMIT ?`
 params.push(query.limit);
 }
 
@@ -542,7 +542,7 @@ async getFact(id:string): Promise<CoordinationFact|null> {
 await this.ensureInitialized();
 
 if (!this.factDatabase) {
-logger.warn(`No unified fact database available for fact retrieval`);
+logger.warn(`No unified fact database available for fact retrieval`
 // Fallback to in-memory search
 const fact = this.coordinationFacts.get(id) || null;
 
@@ -669,11 +669,11 @@ let sql = `
 SELECT id, type, data, timestamp, source, confidence, tags
 FROM coordination_facts
 WHERE 1=1
-`;
+`
 const params:unknown[] = [];
 
 if (searchType) {
-sql += ` AND type = ?`;
+sql += ` AND type = ?`
 params.push(searchType);
 }
 
@@ -682,12 +682,12 @@ sql += ` AND (`
 JSON_EXTRACT(data, '$') LIKE ? OR
 source LIKE ? OR
 JSON_EXTRACT(tags, `$`) LIKE ?
-)`;
-const searchTerm = `%${query.toLowerCase()}%`;
+)`
+const searchTerm = `%${query.toLowerCase()}%`
 params.push(searchTerm, searchTerm, searchTerm);
 }
 
-sql += ` ORDER BY confidence DESC, timestamp DESC LIMIT ?`;
+sql += ` ORDER BY confidence DESC, timestamp DESC LIMIT ?`
 params.push(searchLimit);
 
 const rows = await this.factDatabase.query<{
@@ -737,7 +737,7 @@ JSON.stringify(fact.data).toLowerCase(),
 fact.type.toLowerCase(),
 fact.source.toLowerCase(),
 ...fact.tags.map((tag) => tag.toLowerCase()),
-].join(` `);
+].join(` `
 
 return searchTerms.some((term) => searchableText.includes(term));
 });
@@ -834,7 +834,7 @@ this.listeners.delete(listener);
 */
 clear():void {
 this.coordinationFacts.clear();
-logger.info(`Cleared coordination facts`);
+logger.info(`Cleared coordination facts`
 }
 
 /**
@@ -874,7 +874,7 @@ fallbackError
 );
 }
 } else {
-logger.warn(`Foundation fact client not available for NPM lookup`);
+logger.warn(`Foundation fact client not available for NPM lookup`
 }
 
 return null;
@@ -911,7 +911,7 @@ fallbackError
 );
 }
 } else {
-logger.warn(`Foundation fact client not available for GitHub lookup`);
+logger.warn(`Foundation fact client not available for GitHub lookup`
 }
 
 return null;
@@ -939,23 +939,23 @@ try {
 // Get statistics from unified database with coordinated indexes
 const totalResult = await this.factDatabase.query<{ count:number}>(`
 SELECT COUNT(*) as count FROM coordination_facts
-`);
+`
 
 const typeResult = await this.factDatabase.query<{ type:string; count: number}>(`
 SELECT type, COUNT(*) as count
 FROM coordination_facts
 GROUP BY type
-`);
+`
 
 const sourceResult = await this.factDatabase.query<{ source:string; count: number}>(`
 SELECT source, COUNT(*) as count
 FROM coordination_facts
 GROUP BY source
-`);
+`
 
 const avgResult = await this.factDatabase.query<{ avg:number}>(`
 SELECT AVG(confidence) as avg FROM coordination_facts
-`);
+`
 
 const factsByType:Record<string, number> = {};
 const factsBySource:Record<string, number> = {};

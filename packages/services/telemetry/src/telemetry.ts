@@ -350,7 +350,7 @@ export function metered(name?: string) {
     const originalMethod = descriptor.value;
     descriptor.value = function (this: unknown, ...args: unknown[]) {
       const className = (target as any)?.constructor?.name ?? 'UnknownClass';
-      const metricName = name || (className) + `.${propertyKey}.calls`;
+      const metricName = name || (className) + `.${propertyKey}.calls`
       recordMetric(metricName, 1);
       return originalMethod.apply(this, args);
     };

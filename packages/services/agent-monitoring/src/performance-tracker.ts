@@ -178,7 +178,7 @@ export class PerformanceTracker {
 
     try {
       const startTime = Date.now();
-      const operationId = `${context.agentId || 'unknown'}-${context.operation || ' unknown'}-${startTime}`;
+      const operationId = `${context.agentId || 'unknown'}-${context.operation || ' unknown'}-${startTime}`
 
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
@@ -259,7 +259,7 @@ export class PerformanceTracker {
 }
 
     // Clean up active operation
-    const operationId = `${agentId}-${operation}-${startTime}`;
+    const operationId = `${agentId}-${operation}-${startTime}`
     this.activeOperations.delete(operationId);
 
     // Record completion metrics

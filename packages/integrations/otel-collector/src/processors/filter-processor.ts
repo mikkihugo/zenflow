@@ -32,7 +32,7 @@ export class FilterProcessor implements BaseProcessor {
  private processedCount = 0;
  private filteredCount = 0;
  private lastProcessedTime = 0;
- private lastError:string | null = null;
+ private lastError: 'string' | 'null' = null;
 
  constructor(config:ProcessorConfig) {
  this.name = config.name;

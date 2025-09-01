@@ -216,7 +216,7 @@ it('should handle different priority levels', async () => {
 const results = await Promise.all(
 priorities.map(async (priority) => {
 const request:NeuralEmbeddingRequest = {
-text:`Priority test ${priority}`,`
+text:`Priority test ${priority}`,
 priority,
 };
 return await coordinator.generateEmbedding(request);
@@ -235,7 +235,7 @@ it(`should handle different quality levels`, async () => {
 const results = await Promise.all(
 qualityLevels.map(async (qualityLevel) => {
 const request:NeuralEmbeddingRequest = {
-text:`Quality test ${qualityLevel}`,`
+text:`Quality test ${qualityLevel}`,
 qualityLevel,
 };
 return await coordinator.generateEmbedding(request);
@@ -364,7 +364,7 @@ await coordinator.initialize(););
 
 it(`should track performance metrics`, async () => {
 `) const requests = Array.from({ length:5}, (_, i) => ({
-text:`Performance test ${i}`,`
+text:`Performance test ${i}`,
 priority:`medium` as const,
 }));
 
@@ -535,7 +535,7 @@ it('should handle different quality levels for classification', async () => {
 const results = await Promise.all(
 qualityLevels.map(async (qualityLevel) => {
 const request:NeuralClassificationRequest = {
-text:`Quality test for ${qualityLevel} classification`,`
+text:`Quality test for ${qualityLevel} classification`,
 taskType: `category`, qualityLevel,
 priority: 'medium',};
 return await coordinator.classifyText(request);
@@ -570,7 +570,7 @@ expect(result.metadata.taskType).toBe('completion');') expect(result.generated.t
 });
 
 it('should handle summarization task', async () => {
-`) const longText = ``
+`) const longText = `
 Artificial intelligence (AI) is intelligence demonstrated by machines, in contrast to
 the natural intelligence displayed by humans and animals. Leading AI textbooks define
 the field as the study of "intelligent agents":any device that perceives its environment
@@ -578,7 +578,7 @@ and takes actions that maximize its chance of successfully achieving its goals.
 The term "artificial intelligence" is often used to describe machines that mimic
 "cognitive" functions that humans associate with the human mind, such as "learning"
 and "problem solving".
-`;`
+``
 const request:NeuralGenerationRequest = {
 prompt:longText,
 taskType: 'summarization', maxTokens:50,

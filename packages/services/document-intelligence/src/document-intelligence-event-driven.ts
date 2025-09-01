@@ -405,7 +405,7 @@ for (const workflow of workflows) {
 this.workflows.set(workflow.name, workflow);
 }
 
-this.logger.info(`Registered ${workflows.length} default workflows`);
+this.logger.info(`Registered ${workflows.length} default workflows`
 }
 
 private async processDocumentInternal(
@@ -506,7 +506,7 @@ context:Record<string, any>
 ):Promise<WorkflowExecutionResult> {
 const workflow = this.workflows.get(workflowName);
 if (!workflow) {
-throw new Error(`Workflow not found:${workflowName}`);
+throw new Error(`Workflow not found:${workflowName}`
 }
 
 this.workflowsExecuted++;
@@ -514,7 +514,7 @@ this.workflowsExecuted++;
 const results:Record<string, any> = {};
 const steps:StepResult[] = [];
 
-this.logger.debug(`Executing workflow:${workflowName}`);
+this.logger.debug(`Executing workflow:${workflowName}`
 
 for (const step of workflow.steps) {
 try {
@@ -574,7 +574,7 @@ case `extract-entities`:
 return await this.extractEntitiesStep(context, step.params);
 
 default:
-throw new Error(`Unknown workflow step type:${step.type}`);
+throw new Error(`Unknown workflow step type:${step.type}`
 }
 }
 
@@ -878,7 +878,7 @@ if (content.toLowerCase().includes('customer') || content.toLowerCase().includes
 return 'Enhances customer experience and satisfaction';
 }
 
-return `Provides strategic business value through improved processes and capabilities`;
+return `Provides strategic business value through improved processes and capabilities`
 }
 
 private generatePRDContent(requirements:ProductRequirements): string {

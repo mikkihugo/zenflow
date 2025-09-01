@@ -103,7 +103,7 @@ this.visionService = new StrategicVisionService();
 */
 async getDashboard(projectId:string): Promise<VisionTaskDashboard> {
 try {
-logger.info(`Building integrated dashboard for project:${projectId}`);`
+logger.info(`Building integrated dashboard for project:${projectId}``
 
 // Get strategic vision analysis
 const vision = await this.visionService.getVisionForWorkspace(projectId);
@@ -179,7 +179,7 @@ existing:StrategicTask[];
 errors:string[];
 }> {
 try {
-logger.info(`Generating strategic tasks for project:${projectId}`);
+logger.info(`Generating strategic tasks for project:${projectId}`
 
 const vision = await this.visionService.getVisionForWorkspace(projectId);
 
@@ -267,7 +267,7 @@ errors:string[];
 }> {
 try {
 logger.info(
-`Linking documents to strategic goals for project:$projectId``
+`Linking documents to strategic goals for project:${projectId}``
 );
 
 const vision = await this.visionService.getVisionForWorkspace(projectId);
@@ -319,11 +319,11 @@ status:StrategicTask[`status`],
 notes?:string
 ):Promise<{ success: boolean; updatedDocuments: string[]; error?: string}> {
 try {
-logger.info(`Updating task $taskIdstatus to $status`);`
+logger.info(`Updating task ${taskIdstatus} to ${status}``
 
 // Find task document in database
 const searchResult = await this.documentManager.searchDocuments({
-searchType: 'keyword`, query:`task_id:${taskId}`,`
+searchType: 'keyword`, query:`task_id:${taskId}`,
 documentTypes:[`task'],
 includeContent:true,
 });
@@ -383,7 +383,7 @@ updatedDocuments.push(docId);
 }
 } catch (_docError) {
 logger.warn(
-`Could not update related document ${docId}:`,`
+`Could not update related document ${docId}:`,
 docError
 );
 }
@@ -411,13 +411,13 @@ const tasks:StrategicTask[] = [];
 // Generate tasks from strategic goals
 for (let i = 0; i < vision.strategicGoals.length; i++) {
 const goal = vision.strategicGoals[i];
-const goalId = `goal_$i_$goal?.toLowerCase.replace(/\s+/g, `_`)`;`
+const goalId = `goal_${i_}$goal?.toLowerCase.replace(/\s+/g, `_`)``
 
 // Create main implementation task for each goal
 tasks.push({
-id:`${goalId}_implementation`,`
-title:`Implement: ${goal}`,`
-description:`Strategic implementation task for goal: ${goal}`,`
+id:`${goalId}_implementation`,
+title:`Implement: ${goal}`,
+description:`Strategic implementation task for goal: ${goal}`,
 priority:i < 2 ? `high : i < 4 ? medium` : ' low', status: 'todo', strategicGoalId:goalId,
 relatedDocuments:[],
 estimatedEffort: 'large', tags:[`strategic-goal, implementation`],
@@ -439,9 +439,9 @@ goal?.toLowerCase.includes(keyword?.toLowerCase)
 
 if (!hasDocumentation) {
 tasks.push({
-id:`${goalId}_documentation`,`
-title:`Document: ${goal}`,`
-description:`Create documentation for strategic goal: ${goal}`,`
+id:`${goalId}_documentation`,
+title:`Document: ${goal}`,
+description:`Create documentation for strategic goal: ${goal}`,
 priority: `medium`, status: 'todo', strategicGoalId:goalId,
 relatedDocuments:[],
 estimatedEffort: 'medium', tags:[`documentation, strategic-goal`],
@@ -460,9 +460,9 @@ updatedAt:new Date(),
 for (let i = 0; i < vision.risks.length; i++) {
 const risk = vision.risks[i];
 tasks.push({
-id:`risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_')}`,`
-title:`Mitigate Risk: ${risk}`,`
-description:`Address and mitigate identified risk: ${risk}`,`
+id:`risk_mitigation_${i}_${risk?.toLowerCase.replace(/\s+/g, '_')}`,
+title:`Mitigate Risk: ${risk}`,
+description:`Address and mitigate identified risk: ${risk}`,
 priority: `high`, status: 'todo', strategicGoalId: 'risk_management', relatedDocuments:[],
 estimatedEffort: 'medium', tags:[`risk-mitigation, strategic`],
 businessValue:.7,
@@ -583,7 +583,7 @@ link.strategicGoals.some((sg) =>
 sg.includes(goal?.toLowerCase.replace(/\s+/g, '_`))`) )
 );
 if (!hasDoc) {
-missingDocuments.push(`Documentation for:${goal}`);`
+missingDocuments.push(`Documentation for:${goal}``
 }
 }
 
@@ -601,7 +601,7 @@ const hasTask = tasks.some(
 task.title?.toLowerCase.includes('risk') &&') task.description?.toLowerCase.includes(risk?.toLowerCase)
 );
 if (!hasTask) {
-riskMitigations.push(`Create mitigation plan for:$risk`);`
+riskMitigations.push(`Create mitigation plan for:${risk}``
 }
 }
 
@@ -626,31 +626,31 @@ private createTaskDocumentContent(task:StrategicTask): string
 return `# ${task.title}`
 
 ## Description
-$task.description
+${task}.description
 
 ## Strategic Goal
-$task.strategicGoalId
+${task}.strategicGoalId
 
 ## Priority & Effort
-- **Priority**:$task.priority
-- **Estimated Effort**:$task.estimatedEffort
-- **Business Value**:$Math.round(task.businessValue * 100)%
-- **Technical Complexity**:$Math.round(task.technicalComplexity * 100)%
+- **Priority**:${task}.priority
+- **Estimated Effort**:${task}.estimatedEffort
+- **Business Value**:${Math}.round(task.businessValue * 100)%
+- **Technical Complexity**:${Math}.round(task.technicalComplexity * 100)%
 
 ## Expected Outcomes
-$task.outcomes.map((outcome) => `- ${outcome}`).join(`\n`)`)`
+${task}.outcomes.map((outcome) => `- ${outcome}`).join(`\n`)`)`
 ## Success Metrics
-$task.metrics.map((metric) => `- ${metric}`).join(`\n`)`)`
+${task}.metrics.map((metric) => `- ${metric}`).join(`\n`)`)`
 ## Dependencies
-$task.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join(`\n`) :` No dependencies`)`
+${task}.dependencies.length > 0 ? task.dependencies.map((dep) => `- ${dep}`).join(`\n`) :` No dependencies`)`
 ## Status
-Current Status:$task.status
-$task.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :`}`)$task.assignedTo ? `Assigned To:${task.assignedTo}` :`}`)`
+Current Status:${task}.status
+${task}.dueDate ? `Due Date:${task.dueDate?.toLocaleDateString}` :`}`)${task}.assignedTo ? `Assigned To:${task.assignedTo}` :`}`)`
 ---
 *Generated by Document-Task-Vision Coordinator*
-*Created:$task.createdAt?.toLocaleString*
-*Last Updated:$task.updatedAt?.toLocaleString*
-`;`
+*Created:${task}.createdAt?.toLocaleString*
+*Last Updated:${task}.updatedAt?.toLocaleString*
+``
 }
 }
 

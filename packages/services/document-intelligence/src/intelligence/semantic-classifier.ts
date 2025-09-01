@@ -155,11 +155,11 @@ recommendedStrategy
 };
 
 this.emit(`classification_complete`, classification);
-logger.info(`Document classified as:$documentType(confidence: ${confidence.toFixed(2)})`);`
+logger.info(`Document classified as:${documentType}(confidence: ${confidence.toFixed(2)})``
 
 return classification;
 } catch (error) {
-logger.error(`Error during document classification:`, error);`) throw new Error(`Semantic classification failed:$error`);`
+logger.error(`Error during document classification:`, error);`) throw new Error(`Semantic classification failed:${error}``
 }
 }
 
@@ -217,7 +217,7 @@ const [topCategory, topScore] = sortedCategories[0];
 
 // Apply confidence threshold
 if (topScore < this.config.confidenceThreshold) {
-logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)})`);`
+logger.warn(`Low confidence classification:${topCategory} (${topScore.toFixed(2)})``
 }
 
 // Map categories to document types

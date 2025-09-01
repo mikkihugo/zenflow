@@ -20,11 +20,11 @@ export class FileExporter implements BaseExporter {
   private readonly config: ExporterConfig;
   private logger: Logger;
   private writeStream:WriteStream  |  null = null;
-  private currentFilePath:string | null = null;
+  private currentFilePath: 'string' | 'null' = null;
   private fileRotationTimer:NodeJS.Timeout  |  null = null;
   private exportCount = 0;
-  private lastExportTime:number | null = null;
-  private lastError:string | null = null;
+  private lastExportTime: 'number' | 'null' = null;
+  private lastError: 'string' | 'null' = null;
 
   // Configuration
   private readonly baseFilePath:string;
@@ -197,10 +197,10 @@ export class FileExporter implements BaseExporter {
     let output:string;
     if (this.format === 'jsonl') {
       // JSON Lines format - one JSON object per line
-      output = `${JSON.stringify(data)  }\n`;
+      output = `${JSON.stringify(data)  }\n`
 } else {
       // JSON format - array of objects (requires more complex handling)
-      output = `${JSON.stringify(data, null, 2)  }\n`;
+      output = `${JSON.stringify(data, null, 2)  }\n`
 }
 
     // Write to file

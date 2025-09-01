@@ -191,7 +191,7 @@
 *
 * @example Brain Integration - Autonomous DSPy Optimization
 * '''typescript'
-* import { getBrainService, BrainService} from `@claude-zen/dspy`;
+* import { getBrainService, BrainService} from `@claude-zen/dspy`
 *
 * // Get brain-integrated DSPy service
 * const brainService = await getBrainService();
@@ -205,7 +205,7 @@
 *});
 *
 * // Brain tracks performance and improves over time
-* logger.info(`Optimized program achieved ${result.performance.f1_score} F1 score`);
+* logger.info(`Optimized program achieved ${result.performance.f1_score} F1 score`
 * logger.info(`Brain recommendation:` + result.brainInsights.recommendedStrategy);
 * '
 *

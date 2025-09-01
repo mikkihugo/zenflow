@@ -74,7 +74,7 @@ export type Attributes = Record<
  */
 export interface Span {
   addEvent(name:string, attributes?:Attributes): void;
-  setAttribute(key:string, value:string | number | boolean): void;
+  setAttribute(key:string, value: 'string' | 'number' | boolean): void;
   setStatus(status:'ok' | 'error', message?:string): void;
   end(): void;
 }

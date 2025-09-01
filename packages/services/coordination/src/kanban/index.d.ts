@@ -44,7 +44,7 @@ export declare const ALL_WORKFLOW_STATES: [
 * Task priority levels in order (highest to lowest)
 */
 export declare const TASK_PRIORITIES: [
-';];;,
+';];;
 'critical,',
 'high,
 ];

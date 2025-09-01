@@ -86,7 +86,7 @@ export class ExportSystem {
  try {
  const exporter = this.exporters.get(config?.format);
  if (!exporter) {
- throw new Error(`Unsupported export format:${config?.format}`);
+ throw new Error(`Unsupported export format:${config?.format}`
  }
 
  const exportedData = exporter.export(data);
@@ -149,7 +149,7 @@ export class ExportSystem {
  typeof value === 'string' &&
  (value.includes(', ') || value.includes('"'))
  ) {
- return `"${value.replace(/"/g, '""')}"`;
+ return `"${value.replace(/"/g, '""')}"`
  }
  return value?.toString() || '';
  });
@@ -205,7 +205,7 @@ export class ExportSystem {
  public convertToXML(data: unknown): string {
  const xmlify = (obj: unknown, name = 'root'): string => {
  if (obj === null || obj === undefined) {
- return `<${name}></${name}>`;
+ return `<${name}></${name}>`
  }
 
  if (
@@ -213,24 +213,24 @@ export class ExportSystem {
  typeof obj === 'number' ||
  typeof obj === 'boolean'
  ) {
- return `<${name}>${obj}</${name}>`;
+ return `<${name}>${obj}</${name}>`
  }
 
  if (Array.isArray(obj)) {
- return `<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</${name}>`;
+ return `<${name}>${obj.map((item) => xmlify(item, 'item')).join('')}</${name}>`
  }
 
  if (typeof obj === 'object') {
  const content = Object.entries(obj)
  .map(([key, value]) => xmlify(value, key))
  .join('');
- return `<${name}>${content}</${name}>`;
+ return `<${name}>${content}</${name}>`
  }
 
- return `<${name}>${obj}</${name}>`;
+ return `<${name}>${obj}</${name}>`
  };
 
- return `<?xml version="1.0" encoding="UTF-8"?>\n${xmlify(data)}`;
+ return `<?xml version="1.0" encoding="UTF-8"?>\n${xmlify(data)}`
  }
 
  public convertToMarkdown(data: unknown): string {
@@ -255,8 +255,8 @@ export class ExportSystem {
  ) {
  // Convert array of objects to table
  const headers = Object.keys(obj[0] as Record<string, unknown>);
- const headerRow = `|${headers.join('|')}|`;
- const separatorRow = `|${headers.map(() => '---').join('|')}|`;
+ const headerRow = `|${headers.join('|')}|`
+ const separatorRow = `|${headers.map(() => '---').join('|')}|`
  const dataRows = obj.map(
  (item) =>
  `|${headers
@@ -276,7 +276,7 @@ export class ExportSystem {
  return Object.entries(obj)
  .map(([key, value]) => {
  const heading = '#'.repeat(level);
- return `${heading} ${key}\n\n${mdify(value, level + 1)}`;
+ return `${heading} ${key}\n\n${mdify(value, level + 1)}`
  })
  .join('\n');
  }

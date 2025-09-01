@@ -248,7 +248,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         record.metadata
       );
 }
-    logger.info(`Updated learning with ${records.length} records`);
+    logger.info(`Updated learning with ${records.length} records`
 }
 
   /**
@@ -363,5 +363,5 @@ export function isHighConfidencePrediction(
 export function getPredictionSummary(prediction: TaskPrediction): string {
   const duration = (prediction.predictedDuration / 1000).toFixed(1);
   const confidence = (prediction.confidence * 100).toFixed(0);
-  return (duration) + `s (${confidence}% confidence)`;
+  return (duration) + `s (${confidence}% confidence)`
 }

@@ -317,7 +317,7 @@ resourceUsage?: number;
 errorCount?: number;
 }): Promise<void> {
 try {
-logger.debug(`Updating performance data for agent ${data.agentId}`);
+logger.debug(`Updating performance data for agent ${data.agentId}`
 
 // Convert to AgentPerformanceData format
 const performanceData:AgentPerformanceData = {
@@ -336,7 +336,7 @@ concurrentTasks:1, // Default to 1 if not provided
 // Record the performance data
 await this.recordPerformance(performanceData);
 
-logger.debug(`Performance data updated for agent ${data.agentId}`);
+logger.debug(`Performance data updated for agent ${data.agentId}`
 } catch (error) {
 logger.error(
 `Failed to update performance data for agent ${data.agentId}:`,
@@ -421,7 +421,7 @@ if (slope < -0.01) return 'declining';
 return 'stable';
 } catch (error) {
 logger.warn('Error analyzing performance trend: ', error);
-return `stable`;
+return `stable`
 }
 }
 
@@ -520,7 +520,7 @@ data:AgentPerformanceData[]
 const riskFactors:string[] = [];
 
 if (data.length < 3) {
-riskFactors.push(`Insufficient historical data`);
+riskFactors.push(`Insufficient historical data`
 return riskFactors;
 }
 
@@ -529,7 +529,7 @@ const recentData = data.slice(-5);
 // High error rate
 const avgErrorRate = mean(recentData.map((d) => d.errorRate));
 if (avgErrorRate > 0.1) {
-riskFactors.push(`High error rate:${(avgErrorRate * 100).toFixed(1)}%`);
+riskFactors.push(`High error rate:${(avgErrorRate * 100).toFixed(1)}%`
 }
 
 // High resource usage
@@ -537,7 +537,7 @@ const avgCpuUsage = mean(recentData.map((d) => d.cpuUsage));
 const avgMemoryUsage = mean(recentData.map((d) => d.memoryUsage));
 
 if (avgCpuUsage > 0.8) {
-riskFactors.push(`High CPU usage:${(avgCpuUsage * 100).toFixed(1)}%`);
+riskFactors.push(`High CPU usage:${(avgCpuUsage * 100).toFixed(1)}%`
 }
 
 if (avgMemoryUsage > 0.8) {
@@ -549,7 +549,7 @@ riskFactors.push(
 // Declining performance trend
 const trend = this.analyzePerformanceTrend(agentId);
 if (trend === `declining`) {
-riskFactors.push(`Performance declining`);
+riskFactors.push(`Performance declining`
 }
 
 return riskFactors;
@@ -569,7 +569,7 @@ await this.persistPerformanceTrends(agentId, successRates);
 // Update local cache
 this.performanceTrends.set(agentId, successRates);
 
-logger.debug(`Updated performance trends for agent ${agentId}`);
+logger.debug(`Updated performance trends for agent ${agentId}`
 } catch (error) {
 logger.warn(`Failed to update performance trends for ${agentId}:`, error);
 }
@@ -706,7 +706,7 @@ movingAverage:mean(successRates.slice(-5)), // Last 5 data points
 // In real implementation, this would save to Redis, PostgreSQL, etc.
 logger.debug(`Persisted performance trends for agent ${agentId}:`, {
 dataPoints:successRates.length,
-trend:trendData.trendMetrics.slope > 0 ? `improving`: trendData.trendMetrics.slope < -0.1 ? ' declining': ` stable`, volatility:trendData.trendMetrics.volatility
+trend:trendData.trendMetrics.slope > 0 ? 'improving': trendData.trendMetrics.slope < -0.1 ? ' declining': ` stable`, volatility:trendData.trendMetrics.volatility
 });
 
 } catch (error) {
@@ -781,7 +781,7 @@ bottlenecks.push(...agentBottlenecks);
 // Add system-wide predictions
 this.addSystemWideBottlenecks(bottlenecks, systemLoad);
 
-logger.debug(`Predicted ${bottlenecks.length} potential bottlenecks`);
+logger.debug(`Predicted ${bottlenecks.length} potential bottlenecks`
 return bottlenecks;
 }
 
@@ -866,9 +866,9 @@ const errorThreshold = agentProfile.historicalErrorAvg * 1.5 || 0.15;
 
 // Current performance thresholds with agent-specific analysis
 if (metrics.avgCpuUsage > cpuThreshold) {
-const severity = metrics.trends?.cpu === 'increasing' ? ' critical': ` high`;
+const severity = metrics.trends?.cpu === 'increasing' ? ' critical': ` high`
 const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
-issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);
+issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`
 
 // Log critical performance event for this specific agent
 await this.logCriticalPerformanceEvent(agentId, `cpu_spike`, {
@@ -880,22 +880,22 @@ riskScore:agentRiskScore
 }
 
 if (metrics.avgMemoryUsage > 0.80) {
-const trend = metrics.trends?.memory === 'increasing' ? ' trending up': ``;
-issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`);
+const trend = metrics.trends?.memory === 'increasing' ? ' trending up': ``
+issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`
 }
 
 if (metrics.avgErrorRate > 0.15) {
-const volatility = metrics.volatility?.errors > 0.1 ? ` with high volatility`: ``;
-issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`);
+const volatility = metrics.volatility?.errors > 0.1 ? ` with high volatility`: ``
+issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`
 }
 
 if (metrics.avgCompletionTime > 30000) {
-issues.push(`slow response times (avg:${(metrics.avgCompletionTime / 1000).toFixed(1)}s)`);
+issues.push(`slow response times (avg:${(metrics.avgCompletionTime / 1000).toFixed(1)}s)`
 }
 
 // System-wide correlation analysis
 if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-issues.push(`system overload correlation detected`);
+issues.push(`system overload correlation detected`
 }
 
 // Trend-based predictive warnings
@@ -953,7 +953,7 @@ return issues;
 
 private addSystemWideBottlenecks(bottlenecks:string[], systemLoad:number): void {
 if (systemLoad > 75) {
-bottlenecks.push(`System-wide:High load trend detected`);
+bottlenecks.push(`System-wide:High load trend detected`
 }
 }
 
@@ -970,7 +970,7 @@ const avgCpuUsage = mean(recentData.map((d) => d.cpuUsage));
 const avgErrorRate = mean(recentData.map((d) => d.errorRate));
 
 if (avgCpuUsage > 0.9 || avgErrorRate > 0.15) {
-bottlenecks.push(`Agent ${ agentId } (high resource usage/errors)`);
+bottlenecks.push(`Agent ${ agentId } (high resource usage/errors)`
 }
 }
 }
@@ -990,7 +990,7 @@ const std = standardDeviation(scores);
 const avg = mean(scores);
 
 if (std > avg * 0.3) {
-suggestions.push(`Consider redistributing tasks from high-performing to low-performing agents`);
+suggestions.push(`Consider redistributing tasks from high-performing to low-performing agents`
 }
 }
 
@@ -1350,7 +1350,7 @@ const criticalEvent = {
 timestamp:new Date(),
 agentId,
 eventType,
-severity:eventData.riskScore > 0.8 ? `critical`: eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
+severity:eventData.riskScore > 0.8 ? 'critical': eventData.riskScore > 0.5 ? ' high': ' medium', data:eventData,
 context:{
 systemLoad:process.cpuUsage(),
 memoryUsage:process.memoryUsage(),
@@ -1380,7 +1380,7 @@ private generatePerformanceRecommendations(eventType:string, eventData:any): str
 const recommendations = [];
 
 switch (eventType) {
-case `cpu_spike`:
+case 'cpu_spike':
 recommendations.push('Consider implementing request queuing to smooth CPU load');
 recommendations.push('Review recent code changes for CPU-intensive operations');
 if (eventData.riskScore > 0.7) {
@@ -1393,11 +1393,11 @@ recommendations.push('Implement memory profiling and garbage collection monitori
 break;
 case 'error_spike':
 recommendations.push('Review error logs for patterns and root causes');
-recommendations.push(`Implement circuit breaker patterns for external dependencies`);
+recommendations.push(`Implement circuit breaker patterns for external dependencies`
 break;
 }
 
-recommendations.push(`Current risk score: ${ eventData.riskScore.toFixed(2) } - monitor closely`);
+recommendations.push(`Current risk score: ${ eventData.riskScore.toFixed(2) } - monitor closely`
 return recommendations;
 }
 
@@ -1411,7 +1411,7 @@ eventData:any,
 criticalEvent:any
 ):Promise<void> {
 try {
-logger.info(`Creating TaskMaster incident for agent ${ agentId }, event: ${ eventType}`);
+logger.info(`Creating TaskMaster incident for agent ${ agentId }, event: ${ eventType}`
 
 // Create a task for human approval via TaskMaster facade
 const incidentTask = {
@@ -1450,7 +1450,7 @@ logger.error(`Failed to trigger automated remediation for agent ${ agentId }:`, 
 */
 private getRecommendedActions(eventType:string): string[] {
 switch (eventType) {
-case `cpu_spike`:
+case 'cpu_spike':
 return [
 'Adjust brain event coordination configuration',
 'Scale up processing resources',

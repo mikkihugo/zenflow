@@ -535,7 +535,7 @@ export class EventDrivenTelemetryManager {
 // GLOBAL EVENT-DRIVEN TELEMETRY INSTANCE
 // =============================================================================
 
-let globalEventDrivenTelemetry:EventDrivenTelemetryManager | null = null;
+let globalEventDrivenTelemetry: 'EventDrivenTelemetryManager' | 'null' = null;
 
 export async function initializeEventDrivenTelemetry():Promise<EventDrivenTelemetryManager> {
   if (!globalEventDrivenTelemetry) {

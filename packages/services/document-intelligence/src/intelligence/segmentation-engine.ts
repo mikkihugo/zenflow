@@ -26,7 +26,7 @@ id:string;
 content:string;
 startPosition:number;
 endPosition:number;
-segmentType: 'algorithm | concept|implementation | context|metadata;
+segmentType: 'algorithm' | 'concept' | 'implementation' | 'context' | 'metadata';
 ' importance:number; // 0-1 importance score
 preserveIntegrity:boolean; // Whether to keep segment intact
 relatedSegments:string[]; // IDs of related segments
@@ -206,7 +206,7 @@ _content:string,
 classification:DocumentClassification
 ):Promise<SegmentationResult> {
 const __startTime = performance.now();
-logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}`);`
+logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}``
 
 try {
 // Adapt configuration based on classification
@@ -247,11 +247,11 @@ conceptClustersFound:this.countConceptClusters(segments)
 };
 
 this.emit(`segmentation_complete`, result);
-logger.info(`Document segmented into $segments.lengthsegments (${processingTime.toFixed(2)}ms)`);`
+logger.info(`Document segmented into ${segments}.lengthsegments (${processingTime.toFixed(2)}ms)``
 
 return result;
 } catch (error) {
-logger.error(`Error during document segmentation:`, error);`) throw new Error(`Document segmentation failed:${error}`);`
+logger.error(`Error during document segmentation:`, error);`) throw new Error(`Document segmentation failed:${error}``
 }
 }
 
@@ -717,7 +717,7 @@ startPosition:number,
 segmentType:DocumentSegment[`segmentType`],
 algorithmBlocks:AlgorithmBlock[]
 ):DocumentSegment {
-const __id = `segment_${startPosition}_${Date.now()}`;`
+const __id = `segment_${startPosition}_${Date.now()}``
 const endPosition = startPosition + content.length;
 
 // Check if this segment overlaps with algorithm blocks
@@ -764,7 +764,7 @@ private findStrategicSections(content:string): Array<{ start: number; end: numbe
 const strategicKeywords = ['vision', 'strategy', 'goal', 'objective', 'mission', 'roadmap'];') const sections:Array<{ start: number; end: number; type: string}> = [];
 
 for (const keyword of strategicKeywords) {
-const regex = new RegExp(`\\b$keyword\\b[\\s\\S]0,500`, 'gi');') let match;
+const regex = new RegExp(`\\b${keyword}\\b[\\s\\S]0,500`, 'gi');') let match;
 
 while ((match = regex.exec(content)) !== null) {
 sections.push({
@@ -995,7 +995,7 @@ private analyzeComplexity(blockContent:string): AlgorithmBlock['complexity'] {
 
 // Cyclomatic complexity (control flow analysis)
 const controlFlowKeywords = ['if', 'else', 'for', 'while', 'switch', 'case', 'try', 'catch'];') const cyclomaticComplexity = controlFlowKeywords.reduce((count, keyword) => {
-const matches = text.match(new RegExp(`\\b$keyword\\b`, 'g'));') return count + (matches ? matches.length:0);
+const matches = text.match(new RegExp(`\\b${keyword}\\b`, 'g'));') return count + (matches ? matches.length:0);
 }, 1); // Base complexity is 1
 
 // Algorithmic complexity detection (Big O notation)

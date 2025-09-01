@@ -201,12 +201,12 @@ timeoutMs?:number;
 collectDetailedMetrics?:boolean;
 } = {}
 ):Promise<ABTestResult> {
-const testId = `ab-test-${generateNanoId()}`;`
+const testId = `ab-test-${generateNanoId()}``
 const startTime = new Date();
 
-logger.info(` Starting A/B test:$testId`);`
-logger.info(` Task:${taskDescription}`);`
-logger.info(` Testing $strategies.lengthstrategies:$strategies.map((s) => s.name).join(`, `)`);`
+logger.info(` Starting A/B test:${testId}``
+logger.info(` Task:${taskDescription}``
+logger.info(` Testing ${strategies}.lengthstrategies:${strategies}.map((s) => s.name).join(`, `)``
 
 try {
 // Prepare git worktrees if configured
@@ -263,9 +263,9 @@ if (options.gitConfig?.cleanupAfterTest) {
 await this.cleanupGitWorktrees(worktreePaths);
 }
 
-logger.info(` A/B test completed:${testId}`);`
+logger.info(` A/B test completed:${testId}``
 logger.info(
-` Winner:$comparison.winner.name($comparison.confidence.toFixed(2)confidence)``
+` Winner:${comparison}.winner.name(${comparison}.confidence.toFixed(2)confidence)``
 );
 
 return testResult;
@@ -334,7 +334,7 @@ case 'comprehensive': ')' return [
 ];
 
 default:
-throw new Error(`Unknown strategy scenario:$scenario`);`
+throw new Error(`Unknown strategy scenario:${scenario}``
 }
 }
 
@@ -342,7 +342,7 @@ throw new Error(`Unknown strategy scenario:$scenario`);`
 * Get recommendations based on test history
 */
 getRecommendations(taskType:string): {
-recommendedStrategy:ABTestStrategy | null;
+recommendedStrategy: 'ABTestStrategy' | 'null';
 confidence:number;
 reasoning:string[];
 } {
@@ -367,7 +367,7 @@ return {
 recommendedStrategy:mostSuccessful,
 confidence:0.3,
 reasoning:[
-`No specific data for "${taskType}" tasks`,`
+`No specific data for "${taskType}" tasks`,
 `Recommendation based on general performance across all task types`, `Consider running A/B test for this specific task type`,],
 };
 }
@@ -381,10 +381,10 @@ return {
 recommendedStrategy:recommended,
 confidence:successRate,
 reasoning:[
-`Based on ${relevantTests.length} historical tests for "${taskType}"`,`
-`Success rate:${(successRate * 100).toFixed(1)}%`,`
-`Model:${recommended?.modelBackend}`,`
-`Topology:${recommended?.swarmConfig.topology}`,`
+`Based on ${relevantTests.length} historical tests for "${taskType}"`,
+`Success rate:${(successRate * 100).toFixed(1)}%`,
+`Model:${recommended?.modelBackend}`,
+`Topology:${recommended?.swarmConfig.topology}`,
 ],
 };
 }
@@ -400,7 +400,7 @@ gitConfig?:GitTreeConfig
 const worktreePaths:Record<string, string> = {};
 
 if (!gitConfig?.useGitWorktrees) {
-logger.debug(`Git worktrees disabled, using current working directory`);') return worktreePaths;
+logger.debug(`Git worktrees disabled, using current working directory`') return worktreePaths;
 }
 
 // Use gitConfig parameters for comprehensive worktree setup
@@ -412,7 +412,7 @@ const cleanupAfterTest = gitConfig.cleanupAfterTest ?? true;
 // Validate git configuration
 if (strategies.length > maxWorktrees) {
 logger.warn(
-`Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,`
+`Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`,
 {
 strategies:strategies.length,
 maxWorktrees,
@@ -430,7 +430,7 @@ maxWorktrees,
 });
 
 for (const strategy of strategiesToProcess) {
-const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}`;`
+const branchName = `${branchPrefix}-${strategy.id}-${generateNanoId(6)}``
 const worktreePath = joinPath(getHomeDirectory(), `.claude-zen`, 'tmp', `ab-test-worktrees`, branchName);`
 
 // Log worktree creation with gitConfig details
@@ -446,7 +446,7 @@ modelBackend:strategy.modelBackend,
 // await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)`
 
 worktreePaths[strategy.id] = worktreePath;
-logger.info(` Created worktree for ${strategy.name}:${worktreePath}`);`
+logger.info(` Created worktree for ${strategy.name}:${worktreePath}``
 }
 
 // Log final worktree configuration summary
@@ -465,7 +465,7 @@ strategies:ABTestStrategy[],
 worktreePaths:Record<string, string>,
 options:any
 ):Promise<SwarmTestResult[]> {
-logger.info(` Executing $strategies.lengthstrategies in parallel...`);`
+logger.info(` Executing ${strategies}.lengthstrategies in parallel...``
 
 const promises = strategies.map((strategy) =>
 this.executeStrategy(
@@ -492,7 +492,7 @@ const enableContinueOnFailure = options.continueOnFailure !== false;
 
 if (enableProgressLogging) {
 logger.info(
-`⏭️ Executing $strategies.lengthstrategies sequentially...``
+`⏭️ Executing ${strategies}.lengthstrategies sequentially...``
 );
 logger.info(
 ` Sequential options:delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}``
@@ -569,7 +569,7 @@ results.push(failureResult);
 if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
 if (enableProgressLogging) {
 logger.info(
-`⏸️ Pausing $delayBetweenStrategiesms before next strategy...``
+`⏸️ Pausing ${delayBetweenStrategiesms} before next strategy...``
 );
 }
 await new Promise((resolve) =>
@@ -593,7 +593,7 @@ cleanupType: `git_worktree`,});
 
 private async persistTestResult(testResult:ABTestResult): Promise<void> {
 // In a real implementation, this would save to database
-logger.info(` Persisted A/B test result:${testResult.testId}`);`
+logger.info(` Persisted A/B test result:${testResult.testId}``
 }
 }
 
@@ -610,7 +610,7 @@ timeoutMs?:number;
 const abTesting = new MultiSwarmABTesting();
 const strategies = abTesting.createStrategySet(scenario);
 
-const gitConfig:GitTreeConfig | undefined = options.useGitTrees
+const gitConfig: 'GitTreeConfig' | 'undefined' = options.useGitTrees
 ? {
 useGitWorktrees:true,
 baseBranch: 'main', branchPrefix: 'ab-test', cleanupAfterTest:true,

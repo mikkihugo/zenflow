@@ -78,7 +78,7 @@ if (value && typeof value === 'object' && 'deepcopy' in value) {
 (copy as any)[key] = value.deepcopy();
 } else if (Array.isArray(value)) {
 (copy as any)[key] = [...value];
-} else if (value && typeof value === 'object{
+} else if (value && typeof value === 'object') {
 (copy as any)[key] = { ...value };
 } else {
 (copy as any)[key] = value;

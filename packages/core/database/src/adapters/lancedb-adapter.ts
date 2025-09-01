@@ -1189,7 +1189,7 @@ export class LanceDBAdapter implements DatabaseConnection {
  try {
  const table = await this.database?.openTable(tableName);
  if (!table) {
- throw new Error(`Failed to open table:${tableName}`);
+ throw new Error(`Failed to open table:${tableName}`
  }
  let query = table.vectorSearch([...vector]);
 
@@ -1257,7 +1257,7 @@ export class LanceDBAdapter implements DatabaseConnection {
  try {
  const openedTable = await this.database?.openTable(tableName);
  if (!openedTable) {
- throw new Error(`Failed to open table:${tableName}`);
+ throw new Error(`Failed to open table:${tableName}`
  }
  table = openedTable;
  } catch {
@@ -1272,7 +1272,7 @@ export class LanceDBAdapter implements DatabaseConnection {
  data: sampleData,
  });
  if (!createdTable) {
- throw new Error(`Failed to create table:${tableName}`);
+ throw new Error(`Failed to create table:${tableName}`
  }
  table = createdTable;
  }
@@ -1471,7 +1471,7 @@ export class LanceDBAdapter implements DatabaseConnection {
  }
 
  private generateCorrelationId(): string {
- return `lancedb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+ return `lancedb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
  }
 
  private sleep(ms: number): Promise<void> {

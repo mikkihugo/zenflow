@@ -252,7 +252,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Initialize WASM module
  const wasmResult = await initializeWASM();
  if (!wasmResult.success) {
- throw new Error(`WASM initialization failed:${wasmResult.error}`);
+ throw new Error(`WASM initialization failed:${wasmResult.error}`
  }
 
  // Initialize ML algorithms with default configurations
@@ -311,7 +311,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  `Optimizing ${teleprompter_config.teleprompter_type} teleprompter with ML enhancement`
  );
 
- const optimizationId = `dspy_${teleprompter_config.teleprompter_type}_${Date.now()}`;
+ const optimizationId = `dspy_${teleprompter_config.teleprompter_type}_${Date.now()}`
  this.activeOptimizations.set(optimizationId, {
  type: 'dspy_optimization',
  config: teleprompter_config,
@@ -485,7 +485,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Initial suggestions from Bayesian optimizer
  const suggestions = await this.bayesianOptimizer.optimize([], bounds, 5);
  if (!suggestions.success) {
- throw new Error(`Bayesian optimization failed:${suggestions.error}`);
+ throw new Error(`Bayesian optimization failed:${suggestions.error}`
  }
 
  let bestPoint = suggestions.data?.[0];
@@ -711,7 +711,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const prediction = await this.bayesianOptimizer.predict(paramVector);
 
  if (!prediction.success) {
- throw new Error(`Prediction failed:${prediction.error}`);
+ throw new Error(`Prediction failed:${prediction.error}`
  }
 
  const { mean, variance } = prediction.data!;
@@ -759,7 +759,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Adapt learning rate
  const adaptResult = await this.onlineLearner.adaptLearningRate();
  if (adaptResult.success) {
- adaptations.push(`Adapted learning rate to ${adaptResult.data}`);
+ adaptations.push(`Adapted learning rate to ${adaptResult.data}`
  }
 
  // Consider strategy change based on drift type
@@ -1067,7 +1067,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  | 'refinement'
  | 'completion' = 'refinement'
  ): Promise<string> {
- const trainingId = `train_${modelId}_${Date.now()}`;
+ const trainingId = `train_${modelId}_${Date.now()}`
 
  // Create workflow state event
  const workflowEvent: MLWorkflowStateEvent = {
@@ -1119,7 +1119,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  ): void {
  const existingJob = this.activeTrainingJobs.get(trainingId);
  if (!existingJob) {
- this.logger.warn(`Training job ${trainingId} not found`);
+ this.logger.warn(`Training job ${trainingId} not found`
  return;
  }
 
@@ -1152,7 +1152,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  input: any,
  options: { timeout?: number; confidence_threshold?: number } = {}
  ): Promise<MLInferenceResultEvent> {
- const inferenceId = `infer_${modelId}_${Date.now()}`;
+ const inferenceId = `infer_${modelId}_${Date.now()}`
  const startTime = Date.now();
 
  try {
@@ -1205,7 +1205,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  | ' completion',
  testData: any[]
  ): Promise<MLModelValidationEvent> {
- const validationId = `val_${modelId}_${Date.now()}`;
+ const validationId = `val_${modelId}_${Date.now()}`
 
  try {
  // Run validation based on type
@@ -1397,7 +1397,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Clean up
  this.activeTrainingJobs.delete(trainingId);
 
- this.logger.info(`Training job ${trainingId} completed successfully`);
+ this.logger.info(`Training job ${trainingId} completed successfully`
  }
 
  private async performInference(

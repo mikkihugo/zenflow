@@ -129,7 +129,7 @@ export interface AgentBehavioralProfile {
  *
  * // Predict agent performance
  * const prediction = await behavioral.predictAgentPerformance('agent-1', 'data-processing', 0.7);
- * logger.info(`Predicted efficiency: ${prediction.predictedEfficiency}`);
+ * logger.info(`Predicted efficiency: ${prediction.predictedEfficiency}`
  * ```
  */
 export class BehavioralIntelligence {
@@ -1673,21 +1673,23 @@ export async function demoBehavioralIntelligence(
         modelSize: 'large',        dataSize:100000,
 }
     );
-    logger.info('🎯 Task complexity analysis:');
+    logger.info(`🎯 Task complexity analysis:`);
     logger.info(
       '   • Complexity: ' + (complexityAnalysis.estimatedComplexity * 100).toFixed(1) + '%'
     );
-    logger.info('   • Difficulty: ' + complexityAnalysis.difficulty);
+    logger.info(`   • Difficulty: ${complexityAnalysis.difficulty}`);
     logger.info(
-      '   • Required skills: ' + complexityAnalysis.requiredSkills.join(', ')
+      `   • Required skills: ${complexityAnalysis.requiredSkills.join(', ')}`
     );
     logger.info(
       '   • Estimated duration: ' + complexityAnalysis.estimatedDuration.toFixed(0) + 'ms\n'
     );
 
     // 4. Find best agent for task
-    logger.info('🎯 Finding best agent for task...');')    const bestAgent = await behavioral.findBestAgentForTask(
-      'data-processing',      0.5,
+    logger.info('🎯 Finding best agent for task...');
+    const bestAgent = await behavioral.findBestAgentForTask(
+      'data-processing',
+      0.5,
       ['agent-1', 'agent-2']
     );
     logger.info('🏆 Best agent selection:');
