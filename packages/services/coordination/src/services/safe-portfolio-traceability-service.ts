@@ -19,18 +19,18 @@
 import { getLogger } from '@claude-zen/foundation';
 import { getBrainSystem } from '@claude-zen/intelligence';
 import type {
-EpicBusinessCase,
-EpicLifecycleStage,
-PortfolioKanbanState,
-WSJFScore,
-EpicRisk,
-SuccessMetric
-'} from '../safe/types/epic-management.js';
+  EpicBusinessCase,
+  EpicLifecycleStage,
+  PortfolioKanbanState,
+  WSJFScore,
+  EpicRisk,
+  SuccessMetric
+} from '../safe/types/epic-management.js';
 import type {
-EpicStateTransitionEvent,
-EpicBlockedEvent,
-PortfolioKanbanEventManager
-'} from '../safe/events/portfolio-kanban-events.js';
+  EpicStateTransitionEvent,
+  EpicBlockedEvent,
+  PortfolioKanbanEventManager
+} from '../safe/events/portfolio-kanban-events.js';
 const logger = getLogger('SafePortfolioTraceabilityService');
 // ============================================================================
 // PORTFOLIO TRACEABILITY TYPES
@@ -48,7 +48,8 @@ readonly investmentHorizon: 'current' | 'next' | 'future';
 readonly businessValue: number; // 1-100
 readonly strategicAlignment: number; // 1-100
 readonly marketPriority: 'critical' | 'high' | 'medium' | 'low';
-'}
+
+}
 /**
 * Epic generation context for AI analysis
 */
@@ -60,13 +61,13 @@ urgency: 'critical' | 'high' | 'medium' | 'low';
 '};
 readonly strategic: StrategicThemeContext;
 readonly business: {
-problemStatement: string;
-targetCustomers: string[];
-expectedOutcome: string;
-successMetrics: string[];
-marketSize?: number;
-competitiveAdvantage?: string;
-'};
+  problemStatement: string;
+  targetCustomers: string[];
+  expectedOutcome: string;
+  successMetrics: string[];
+  marketSize?: number;
+  competitiveAdvantage?: string;
+};
 readonly technical: {
 complexityAssessment: 'simple' | 'moderate' | 'complex' | 'very_complex';
 architecturalImpact: 'none' | 'minimal' | 'significant' | 'major';
@@ -79,7 +80,8 @@ budget?: number;
 resources?: string[];
 dependencies?: string[];
 '};
-'}
+
+}
 /**
 * Epic traceability record
 */
@@ -110,7 +112,8 @@ artIds: string[];
 featureIds: string[];
 dependentEpicIds: string[];
 '};
-'}
+
+}
 /**
 * Approval record for governance
 */
@@ -123,7 +126,8 @@ readonly decision: 'approved' | 'rejected' | 'conditional' | 'deferred';
 readonly reasoning: string;
 readonly conditions?: string[];
 readonly approvedAt: Date;
-'}
+
+}
 /**
 * Learning outcomes from epic lifecycle
 */
@@ -135,7 +139,8 @@ readonly confidence: number; // 0-100
 readonly applicability: 'specific' | 'domain' | 'organizational' | 'universal';
 readonly actionItems: string[];
 readonly identifiedAt: Date;
-'}
+
+}
 // ============================================================================
 // SAFE PORTFOLIO TRACEABILITY SERVICE
 // ============================================================================
@@ -152,11 +157,13 @@ private eventManager: PortfolioKanbanEventManager | null = null;
 private traceabilityRecords = new Map<string, EpicTraceabilityRecord>();
 private epicsByState = new Map<PortfolioKanbanState, Set<string>>();
 constructor() {
+  
 // Initialize state tracking
 Object.values(PortfolioKanbanState).forEach(state => {
 this.epicsByState.set(state as PortfolioKanbanState, new Set());
 '});
-'}
+
+}
 /**
 * Initialize the traceability service
 */
@@ -171,8 +178,10 @@ this.logger.info('SAFe Portfolio Traceability Service initialized successfully')
 '} catch (error) {
 this.logger.error(`Failed to initialize SAFe Portfolio Traceability Service:`, error);
 throw error;
-'}
-'}
+
+}
+
+}
 /**
 * Generate epic from strategic context using AI analysis
 */
@@ -236,7 +245,8 @@ valueStreamId: context.strategic.valueStreams[0],
 artIds: [],
 featureIds: [],
 dependentEpicIds: []
-'}
+
+}
 '};
 // Store traceability record
 this.traceabilityRecords.set(epicId, traceabilityRecord);
@@ -258,8 +268,10 @@ confidence: epicAnalysis.confidence
 '} catch (error) {
 this.logger.error(`Epic generation failed:`, error);
 throw error;
-'}
-'}
+
+}
+
+}
 /**
 * Transition epic through portfolio Kanban states
 */
@@ -276,7 +288,8 @@ nextActions: string[];
 const traceabilityRecord = this.traceabilityRecords.get(epicId);
 if (!traceabilityRecord) {
 throw new Error(`Epic ${epicId} not found in traceability records`);
-'}
+
+}
 const currentStage = traceabilityRecord.lifecycleStages[
 traceabilityRecord.lifecycleStages.length - 1
 ];
@@ -299,7 +312,8 @@ newState: currentStage.stage,
 blockers: validationResult.blockers,
 nextActions: validationResult.nextActions
 '};
-'}
+
+}
 // Create transition event
 const transitionEvent: EpicStateTransitionEvent = {
 epicId,
@@ -321,7 +335,8 @@ exitedAt: new Date(),
 duration: Date.now() - updatedStages[currentStageIndex].enteredAt.getTime(),
 completionPercentage: 100
 '};
-'}
+
+}
 // Add new stage
 updatedStages.push({
 stage: targetState,
@@ -342,7 +357,8 @@ auditTrail: {
 lastUpdated: new Date(),
 stateTransitions: [...traceabilityRecord.auditTrail.stateTransitions, transitionEvent],
 approvals: [...traceabilityRecord.auditTrail.approvals, approval]
-'}
+
+}
 '};
 this.traceabilityRecords.set(epicId, updatedRecord);
 // Update state tracking
@@ -359,7 +375,8 @@ newState: targetState,
 blockers: [],
 nextActions: this.getNextActionsForState(targetState)
 '};
-'}
+
+}
 /**
 * Get portfolio flow metrics
 */
@@ -409,7 +426,8 @@ flowEfficiency,
 wsjfDistribution,
 valueRealized
 '};
-'}
+
+}
 // ============================================================================
 // PRIVATE IMPLEMENTATION METHODS
 // ============================================================================
@@ -422,7 +440,8 @@ technicalComplexity: this.assessTechnicalComplexity(context.technical),
 marketOpportunity: this.assessMarketOpportunity(context.business),
 recommendations: ['Proceed with epic development', `Consider MVP approach`]
 '};
-'}
+
+}
 private async generateBusinessCase(
 epicId: string,
 context: EpicGenerationContext,
@@ -453,7 +472,8 @@ timeline: 12,
 investmentRequired: 500000,
 expectedMarketShare: 5,
 keySuccessFactors: []
-'}
+
+}
 '},
 financialProjection: {
 investmentRequired: 500000,
@@ -517,10 +537,12 @@ version: '1.0',
 approvalStatus: {
 status: 'draft',
 approver: 'AI_SYSTEM
-'}
+
+}
 '};
 return businessCase;
-'}
+
+}
 private calculateWSJFScore(context: EpicGenerationContext, analysis: any): WSJFScore {
 const businessValue = context.strategic.businessValue / 5; // Scale to 1-20
 const urgency = this.mapUrgencyToScore(context.trigger.urgency);
@@ -540,7 +562,8 @@ lastUpdated: new Date(),
 scoredBy: `AI_SYSTEM`,
 confidence: 85
 '};
-'}
+
+}
 private determineInitialState(
 context: EpicGenerationContext,
 wsjfScore: WSJFScore
@@ -548,10 +571,12 @@ wsjfScore: WSJFScore
 // High-value, well-defined epics can start in ANALYZING
 if (wsjfScore.wsjfScore >= 8 && context.business.problemStatement.length > 50) {
 return PortfolioKanbanState.ANALYZING;
-'}
+
+}
 // Default to FUNNEL for further refinement
 return PortfolioKanbanState.FUNNEL;
-'}
+
+}
 private validateStateTransition(
 fromState: PortfolioKanbanState,
 toState: PortfolioKanbanState,
@@ -570,22 +595,26 @@ const validTransitions: Record<PortfolioKanbanState, PortfolioKanbanState[]> = {
 '};
 if (!validTransitions[fromState]?.includes(toState)) {
 blockers.push(`Invalid transition from ${fromState} to ${toState}`);
-'}
+
+}
 // Check state-specific requirements
 if (toState === PortfolioKanbanState.PORTFOLIO_BACKLOG && !record.businessCase) {
 blockers.push(`Business case required for Portfolio Backlog`);
 nextActions.push('Complete business case analysis');
-'}
+
+}
 if (toState === PortfolioKanbanState.IMPLEMENTING && !record.wsjfScore) {
 blockers.push('WSJF score required for Implementation');
 nextActions.push('Complete WSJF prioritization');
-'}
+
+}
 return {
 isValid: blockers.length === 0,
 blockers,
 nextActions
 '};
-'}
+
+}
 private getGateCriteriaForState(state: PortfolioKanbanState): any[] {
 // Return appropriate gate criteria based on SAFe Portfolio Kanban
 switch (state) {
@@ -601,8 +630,10 @@ return [
 ];
 default:
 return [];
-'}
-'}
+
+}
+
+}
 private getKeyActivitiesForState(state: PortfolioKanbanState): string[] {
 switch (state) {
 case PortfolioKanbanState.FUNNEL:
@@ -615,8 +646,10 @@ case PortfolioKanbanState.IMPLEMENTING:
 return ['Feature development', 'Progress tracking', 'Value measurement'];
 default:
 return [];
-'}
-'}
+
+}
+
+}
 private getStakeholdersForState(state: PortfolioKanbanState): string[] {
 switch (state) {
 case PortfolioKanbanState.ANALYZING:
@@ -627,8 +660,10 @@ case PortfolioKanbanState.IMPLEMENTING:
 return ['ART Teams', 'Product Owner', 'Release Train Engineer'];
 default:
 return ['Epic Owner'];
-'}
-'}
+
+}
+
+}
 private getNextActionsForState(state: PortfolioKanbanState): string[] {
 switch (state) {
 case PortfolioKanbanState.ANALYZING:
@@ -639,8 +674,10 @@ case PortfolioKanbanState.IMPLEMENTING:
 return ['Assign to ART', 'Begin feature development'];
 default:
 return [];
-'}
-'}
+
+}
+
+}
 // Helper methods for scoring and assessment
 private assessTechnicalComplexity(technical: any): number {
 const complexityMap = {
@@ -650,10 +687,12 @@ const complexityMap = {
 'very_complex': 13
 '};
 return complexityMap[technical.complexityAssessment as keyof typeof complexityMap] || 5;
-'}
+
+}
 private assessMarketOpportunity(business: any): number {
 return business.marketSize ? Math.min(business.marketSize / 1000000, 20) : 10;
-'}
+
+}
 private mapUrgencyToScore(urgency: string): number {
 const urgencyMap = {
 'critical': 20,
@@ -662,12 +701,14 @@ const urgencyMap = {
 'low': 5
 '};
 return urgencyMap[urgency as keyof typeof urgencyMap] || 10;
-'}
+
+}
 private assessRiskReduction(context: EpicGenerationContext): number {
 // Simplified risk assessment based on constraints and complexity
 const hasConstraints = Object.values(context.constraints).some(v => v !== undefined);
 return hasConstraints ? 15 : 10;
-'}
+
+}
 private assessOpportunityEnablement(context: EpicGenerationContext): number {
 // Based on strategic alignment and market priority
 const priorityMap = {
@@ -677,8 +718,10 @@ const priorityMap = {
 'low': 5
 '};
 return priorityMap[context.strategic.marketPriority] || 10;
-'}
-'}
+
+}
+
+}
 export default SafePortfolioTraceabilityService;
 * - Context gathering and analysis
 * - Epic generation with confidence scoring

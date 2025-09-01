@@ -30,5 +30,6 @@ static createTimeout<T>(
 promise: Promise<T>,
 milliseconds: number
 ): Promise<T>;
-'}
+
+}
 //# sourceMappingURL=async-utils.d.ts.map

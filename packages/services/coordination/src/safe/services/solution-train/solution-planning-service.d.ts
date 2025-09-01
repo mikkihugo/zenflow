@@ -12,13 +12,15 @@ filter,
 */
 export interface SolutionPlanningConfig {
 readonly planningId: 'high';
-'}
+
+}
 /**
 * Planning constraint
 */
 export interface PlanningConstraint {
 readonly constraintId: 'resource';
-'}
+
+}
 /**
 * Impact levels
 */
@@ -42,7 +44,8 @@ pi_boundary = 7,
 ') = 8,
 on_demand = 9,
 ')business_owner';
-'}
+
+}
 /**
 * Influence and interest levels
 */
@@ -54,13 +57,15 @@ medium = 3,
 ') = 4,
 low = 5,
 ')high';
-'}
+
+}
 /**
 * Planning risk
 */
 export interface PlanningRisk {
 readonly riskId: 'technical';
-'}
+
+}
 /**
 * Risk probability and impact
 */
@@ -75,5 +80,6 @@ low = 5,
 export = 7,
 enum = 8,
 RiskImpact = 9
-'}
+
+}
 //# sourceMappingURL=solution-planning-service.d.ts.map

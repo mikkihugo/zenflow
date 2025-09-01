@@ -21,7 +21,8 @@ enableBidirectionalEvents?: boolean;
 /** Custom kanban configuration for workflow integration */
 kanbanConfig?: Partial<WorkflowKanbanConfig>;
 ')};;: any;
-'}
+
+}
 /**
 * Workflow step with kanban state integration
 */
@@ -32,7 +33,8 @@ kanbanState?: TaskState;
 useKanban?: boolean;
 /** WIP limits for this step type */
 wipLimit?: number;
-'}
+
+}
 /**
 * Workflow definition with kanban integration
 */
@@ -43,7 +45,8 @@ steps: KanbanWorkflowStep[];
 useKanban?: boolean;
 /** Custom kanban configuration */
 kanbanConfig?: Partial<WorkflowKanbanConfig>;
-'}
+
+}
 /**
 * Integration layer between workflow engine and kanban system
 */
@@ -52,5 +55,6 @@ private readonly config;
 private initialized;
 constructor(config: {});
 catch(error: any): void;
-'}
+
+}
 //# sourceMappingURL=kanban-integration.d.ts.map

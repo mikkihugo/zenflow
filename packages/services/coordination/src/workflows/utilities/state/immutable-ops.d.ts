@@ -44,5 +44,6 @@ T extends {
 id: string;
 '},
 >(array: T[], id: string): T[];
-'}
+
+}
 //# sourceMappingURL=immutable-ops.d.ts.map

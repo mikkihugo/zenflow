@@ -11,7 +11,8 @@ readonly timeout: number;
 readonly retryPolicy: GateRetryPolicy;
 readonly escalationEnabled: boolean;
 readonly notificationEnabled: boolean;
-'}
+
+}
 /**
 * Quality gate context for execution
 */
@@ -23,13 +24,15 @@ readonly artifacts: QualityArtifact[];
 readonly metadata: Record<string, unknown>;
 readonly previousResults?: QualityGateResult[];
 readonly historicalData?: QualityHistoricalData;
-'}
+
+}
 /**
 * Quality artifact for evaluation
 */
 export interface QualityArtifact {
 id: string;
-'}
+
+}
 /**
 * Historical quality data
 */
@@ -38,7 +41,8 @@ readonly previousScores: number[];
 readonly trends: QualityTrend[];
 readonly benchmarks: QualityBenchmark[];
 readonly improvements: QualityImprovement[];
-'}
+
+}
 /**
 * Quality trend analysis
 */
@@ -48,7 +52,8 @@ readonly direction: 'improving' | ' stable' | ' declining' | ' improving' | ' st
 readonly change: number;
 readonly period: string;
 readonly confidence: number;
-'}
+
+}
 /**
 * Quality benchmark
 */
@@ -58,7 +63,8 @@ readonly industryAverage: number;
 readonly bestPractice: number;
 readonly organizationAverage: number;
 readonly currentValue: number;
-'}
+
+}
 /**
 * Quality improvement suggestion
 */
@@ -68,7 +74,8 @@ readonly suggestion: string;
 readonly impact: 'low' | ' medium' | ' high';
 readonly effort: 'low' | ' medium' | ' high';
 readonly priority: number;
-'}
+
+}
 /**
 * Gate retry policy
 */
@@ -79,13 +86,15 @@ readonly backoffStrategy: 'linear' | ' exponential' | ' fixed';
 readonly baseDelay: number;
 readonly maxDelay: number;
 readonly retryableFailures: string[];
-'}
+
+}
 /**
 * Quality gate templates for different scenarios
 */
 export interface QualityGateTemplate {
 id: string;
-'}
+
+}
 /**
 * Quality gate optimization result
 */
@@ -97,7 +106,8 @@ readonly improvements: string[];
 readonly adjustedCriteria: QualityGateCriterion[];
 readonly recommendedActions: string[];
 readonly confidence: number;
-'}
+
+}
 import type { QualityGateCriterion, QualityGateResult } from './sparc-cd-mapping-service';
 /**
 * Quality Gate Service - Automated quality gates and criteria management
@@ -110,5 +120,6 @@ private readonly logger;
 private qualityGateTemplates;
 private executionHistory;
 constructor(logger: logger);
-'}
+
+}
 //# sourceMappingURL=quality-gate-service.d.ts.map

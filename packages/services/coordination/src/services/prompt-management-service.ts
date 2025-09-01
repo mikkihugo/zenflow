@@ -10,6 +10,7 @@ export class PromptManagementService {
   private teamworkSystem: unknown;
   private workflowEngine: unknown;
   constructor() {
+  
     // Initialize database
     const dbSystem = await DatabaseProvider.create();
     this.database = dbSystem.createProvider('sql');
@@ -37,5 +38,7 @@ export class PromptManagementService {
     ...data,
     version: initialVersion
   };
-'}
-'}
+
+}
+
+}

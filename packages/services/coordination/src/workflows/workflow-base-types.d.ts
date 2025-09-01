@@ -22,7 +22,8 @@ readonly data?: any;
 readonly requester?: string;
 readonly timestamp?: Date;
 readonly integrationConfig?: any;
-'}
+
+}
 export interface WorkflowGateResult {
 readonly [key: string]: unknown;
 readonly success: boolean;
@@ -37,7 +38,8 @@ readonly feedback?: string;
 readonly timestamp?: Date;
 readonly result?: any;
 readonly processor?: string;
-'}
+
+}
 export interface WorkflowStep {
 readonly id?: string;
 readonly type: string;
@@ -54,16 +56,19 @@ readonly businessImpact?: 'low| medium| high' | ' critical';
 readonly stakeholders?: string[];
 readonly autoApproval?: boolean;
 '};
-'}
+
+}
 export interface WorkflowDefinition {
 readonly name: string;
 readonly description?: string;
 readonly version?: string;
 readonly steps: readonly WorkflowStep[];
-'}
+
+}
 export interface WorkflowContext {
 readonly [key: string]: unknown;
-'}
+
+}
 export interface WorkflowState {
 readonly id: string;
 readonly definition: WorkflowDefinition;
@@ -81,7 +86,8 @@ stepIndex: number;
 gateId: string;
 pausedAt: string;
 '};
-'}
+
+}
 export interface WorkflowEngineConfig {
 readonly maxConcurrentWorkflows?: number;
 readonly stepTimeout?: number;
@@ -93,25 +99,29 @@ readonly orchestrationMode?: 'basic' | ' advanced' | ' intelligent';
 readonly enableErrorRecovery?: boolean;
 ';: any;
 readonly enablePerformanceTracking?: boolean;
-'}
+
+}
 export interface DocumentContent {
 readonly id: string;
 readonly type: string;
 readonly title: string;
 readonly content: string;
 readonly metadata?: Record<string, unknown>;
-'}
+
+}
 export interface StepExecutionResult {
 readonly success: boolean;
 readonly output?: unknown;
 readonly error?: string;
 readonly duration?: number;
-'}
+
+}
 export interface WorkflowData {
 readonly id: string;
 readonly name: string;
 readonly description?: string;
 readonly version?: string;
 readonly data: Record<string, unknown>;
-'}
+
+}
 //# sourceMappingURL=workflow-base-types.d.ts.map

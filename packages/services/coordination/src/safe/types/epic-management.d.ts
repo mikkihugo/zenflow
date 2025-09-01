@@ -28,7 +28,8 @@ readonly valueRealizationTracking: boolean;
 readonly stakeholderFeedbackCycle: number;
 readonly epicAnalysisTimeLimit: number;
 readonly autoApprovalWSJFThreshold: number;
-'}
+
+}
 /**
 * Portfolio Kanban states for epic lifecycle
 */
@@ -39,7 +40,8 @@ PORTFOLIO_BACKLOG = 'portfolio_backlog',
 IMPLEMENTING = 'implementing',
 DONE = 'done',
 CANCELLED = 'cancelled',
-'}
+
+}
 /**
 * Epic priority levels using WSJF
 */
@@ -53,7 +55,8 @@ readonly wsjfScore: number;
 readonly lastUpdated: Date;
 readonly scoredBy: string;
 readonly confidence: number;
-'}
+
+}
 /**
 * Epic lifecycle stage tracking
 */
@@ -67,7 +70,8 @@ readonly completionPercentage: number;
 readonly blockers: EpicBlocker[];
 readonly keyActivities: string[];
 readonly stakeholdersInvolved: string[];
-'}
+
+}
 /**
 * Gate criteria for epic progression
 */
@@ -79,19 +83,22 @@ readonly dueDate: Date;
 readonly completionDate?: Date;
 readonly evidence: string[];
 readonly blockingIssues: string[];
-'}
+
+}
 /**
 * Epic blocker tracking
 */
 export interface EpicBlocker {
 id: string;
-'}
+
+}
 /**
 * Epic business case structure
 */
 export interface EpicBusinessCase {
 id: string;
-'}
+
+}
 /**
 * Financial viability assessment
 */
@@ -106,7 +113,8 @@ readonly riskAdjustedReturn: number;
 readonly confidenceLevel: number;
 readonly financialScore: number;
 readonly isViable: boolean;
-'}
+
+}
 /**
 * Business hypothesis framework
 */
@@ -118,7 +126,8 @@ readonly expectedOutcome: string;
 readonly assumptionsList: BusinessAssumption[];
 readonly validationPlan: ValidationStep[];
 readonly riskMitigations: string[];
-'}
+
+}
 /**
 * Business assumption tracking
 */
@@ -131,7 +140,8 @@ readonly validationStatus:
 | ' invalidated';
 readonly validationResult?: string;
 readonly impactIfIncorrect: string;
-'}
+
+}
 /**
 * Validation step definition
 */
@@ -144,7 +154,8 @@ readonly timeline: number;
 readonly owner: string;
 readonly successCriteria: string[];
 readonly resources: string[];
-'}
+
+}
 /**
 * Market analysis for epic
 */
@@ -155,7 +166,8 @@ readonly competitiveAnalysis: CompetitorInsight[];
 readonly marketTrends: string[];
 readonly customerNeeds: EpicCustomerNeed[];
 readonly marketEntry: MarketEntryStrategy;
-'}
+
+}
 /**
 * Competitor insight
 */
@@ -167,7 +179,8 @@ readonly weaknesses: string[];
 readonly marketShare: number;
 readonly pricing: number;
 readonly customerSatisfaction: number;
-'}
+
+}
 /**
 * Customer need definition
 */
@@ -177,7 +190,8 @@ readonly urgency: number;
 readonly currentSatisfaction: number;
 readonly willingnessToPay: number;
 readonly frequency: 'daily| weekly| monthly| quarterly' | ' annually';
-'}
+
+}
 /**
 * Market entry strategy
 */
@@ -187,7 +201,8 @@ readonly timeline: number;
 readonly investmentRequired: number;
 readonly expectedMarketShare: number;
 readonly keySuccessFactors: string[];
-'}
+
+}
 /**
 * Financial projection structure
 */
@@ -201,7 +216,8 @@ readonly roiCalculation: ROICalculation;
 readonly paybackPeriod: number;
 readonly netPresentValue: number;
 readonly internalRateReturn: number;
-'}
+
+}
 /**
 * Revenue projection by period
 */
@@ -211,7 +227,8 @@ readonly revenue: number;
 readonly customerCount: number;
 readonly averageRevenuePerCustomer: number;
 readonly assumptions: string[];
-'}
+
+}
 /**
 * Cost projection by period
 */
@@ -222,7 +239,8 @@ readonly operationalCost: number;
 readonly marketingCost: number;
 readonly supportCost: number;
 readonly totalCost: number;
-'}
+
+}
 /**
 * ROI calculation details
 */
@@ -233,7 +251,8 @@ readonly roi: number;
 readonly calculationMethod: string;
 readonly timeHorizon: number;
 readonly discountRate: number;
-'}
+
+}
 /**
 * Risk assessment framework
 */
@@ -243,13 +262,15 @@ readonly overallRiskLevel: 'low| medium| high' | ' critical';
 readonly riskMitigationPlan: RiskMitigation[];
 readonly contingencyPlans: ContingencyPlan[];
 readonly riskOwners: string[];
-'}
+
+}
 /**
 * Epic risk definition
 */
 export interface EpicRisk {
 id: string;
-'}
+
+}
 /**
 * Risk mitigation strategy
 */
@@ -261,7 +282,8 @@ readonly owner: string;
 readonly timeline: number;
 readonly cost: number;
 readonly effectiveness: number;
-'}
+
+}
 /**
 * Contingency planning
 */
@@ -272,7 +294,8 @@ readonly actions: string[];
 readonly owner: string;
 readonly activationCriteria: string[];
 readonly resourcesRequired: string[];
-'}
+
+}
 /**
 * Implementation plan structure
 */
@@ -283,7 +306,8 @@ readonly resourceRequirements: ResourceRequirement[];
 readonly dependencies: EpicDependency[];
 readonly milestones: EpicMilestone[];
 readonly qualityGates: QualityGate[];
-'}
+
+}
 /**
 * Implementation phase definition
 */
@@ -296,7 +320,8 @@ readonly resources: string[];
 readonly dependencies: string[];
 readonly successCriteria: string[];
 readonly riskFactors: string[];
-'}
+
+}
 /**
 * Resource requirement specification
 */
@@ -307,19 +332,22 @@ readonly quantity: number;
 readonly duration: number;
 readonly cost: number;
 readonly availability: 'available| partial| unavailable' | ' pending';
-'}
+
+}
 /**
 * Epic dependency tracking
 */
 export interface EpicDependency {
 id: string;
-'}
+
+}
 /**
 * Epic milestone tracking
 */
 export interface EpicMilestone {
 id: string;
-'}
+
+}
 /**
 * Quality gate definition
 */
@@ -330,7 +358,8 @@ readonly owner: string;
 readonly status: 'pending| in_review| passed| failed' | ' waived';
 readonly reviewDate: Date;
 readonly evidence: string[];
-'}
+
+}
 /**
 * Quality criterion specification
 */
@@ -340,7 +369,8 @@ readonly threshold: string;
 readonly measurement: string;
 readonly actual?: string;
 readonly status: 'pass' | ' fail' | ' pending';
-'}
+
+}
 /**
 * Success metric definition
 */
@@ -354,7 +384,8 @@ readonly unit: string;
 readonly measurementFrequency: 'daily| weekly| monthly' | ' quarterly';
 readonly owner: string;
 readonly achievementDate?: Date;
-'}
+
+}
 /**
 * Alternative solution analysis
 */
@@ -366,7 +397,8 @@ readonly timeline: number;
 readonly benefits: string[];
 readonly risks: string[];
 readonly recommendationScore: number;
-'}
+
+}
 /**
 * Approval status tracking
 */
@@ -377,5 +409,6 @@ readonly approvedAt?: Date;
 readonly conditions?: string[];
 readonly rejectionReason?: string;
 readonly nextReviewDate?: Date;
-'}
+
+}
 //# sourceMappingURL=epic-management.d.ts.map

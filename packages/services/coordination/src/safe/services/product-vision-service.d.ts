@@ -17,5 +17,6 @@ SuccessCriterion,
 export interface ProductVisionServiceConfig {
 readonly visionValidationThreshold: new () => Map<string, ProductVision>;
 (): any;
-'}
+
+}
 //# sourceMappingURL=product-vision-service.d.ts.map

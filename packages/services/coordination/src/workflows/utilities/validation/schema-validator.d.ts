@@ -21,5 +21,6 @@ errors?: string[];
 * Check if data matches schema
 */
 static isValid<T>(schema: this, validate: any): any;
-'}
+
+}
 //# sourceMappingURL=schema-validator.d.ts.map

@@ -20,7 +20,8 @@ import { EventBus } from '@claude-zen/foundation';
 */
 export interface SystemSolutionArchConfig {
 readonly enableSystemDesignCoordination: 'monolithic';
-'}
+
+}
 /**
 * Solution architecture patterns
 */
@@ -38,13 +39,15 @@ hybrid_cloud = 9,
 ') = 10,
 edge_computing = 11,
 ')service';
-'}
+
+}
 /**
 * Component interface
 */
 export interface ComponentInterface {
 id: string;
-'}
+
+}
 /**
 * Performance expectation
 */
@@ -53,31 +56,36 @@ readonly metric: string;
 readonly target: number;
 readonly threshold: number;
 readonly unit: string;
-'}
+
+}
 /**
 * Compliance requirement
 */
 export interface ComplianceRequirement {
 id: string;
-'}
+
+}
 /**
 * Control requirement
 */
 export interface ControlRequirement {
 id: string;
-'}
+
+}
 /**
 * Architecture review
 */
 export interface ArchitectureReview {
 id: string;
-'}
+
+}
 /**
 * Review finding
 */
 export interface ReviewFinding {
 id: string;
-'}
+
+}
 /**
 * System and Solution Architecture Manager - Facade delegating to @claude-zen packages
 *
@@ -87,5 +95,6 @@ id: string;
 export declare class SystemSolutionArchitectureManager extends EventBus {
 private readonly logger;
 constructor(_config: getLogger);
-'}
+
+}
 //# sourceMappingURL=system-solution-architecture-manager.d.ts.map

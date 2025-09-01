@@ -18,7 +18,8 @@ import { EventBus } from '@claude-zen/foundation';
 export interface SAFeEventsManagerConfig {
 enableSystemDemos: new () => SAFeEventsManager;
 (memory: any, eventBus: any, config: any): any;
-'}
+
+}
 export declare class SAFeEventsManager extends EventBus {
 private logger;
 private eventOutcomes;
@@ -28,7 +29,9 @@ constructor(): void {
 piId,
 '}: {
 piId: any;
-'}
+
+}
 ): any;
-'}
+
+}
 //# sourceMappingURL=safe-events-manager.d.ts.map

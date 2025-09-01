@@ -23,29 +23,34 @@ priority: number;
 assignee?: string;
 createdAt: number;
 updatedAt: number;
-'}
+
+}
 export interface FlowMetrics {
 throughput: number;
 leadTime: number;
 cycleTime: number;
 wipCount: number;
-'}
+
+}
 export interface WIPLimits {
 analysis: number;
 development: number;
 testing: number;
 review: number;
-'}
+
+}
 export interface WorkflowBottleneck {
 state: TaskState;
 count: number;
 severity: low;
-'}
+
+}
 export interface WorkflowKanbanConfig {
 wipLimits: WIPLimits;
 enableMetrics: boolean;
 enableBottleneckDetection: boolean;
-'}
+
+}
 /**
 * Task created event - new task added to workflow
 */
@@ -58,7 +63,8 @@ taskId: 'TASK_BLOCKED';
 taskId: string;
 reason: string;
 blockedAt: Date;
-'}
+
+}
 /**
 * WIP limit exceeded event
 */
@@ -66,7 +72,8 @@ export interface WIPLimitExceededEvent {
 type: 'WIP_LIMIT_EXCEEDED';
 state: 'WIP_LIMITS_UPDATED';
 wipLimits: Partial<WIPLimits>;
-'}
+
+}
 /**
 * Bottleneck detected event
 */
@@ -75,7 +82,8 @@ type: 'BOTTLENECK_DETECTED';
 bottleneck: 'BOTTLENECK_RESOLVED';
 bottleneckId: string;
 resolvedAt: Date;
-'}
+
+}
 /**
 * Flow analysis completed event
 */
@@ -85,7 +93,8 @@ metrics: 'OPTIMIZATION_TRIGGERED';
 strategy: OptimizationStrategy;
 triggeredBy: 'manual' | ' automatic' | ' emergency';
 timestamp: Date;
-'}
+
+}
 /**
 * System health updated event
 */
@@ -93,7 +102,8 @@ export interface SystemHealthUpdatedEvent {
 type: 'SYSTEM_HEALTH_UPDATED';
 health: 'SYSTEM_HEALTH_CHECK';
 timestamp: Date;
-'}
+
+}
 /**
 * Configuration updated event
 */
@@ -102,7 +112,8 @@ type: 'CONFIGURATION_UPDATED';
 config: Partial<WorkflowKanbanConfig>;
 updatedBy: string;
 timestamp: Date;
-'}
+
+}
 /**
 * Error occurred event
 */
@@ -112,7 +123,8 @@ error: string;
 errorContext: string;
 timestamp: Date;
 severity?: 'low| medium| high' | ' critical';
-'}
+
+}
 /**
 * System restart event
 */
@@ -128,7 +140,8 @@ strategy: 'RETRY_OPERATION';
 reason?: string;
 ';: any;
 timestamp: Date;
-'}
+
+}
 /**
 * Complete union type for all workflow events
 *
@@ -144,5 +157,6 @@ export declare class WorkflowEventUtils {
 * Create task created event
 */
 static createTaskCreated(task: 'TASK_CREATED,', : any): any;
-'}
+
+}
 //# sourceMappingURL=events.d.ts.map

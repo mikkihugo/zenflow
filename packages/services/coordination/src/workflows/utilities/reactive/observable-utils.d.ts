@@ -47,5 +47,6 @@ static createInterval(milliseconds: number): Observable<number>;
 * Combine multiple observables
 */
 static combineStreams<T>(sources: Observable<T>[]): Observable<T[]>;
-'}
+
+}
 //# sourceMappingURL=observable-utils.d.ts.map

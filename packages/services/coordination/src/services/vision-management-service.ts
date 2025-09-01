@@ -12,7 +12,8 @@ export enum VisionLevel {
   SOLUTION = 'solution', // Highest level - complete solution
   ART = 'art', // ART level - how ART contributes
   TEAM = 'team' // Team level - team's specific role
-'}
+
+}
 /**
 * Vision lifecycle states
 */
@@ -23,7 +24,8 @@ export enum VisionState {
   ACTIVE = 'active', // Currently guiding work
   EVOLVING = 'evolving', // Being updated/refined
   ARCHIVED = 'archived' // No longer active
-'}
+
+}
 /**
 * Core vision artifact
 */
@@ -40,10 +42,10 @@ problemStatement: string;
 targetCustomers: string[];
 valueProposition: string;
 successMetrics: Array<{
-metric: string;
-target: string;
-timeframe: string;
-'}>;
+  metric: string;
+  target: string;
+  timeframe: string;
+}>;
 // Alignment and dependencies
 parentVisionId?:string; // Links to higher-level vision
 childVisionIds: string[]; // Links to lower-level visions
@@ -55,7 +57,7 @@ stakeholders: Array<{
   name: string;
   influence: 'high' | 'medium' | 'low';
   commitment: 'champion' | 'supporter' | 'neutral' | 'skeptic';
-'}>;
+}>;
 approvalGateId?:ApprovalGateId;
 owner: UserId;
 contributors: UserId[];
@@ -71,8 +73,9 @@ attachments: Array<{
   type: 'document' | 'image' | 'video' | 'link';
   url: string;
   description: string;
-'}>;
-'}
+}>;
+
+}
 /**
 * Vision board for visual management
 */
@@ -109,7 +112,8 @@ opportunities: string[];
 // Metadata
 createdAt: Date;
 lastUpdatedAt: Date;
-'}
+
+}
 /**
 * Vision alignment assessment
 */
@@ -137,7 +141,8 @@ alignmentActions: Array<{
 '}>;
 overallScore: number;
 recommendations: string[];
-'}
+
+}
 // ============================================================================
 // VISION MANAGEMENT SERVICE
 // ============================================================================
@@ -158,7 +163,8 @@ constructor(
 ) {
   this.taskApprovalSystem = taskApprovalSystem;
   this.safeFlowIntegration = safeFlowIntegration;
-'}
+
+}
 /**
 * Initialize vision management service
 */
@@ -257,27 +263,32 @@ solutionVisions.map((v) => this.buildVisionHierarchy(v.id, allVisions));
 ');
 // Combine all hierarchies
 return this.combineVisionHierarchies(hierarchies)`;
-'}
-'}
+
+}
+
+}
 // ============================================================================
 // PRIVATE IMPLEMENTATION METHODS
 // ============================================================================
 private async createVisionTables(): Promise<void> // Create vision artifacts table') await this.database.schema.createTableIfNotExists('vision_artifacts,')';
 (table: any) => {
 ') table.string('id').primary(');) table.string('level').notNullable(');') table.string('state').notNullable(');') table.string('title').notNullable(');') table.text('description');') table.text('vision_statement').notNullable(');') table.text('problem_statement');') table.json('target_customers');') table.text('value_proposition');') table.json('success_metrics');') table.string('parent_vision_id').nullable(');') table.json('child_vision_ids');') table.json('strategic_theme_alignment');') table.json('architectural_requirements');') table.json('stakeholders');') table.string('approval_gate_id').nullable(');') table.string('owner').notNullable(');') table.json('contributors');') table.json('reviewers');') table.timestamp('created_at').notNullable(');') table.timestamp('last_updated_at').notNullable(');') table.timestamp('approved_at').nullable(');') table.timestamp('next_review_date').notNullable(');') table.json('tags');') table.json('attachments');') table.index(['level,' state]);') table.index(['owner]);') table.index(['parent_vision_id]);'];;
-'}
+
+}
 ');
 // Create vision boards table') await this.database.schema.createTableIfNotExists(';)';
 'vision_boards,';
 (table: any) => {
 table.string('id').primary(');) table.string('vision_id').notNullable(');') table.json('vision_canvas').notNullable(');') table.json('personas');') table.json('customer_journey');') table.timestamp('created_at').notNullable(');') table.timestamp('last_updated_at').notNullable(');') table.index(['vision_id]);'];;
-'}
+
+}
 ');
 // Create vision alignment assessments table') await this.database.schema.createTableIfNotExists(';)';
 'vision_alignments,';
 (table: any) => {
 table.string('id').primary(');) table.string('vision_id').notNullable(');') table.timestamp('assessment_date').notNullable(');') table.integer('strategic_alignment').notNullable(');') table.integer('stakeholder_alignment').notNullable(');') table.integer('team_alignment').notNullable(');') table.integer('architectural_alignment').notNullable(');') table.json('alignment_gaps');') table.json('alignment_actions');') table.integer('overall_score').notNullable(');') table.json('recommendations');') table.index(['vision_id,' assessment_date]);
-'}
+
+}
 ');
 private async createVisionApprovalWorkflow(
 vision: 'new_vision,',
@@ -296,7 +307,8 @@ case VisionLevel.SOLUTION, return ['business-owner-1,' solution-architect-1,'rte
 case VisionLevel.ART, return ['rte-1,' product-manager-1,'system-architect-1];;
 case VisionLevel.TEAM, return ['product-owner-1,' scrum-master-1,'tech-lead-1];;
 default: return [];
-'}
+
+}
 private estimateApprovalTime(level: VisionLevel): number
 // Return milliseconds
 switch (level) {
@@ -304,7 +316,8 @@ case VisionLevel.SOLUTION: return 7 * 24 * 60 * 60 * 1000; // 7 days
 case VisionLevel.ART: return 5 * 24 * 60 * 60 * 1000; // 5 days
 case VisionLevel.TEAM: return 3 * 24 * 60 * 60 * 1000; // 3 days
 default: return 5 * 24 * 60 * 60 * 1000;
-'}
+
+}
 private requiresNewApproval(
 vision: VisionArtifact,
 updates: any,
@@ -312,13 +325,15 @@ changeImpact: string
 ):boolean {
 // Major or breaking changes require new approvalif (changeImpact ==='major'|| changeImpact ===breaking){';
 return true;
-'}
+
+}
 // Changes to core vision elements require approval') const coreFields = [') 'visionStatement,';
 'valueProposition,') 'targetCustomers,';
 'successMetrics,';
 ];
 return coreFields.some((field) => updates[field] !== undefined);
-'}
+
+}
 private calculateVisionBusinessValue(vision: vision.successMetrics.length * 10;
 const stakeholderValue = vision.stakeholders.length * 5;
 const levelMultiplier =
@@ -326,7 +341,8 @@ vision.level === VisionLevel.SOLUTION
 ? 3: vision.level === VisionLevel.ART;
 ? 2: 1;
 return (metricsValue + stakeholderValue) * levelMultiplier;
-'}
+
+}
 // Placeholder implementations for complex analysis methods
 private calculateStakeholderAlignment(feedback: any[]): number
 return Math.round(
@@ -344,7 +360,8 @@ gaps.push({
 if (team < 70)') gaps.push({';
 ') area : 'Team Alignment') gap : 'Teams unclear on vision') impact : 'high') recommendation,});
 return gaps;
-'}
+
+}
 private generateAlignmentActions(gaps: any[]): any[]
 return gaps.map((gap) => ({
 action: 'product-owner-1,',
@@ -357,22 +374,27 @@ recommendations.push('Consider vision refinement workshop');
 ') recommendations.push('Good alignment with room for improvement');') recommendations.push('Address specific gaps identified');
 '} else {
 ') recommendations.push('Strong alignment across all areas');') recommendations.push('Continue regular alignment checks);
-'}
+
+}
 return recommendations;
-'}
+
+}
 // Persistence and loading methods (simplified)
 private async persistVision(vision: this.visions.get(parentId);
 if (parent) {
 parent.childVisionIds.push(childId);
 await this.persistVision(parent);
-'}
-'}
+
+}
+
+}
 private async buildVisionHierarchy(
 rootId: string,
 allVisions: VisionArtifact[]
 ): Promise<any> {
 return { hierarchy: [], orphanedVisions: []};
-'}
+
+}
 private combineVisionHierarchies(hierarchies: any[]): any {
 return { hierarchy: [], orphanedVisions: []};
 '};)};;

@@ -14,7 +14,8 @@ meanBy,
 */
 export interface ScrumOfScrumsConfig {
 id: string;
-'}
+
+}
 /**
 * Impediment severity levels
 */
@@ -42,5 +43,6 @@ critical = 7,
 export = 9,
 enum = 10,
 ImpedimentStatus = 11
-'}
+
+}
 //# sourceMappingURL=scrum-of-scrums-service.d.ts.map

@@ -17,5 +17,6 @@ export interface CustomerResearchConfig {
 readonly maxSegments: new () => Map<string, CustomerSegment>;
 (): any;
 constructor(config: config, this: any, logger?: any): any;
-'}
+
+}
 //# sourceMappingURL=customer-research-service.d.ts.map

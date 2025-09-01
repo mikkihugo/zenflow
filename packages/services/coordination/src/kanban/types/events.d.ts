@@ -24,7 +24,8 @@ readonly review: number;
 readonly deployment: number;
 readonly blocked: number;
 readonly done: number;
-'}
+
+}
 /**
 * Core workflow task
 */
@@ -44,7 +45,8 @@ readonly actualEffort?: number;
 readonly dependencies?: string[];
 readonly tags?: string[];
 readonly metadata?: Record<string, any>;
-'}
+
+}
 /**
 * Workflow bottleneck information
 */
@@ -53,7 +55,8 @@ readonly id: string;
 readonly state: TaskState;
 readonly type: 'capacity' | ' process' | ' dependency';
 readonly severity: low;
-'}
+
+}
 /**
 * Flow metrics for performance analysis
 */
@@ -66,7 +69,8 @@ readonly flowEfficiency: number;
 readonly predictability: number;
 readonly qualityIndex: number;
 readonly wipEfficiency: number;
-'}
+
+}
 /**
 * Workflow kanban configuration
 */
@@ -79,7 +83,8 @@ readonly enableEventSystem: boolean;
 readonly wipLimits: WIPLimits;
 readonly maxConcurrentTasks: number;
 readonly performanceTrackingEnabled: boolean;
-'}
+
+}
 /**
 * Kanban context for state machines and operations
 */
@@ -87,7 +92,8 @@ export interface KanbanContext {
 readonly taskId?: string;
 readonly currentState?: TaskState;
 readonly metadata?: Record<string, any>;
-'}
+
+}
 /**
 * Event definitions for the kanban system
 */
@@ -95,5 +101,6 @@ export interface WorkflowKanbanEvents {
 'kanban: initialized: {': any;
 timestamp: Date;
 config: WorkflowKanbanConfig;
-'}
+
+}
 //# sourceMappingURL=events.d.ts.map

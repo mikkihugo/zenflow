@@ -44,8 +44,8 @@ export enum SOC2Category {
   AVAILABILITY = 'availability',
   PROCESSING_INTEGRITY = 'processing_integrity',
   CONFIDENTIALITY = 'confidentiality',
-  PRIVACY = 'privacy
-'}
+  PRIVACY = 'privacy'
+}
 /**
 * SOC2 Event Types for comprehensive logging
 */
@@ -93,8 +93,9 @@ export enum SOC2EventType {
   GATE_REJECTED = 'gate_rejected',
   AI_DECISION_MADE = 'ai_decision_made',
   HUMAN_OVERRIDE = 'human_override',
-  WORKFLOW_TRANSITION = 'workflow_transition
-'}
+  WORKFLOW_TRANSITION = 'workflow_transition'
+
+}
 /**
 * Complete SOC2 audit log entry
 */

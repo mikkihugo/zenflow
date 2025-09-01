@@ -3,7 +3,8 @@
 */
 export interface TechnicalDebtItem {
 id: string;
-'}
+
+}
 /**
 * Technical debt categories
 */
@@ -24,5 +25,6 @@ private readonly logger;
 private debtItems;
 private remediationPlans;
 private config;
-'}
+
+}
 //# sourceMappingURL=technical-debt-management-service.d.ts.map

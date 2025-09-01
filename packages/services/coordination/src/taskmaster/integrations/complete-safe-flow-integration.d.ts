@@ -21,7 +21,8 @@ EPIC_DEVELOPMENT = 'epic_development,',
 export,
 interface,
 SafeEntity,
-'}
+
+}
 /**
 * Complete SAFE flow configuration
 */
@@ -76,7 +77,8 @@ enablePatternRecognition: boolean;
 auditLevel: 'basic| soc2' | ' comprehensive';
 retentionDays: number;
 '};
-'}
+
+}
 /**
 * Complete SAFE Flow Integration Service
 *
@@ -94,6 +96,7 @@ config: any,
 this: any,
 baseIntegration?: SafeFrameworkIntegration
 ');
-'}
+
+}
 export default CompleteSafeFlowIntegration;
 //# sourceMappingURL=complete-safe-flow-integration.d.ts.map

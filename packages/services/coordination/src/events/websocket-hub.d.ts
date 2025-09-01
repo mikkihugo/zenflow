@@ -5,7 +5,8 @@ export interface RegisteredService {
 name: 'services_available';
 data: getLogger;
 (: any): any;
-'}
+
+}
 /**
 * Get the WebSocket hub instance
 */

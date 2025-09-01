@@ -16,19 +16,22 @@
 */
 export interface ProductManagerConfig {
 readonly enableProductVisionManagement: 'ideation';
-'}
+
+}
 /**
 * Product vision framework
 */
 export interface ProductVision {
 id: string;
-'}
+
+}
 /**
 * Competitor satisfaction analysis
 */
 export interface CompetitorSatisfaction {
 readonly competitor: 'immediate';
-'}
+
+}
 /**
 * Frequency pattern for customer behavior
 */
@@ -50,7 +53,8 @@ sporadic = 13,
 ') = 14,
 one_time = 15,
 ')deal_breaker';
-'}
+
+}
 /**
 * Buying process stage definition
 */
@@ -61,7 +65,8 @@ readonly keyActivities: string[];
 readonly stakeholdersInvolved: string[];
 readonly requiredMaterials: string[];
 readonly successCriteria: string[];
-'}
+
+}
 /**
 * Evaluation criterion for decisions
 */
@@ -70,7 +75,8 @@ readonly criterion: string;
 readonly importance: number;
 readonly howWeCompare: number;
 readonly competitorBenchmark: number;
-'}
+
+}
 /**
 * Competitor performance analysis
 */
@@ -82,7 +88,8 @@ readonly pricing: 'premium' | ' competitive' | ' budget';
 readonly strengths: string[];
 readonly weaknesses: string[];
 readonly marketShare: number;
-'}
+
+}
 /**
 * Budget cycle information
 */
@@ -95,7 +102,8 @@ readonly budgetSize: {
 min: number;
 max: number;
 '};
-'}
+
+}
 /**
 * Market opportunity analysis
 */
@@ -108,7 +116,8 @@ readonly competitiveLandscape: CompetitorAnalysis[];
 readonly marketTrends: MarketTrend[];
 readonly barriers: MarketBarrier[];
 readonly opportunities: MarketDriver[];
-'}
+
+}
 /**
 * Competitor analysis
 */
@@ -120,7 +129,8 @@ readonly weaknesses: string[];
 readonly pricing: PricingStrategy;
 readonly customerSegments: string[];
 readonly recentMoves: string[];
-'}
+
+}
 /**
 * Market trend analysis
 */
@@ -129,14 +139,16 @@ readonly trend: string;
 readonly impact: 'positive' | ' negative' | ' neutral';
 readonly timeframe: string;
 readonly confidence: number;
-'}
+
+}
 /**
 * Market barrier identification
 */
 export interface MarketBarrier {
 readonly barrier: string;
 readonly severity: high;
-'}
+
+}
 /**
 * Market driver analysis
 */
@@ -144,7 +156,8 @@ export interface MarketDriver {
 readonly driver: string;
 readonly impact: number;
 readonly timeline: string;
-'}
+
+}
 /**
 * Pricing strategy definition
 */
@@ -153,7 +166,8 @@ readonly model: 'premium| competitive| penetration' | ' skimming';
 readonly basePrice: number;
 readonly discount: number;
 readonly bundling: boolean;
-'}
+
+}
 /**
 * Success criterion definition
 */
@@ -162,7 +176,8 @@ readonly metric: string;
 readonly target: number;
 readonly timeframe: string;
 readonly measurement: string;
-'}
+
+}
 /**
 * Strategy alignment tracking
 */
@@ -171,7 +186,8 @@ readonly strategicTheme: string;
 readonly alignmentScore: number;
 readonly contributionLevel: 'direct' | ' indirect' | ' supporting';
 readonly strategicImportance: number;
-'}
+
+}
 /**
 * Stakeholder alignment tracking
 */
@@ -181,5 +197,6 @@ readonly alignmentLevel: number;
 readonly lastReviewed: Date;
 readonly concerns: string[];
 readonly supportLevel: 'champion| supporter| neutral| skeptic' | ' blocker';
-'}
+
+}
 //# sourceMappingURL=product-management.d.ts.map

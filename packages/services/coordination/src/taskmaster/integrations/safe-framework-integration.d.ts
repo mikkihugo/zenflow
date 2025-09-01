@@ -12,7 +12,8 @@ PERFORMANCE_VALIDATION = 'performance_validation',
 BUSINESS_VALIDATION = 'business_validation',
 ARCHITECTURE_COMPLIANCE = 'architecture_compliance',
 CROSS_FRAMEWORK_SYNC = 'cross_framework_sync',
-'}
+
+}
 /**
 * Integration configuration for SAFe 6.0 gates
 */
@@ -48,7 +49,8 @@ trackDecisionPatterns: boolean;
 adaptPrompts: boolean;
 auditCompliance: 'basic| soc2' | ' comprehensive';
 '};
-'}
+
+}
 /**
 * SAFE gate execution context
 */
@@ -74,7 +76,8 @@ required: boolean;
 frameworks: string[];
 auditLevel: 'basic' | ' enhanced' | ' comprehensive';
 '};
-'}
+
+}
 /**
 * Traceability record for SAFE gate decisions
 */
@@ -117,7 +120,8 @@ escalationCount: number;
 '};
 createdAt: Date;
 completedAt?: Date;
-'}
+
+}
 /**
 * SAFE Framework Integration Service
 *
@@ -133,5 +137,6 @@ approvalGateManager: approvalGateManager,
 this: any,
 config?: any
 ');
-'}
+
+}
 //# sourceMappingURL=safe-framework-integration.d.ts.map

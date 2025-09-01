@@ -21,5 +21,6 @@ Risk,
 */
 export interface PIPlanningEventConfig {
 readonly eventId: logger;
-'}
+
+}
 //# sourceMappingURL=pi-planning-facilitation-service.d.ts.map

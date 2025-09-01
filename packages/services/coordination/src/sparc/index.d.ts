@@ -13,7 +13,8 @@ SPECIFICATION : 'specification' PSEUDOCODE : 'pseudocode' ARCHITECTURE : 'archit
 feedback: string[];
 actionItems: string[];
 conversationId: string;
-'}
+
+}
 export interface SPARCArchitectureApproval {
 projectId: string;
 phase: SPARCPhase.ARCHITECTURE;
@@ -21,7 +22,8 @@ approved: boolean;
 architectureNotes: string[];
 implementationGuidance: string[];
 conversationId: string;
-'}
+
+}
 export interface SPARCCodeApproval {
 projectId: string;
 phase: SPARCPhase.REFINEMENT| SPARCPhase.COMPLETION;
@@ -29,7 +31,8 @@ approved: boolean;
 codeQualityNotes: string[];
 refactoringNeeded: string[];
 conversationId: string;
-'}
+
+}
 // Teamwork response interface for review completion
 export interface TeamworkResponse {
 projectId: string;
@@ -38,7 +41,8 @@ approved: boolean;
 feedback: string[];
 actionItems: string[];
 conversationId: string;
-'}
+
+}
 // ============================================================================
 // EVENT-DRIVEN SPARC MANAGER
 // ============================================================================
@@ -49,7 +53,8 @@ export declare class SPARCManager extends EventBus {
 private config;
 private collaborationTimeouts;
 private pendingReviews;
-'}
+
+}
 export default class SPARC extends EventBus {
 private manager?;
 constructor();
@@ -57,5 +62,6 @@ constructor();
 * Setup event coordination for SPARC system
 */
 private setupEventCoordination;
-'}
+
+}
 //# sourceMappingURL=index.d.ts.map

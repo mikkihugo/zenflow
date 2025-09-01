@@ -12,7 +12,8 @@ filter,
 */
 export interface MultiARTCoordinationConfig {
 readonly coordinationId: 'technical';
-'}
+
+}
 /**
 * Dependency criticality levels
 */
@@ -60,5 +61,6 @@ pi_boundary = 9,
 export = 11,
 interface = 12,
 SynchronizationStrategy = 13
-'}
+
+}
 //# sourceMappingURL=multi-art-coordination-service.d.ts.map

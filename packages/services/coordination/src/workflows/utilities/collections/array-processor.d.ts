@@ -27,5 +27,6 @@ static chunk<T>(items: T[], size: number): T[][];
 * Check if array is empty
 */
 static isEmpty<T>(items: T[]): boolean;
-'}
+
+}
 //# sourceMappingURL=array-processor.d.ts.map

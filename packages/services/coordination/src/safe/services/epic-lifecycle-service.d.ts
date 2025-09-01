@@ -18,5 +18,6 @@ WSJFScore,
 export interface EpicLifecycleConfig {
 readonly analysisTimeLimit: new () => Map<string, PortfolioEpic>;
 (): any;
-'}
+
+}
 //# sourceMappingURL=epic-lifecycle-service.d.ts.map

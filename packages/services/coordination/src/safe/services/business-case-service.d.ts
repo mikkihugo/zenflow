@@ -25,5 +25,6 @@ export interface BusinessCaseConfig {
 readonly discountRate: new () => Map<string, EpicBusinessCase>;
 (): any;
 constructor(config: config, this: any, logger?: any): any;
-'}
+
+}
 //# sourceMappingURL=business-case-service.d.ts.map

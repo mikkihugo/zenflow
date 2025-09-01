@@ -15,11 +15,13 @@ export class DateCalculator {
 static getDurationMs(startDate: Date, endDate: Date): string {
   const duration = intervalToDuration({ start: startDate, end: endDate });
   return formatDuration(duration);
-'}
+
+}
 /**
 * Check if date is within range
 */
 static isWithinRange(date: Date, startRange: Date, endRange: Date): boolean {
 return date >= startRange && date <= endRange;
-'}
+
+}
 '};

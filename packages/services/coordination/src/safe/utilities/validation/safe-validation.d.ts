@@ -32,7 +32,8 @@ z.ZodTypeAny,
 '},
 {
 [x: string]: any;
-'}
+
+}
 >;
 /**
 * SAFe validation utilities class
@@ -42,5 +43,6 @@ export declare class SafeValidationUtils {
 * Validate epic creation input
 */
 static validateEpic(input: z.object): any;
-'}
+
+}
 //# sourceMappingURL=safe-validation.d.ts.map

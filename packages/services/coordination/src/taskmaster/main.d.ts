@@ -15,7 +15,8 @@ getSafeIntegration?(): Promise<any>;
 * const taskMaster = await getTaskMaster();
 * await taskMaster.initialize();
 * ') */ ';: any;
-'}
+
+}
 export declare function getTaskMaster(): Promise<TaskMasterSystem>;
 /**
 * Create TaskMaster system with custom configuration

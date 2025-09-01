@@ -32,7 +32,8 @@ static groupByART<T extends {
 artId: groupBy;
 (features: any, : any): any;
 '}>(): any;
-'}
+
+}
 /**
 * SAFe portfolio and value stream utilities
 */
@@ -44,5 +45,6 @@ static calculatePortfolioMetrics<T extends {
 status: countBy;
 (portfolioItems: any, : any): any;
 '}, const totalItems = portfolioItems.length, const healthScore = ((statusCount.green))>(): any;
-'}
+
+}
 //# sourceMappingURL=safe-collections.d.ts.map

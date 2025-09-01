@@ -8,13 +8,15 @@ PSEUDOCODE = "pseudocode",
 ARCHITECTURE = "architecture",
 REFINEMENT = "refinement",
 COMPLETION = "completion"
-'}
+
+}
 /**
 * SPARC project structure - defined locally for event payloads
 */
 export interface SPARCProject {
 id: string;
-'}
+
+}
 export type AgentType = 'researcher' | ' coder' | ' analyst' | ' coordinator' | ' specialist';
 /**
 * Maps SAFe Feature to SPARC Project execution
@@ -25,7 +27,8 @@ readonly sparcProjects: SPARCProject[];
 readonly mappingRationale: string;
 readonly businessContext: BusinessToTechnicalContext;
 readonly progressCorrelation: ProgressCorrelation;
-'}
+
+}
 /**
 * Business context translated to technical requirements
 */
@@ -36,7 +39,8 @@ readonly technicalComplexity: 'simple' | ' moderate' | ' complex' | ' enterprise
 readonly stakeholderPriority: 'low' | ' medium' | ' high' | ' critical';
 readonly architecturalImpact: ArchitecturalImpact;
 readonly complianceRequirements: string[];
-'}
+
+}
 /**
 * Architectural impact assessment
 */
@@ -45,7 +49,8 @@ readonly level: 'component' | ' service' | ' system' | ' enterprise';
 readonly affectedSystems: string[];
 readonly integrationComplexity: number;
 readonly riskLevel: 'low' | ' medium' | ' high' | ' critical';
-'}
+
+}
 /**
 * Correlates SAFe progress with SPARC execution
 */
@@ -55,7 +60,8 @@ readonly sparcPhases: SPARCPhaseMapping[];
 readonly overallProgress: number;
 readonly blockers: IntegrationBlocker[];
 readonly predictedCompletion: Date;
-'}
+
+}
 /**
 * Maps SAFe milestones to SPARC phases
 */
@@ -64,13 +70,15 @@ readonly phase: SPARCPhase;
 readonly safeMilestone: string;
 readonly completionPercentage: number;
 readonly qualityGates: QualityGate[];
-'}
+
+}
 /**
 * Quality gates that bridge SAFe acceptance criteria with SPARC deliverables
 */
 export interface QualityGate {
 id: string;
-'}
+
+}
 /**
 * SPARC-specific validation requirements
 */
@@ -79,7 +87,8 @@ readonly phase: SPARCPhase;
 readonly validationType: 'specification' | ' architecture' | ' implementation' | ' testing';
 readonly criteria: ValidationCriteria[];
 readonly tooling: string[];
-'}
+
+}
 /**
 * Validation criteria for quality gates
 */
@@ -88,13 +97,15 @@ readonly criterion: string;
 readonly threshold: number;
 readonly measurement: string;
 readonly automated: boolean;
-'}
+
+}
 /**
 * Integration blockers and resolution strategies
 */
 export interface IntegrationBlocker {
 id: string;
-'}
+
+}
 /**
 * Agent roles that understand both SAFe and SPARC contexts
 */
@@ -105,7 +116,8 @@ readonly sparcRole: SPARCAgentRole;
 readonly capabilities: AgentCapability[];
 readonly certifications: FrameworkCertification[];
 readonly experienceLevel: ExperienceLevel;
-'}
+
+}
 /**
 * SAFe-specific agent roles
 */
@@ -113,7 +125,8 @@ export type SAFeAgentRole = 'product-owner' | ' scrum-master' | ' system-archite
 export type SPARCAgentRole = 'specification-writer' | ' architect' | ' implementer' | ' quality-validator' | ' technical-writer';
 export interface AgentCapability {
 readonly capability: ;
-'}
+
+}
 /**
 * Coordinated workflows that span both frameworks
 */
@@ -124,7 +137,8 @@ readonly safePhases: SAFeWorkflowPhase[];
 readonly sparcPhases: SPARCWorkflowPhase[];
 readonly synchronizationPoints: SynchronizationPoint[];
 readonly escalationPaths: EscalationPath[];
-'}
+
+}
 /**
 * SAFe workflow phases
 */
@@ -134,7 +148,8 @@ readonly duration: number;
 readonly participants: SAFeAgentRole[];
 readonly deliverables: string[];
 readonly dependencies: string[];
-'}
+
+}
 /**
 * SPARC workflow phases with SAFe coordination
 */
@@ -145,13 +160,15 @@ readonly duration: number;
 readonly participants: SPARCAgentRole[];
 readonly deliverables: string[];
 readonly qualityGates: string[];
-'}
+
+}
 /**
 * Synchronization points between frameworks
 */
 export interface SynchronizationPoint {
 id: string;
-'}
+
+}
 /**
 * Escalation paths for integration issues
 */
@@ -161,7 +178,8 @@ readonly escalationLevel: number;
 readonly responsible: SAFeAgentRole | SPARCAgentRole;
 readonly timeoutMinutes: number;
 readonly resolution: ResolutionStrategy;
-'}
+
+}
 /**
 * Triggers for escalation
 */
@@ -169,7 +187,8 @@ export interface EscalationTrigger {
 readonly type: 'delay' | ' quality' | ' dependency' | ' resource' | ' compliance';
 readonly threshold: unknown;
 readonly description: string;
-'}
+
+}
 /**
 * Resolution strategies for escalated issues
 */
@@ -178,7 +197,8 @@ readonly strategy: 'escalate' | ' fallback' | ' retry' | ' skip' | ' manual-inte
 readonly description: string;
 readonly impact: string;
 readonly alternatives: string[];
-'}
+
+}
 /**
 * Integrated metrics that track both SAFe and SPARC progress
 */
@@ -188,7 +208,8 @@ readonly sparcMetrics: SPARCMetrics;
 readonly correlationMetrics: CorrelationMetrics;
 readonly predictiveMetrics: PredictiveMetrics;
 readonly timestamp: Date;
-'}
+
+}
 /**
 * SAFe-specific metrics
 */
@@ -198,7 +219,8 @@ readonly featureDeliveryRate: number;
 readonly businessValueRealized: number;
 readonly stakeholderSatisfaction: number;
 readonly complianceScore: number;
-'}
+
+}
 /**
 * SPARC-specific metrics
 */
@@ -208,7 +230,8 @@ readonly qualityGatePassRate: number;
 readonly technicalDebtScore: number;
 readonly implementationEfficiency: number;
 readonly codeQualityScore: number;
-'}
+
+}
 /**
 * Correlation metrics between frameworks
 */
@@ -218,7 +241,8 @@ readonly timelineCorrelation: number;
 readonly qualityCorrelation: number;
 readonly resourceUtilizationEfficiency: number;
 readonly integrationEffectiveness: number;
-'}
+
+}
 /**
 * Predictive metrics for planning
 */
@@ -228,7 +252,8 @@ readonly riskOfDelayProbability: number;
 readonly qualityRiskScore: number;
 readonly resourceConstraintRisk: number;
 readonly businessValuePrediction: number;
-'}
+
+}
 /**
 * Configuration for SAFe-SPARC integration
 */
@@ -238,7 +263,8 @@ readonly synchronizationSettings: SynchronizationSettings;
 readonly escalationSettings: EscalationSettings;
 readonly metricsSettings: MetricsSettings;
 readonly qualityGateSettings: QualityGateSettings;
-'}
+
+}
 /**
 * Available integration features
 */
@@ -248,7 +274,8 @@ readonly syncInterval: number;
 readonly conflictResolution: 'safe-wins' | ' sparc-wins' | ' manual' | ' merge';
 readonly timeoutTolerance: number;
 readonly retryPolicy: RetryPolicy;
-'}
+
+}
 /**
 * Retry policy for failed synchronizations
 */
@@ -256,7 +283,8 @@ export interface RetryPolicy {
 readonly maxRetries: number;
 readonly backoffStrategy: 'linear' | ' exponential';
 readonly baseDelay: number;
-'}
+
+}
 /**
 * Escalation settings
 */
@@ -265,7 +293,8 @@ readonly enableAutoEscalation: boolean;
 readonly escalationThresholds: EscalationThreshold[];
 readonly notificationChannels: string[];
 readonly maxEscalationLevels: number;
-'}
+
+}
 /**
 * Escalation thresholds
 */
@@ -274,7 +303,8 @@ readonly metric: string;
 readonly threshold: number;
 readonly timeWindow: number;
 readonly severity: low;
-'}
+
+}
 /**
 * Metrics collection settings
 */
@@ -284,7 +314,8 @@ readonly retentionPeriod: number;
 readonly enablePredictiveAnalytics: boolean;
 readonly enableRealTimeAlerts: boolean;
 readonly dashboardRefreshRate: number;
-'}
+
+}
 /**
 * Quality gate settings
 */
@@ -294,5 +325,6 @@ readonly requireManualApproval: boolean;
 readonly parallelValidation: boolean;
 readonly validationTimeout: number;
 readonly failureHandling: 'block' | ' warn' | ' log';
-'}
+
+}
 //# sourceMappingURL=integration-bridge.d.ts.map

@@ -25,7 +25,8 @@ author?: string;
 tags?: string[];
 complexity?: 'simple' | ' medium' | ' complex';
 '};
-'}
+
+}
 export interface WorkflowExecution {
 id: string;
 workflowId: string;
@@ -41,12 +42,14 @@ stepsCompleted: number;
 stepsFailed: number;
 resourcesUsed: Record<string, unknown>;
 '};
-'}
+
+}
 export interface WorkflowRegistry {
 templates: Map<string, WorkflowTemplate>;
 definitions: Map<string, WorkflowDefinition>;
 executions: Map<string, WorkflowExecution>;
-'}
+
+}
 export interface WorkflowEvent {
 type:
 | 'workflow.started
@@ -59,5 +62,6 @@ workflowId: string;
 stepIndex?: number;
 data?: Record<string, unknown>;
 timestamp: string;
-'}
+
+}
 //# sourceMappingURL=types.d.ts.map

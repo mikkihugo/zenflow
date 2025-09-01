@@ -26,7 +26,8 @@ z.ZodTypeAny,
 '},
 {
 [x: string]: any;
-'}
+
+}
 >;
 '},
 'strip',
@@ -40,7 +41,8 @@ id?: {
 id?: {
 [x: string]: any;
 '};
-'}
+
+}
 >;
 '},
 'strip',
@@ -58,6 +60,7 @@ id?: {
 [x: string]: any;
 '};
 '};
-'}
+
+}
 >;
 //# sourceMappingURL=validation.d.ts.map
