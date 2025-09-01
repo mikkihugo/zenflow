@@ -46,9 +46,9 @@ export const interfaceUtils = {
       'neural',
     ];
     const FLAG_PREFIX = '--';
-    const AI_ASSIST_FLAG = FLAG_PREFIX + 'ai-assist';
-    const REAL_TIME_FLAG = FLAG_PREFIX + 'real-time';
-    const OPTIMIZE_FLAG = FLAG_PREFIX + 'optimize';
+    const AI_ASSIST_FLAG = `${FLAG_PREFIX  }ai-assist`;
+    const REAL_TIME_FLAG = `${FLAG_PREFIX  }real-time`;
+    const OPTIMIZE_FLAG = `${FLAG_PREFIX  }optimize`;
 
     const aiFlags = [
       AI_ASSIST_FLAG,

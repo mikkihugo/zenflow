@@ -369,7 +369,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
     // Generate recommendations based on trends and issues
     if (analysis.trends.memoryUsage === 'degrading') {
       recommendations.push({
-        id: 'opt-' + ++actionId,
+        id: `opt-${  ++actionId}`,
         type: 'memory',
         action: 'increase_cache_eviction_frequency',
         parameters: { multiplier: 1.5 },
@@ -380,7 +380,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
 
     if (analysis.trends.responseTime === 'degrading') {
       recommendations.push({
-        id: 'opt-' + ++actionId,
+        id: `opt-${  ++actionId}`,
         type: 'performance',
         action: 'enable_compression',
         parameters: { level: 6 },
@@ -391,7 +391,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
 
     if (analysis.trends.cacheHitRate === 'degrading') {
       recommendations.push({
-        id: 'opt-' + ++actionId,
+        id: `opt-${  ++actionId}`,
         type: 'cache',
         action: 'increase_cache_size',
         parameters: { sizeFactor: 1.2 },
@@ -402,7 +402,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
 
     if (analysis.trends.throughput === 'degrading') {
       recommendations.push({
-        id: 'opt-' + ++actionId,
+        id: `opt-${  ++actionId}`,
         type: 'performance',
         action: 'enable_prefetching',
         parameters: { enabled: true, lookahead: 3 },
@@ -454,7 +454,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
         }
       } catch (error) {
         this.logger.error(
-          'Failed to apply optimization ' + recommendation.id + ':',
+          `Failed to apply optimization ${  recommendation.id  }:`,
           error
         );
         recommendation.result = {
@@ -488,7 +488,7 @@ export class MemoryOptimizationEngine extends EventEmitter {
     await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate work
 
     this.logger.info(
-      'Applied optimization:' + action.action,
+      `Applied optimization:${  action.action}`,
       action.parameters
     );
 

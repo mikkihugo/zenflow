@@ -192,7 +192,7 @@ export class EventDrivenSystemMonitorBridge {
   private setupEventListeners(): void {
     const eventsToForward = this.getMonitoredEvents();
 
-    eventsToForward.forEach((eventName) => {
+    for (const eventName of eventsToForward) {
       const listener = (payload: unknown) => {
         this.forwardEvent(eventName, payload);
       };
@@ -202,7 +202,7 @@ export class EventDrivenSystemMonitorBridge {
 
       // Add listener to monitor
       this.monitor.addEventListener(eventName as any, listener);
-    });
+    }
   }
 
   /**

@@ -45,7 +45,7 @@ export class SamplerProcessor implements BaseProcessor {
 
   constructor(config: ProcessorConfig) {
     this.config = config;
-    this.logger = getLogger('SamplerProcessor:' + config.name);
+    this.logger = getLogger(`SamplerProcessor:${  config.name}`);
 
     // Parse sampling rules
     this.samplingRules = this.parseSamplingRules(config.config?.rules || []);
@@ -125,7 +125,7 @@ export class SamplerProcessor implements BaseProcessor {
 
       if (sampledItems.length < dataItems.length) {
         this.logger.debug(
-          'Sampled ' + (sampledItems.length) + ' out of ' + dataItems.length + ' items'
+          `Sampled ${  sampledItems.length  } out of ${  dataItems.length  } items`
         );
 }
 
@@ -146,7 +146,7 @@ export class SamplerProcessor implements BaseProcessor {
       totalSampled:this.sampledCount,
       sampleRate:
         this.processedCount > 0
-          ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) + '%'
+          ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)  }%`
           : '0%',
       finalAdaptiveRate: this.currentRate,
 });
@@ -189,15 +189,15 @@ export class SamplerProcessor implements BaseProcessor {
 } {
     const actualRate =
       this.processedCount > 0
-        ? ((this.sampledCount / this.processedCount) * 100).toFixed(1) + '%'
+        ? `${((this.sampledCount / this.processedCount) * 100).toFixed(1)  }%`
         : '0%';
 
     return {
       processed: this.processedCount,
       sampled: this.sampledCount,
       sampleRate: actualRate,
-      targetRate: (this.targetRate * 100).toFixed(1) + '%',
-      currentAdaptiveRate: (this.currentRate * 100).toFixed(1) + '%',
+      targetRate: `${(this.targetRate * 100).toFixed(1)  }%`,
+      currentAdaptiveRate: `${(this.currentRate * 100).toFixed(1)  }%`,
 };
 }
 
@@ -335,7 +335,7 @@ export class SamplerProcessor implements BaseProcessor {
   private inferPriority(data: TelemetryData): 'high' | 'medium' | 'low' {
     // Check for error indicators
     if (data.type === 'logs' && data.data && typeof data.data === 'object') {
-      const level = (data.data as any).level;
+      const {level} = (data.data as any);
       if (level === 'error' || level === 'critical' || level === 'fatal') {
         return 'high';
       }
@@ -455,7 +455,7 @@ export class SamplerProcessor implements BaseProcessor {
         }
       }
     } catch (error) {
-      this.logger.warn('Failed to evaluate condition: ' + condition, error);
+      this.logger.warn(`Failed to evaluate condition: ${  condition}`, error);
     }
 
     return true;

@@ -59,8 +59,8 @@ readonly enabled: boolean;
 readonly gateType?: 'approval' | 'checkpoint' | 'review' | 'decision';
 readonly businessImpact?: 'low' | 'medium' | 'high' | 'critical';
 readonly stakeholders?: string[];
-readonly autoApproval?:boolean;
-'};
+readonly autoApproval?: boolean;
+};
 
 }
 export interface WorkflowDefinition {
@@ -88,10 +88,10 @@ export interface WorkflowState {
 pendingGates?:Map<string, WorkflowGateRequest>;
 gateResults?:Map<string, WorkflowGateResult>;
 pausedForGate?: {
-stepIndex: number;
-gateId: string;
-pausedAt: string;
-'};
+  stepIndex: number;
+  gateId: string;
+  pausedAt: string;
+};
 
 }
 export interface WorkflowEngineConfig {
@@ -117,14 +117,13 @@ readonly metadata?:Record<string, unknown>;
 export interface StepExecutionResult {
 readonly success: boolean;
 readonly output?:unknown;
-readonly error?:string;
-readonly duration?:number;
-
+readonly error?: string;
+readonly duration?: number;
 }
 export interface WorkflowData {
-readonly id: string;
-readonly name: string;
-readonly description?:string;
-readonly version?:string;
-readonly data: Record<string, unknown>;
-'};
+  readonly id: string;
+  readonly name: string;
+  readonly description?: string;
+  readonly version?: string;
+  readonly data: Record<string, unknown>;
+}

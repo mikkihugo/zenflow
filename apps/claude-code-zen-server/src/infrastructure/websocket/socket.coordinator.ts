@@ -52,7 +52,7 @@ export class WebSocketCoordinator {
    */
   private setupWebSocket(): void {
     this.io.on('connection', (socket) => {
-      this.logger.info('WebSocket client connected:' + socket.id);
+      this.logger.info(`WebSocket client connected:${  socket.id}`);
 
       // Create session
       const session: WebSession = {
@@ -77,7 +77,7 @@ export class WebSocketCoordinator {
             ...data,
           };
           session.lastActivity = new Date();
-          this.logger.debug('Session updated:' + socket.id, data);
+          this.logger.debug(`Session updated:${  socket.id}`, data);
         }
       });
 
@@ -91,7 +91,7 @@ export class WebSocketCoordinator {
 
       // Handle disconnection
       socket.on('disconnect', () => {
-        this.logger.info('WebSocket client disconnected:' + socket.id);
+        this.logger.info(`WebSocket client disconnected:${  socket.id}`);
         this.sessions.delete(socket.id);
       });
 
@@ -118,7 +118,7 @@ export class WebSocketCoordinator {
       timestamp: new Date().toISOString(),
     });
 
-    this.logger.debug('Broadcasted event:' + event, data);
+    this.logger.debug(`Broadcasted event:${  event}`, data);
   }
 
   /**
@@ -127,7 +127,7 @@ export class WebSocketCoordinator {
   sendToSession(sessionId: string, event: string, data: unknown): boolean {
     const socket = this.io.sockets.sockets.get(sessionId);
     if (!socket) {
-      this.logger.warn('Session not found:' + sessionId);
+      this.logger.warn(`Session not found:${  sessionId}`);
       return false;
     }
 
@@ -173,7 +173,7 @@ export class WebSocketCoordinator {
     };
     session.lastActivity = new Date();
 
-    this.logger.debug('Session preferences updated:' + sessionId, preferences);
+    this.logger.debug(`Session preferences updated:${  sessionId}`, preferences);
     return true;
   }
 

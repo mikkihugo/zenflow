@@ -72,7 +72,7 @@ export class TaskAgentMatcher {
     return {
       agent,
       score,
-      reasoning: 'Capability: ' + ((capabilityMatch * 100).toFixed(1)) + '%, Performance:' + ((performanceMatch * 100).toFixed(1)) + '%, Availability:' + (availabilityMatch * 100).toFixed(1) + '%',
+      reasoning: `Capability: ${  (capabilityMatch * 100).toFixed(1)  }%, Performance:${  (performanceMatch * 100).toFixed(1)  }%, Availability:${  (availabilityMatch * 100).toFixed(1)  }%`,
       capabilityMatch,
       performanceMatch,
       availabilityMatch,

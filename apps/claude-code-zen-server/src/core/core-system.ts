@@ -213,7 +213,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
 
       // Handle status changes
       this.on(STATUS_CHANGED_EVENT, (status) => {
-        logger.info('System status changed to: ' + status);
+        logger.info(`System status changed to: ${  status}`);
         this.broadcastStatusUpdate(status);
       });
 
@@ -221,13 +221,13 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       this.on('websocket:connected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
-        logger.debug('WebSocket client connected: ' + (socketId) + ` (total: ${this.activeConnections})`);
+        logger.debug(`WebSocket client connected: ${  socketId  } (total: ${this.activeConnections})`);
       });
 
       this.on('websocket:disconnected', (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
-        logger.debug('WebSocket client disconnected: ' + (socketId) + ` (total: ${this.activeConnections})`);
+        logger.debug(`WebSocket client disconnected: ${  socketId  } (total: ${this.activeConnections})`);
       });
 
       logger.info(' Event handlers configured');
@@ -348,7 +348,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     await this.ensureInitialized();
     
     try {
-      logger.info('Processing document: ' + documentPath);
+      logger.info(`Processing document: ${  documentPath}`);
       
       // Broadcast processing event via WebSocket
       this.broadcastEvent('document:processing', {
@@ -357,7 +357,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       // Basic document processing simulation
-      const workflowIds = ['workflow-' + Date.now()];
+      const workflowIds = [`workflow-${  Date.now()}`];
       
       // Broadcast completion event
       this.broadcastEvent('document:processed', {
@@ -392,9 +392,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     await this.ensureInitialized();
     
     try {
-      logger.info('Exporting system data to ' + format);
+      logger.info(`Exporting system data to ${  format}`);
       
-      const filename = 'system-export-' + (Date.now()) + '.' + format;
+      const filename = `system-export-${  Date.now()  }.${  format}`;
       
       // Broadcast export start event
       this.broadcastEvent('export:started', {

@@ -195,7 +195,7 @@ export class CacheEvictionStrategy extends EventEmitter {
 
     this.emit('cacheCleared', { clearedCount });
     recordMetric('cache_cleared', clearedCount);
-    this.logger.info('Cache cleared, removed ' + clearedCount + ' entries');
+    this.logger.info(`Cache cleared, removed ${  clearedCount  } entries`);
   }
 
   private canAccommodate(size: number): boolean {
@@ -267,7 +267,7 @@ export class CacheEvictionStrategy extends EventEmitter {
     });
 
     this.logger.debug(
-      'Eviction completed:' + (evicted) + ' entries, ' + spaceReclaimed + ' bytes reclaimed'
+      `Eviction completed:${  evicted  } entries, ${  spaceReclaimed  } bytes reclaimed`
     );
   }
 
@@ -502,7 +502,7 @@ export class CacheEvictionStrategy extends EventEmitter {
       }
 
       this.logger.debug(
-        'Periodic cleanup:removed ' + expiredKeys.length + ' expired entries'
+        `Periodic cleanup:removed ${  expiredKeys.length  } expired entries`
       );
       recordMetric('cache_periodic_cleanup', expiredKeys.length);
     }

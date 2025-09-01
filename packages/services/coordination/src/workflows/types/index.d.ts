@@ -1,17 +1,18 @@
-import { *Dependencies:Onlyimportsfrom@claude-zen/foundationforsharedprimitives.,importtype{Entity,Priority,Result,Timestamp,UUID,ValidationError}from'@claude-zen/foundation/types'; } from '@claude-zen/foundation';
+import type { Entity, Priority, Result, Timestamp, UUID, ValidationError } from '@claude-zen/foundation/types';
+
 /**
-* @fileoverview Workflows Domain Types - Process Orchestration Domain
-*
-* Comprehensive type definitions for workflow execution, orchestration, and
-* process management. These types define the core domain model for all
-* workflow operations, execution engines, and process coordination.
-*
-* Domain Independence: Self-contained workflow domain types.
-*
-* @package @claude-zen/workflows
-* @since 2.1.0
-* @version 1.0.0
-*/
+ * @fileoverview Workflows Domain Types - Process Orchestration Domain
+ *
+ * Comprehensive type definitions for workflow execution, orchestration, and
+ * process management. These types define the core domain model for all
+ * workflow operations, execution engines, and process coordination.
+ *
+ * Domain Independence: Self-contained workflow domain types.
+ *
+ * @package @claude-zen/workflows
+ * @since 2.1.0
+ * @version 1.0.0
+ */
 /**
 * Workflow execution states
 */
@@ -31,46 +32,30 @@ RETRYING = "retrying"
 * Step execution states
 */
 export declare enum StepStatus {
-') PENDING = ' = 0,
-pending = 1,
-') RUNNING = ' = 2,
-running = 3,
-') COMPLETED = ' = 4,
-completed = 5,
-') FAILED = ' = 6,
-failed = 7,
-') SKIPPED = ' = 8,
-skipped = 9,
-') CANCELLED = ' = 10,
-cancelled = 11,
-') TIMEOUT = ' = 12,
-timeout = 13,
-') RETRYING = ' = 14,
-retrying = 15,
-')};;
-/**
-* Workflow execution strategies
-*/
-= 16
-/**
-* Workflow execution strategies
-*/
-,
-/**
-* Workflow execution strategies
-*/
-export = 17,
-enum = 18,
-ExecutionStrategy = 19
-
+  PENDING = 'pending',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  SKIPPED = 'skipped',
+  CANCELLED = 'cancelled',
+  TIMEOUT = 'timeout',
+  RETRYING = 'retrying'
 }
+
 /**
-* Timeout configuration
-*/
+ * Workflow execution strategies
+ */
+export declare enum ExecutionStrategy {
+  SEQUENTIAL = 'sequential',
+  PARALLEL = 'parallel',
+  CONDITIONAL = 'conditional'
+}
+
+/**
+ * Timeout configuration
+ */
 export interface TimeoutConfig {
-workflow: 'fail_fast';
-
-}
+  workflow: number;}
 /**
 * Resource requirements and limits
 */
@@ -153,27 +138,26 @@ costs: CostMetrics;
 * Resource usage tracking
 */
 export interface ResourceUsage {
-cpu: {
-peak: number;
-average: number;
-total: number;
-'};
-memory: {
-peak: number;
-average: number;
-total: number;
-'};
-disk: {
-read: number;
-write: number;
-storage: number;
-'};
-network: {
-in: number;
-out: number;
-requests: number;
-'};
-
+  cpu: {
+    peak: number;
+    average: number;
+    total: number;
+  };
+  memory: {
+    peak: number;
+    average: number;
+    total: number;
+  };
+  disk: {
+    read: number;
+    write: number;
+    storage: number;
+  };
+  network: {
+    in: number;
+    out: number;
+    requests: number;
+  };
 }
 /**
 * Performance metrics
@@ -228,12 +212,10 @@ name: 'file';
 * Data retention policy
 */
 export interface RetentionPolicy {
-duration: number;
-deleteAfterExpiration: boolean;
-archiveBeforeDelete: boolean;
-archiveLocation?: string;
-')};;: any;
-
+  duration: number;
+  deleteAfterExpiration: boolean;
+  archiveBeforeDelete: boolean;
+  archiveLocation?: string;
 }
 /**
 * Access control policy for artifacts
@@ -249,20 +231,15 @@ permissions: Permission[];
 * Workflow template for reusable workflows
 */
 export interface WorkflowTemplate extends Omit<Entity, 'version'> {
-';: any;
-name: 'string';
-
-}
+  name: string;
 /**
 * Template usage examples
 */
 export interface TemplateExample {
-name: string;
-description: string;
-parameters: Record<string, unknown>;
-expectedOutput: Record<string, unknown>;
-')};;: any;
-
+  name: string;
+  description: string;
+  parameters: Record<string, unknown>;
+  expectedOutput: Record<string, unknown>;
 }
 /**
 * Template documentation

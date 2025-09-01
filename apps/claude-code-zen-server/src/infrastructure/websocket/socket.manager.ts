@@ -58,7 +58,7 @@ export class WebSocketManager {
     this.setupLogBroadcaster();
 
     this.io.on('connection', (socket) => {
-      this.logger.debug('Client connected:' + socket.id);
+      this.logger.debug(`Client connected:${  socket.id}`);
 
       // Send initial connection data
       socket.emit('connected', {
@@ -70,7 +70,7 @@ export class WebSocketManager {
       // Handle client subscription events
       socket.on('subscribe', async (channel: string) => {
         socket.join(channel);
-        this.logger.debug('Client ' + (socket.id) + ' subscribed to ' + channel);
+        this.logger.debug(`Client ${  socket.id  } subscribed to ${  channel}`);
 
         // Send initial data for the subscribed channel
         await this.sendChannelData(socket, channel);
@@ -78,7 +78,7 @@ export class WebSocketManager {
 
       socket.on('unsubscribe', (channel: string) => {
         socket.leave(channel);
-        this.logger.debug('Client ' + (socket.id) + ' unsubscribed from ' + channel);
+        this.logger.debug(`Client ${  socket.id  } unsubscribed from ${  channel}`);
       });
 
       // Handle ping for connection keep-alive
@@ -88,7 +88,7 @@ export class WebSocketManager {
 
       socket.on('disconnect', (reason) => {
         this.logger.debug(
-          'Client disconnected: ' + (socket.id) + ', reason: ' + reason
+          `Client disconnected: ${  socket.id  }, reason: ${  reason}`
         );
       });
 
@@ -186,7 +186,7 @@ export class WebSocketManager {
           break;
         }
         default:
-          this.logger.warn('Unknown channel subscription:' + channel);
+          this.logger.warn(`Unknown channel subscription:${  channel}`);
       }
     } catch (_error) {
       this.logger.error(
@@ -313,7 +313,7 @@ export class WebSocketManager {
     };
 
     this.io.emit(event, broadcastData);
-    this.logger.debug('Broadcasted event:' + event);
+    this.logger.debug(`Broadcasted event:${  event}`);
   }
 
   /**
@@ -329,7 +329,7 @@ export class WebSocketManager {
     };
 
     this.io.to(room).emit(event, broadcastData);
-    this.logger.debug('Broadcasted event:' + (event) + ' to room:' + room);
+    this.logger.debug(`Broadcasted event:${  event  } to room:${  room}`);
   }
 
   /**
@@ -778,9 +778,9 @@ export class WebSocketManager {
       const freeMemoryMB = totalMemoryMB - usedMemoryMB;
       
       return {
-        totalMemory: totalMemoryMB + 'MB',
-        usedMemory: usedMemoryMB + 'MB', 
-        freeMemory: freeMemoryMB + 'MB',
+        totalMemory: `${totalMemoryMB  }MB`,
+        usedMemory: `${usedMemoryMB  }MB`, 
+        freeMemory: `${freeMemoryMB  }MB`,
         heapTotal: memoryUsage.heapTotal,
         heapUsed: memoryUsage.heapUsed,
         external: memoryUsage.external,
@@ -815,7 +815,7 @@ export class WebSocketManager {
           type: 'sqlite',
           status: 'healthy', // This would check actual DB connection
           connections: systemStats.databaseConnections || 0,
-          latency: systemStats.databaseLatency || 15 + 'ms',
+          latency: systemStats.databaseLatency || `${15  }ms`,
           queryCount: systemStats.totalQueries || 0,
           errorRate: systemStats.databaseErrorRate || 0.02
         },

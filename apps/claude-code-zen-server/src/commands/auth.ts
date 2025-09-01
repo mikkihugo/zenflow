@@ -204,7 +204,7 @@ async function initiateDeviceFlow(): Promise<DeviceFlowResponse> {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to initiate device flow:' + response.statusText);
+    throw new Error(`Failed to initiate device flow:${  response.statusText}`);
   }
 
   return await response.json();
@@ -235,7 +235,7 @@ async function pollForToken(
     });
 
     if (!response.ok) {
-      throw new Error('Token request failed: ' + response.statusText);
+      throw new Error(`Token request failed: ${  response.statusText}`);
     }
 
     const data = await response.json();
@@ -261,7 +261,7 @@ async function pollForToken(
       throw new Error('Access denied by user.');
     }
 
-    throw new Error('OAuth _error:' + data.error_description || data._error);
+    throw new Error(`OAuth _error:${  data.error_description}` || data._error);
   }
 
   throw new Error('Authentication timeout. Please try again.');
@@ -282,8 +282,8 @@ async function saveToken(token: string): Promise<void> {
   };
 
   await fs.writeFile(tokenPath, JSON.stringify(tokenData, null, 2));
-  logger.info(' Token saved to:' + tokenPath);
-  logger.info('GitHub Copilot token saved successfully to ' + tokenPath);
+  logger.info(` Token saved to:${  tokenPath}`);
+  logger.info(`GitHub Copilot token saved successfully to ${  tokenPath}`);
 }
 
 function promptUser(message: string): Promise<void> {
@@ -318,7 +318,7 @@ async function copyToClipboard(text: string): Promise<void> {
         await new Promise<void>((resolve, reject) => {
           (_proc as any).on('exit', (_code: number) => {
             if (_code === 0) resolve();
-            else reject(new Error('Exit code ' + _code));
+            else reject(new Error(`Exit code ${  _code}`));
           });
           (_proc as any).on('_error', reject);
         });
@@ -326,7 +326,7 @@ async function copyToClipboard(text: string): Promise<void> {
         logger.debug('Successfully copied to clipboard using', cmd?.[0]);
         return;
       } catch (_error) {
-        logger.debug('Failed to use ' + cmd?.[0] + ':', _error);
+        logger.debug(`Failed to use ${  cmd?.[0]  }:`, _error);
       }
     }
 
@@ -349,10 +349,10 @@ export async function authLogin(): Promise<void> {
     // Step 2:Display user code and instructions
     logger.info('\n GitHub Copilot Authentication');
     logger.info('═'.repeat(50));
-    logger.info('\n Your verification code:' + deviceFlow.user_code);
-    logger.info(' Visit:' + deviceFlow.verification_uri);
+    logger.info(`\n Your verification code:${  deviceFlow.user_code}`);
+    logger.info(` Visit:${  deviceFlow.verification_uri}`);
     logger.info(
-      '⏰ Code expires in ' + Math.floor(deviceFlow.expires_in / 60) + ' minutes\n'
+      `⏰ Code expires in ${  Math.floor(deviceFlow.expires_in / 60)  } minutes\n`
     );
 
     // Try to copy code to clipboard
@@ -391,9 +391,9 @@ export async function authStatus(): Promise<void> {
       logger.info('\n Authentication Status');
       logger.info('═'.repeat(30));
       logger.info(' Authenticated: Yes');
-      logger.info(' Token created: ' + tokenData.created_at);
-      logger.info(' Token location: ' + tokenPath);
-      logger.info(' Source: ' + tokenData.source);
+      logger.info(` Token created: ${  tokenData.created_at}`);
+      logger.info(` Token location: ${  tokenPath}`);
+      logger.info(` Source: ${  tokenData.source}`);
     } catch {
       logger.info('\n Authentication Status');
       logger.info('═'.repeat(30));
@@ -458,7 +458,7 @@ async function main() {
 }
 
 // Only run main if this file is executed directly
-if (import.meta.url === 'file://' + process.argv[1]) {
+if (import.meta.url === `file://${  process.argv[1]}`) {
   main().catch((_error) => {
     logger.error('Command failed: ', _error);
     process.exit(1);

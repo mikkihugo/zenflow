@@ -78,8 +78,8 @@ export interface VisionArtifact {
 export class VisionManagementService {
   private readonly logger = getLogger('VisionManagementService');
   private visions: Map<string, VisionArtifact> = new Map();
-  private database: any;
-  private eventSystem: any;
+  private database: unknown;
+  private eventSystem: unknown;
 
   constructor() {
     this.logger.info('Vision Management Service initialized');
@@ -88,7 +88,7 @@ export class VisionManagementService {
   /**
    * Initialize vision management service
    */
-  async initialize(): Promise<void> {
+  initialize(): Promise<void> {
     try {
       this.logger.info('Initializing Vision Management Service...');
       // TODO: Initialize database and event system
@@ -97,6 +97,7 @@ export class VisionManagementService {
       this.logger.error(`Failed to initialize Vision Management Service:`, error);
       throw error;
     }
+    return Promise.resolve();
   }
 
   /**
@@ -153,15 +154,15 @@ export class VisionManagementService {
   /**
    * Get vision by ID
    */
-  async getVision(visionId: string): Promise<VisionArtifact | null> {
+  getVision(visionId: string): Promise<VisionArtifact | null> {
     // TODO: Implement vision retrieval
-    return this.visions.get(visionId) || null;
+    return Promise.resolve(this.visions.get(visionId) || null);
   }
 
   /**
    * Update vision
    */
-  async updateVision(
+  updateVision(
     visionId: string,
     updates: Partial<VisionArtifact>,
     updatedBy: string
@@ -180,12 +181,13 @@ export class VisionManagementService {
     // await this.persistVision(vision);
 
     this.logger.info(`Vision updated: ${visionId} by ${updatedBy}`);
+    return Promise.resolve();
   }
 
   /**
    * Transition vision state
    */
-  async transitionVisionState(
+  transitionVisionState(
     visionId: string,
     newState: VisionState,
     transitionedBy: string
@@ -206,35 +208,36 @@ export class VisionManagementService {
     // await this.persistVision(vision);
 
     this.logger.info(`Vision ${visionId} transitioned to ${newState} by ${transitionedBy}`);
+    return Promise.resolve();
   }
 
   /**
    * Get visions by level
    */
-  async getVisionsByLevel(level: VisionLevel): Promise<VisionArtifact[]> {
+  getVisionsByLevel(level: VisionLevel): Promise<VisionArtifact[]> {
     // TODO: Implement filtering by level
-    return Array.from(this.visions.values()).filter(vision => vision.level === level);
+    return Promise.resolve(Array.from(this.visions.values()).filter(vision => vision.level === level));
   }
 
   /**
    * Get child visions
    */
-  async getChildVisions(parentVisionId: string): Promise<VisionArtifact[]> {
+  getChildVisions(parentVisionId: string): Promise<VisionArtifact[]> {
     const parentVision = this.visions.get(parentVisionId);
     if (!parentVision) {
-      return [];
+      return Promise.resolve([]);
     }
 
     // TODO: Implement child vision retrieval
-    return parentVision.childVisionIds
+    return Promise.resolve(parentVision.childVisionIds
       .map(id => this.visions.get(id))
-      .filter((vision): vision is VisionArtifact => vision !== undefined);
+      .filter((vision): vision is VisionArtifact => vision !== undefined));
   }
 
   /**
    * Link parent and child visions
    */
-  private async linkParentChildVision(parentId: string, childId: string): Promise<void> {
+  private linkParentChildVision(parentId: string, childId: string): void {
     const parentVision = this.visions.get(parentId);
     if (parentVision && !parentVision.childVisionIds.includes(childId)) {
       parentVision.childVisionIds.push(childId);
@@ -271,9 +274,9 @@ export class VisionManagementService {
   /**
    * Get vision hierarchy
    */
-  async getVisionHierarchy(visionId: string): Promise<any> {
+  getVisionHierarchy(visionId: string): Record<string, unknown> {
     // TODO: Implement vision hierarchy retrieval
-    void visionId;
+    this.logger.debug('Getting vision hierarchy', { visionId });
     return {
       vision: null,
       parent: null,

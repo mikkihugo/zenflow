@@ -17,7 +17,7 @@ export interface SPARCProject {
 id: string;
 
 }
-export type AgentType = 'researcher' | ' coder' | ' analyst' | ' coordinator' | ' specialist';
+export type AgentType = 'researcher' | 'coder' | 'analyst' | 'coordinator' | 'specialist';
 /**
 * Maps SAFe Feature to SPARC Project execution
 */
@@ -33,31 +33,28 @@ readonly progressCorrelation: ProgressCorrelation;
 * Business context translated to technical requirements
 */
 export interface BusinessToTechnicalContext {
-readonly businessValue: number;
-'; : any;
-readonly technicalComplexity: 'simple' | ' moderate' | ' complex' | ' enterprise';
-readonly stakeholderPriority: 'low' | ' medium' | ' high' | ' critical';
-readonly architecturalImpact: ArchitecturalImpact;
-readonly complianceRequirements: string[];
-
+  readonly businessValue: number;
+  readonly technicalComplexity: 'simple' | 'moderate' | 'complex' | 'enterprise';
+  readonly stakeholderPriority: 'low' | 'medium' | 'high' | 'critical';
+  readonly architecturalImpact: ArchitecturalImpact;
+  readonly complianceRequirements: string[];
 }
 /**
 * Architectural impact assessment
 */
 export interface ArchitecturalImpact {
-readonly level: 'component' | ' service' | ' system' | ' enterprise';
-readonly affectedSystems: string[];
-readonly integrationComplexity: number;
-readonly riskLevel: 'low' | ' medium' | ' high' | ' critical';
-
+  readonly level: 'component' | 'service' | 'system' | 'enterprise';
+  readonly affectedSystems: string[];
+  readonly integrationComplexity: number;
+  readonly riskLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 /**
 * Correlates SAFe progress with SPARC execution
 */
 export interface ProgressCorrelation {
-readonly safeStatus: Feature['status];];
-readonly sparcPhases: SPARCPhaseMapping[];
-readonly overallProgress: number;
+  readonly safeStatus: Feature['status'];
+  readonly sparcPhases: SPARCPhaseMapping[];
+  readonly overallProgress: number;
 readonly blockers: IntegrationBlocker[];
 readonly predictedCompletion: Date;
 
@@ -121,11 +118,10 @@ readonly experienceLevel: ExperienceLevel;
 /**
 * SAFe-specific agent roles
 */
-export type SAFeAgentRole = 'product-owner' | ' scrum-master' | ' system-architect' | ' business-analyst' | ' compliance-officer';
-export type SPARCAgentRole = 'specification-writer' | ' architect' | ' implementer' | ' quality-validator' | ' technical-writer';
+export type SAFeAgentRole = 'product-owner' | 'scrum-master' | 'system-architect' | 'business-analyst' | 'compliance-officer';
+export type SPARCAgentRole = 'specification-writer' | 'architect' | 'implementer' | 'quality-validator' | 'technical-writer';
 export interface AgentCapability {
-readonly capability: ;
-
+  readonly capability: string;
 }
 /**
 * Coordinated workflows that span both frameworks

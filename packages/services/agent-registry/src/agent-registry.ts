@@ -62,7 +62,7 @@ export class AgentRegistry extends TypedEventBase {
     sessionPrefix = 'enhanced-agents'
   ) {
     super();
-    this.logger = getLogger('EnhancedAgentRegistry:' + sessionPrefix);
+    this.logger = getLogger(`EnhancedAgentRegistry:${  sessionPrefix}`);
 
     // Create service container
     this.container = createServiceContainer();
@@ -145,7 +145,7 @@ export class AgentRegistry extends TypedEventBase {
     try {
       // Track service access for performance monitoring
       if (this.serviceAccessHandler) {
-        this.serviceAccessHandler('agent-' + agent.id);
+        this.serviceAccessHandler(`agent-${  agent.id}`);
       }
       
       // Perform async validation
@@ -168,7 +168,7 @@ export class AgentRegistry extends TypedEventBase {
 
       // Register with advanced DI features
       const registrationResult = this.container.registerInstance(
-        'agent-' + agent.id,
+        `agent-${  agent.id}`,
         enhancedAgent,
         {
           lifetime:Lifetime.SCOPED, // Scoped for better performance
@@ -237,11 +237,11 @@ export class AgentRegistry extends TypedEventBase {
       });
 
       this.logger.debug(
-        'Agent registered with advanced features: ' + agent.id,
+        `Agent registered with advanced features: ${  agent.id}`,
         {
           type:agent.type,
           capabilities:Object.keys(agent.capabilities),
-          registrationTime: registrationTime.toFixed(2) + 'ms',
+          registrationTime: `${registrationTime.toFixed(2)  }ms`,
         }
       );
     } catch (error) {
@@ -273,7 +273,7 @@ export class AgentRegistry extends TypedEventBase {
 }
 
       // Resolve from container if not cached
-      const resolveResult = this.container.resolve('agent-' + agentId);
+      const resolveResult = this.container.resolve(`agent-${  agentId}`);
       if (resolveResult.isOk()) {
         const agent = resolveResult.value;
 
@@ -330,7 +330,7 @@ export class AgentRegistry extends TypedEventBase {
 
         this.logger.debug(`Agents selected: ${results.length} matches`, {
           criteria,
-          selectionTime: selectionTime.toFixed(2) + 'ms',
+          selectionTime: `${selectionTime.toFixed(2)  }ms`,
         });
 
         return results;

@@ -98,7 +98,7 @@ export class VectorStore extends EventEmitter {
   constructor(config: VectorStoreConfig) {
     super();
     this.config = { ...config };
-    this.logger = getLogger('LanceDBBackend:' + config.path);
+    this.logger = getLogger(`LanceDBBackend:${  config.path}`);
 
     // Validate configuration
     this.validateConfig();
@@ -182,7 +182,7 @@ export class VectorStore extends EventEmitter {
     for (let i = 0; i < maxConnections; i++) {
       // In a real implementation, create actual LanceDB connections
       const connection = {
-        id: 'conn_' + i,
+        id: `conn_${  i}`,
         created: Date.now(),
         active: true,
       };
@@ -259,7 +259,7 @@ export class VectorStore extends EventEmitter {
         // Generate ID if not provided
         const id =
           data.id ||
-          'vec_' + (Date.now()) + '_' + Math.random().toString(36).substr(2, 9);
+          `vec_${  Date.now()  }_${  Math.random().toString(36).substr(2, 9)}`;
 
         // Process the insertion (in real implementation, use actual LanceDB)
         const processedAt = new Date().toISOString();
@@ -387,10 +387,10 @@ export class VectorStore extends EventEmitter {
 
           if (!options.threshold || similarity >= options.threshold) {
             results.push({
-              id: 'result_' + (i) + '_' + Date.now(),
+              id: `result_${  i  }_${  Date.now()}`,
               similarity,
               metadata: {
-                category: 'category_' + i,
+                category: `category_${  i}`,
                 timestamp: Date.now() - Math.random() * 86400000, // Last 24 hours
                 source: 'similarity_search',
               },

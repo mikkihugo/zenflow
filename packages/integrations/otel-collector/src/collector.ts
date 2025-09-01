@@ -5,7 +5,7 @@
  * logging and telemetry packages, processes it, and exports to multiple backends.
  */
 
-import { createServer, type Server} from 'node:http';
+import { createServer} from 'node:http';
 import type { Logger} from '@claude-zen/foundation';
 import { getLogger} from '@claude-zen/foundation';
 import compression from 'compression';
@@ -323,7 +323,7 @@ export class InternalOTELCollector {
     await new Promise<void>((resolve, reject) => {
       this.httpServer?.listen(port, () => {
         this.logger.info(
-          'OTEL Collector HTTP server listening on port ' + port
+          `OTEL Collector HTTP server listening on port ${  port}`
         );
         resolve();
 });
@@ -355,7 +355,7 @@ export class InternalOTELCollector {
       await this.ingest(telemetryData);
       res.status(200).json({ success:true});
 } catch (error) {
-      this.logger.error('Failed to handle ' + signalType + ' ingestion', error);
+      this.logger.error(`Failed to handle ${  signalType  } ingestion`, error);
       res.status(500).json({ error:String(error)});
 }
 }

@@ -41,7 +41,8 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "vitest",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",

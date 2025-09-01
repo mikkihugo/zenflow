@@ -679,14 +679,14 @@ export class PerformanceTuningStrategy extends EventEmitter {
 
           this.lastTuningTime = Date.now();
 
-          this.logger.info('Applied tuning:' + recommendation.action, {
+          this.logger.info(`Applied tuning:${  recommendation.action}`, {
             improvement,
             parameters: recommendation.parameters,
           });
         }
       } catch (error) {
         this.logger.error(
-          'Failed to apply tuning:' + recommendation.action,
+          `Failed to apply tuning:${  recommendation.action}`,
           error
         );
         recordMetric('performance_tuning_failed', 1, {
@@ -842,7 +842,7 @@ export class PerformanceTuningStrategy extends EventEmitter {
     param.currentValue = value;
     param.lastAdjusted = Date.now();
 
-    this.logger.info('Tuning parameter updated:' + (name) + ' = ' + value);
+    this.logger.info(`Tuning parameter updated:${  name  } = ${  value}`);
     return true;
   }
 

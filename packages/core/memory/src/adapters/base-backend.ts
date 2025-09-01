@@ -243,7 +243,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     try {
       await this.ensureInitialized();
       // Test basic operations
-      const testKey = '__health_check_' + Date.now();
+      const testKey = `__health_check_${  Date.now()}`;
       await this.store(testKey, { test: true });
       const retrieved = await this.retrieve(testKey);
       await this.delete(testKey);
@@ -300,7 +300,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     try {
       return JSON.stringify(value);
     } catch (error) {
-      throw new Error('Failed to serialize value:' + (error as Error).message);
+      throw new Error(`Failed to serialize value:${  (error as Error).message}`);
     }
   }
 
@@ -310,7 +310,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
       return JSON.parse(value) as T;
     } catch (error) {
       throw new Error(
-        'Failed to deserialize value:' + (error as Error).message
+        `Failed to deserialize value:${  (error as Error).message}`
       );
     }
   }

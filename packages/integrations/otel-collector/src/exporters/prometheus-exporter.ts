@@ -16,7 +16,7 @@ export class PrometheusExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger('PrometheusExporter:' + config.name);
+    this.logger = getLogger(`PrometheusExporter:${  config.name}`);
 }
 
   async initialize(): Promise<void> {
@@ -199,7 +199,7 @@ export class PrometheusExporter implements BaseExporter {
 
     await new Promise<void>((resolve, reject) => {
       this.httpServer!.listen(port, () => {
-        this.logger.info('Prometheus metrics server listening on port ' + port);
+        this.logger.info(`Prometheus metrics server listening on port ${  port}`);
         resolve();
       });
 
@@ -245,7 +245,7 @@ export class PrometheusExporter implements BaseExporter {
   ): Promise<void> {
     const name = this.sanitizeMetricName(metricData.name || 'unnamed_metric');
     const help =
-      metricData.description || 'Metric ' + name + ' from ' + telemetryData.service.name;
+      metricData.description || `Metric ${  name  } from ${  telemetryData.service.name}`;
     const value = metricData.value || metricData.count || metricData.sum || 0;
     const labels = {
       ...metricData.labels,
@@ -318,8 +318,8 @@ export class PrometheusExporter implements BaseExporter {
    */
   private sanitizeMetricName(name: string): string {
     return name
-      .replace(/[^a-zA-Z0-9_:]/g, '_')
-      .replace(/^[^a-zA-Z_:]/, '_')
+      .replace(/[^\w:]/g, '_')
+      .replace(/^[^:A-Z_a-z]/, '_')
       .toLowerCase();
   }
 
@@ -349,6 +349,6 @@ export class PrometheusExporter implements BaseExporter {
   private getMetricsEndpoint(): string {
     const port = this.getPort();
     const path = this.config.config?.metricsPath || '/metrics';
-    return 'http://localhost:' + port + path;
+    return `http://localhost:${  port  }${path}`;
   }
 }

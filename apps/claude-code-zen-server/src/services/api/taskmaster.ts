@@ -144,7 +144,7 @@ class TaskMasterManager {
       } catch (_error) {
         logger.error('Failed to initialize TaskMaster system: ', error);
         throw new Error(
-          'TaskMaster system initialization failed:' + (error as Error).message
+          `TaskMaster system initialization failed:${  (error as Error).message}`
         );
       }
     }
@@ -291,7 +291,7 @@ async function handleTaskCreation(
     taskMaster as { createTask: (data: unknown) => Promise<unknown> }
   ).createTask(safeTaskData);
 
-  log(LogLevel.INFO, 'SAFe task created with ID: ' + taskId);
+  log(LogLevel.INFO, `SAFe task created with ID: ${  taskId}`);
   return createdTask;
 }
 
@@ -414,7 +414,7 @@ async function handleCreateTask(
       manager.webSocketCoordinator.broadcast('task:created', task);
     }
 
-    logger.info('Task created:' + (task.id) + ' - ' + task.title);
+    logger.info(`Task created:${  task.id  } - ${  task.title}`);
 
     res.status(201).json({
       success: true,
@@ -423,7 +423,7 @@ async function handleCreateTask(
       timestamp: new Date().toISOString(),
     });
   } catch (_error) {
-    logger.error(TASK_ERROR_MESSAGES.createFailed + ':', error);
+    logger.error(`${TASK_ERROR_MESSAGES.createFailed  }:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.createFailed, req, {
       error: (error as Error).message,
       body: req.body,
@@ -737,7 +737,7 @@ async function validateWIPLimits(
         success: false,
         error: 'WIP limit exceeded',
         wipStatus: wipLimits,
-        message: 'Cannot move task to ' + (toState) + '. WIP limit reached (' + (wipLimits.current) + `/${wipLimits.limit})`,
+        message: `Cannot move task to ${  toState  }. WIP limit reached (${  wipLimits.current  }/${wipLimits.limit})`,
         timestamp: new Date().toISOString(),
       },
       wipStatus: wipLimits,
@@ -862,11 +862,11 @@ async function handleMoveTask(
       toState,
       reason,
     });
-    logger.info('Task ' + (taskId) + ' moved from ' + (currentTask.state) + ' to ' + toState);
+    logger.info(`Task ${  taskId  } moved from ${  currentTask.state  } to ${  toState}`);
 
     res.json({
       success: true,
-      message: 'Task moved to ' + toState,
+      message: `Task moved to ${  toState}`,
       data: {
         taskId,
         fromState: currentTask.state,
@@ -980,7 +980,7 @@ async function createPIPlanningEventHandler(
     });
 
     logger.info(
-      'PI Planning event created:PI ' + (planningIntervalNumber) + ' for ART ' + artId
+      `PI Planning event created:PI ${  planningIntervalNumber  } for ART ${  artId}`
     );
     sendPIEventSuccess(res, piEvent);
   } catch (_error) {

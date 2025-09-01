@@ -499,8 +499,8 @@ export class WebDataService {
     index: number
   ): SwarmStatusData {
     return {
-      id: agent.id || 'swarm-' + index,
-      name: agent.name || 'Swarm ' + index + 1,
+      id: agent.id || `swarm-${  index}`,
+      name: agent.name || `Swarm ${  index  }${1}`,
       type: (agent.type as 'queen' | ' commander' | ' agent') || ' agent',
       status:
         (agent.status as 'active' | ' idle' | ' busy' | ' error') || 'active',
@@ -546,7 +546,7 @@ export class WebDataService {
 
   private normalizeSwarmData(data: any): SwarmStatusData {
     return {
-      id: data.id || 'swarm-' + Date.now(),
+      id: data.id || `swarm-${  Date.now()}`,
       name: data.name || 'Unknown Swarm',
       type: data.type || 'agent',
       status: data.status || 'unknown',

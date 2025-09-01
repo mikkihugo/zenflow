@@ -14,13 +14,13 @@ import type { Agent } from '../types';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    logger.info('[DEBUG] ' + message, meta || ''),
+    logger.info(`[DEBUG] ${  message}`, meta || ''),
   info: (message: string, meta?: unknown) =>
-    logger.info('[INFO] ' + message, meta || ''),
+    logger.info(`[INFO] ${  message}`, meta || ''),
   warn: (message: string, meta?: unknown) =>
-    logger.warn('[WARN] ' + message, meta || ''),
+    logger.warn(`[WARN] ${  message}`, meta || ''),
   error: (message: string, meta?: unknown) =>
-    logger.error('[ERROR] ' + message, meta || ''),
+    logger.error(`[ERROR] ${  message}`, meta || ''),
 };
 
 interface HealthStatus {
@@ -84,7 +84,7 @@ export class HealthChecker extends EventEmitter implements HealthChecker {
 
       status.healthy = false;
       status.consecutiveFailures++;
-      status.details = 'Health check failed:' + error;
+      status.details = `Health check failed:${  error}`;
       status.lastCheck = new Date();
 
       this.healthStatuses.set(agent.id, status);

@@ -132,29 +132,23 @@ readonly riskMitigations: string[];
 * Business assumption tracking
 */
 export interface BusinessAssumption {
-readonly assumption: string;
-readonly criticality: 'high' | ' medium' | ' low';
-readonly validationMethod: string;
-readonly validationStatus:
-| 'unvalidated| validating| validated
-| ' invalidated';
-readonly validationResult?: string;
-readonly impactIfIncorrect: string;
+  readonly criticality: 'high' | 'medium' | 'low';
+  readonly validationMethod: string;
+  readonly validationStatus: 'unvalidated' | 'validating' | 'validated' | 'invalidated';
+  readonly validationResult?: string;
+  readonly impactIfIncorrect: string;
 
 }
 /**
 * Validation step definition
 */
 export interface ValidationStep {
-readonly step: string;
-readonly method:
-| 'customer_interview| market_research| prototype| mvp
-| ' analytics';
-readonly timeline: number;
-readonly owner: string;
-readonly successCriteria: string[];
-readonly resources: string[];
-
+  readonly step: string;
+  readonly method: 'customer_interview' | 'market_research' | 'prototype' | 'mvp' | 'analytics';
+  readonly timeline: number;
+  readonly owner: string;
+  readonly successCriteria: string[];
+  readonly resources: string[];
 }
 /**
 * Market analysis for epic

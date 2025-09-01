@@ -22,38 +22,44 @@
 * @since 1.0.0
 * @version 1.0.0
 */
-export { KanbanEngine, type WorkflowKanbanEvents, } from './api/kanban-engine';
-export { createConfiguredWorkflowMachine, createDefaultWorkflowConfig, createWorkflowMachine, WorkflowContextUtils, type WorkflowMachineContext, } from './state-machines/index';
-export type { BottleneckReport, BottleneckResolution, BottleneckTrend, FlowDirection, FlowMetrics, FlowState, HealthCheckResult, IntelligentWIPLimits, KanbanOperationResult, OptimizationResult, OptimizationStrategy, PerformanceThreshold, TaskAssignment, TaskMovementResult, TaskPriority, TaskState, TaskStateTransition, TimeRange, WIPLimits, WIPViolation, WorkflowBottleneck, WorkflowContext, WorkflowEvent, WorkflowKanbanConfig, WorkflowStatistics, WorkflowTask, } from './types/index';
-export { ImmutableContextUtils, ImmutableMetricsUtils, ImmutableTaskUtils, ImmutableUtils, ImmutableWIPUtils, KanbanConfigSchema, TaskPrioritySchema, TaskStateSchema, ValidationUtils, WIPLimitsSchema, WorkflowTaskSchema, } from './utilities/index';
+export { KanbanEngine, type WorkflowKanbanEvents } from './api/kanban-engine';
+export { createConfiguredWorkflowMachine, createDefaultWorkflowConfig, createWorkflowMachine, WorkflowContextUtils, type WorkflowMachineContext } from './state-machines/index';
+export type { BottleneckReport, BottleneckResolution, BottleneckTrend, FlowDirection, FlowMetrics, FlowState, HealthCheckResult, IntelligentWIPLimits, KanbanOperationResult, OptimizationResult, OptimizationStrategy, PerformanceThreshold, TaskAssignment, TaskMovementResult, TaskPriority, TaskState, TaskStateTransition, TimeRange, WIPLimits, WIPViolation, WorkflowBottleneck, WorkflowContext, WorkflowEvent, WorkflowKanbanConfig, WorkflowStatistics, WorkflowTask } from './types/index';
+export { ImmutableContextUtils, ImmutableMetricsUtils, ImmutableTaskUtils, ImmutableUtils, ImmutableWIPUtils, KanbanConfigSchema, TaskPrioritySchema, TaskStateSchema, ValidationUtils, WIPLimitsSchema, WorkflowTaskSchema } from './utilities/index';
 /**
-* Default task states in workflow order
-*/
+ * Default task states in workflow order
+ */
 export declare const DEFAULT_WORKFLOW_STATES: [
-'backlog,',
-'analysis,
+  'backlog',
+  'analysis'
 ];
+
 /**
-* All supported workflow states
-*/
+ * All supported workflow states
+ */
 export declare const ALL_WORKFLOW_STATES: [
-'...DEFAULT_WORKFLOW_STATES,
-'...SPECIAL_WORKFLOW_STATES
+  ...DEFAULT_WORKFLOW_STATES,
+  'ready',
+  'in_progress',
+  'review',
+  'done'
 ];
 /**
-* Task priority levels in order (highest to lowest)
-*/
+ * Task priority levels in order (highest to lowest)
+ */
 export declare const TASK_PRIORITIES: [
-';];;
-'critical,',
-'high,
+  'critical',
+  'high',
+  'medium',
+  'low'
 ];
+
 /**
-* Available optimization strategies
-*/
+ * Available optimization strategies
+ */
 export declare const OPTIMIZATION_STRATEGIES: [
-'wip_reduction,',
-'bottleneck_removal,
+  'wip_reduction',
+  'bottleneck_removal'
 ];
 /**
 * Validate if a state is a valid workflow state

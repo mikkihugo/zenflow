@@ -89,14 +89,14 @@ export class ProcessorManager extends TypedEventBase {
    */
   async addProcessor(config:ProcessorConfig): Promise<void> {
     if (this.processors.has(config.name)) {
-      throw new Error('Processor ' + config.name + ' already exists');
+      throw new Error(`Processor ${  config.name  } already exists`);
 }
 
     const processor = await this.createProcessor(config);
     await processor.initialize();
 
     this.processors.set(config.name, processor);
-    this.logger.info('Added processor:' + config.name);
+    this.logger.info(`Added processor:${  config.name}`);
 
     this.emit('processorAdded', { name:config.name, type:config.type});
 }
@@ -119,7 +119,7 @@ export class ProcessorManager extends TypedEventBase {
         processedData = await processor.process(processedData);
 
         if (processedData === null) {
-          this.logger.debug('Data filtered out by processor:' + name);
+          this.logger.debug(`Data filtered out by processor:${  name}`);
           break;
 }
 }
@@ -157,7 +157,7 @@ export class ProcessorManager extends TypedEventBase {
         processedItems = await processor.processBatch(processedItems);
 
         if (processedItems.length === 0) {
-          this.logger.debug('All data filtered out by processor:' + name);
+          this.logger.debug(`All data filtered out by processor:${  name}`);
           break;
 }
 }
@@ -201,12 +201,12 @@ export class ProcessorManager extends TypedEventBase {
     try {
       await processor.shutdown();
       this.processors.delete(name);
-      this.logger.info('Removed processor:' + name);
+      this.logger.info(`Removed processor:${  name}`);
 
       this.emit('processorRemoved', { name});
       return true;
 } catch (error) {
-      this.logger.error('Failed to remove processor ' + name, error);
+      this.logger.error(`Failed to remove processor ${  name}`, error);
       return false;
 }
 }
@@ -272,9 +272,9 @@ export class ProcessorManager extends TypedEventBase {
       async ([name, processor]) => {
         try {
           await processor.shutdown();
-          this.logger.debug('Shut down processor:' + name);
+          this.logger.debug(`Shut down processor:${  name}`);
 } catch (error) {
-          this.logger.error('Error shutting down processor ' + name, error);
+          this.logger.error(`Error shutting down processor ${  name}`, error);
 }
 }
     );
@@ -319,7 +319,7 @@ export class ProcessorManager extends TypedEventBase {
 }
 
       default:
-        throw new Error('Unknown processor type:' + config.type);
+        throw new Error(`Unknown processor type:${  config.type}`);
 }
 }
 }

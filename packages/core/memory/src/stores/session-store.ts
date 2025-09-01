@@ -19,7 +19,6 @@ import {
   BasicTelemetryManager,
   TelemetryConfig,
   Storage,
-  KeyValueStore,
   injectable,
   createErrorAggregator,
   createCircuitBreaker,
@@ -200,7 +199,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
           maxTimeout: 5000,
           onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              'Memory initialization attempt ' + attemptNumber + ' failed:',
+              `Memory initialization attempt ${  attemptNumber  } failed:`,
               error
             );
             recordMetric('memory_initialization_retries', 1);
@@ -334,7 +333,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     this.ensureInitialized();
 
     const timer = performanceTracker.startTimer('memory_store');
-    const storeKey = (sessionId) + ':' + key;
+    const storeKey = `${sessionId  }:${  key}`;
 
     const result = await withTrace('memory-store-operation', () => withRetry(
         () => safeAsync(async () => {
@@ -370,7 +369,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
           minTimeout: 500,
           onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              'Memory store attempt ' + (attemptNumber) + ' failed for key ' + storeKey + ':',
+              `Memory store attempt ${  attemptNumber  } failed for key ${  storeKey  }:`,
               error
             );
             recordMetric('memory_store_retries', 1);
@@ -403,7 +402,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey : 'default';
     const actualKey = key || sessionIdOrKey;
-    const retrieveKey = (actualSessionId) + ':' + actualKey;
+    const retrieveKey = `${actualSessionId  }:${  actualKey}`;
 
     this.ensureInitialized();
 
@@ -471,7 +470,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
           minTimeout: 300,
           onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              'Memory retrieve attempt ' + (attemptNumber) + ' failed for key ' + retrieveKey + ':',
+              `Memory retrieve attempt ${  attemptNumber  } failed for key ${  retrieveKey  }:`,
               error
             );
             recordMetric('memory_retrieve_retries', 1);
@@ -500,7 +499,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     }
 
     if (this.storage) {
-      const sessionDataStr = await this.storage.get('session:' + sessionId);
+      const sessionDataStr = await this.storage.get(`session:${  sessionId}`);
       if (sessionDataStr) {
         try {
           const session = JSON.parse(sessionDataStr) as SessionState;
@@ -508,7 +507,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
           return session;
         } catch (parseError) {
           logger.error(
-            'Failed to parse session data for ' + sessionId + ':',
+            `Failed to parse session data for ${  sessionId  }:`,
             parseError
           );
         }
@@ -524,7 +523,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey : 'default';
     const actualKey = key || sessionIdOrKey;
-    const deleteKey = (actualSessionId) + ':' + actualKey;
+    const deleteKey = `${actualSessionId  }:${  actualKey}`;
 
     this.ensureInitialized();
 
@@ -562,7 +561,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             }
 
             // Remove from cache with metrics
-            const cacheKey = (actualSessionId) + ':' + actualKey;
+            const cacheKey = `${actualSessionId  }:${  actualKey}`;
             if (this.cache.has(cacheKey)) {
               this.cache.delete(cacheKey);
               recordMetric('memory_cache_deletions', 1);
@@ -590,7 +589,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
           minTimeout: 300,
           onFailedAttempt: (error, attemptNumber) => {
             logger.warn(
-              'Memory delete attempt ' + (attemptNumber) + ' failed for key ' + deleteKey + ':',
+              `Memory delete attempt ${  attemptNumber  } failed for key ${  deleteKey  }:`,
               error
             );
             recordMetric('memory_delete_retries', 1);
@@ -720,14 +719,14 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
             this.sessions.set(sessionId, session);
           } catch (parseError) {
             logger.error(
-              'Failed to parse session data for key ' + key + ':',
+              `Failed to parse session data for key ${  key  }:`,
               parseError
             );
           }
         }
       }
 
-      logger.debug('Loaded ' + this.sessions.size + ' sessions from storage');
+      logger.debug(`Loaded ${  this.sessions.size  } sessions from storage`);
     } catch (error) {
       logger.error('Failed to load sessions from storage: ', error);
       throw new MemoryStorageError('Failed to load sessions from storage', {
@@ -741,10 +740,10 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
 
     try {
       for (const [sessionId, session] of Array.from(this.sessions.entries())) {
-        await this.storage.set('session:' + sessionId, session);
+        await this.storage.set(`session:${  sessionId}`, session);
       }
 
-      logger.debug('Saved ' + this.sessions.size + ' sessions to storage');
+      logger.debug(`Saved ${  this.sessions.size  } sessions to storage`);
     } catch (error) {
       logger.error('Failed to save sessions to storage: ', error);
       throw new MemoryStorageError('Failed to save sessions to storage', {
@@ -754,7 +753,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
   }
 
   private updateCache(sessionId: string, key: string, data: unknown): void {
-    const cacheKey = (sessionId) + ':' + key;
+    const cacheKey = `${sessionId  }:${  key}`;
     if (this.cache.size >= this.options.cacheSize) {
       const oldestKey = this.cacheKeys.shift();
       if (oldestKey) {
@@ -766,7 +765,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
   }
 
   private getCachedData(sessionId: string, key: string): unknown {
-    const cacheKey = (sessionId) + ':' + key;
+    const cacheKey = `${sessionId  }:${  key}`;
     const entry = this.cache.get(cacheKey);
     if (!entry) return null;
 
@@ -807,7 +806,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
       }
 
       const { operation, sessionId, key, data } = params;
-      const storageKey = 'session:' + sessionId;
+      const storageKey = `session:${  sessionId}`;
 
       switch (operation) {
         case 'store':
@@ -832,7 +831,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
               return session;
             } catch (parseError) {
               const error = new MemoryError(
-                'Failed to parse session data for ' + sessionId,
+                `Failed to parse session data for ${  sessionId}`,
                 { sessionId, parseError: ensureError(parseError).message }
               );
               recordMetric('memory_circuit_breaker_parse_errors', 1);
@@ -845,7 +844,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
         default: {
           const { operation } = params;
           throw new MemoryError(
-            'Unsupported circuit breaker operation:' + operation
+            `Unsupported circuit breaker operation:${  operation}`
           );
         }
 }
@@ -956,7 +955,7 @@ export class MemoryManager {
           minTimeout: 1500,
           onFailedAttempt: (error, attemptNumber) => {
             this.managerLogger.warn(
-              'Memory manager initialization attempt ' + attemptNumber + ' failed:',
+              `Memory manager initialization attempt ${  attemptNumber  } failed:`,
               error
             );
             recordMetric('memory_manager_initialization_retries', 1);
@@ -1015,7 +1014,7 @@ export class MemoryManager {
           minTimeout: 500,
           onFailedAttempt: (error, attemptNumber) => {
             this.managerLogger.warn(
-              'Memory manager store attempt ' + (attemptNumber) + ' failed for key ' + key + ':',
+              `Memory manager store attempt ${  attemptNumber  } failed for key ${  key  }:`,
               error
             );
             recordMetric('memory_manager_store_retries', 1);
@@ -1081,7 +1080,7 @@ export class MemoryManager {
           minTimeout: 300,
           onFailedAttempt: (error, attemptNumber) => {
             this.managerLogger.warn(
-              'Memory manager retrieve attempt ' + (attemptNumber) + ' failed for key ' + key + ':',
+              `Memory manager retrieve attempt ${  attemptNumber  } failed for key ${  key  }:`,
               error
             );
             recordMetric('memory_manager_retrieve_retries', 1);
@@ -1286,7 +1285,7 @@ export class MemoryManager {
         return { success: true };
 
       default:
-        throw new MemoryError('Unsupported manager operation:' + operation);
+        throw new MemoryError(`Unsupported manager operation:${  operation}`);
     }
   }
 }

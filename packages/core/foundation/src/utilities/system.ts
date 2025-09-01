@@ -582,7 +582,7 @@ export function createSystemSummary(): string {
   const info = getSystemInfo();
   const env = getEnvironment();
 
-  let summary = `${info.platform} ` + info.arch + ` (Node.js ${info.nodeVersion}) - ` + info.cpuCount + ` CPUs, ${info.totalMemoryGB}GB RAM - ` + env;
+  let summary = `${info.platform} ${  info.arch  } (Node.js ${info.nodeVersion}) - ${  info.cpuCount  } CPUs, ${info.totalMemoryGB}GB RAM - ${  env}`;
 
   const indicators: string[] = [];
   if (info.isCI) indicators.push('CI');
@@ -590,7 +590,7 @@ export function createSystemSummary(): string {
   if (info.isWSL) indicators.push('WSL');
 
   if (indicators.length > 0) {
-    summary += ' (' + indicators.join(', ') + ')';
+    summary += ` (${  indicators.join(', ')  })`;
   }
 
   return summary;

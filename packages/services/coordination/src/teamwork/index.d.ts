@@ -37,12 +37,12 @@ requestId: string;
 projectId: string;
 phase: string;
 requiresReview: boolean;
-suggestedAgents: string[];
-context: {
-artifacts: unknown[];
-requirements: string[];
-'};
-timeout?: number;
+  suggestedAgents: string[];
+  context: {
+    artifacts: unknown[];
+    requirements: string[];
+  };
+  timeout?: number;
 
 }
 export interface SPARCReviewResult {
@@ -127,28 +127,27 @@ description: string;
 priority: 'low' | 'medium' | 'high' | 'urgent';
 requestedParticipants: string[];
 context: {
-relatedFeatures: string[];
-dependencies: string[];
-constraints: string[];
-'};
-deadline?: Date;
+  relatedFeatures: string[];
+  dependencies: string[];
+  constraints: string[];
+  deadline?: Date;
 
 }
 /**
 * Event-driven Conversation Manager with optional SPARC integration and SAFe teamwork
 */
 export declare class ConversationManager extends EventBus {
-private conversations;
-private agents;
-private sparcReviews;
-private safeTeams;
-private safeMeetings;
-private teamworkRequests;
-constructor();
-/**
-* Create a new conversation
-*/
-createConversation(name: string, participantIds: string[]): Promise<Conversation>;
+  private conversations: Map<string, Conversation>;
+  private agents: Map<string, Agent>;
+  private sparcReviews: Map<string, SPARCReviewResult>;
+  private safeTeams: Map<string, SAFeTeam>;
+  private safeMeetings: Map<string, SAFeMeeting>;
+  private teamworkRequests: Map<string, TeamworkCoordinationRequest>;
+  constructor();
+  /**
+  * Create a new conversation
+  */
+  createConversation(name: string, participantIds: string[]): Promise<Conversation>;
 /**
 * Add message to conversation
 */

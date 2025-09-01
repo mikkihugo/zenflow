@@ -167,7 +167,7 @@ export class SystemMetricsCollector {
       start_time:Date.now(),
       memory_start:memoryUsage(),
 });
-    this.logger.debug('Started performance tracking for:' + operationId);
+    this.logger.debug(`Started performance tracking for:${  operationId}`);
 }
 
   /**
@@ -178,7 +178,7 @@ export class SystemMetricsCollector {
   ):SystemPerformanceTracker|null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
-      this.logger.warn('No performance tracker found for: ' + operationId);
+      this.logger.warn(`No performance tracker found for: ${  operationId}`);
       return null;
 }
 
@@ -198,7 +198,7 @@ export class SystemMetricsCollector {
     // Clean up tracker
     this.performanceTrackers.delete(operationId);
 
-    this.logger.debug('Completed performance tracking for:' + operationId, {
+    this.logger.debug(`Completed performance tracking for:${  operationId}`, {
       duration_ms: tracker.duration_ms,
       memory_delta_mb: tracker.memory_delta_mb,
     });

@@ -15,8 +15,7 @@
 * Product Management Manager configuration
 */
 export interface ProductManagerConfig {
-readonly enableProductVisionManagement: 'ideation';
-
+  readonly enableProductVisionManagement: boolean;
 }
 /**
 * Product vision framework
@@ -29,31 +28,20 @@ id: string;
 * Competitor satisfaction analysis
 */
 export interface CompetitorSatisfaction {
-readonly competitor: 'immediate';
-
+  readonly competitor: string;
 }
 /**
 * Frequency pattern for customer behavior
 */
 export declare enum FrequencyPattern {
-') = 0,
-continuous = 1,
-') = 2,
-daily = 3,
-') = 4,
-weekly = 5,
-') = 6,
-monthly = 7,
-') = 8,
-quarterly = 9,
-') = 10,
-annually = 11,
-') = 12,
-sporadic = 13,
-') = 14,
-one_time = 15,
-')deal_breaker';
-
+  continuous = 1,
+  daily = 3,
+  weekly = 5,
+  monthly = 7,
+  quarterly = 9,
+  annually = 11,
+  sporadic = 13,
+  one_time = 15
 }
 /**
 * Buying process stage definition
@@ -94,14 +82,14 @@ readonly marketShare: number;
 * Budget cycle information
 */
 export interface BudgetCycle {
-readonly cycleType: 'annual| quarterly| project_based' | ' continuous';
-readonly startMonth: number;
-readonly planningHorizon: number;
-readonly approvalProcess: string[];
-readonly budgetSize: {
-min: number;
-max: number;
-'};
+  readonly cycleType: 'annual' | 'quarterly' | 'project_based' | 'continuous';
+  readonly startMonth: number;
+  readonly planningHorizon: number;
+  readonly approvalProcess: string[];
+  readonly budgetSize: {
+    min: number;
+    max: number;
+  };
 
 }
 /**

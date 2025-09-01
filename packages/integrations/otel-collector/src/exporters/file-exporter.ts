@@ -36,7 +36,7 @@ export class FileExporter implements BaseExporter {
 
   constructor(config: ExporterConfig) {
     this.config = config;
-    this.logger = getLogger('FileExporter:' + config.name);
+    this.logger = getLogger(`FileExporter:${  config.name}`);
 
     // Extract configuration
     this.baseFilePath = config.config?.['filePath'] || './telemetry-data';
@@ -229,11 +229,11 @@ export class FileExporter implements BaseExporter {
     // Generate new file path
     const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
     const extension = this.format === 'jsonl' ? 'jsonl' : 'json';
-    this.currentFilePath = (this.baseFilePath) + '-' + (timestamp) + '.' + extension;
+    this.currentFilePath = `${this.baseFilePath  }-${  timestamp  }.${  extension}`;
 
     // Create new write stream
     if (this.compression) {
-      const fileStream = createWriteStream(this.currentFilePath + '.gz');
+      const fileStream = createWriteStream(`${this.currentFilePath  }.gz`);
       const gzipStream = createGzip();
       gzipStream.pipe(fileStream);
       this.writeStream = gzipStream as any;

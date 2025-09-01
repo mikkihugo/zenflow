@@ -392,7 +392,7 @@ export function filterClaudeOutput(
  /^\s+/,
  /^\s+/,
  // Progress indicators
- /^(||⚠️||⏳||||)\s+/,
+ /^(|⚠️|⏳)\s+/,
  // Conversational patterns
  /^(i'll | i' m|let me|here's|this|the|based on)/i,
  // Analysis patterns

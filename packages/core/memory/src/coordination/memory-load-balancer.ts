@@ -60,7 +60,7 @@ export class MemoryLoadBalancer extends EventEmitter {
   addNode(node: MemoryNode): void {
     this.nodes.set(node.id, node);
     this.stats.nodeDistribution[node.id] = 0;
-    this.logger.debug('Added node to load balancer:' + node.id);
+    this.logger.debug(`Added node to load balancer:${  node.id}`);
   }
 
   removeNode(nodeId: string): void {
@@ -69,7 +69,7 @@ export class MemoryLoadBalancer extends EventEmitter {
     this.stats.overloadedNodes = this.stats.overloadedNodes.filter(
       (id) => id !== nodeId
     );
-    this.logger.debug('Removed node from load balancer:' + nodeId);
+    this.logger.debug(`Removed node from load balancer:${  nodeId}`);
   }
 
   selectNode(availableNodes: MemoryNode[]): MemoryNode {
@@ -246,7 +246,7 @@ export class MemoryLoadBalancer extends EventEmitter {
     if (isOverloaded && !wasOverloaded) {
       this.stats.overloadedNodes.push(node.id);
       this.emit('overloaded', node.id);
-      this.logger.warn('Node overloaded:' + node.id, {
+      this.logger.warn(`Node overloaded:${  node.id}`, {
         latency: node.metrics.averageResponseTime,
         errorRate: node.status.errorRate,
         connections: node.metrics.connections,
@@ -259,7 +259,7 @@ export class MemoryLoadBalancer extends EventEmitter {
         (id) => id !== node.id
       );
       this.emit('recovered', node.id);
-      this.logger.info('Node recovered from overload:' + node.id);
+      this.logger.info(`Node recovered from overload:${  node.id}`);
 
       recordMetric('memory_load_balancer_recovery', 1, { nodeId: node.id });
     }
@@ -357,7 +357,7 @@ export class MemoryLoadBalancer extends EventEmitter {
   setAlgorithm(algorithm: LoadBalancingConfig['algorithm']): void {
     this.config.algorithm = algorithm;
     this.stats.algorithm = algorithm;
-    this.logger.info('Load balancing algorithm changed to:' + algorithm);
+    this.logger.info(`Load balancing algorithm changed to:${  algorithm}`);
 
     recordMetric('memory_load_balancer_algorithm_change', 1, { algorithm });
   }

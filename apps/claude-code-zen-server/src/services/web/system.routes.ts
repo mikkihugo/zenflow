@@ -190,7 +190,7 @@ export class SystemCapabilityRoutes {
         health: {
           score: capabilityData.systemHealthScore,
           overall: capabilityData.overall,
-          packages: (capabilityData.availablePackages) + '/' + capabilityData.totalPackages,
+          packages: `${capabilityData.availablePackages  }/${  capabilityData.totalPackages}`,
           services: capabilityData.registeredServices,
         },
       };

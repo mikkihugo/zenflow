@@ -173,7 +173,7 @@ export function registerMemoryProviders(
     defaultMemoryConfigurations
   )) {
     const tokenName =
-      (name.charAt(0).toUpperCase()) + name.slice(1) + 'Config' as const;
+      `${(name.charAt(0).toUpperCase()) + name.slice(1)  }Config` as const;
 
     container.register(MEMORY_TOKENS[tokenName] || MEMORY_TOKENS.Config, {
       type: 'singleton',
@@ -295,7 +295,7 @@ async function performBackendHealthChecks(
     .map((result) => result?.value?.name);
 
   logger.info(
-    'Memory system initialized: ' + (healthyBackends.length) + '/' + enabledBackends.length + ' backends healthy'
+    `Memory system initialized: ${  healthyBackends.length  }/${  enabledBackends.length  } backends healthy`
   );
 }
 
@@ -361,8 +361,8 @@ export function createMemoryContainer(
     create: () => ({
       debug: () => {},
       info: () => {},
-      warn: (msg: string) => logger.warn('[MEMORY WARN] ' + msg),
-      error: (msg: string) => logger.error('[MEMORY ERROR] ' + msg),
+      warn: (msg: string) => logger.warn(`[MEMORY WARN] ${  msg}`),
+      error: (msg: string) => logger.error(`[MEMORY ERROR] ${  msg}`),
     }),
   });
 

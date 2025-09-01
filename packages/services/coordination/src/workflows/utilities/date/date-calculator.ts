@@ -18,10 +18,9 @@ static getDurationMs(startDate: Date, endDate: Date): string {
 
 }
 /**
-* Check if date is within range
-*/
+ * Check if date is within range
+ */
 static isWithinRange(date: Date, startRange: Date, endRange: Date): boolean {
-return date >= startRange && date <= endRange;
-
+  return date >= startRange && date <= endRange;
 }
-'};
+}

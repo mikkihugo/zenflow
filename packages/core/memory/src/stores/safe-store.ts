@@ -84,7 +84,7 @@ export class SafeMemoryStore extends EventEmitter {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown initialization error';
-      throw new Error('Failed to initialize SafeMemoryStore:' + errorMessage);
+      throw new Error(`Failed to initialize SafeMemoryStore:${  errorMessage}`);
     }
   }
 
@@ -391,7 +391,7 @@ export class SafeMemoryStore extends EventEmitter {
   // ============================================
 
   private createKey(key: string): string {
-    return (this.options.namespace) + ':' + key;
+    return `${this.options.namespace  }:${  key}`;
   }
 
   private createMemoryError(

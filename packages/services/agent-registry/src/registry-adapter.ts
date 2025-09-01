@@ -32,7 +32,7 @@ export class RegistryAdapter extends EventEmitter {
 
   protected emitMigrationEvent(event: string, data: JsonValue): void {
     if (this.options.enableMigrationLogging) {
-      this.logger.debug('Migration event: ' + event, data);
+      this.logger.debug(`Migration event: ${  event}`, data);
     }
     this.emit(event, data);
   }
@@ -42,7 +42,7 @@ export class RegistryAdapter extends EventEmitter {
     
     if (result.isErr()) {
       throw new Error(
-        'Failed to register agent ' + agent.id + ': ' + result.error.message
+        `Failed to register agent ${  agent.id  }: ${  result.error.message}`
       );
     }
 
@@ -55,7 +55,7 @@ export class RegistryAdapter extends EventEmitter {
     
     if (result.isErr()) {
       throw new Error(
-        'Failed to register service ' + name + ': ' + result.error.message
+        `Failed to register service ${  name  }: ${  result.error.message}`
       );
     }
 
@@ -69,7 +69,7 @@ export class RegistryAdapter extends EventEmitter {
     
     if (regResult.isErr()) {
       throw new Error(
-        'Failed to register instance ' + name + ': ' + regResult.error.message
+        `Failed to register instance ${  name  }: ${  regResult.error.message}`
       );
     }
 

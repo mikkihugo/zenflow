@@ -269,7 +269,7 @@ export class WebApiRoutes {
 
     // Delegate Swagger/OpenAPI documentation to knowledge package
     await this.documentationManager.setupSwaggerDocumentation(app, {
-      routePrefix: api + '/docs',
+      routePrefix: `${api  }/docs`,
       apiPrefix: api,
       version: getVersion(),
       title: 'Claude Code Zen API',
@@ -289,13 +289,13 @@ export class WebApiRoutes {
       res.json({
         message: 'Claude Code Zen API Server',
         version: getVersion(),
-        documentation: api + '/docs',
-        health: api + '/health',
+        documentation: `${api  }/docs`,
+        health: `${api  }/health`,
       });
     });
 
     // Health check - delegate to monitoring package
-    app.get(api + '/health', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/health`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -312,7 +312,7 @@ export class WebApiRoutes {
     });
 
     // System status - delegate to monitoring package
-    app.get(api + '/system/status', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/system/status`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -329,7 +329,7 @@ export class WebApiRoutes {
     });
 
     // Production endpoints that integrate with foundation services
-    app.get(api + '/agents/status', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/agents/status`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.workflowEngine, 'Workflow engine not initialized');
         const agents = await this.workflowEngine?.getAgents();
@@ -345,7 +345,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(api + '/tasks', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/tasks`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.workflowEngine, 'Workflow engine not initialized');
         const tasks = await this.workflowEngine?.getTasks(req.query);
@@ -361,7 +361,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(api + '/safe/metrics', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/safe/metrics`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
         const safetyMetrics = await this.healthMonitor?.getSafetyMetrics();
@@ -380,7 +380,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(api + '/events', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/events`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.collaborationEngine, 'Collaboration engine not initialized');
         const events = await this.collaborationEngine?.getEvents(req.query);
@@ -396,7 +396,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(api + '/memory/status', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/memory/status`, async (_req: Request, _res: Response) => {
       try {
         assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
         const memoryStatus = await this.healthMonitor?.getMemoryStatus();
@@ -428,10 +428,10 @@ export class WebApiRoutes {
     assertDefined(this.advancedGUI, 'Advanced GUI not initialized');
 
     // Delegate all advanced GUI routes to AGUI package
-    await this.advancedGUI.setupWebRoutes(app, api + '/agui');
+    await this.advancedGUI.setupWebRoutes(app, `${api  }/agui`);
 
     // Task approval routes
-    app.get(api + '/agui/approvals', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/agui/approvals`, async (_req: Request, _res: Response) => {
       try {
         const approvals = await this.advancedGUI?.getPendingApprovals();
         res.json({
@@ -447,7 +447,7 @@ export class WebApiRoutes {
     });
 
     app.post(
-      api + '/agui/approvals/:id/approve',
+      `${api  }/agui/approvals/:id/approve`,
       async (_req: Request, _res: Response) => {
         try {
           const result = await this.advancedGUI.approveTask(
@@ -479,10 +479,10 @@ export class WebApiRoutes {
     assertDefined(this.workflowEngine, 'Workflow engine not initialized');
 
     // Delegate all workflow routes to workflows package
-    await this.workflowEngine?.setupWebRoutes(app, api + '/workflows');
+    await this.workflowEngine?.setupWebRoutes(app, `${api  }/workflows`);
 
     // Task management routes
-    app.get(api + '/tasks', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/tasks`, async (_req: Request, _res: Response) => {
       try {
         const tasks = await this.workflowEngine?.getTasks(req.query);
         res.json({
@@ -497,7 +497,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.post(api + '/tasks', async (_req: Request, _res: Response) => {
+    app.post(`${api  }/tasks`, async (_req: Request, _res: Response) => {
       try {
         const task = await this.workflowEngine?.createTask(req.body);
         res.status(201).json({
@@ -513,7 +513,7 @@ export class WebApiRoutes {
     });
 
     app.post(
-      api + '/tasks/:id/execute',
+      `${api  }/tasks/:id/execute`,
       async (_req: Request, _res: Response) => {
         try {
           const result = await this.workflowEngine?.executeTask(req.params.id);
@@ -545,10 +545,10 @@ export class WebApiRoutes {
     assertDefined(this.healthMonitor, 'Health monitor not initialized');
 
     // Delegate all monitoring routes to monitoring package
-    await this.healthMonitor.setupWebRoutes(app, api + '/monitoring');
+    await this.healthMonitor.setupWebRoutes(app, `${api  }/monitoring`);
 
     // Metrics endpoints
-    app.get(api + '/metrics', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/metrics`, async (_req: Request, _res: Response) => {
       try {
         const metrics = await this.healthMonitor?.getMetrics();
         res.json({
@@ -563,7 +563,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(api + '/analytics/llm', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/analytics/llm`, async (_req: Request, _res: Response) => {
       try {
         const analytics = await this.healthMonitor.getLLMAnalytics(req.query);
         res.json({
@@ -595,10 +595,10 @@ export class WebApiRoutes {
     );
 
     // Delegate all collaboration routes to teamwork package
-    await this.collaborationEngine?.setupWebRoutes(app, api + '/collaboration');
+    await this.collaborationEngine?.setupWebRoutes(app, `${api  }/collaboration`);
 
     // WebSocket setup for real-time collaboration
-    app.get(api + '/ws', async (_req: Request, _res: Response) => {
+    app.get(`${api  }/ws`, async (_req: Request, _res: Response) => {
       try {
         // Delegate WebSocket upgrade to collaboration engine
         await this.collaborationEngine?.handleWebSocketUpgrade(req, res);

@@ -8,8 +8,8 @@ id: string;
 /**
 * Capability categories for organization
 */
-export type CapabilityCategory = business_capability | technology_capability | process_capability | data_capability | security_capability | integration_capability | platform_capability | infrastructure_capability | governance_capability | 'innovation_capability';
-export type CapabilityStatus = planning | developing | active | optimizing | retiring | deprecated | 'suspended';
+export type CapabilityCategory = 'business_capability' | 'technology_capability' | 'process_capability' | 'data_capability' | 'security_capability' | 'integration_capability' | 'platform_capability' | 'infrastructure_capability' | 'governance_capability' | 'innovation_capability';
+export type CapabilityStatus = 'planning' | 'developing' | 'active' | 'optimizing' | 'retiring' | 'deprecated' | 'suspended';
 export interface CapabilityKPI {
 id: string;
 
@@ -17,10 +17,10 @@ id: string;
 /**
 * KPI trend analysis
 */
-export type KPITrend = improving | 'improving' | ' stable' | ' declining' | declining | volatile | ' unknown';
-export type MeasurementFrequency = real_time | hourly | daily | weekly | monthly | quarterly | 'annually';
+export type KPITrend = 'improving' | 'stable' | 'declining' | 'volatile' | 'unknown';
+export type MeasurementFrequency = 'real_time' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'annually';
 export interface PerformanceThreshold {
-readonly excellent: 'accelerating|';
+  readonly excellent: string;
 
 }
 /**

@@ -18,7 +18,7 @@
 // Utility function to replace facade
 function getWebDashboardURL(options?: { protocol?: string }): string {
   const protocol = options?.protocol || 'http';
-  return protocol + '://localhost:3002';
+  return `${protocol  }://localhost:3002`;
 }
 
 // Import WebSocketClient for internal use in this file
@@ -48,7 +48,7 @@ export const apiUtils = {
    * @returns WebSocket URL
    */
   createWebSocketUrl: (baseUrl: string): string =>
-    baseUrl.replace(/^http/, 'ws').replace(/\/$/, '') + '/ws',
+    `${baseUrl.replace(/^http/, 'ws').replace(/\/$/, '')  }/ws`,
 
   /**
    * Validate API configuration.
@@ -117,7 +117,7 @@ export class APIClientFactory {
     url: string,
     instanceKey = 'default'
   ): WebSocketClient {
-    const key = 'ws:' + instanceKey;
+    const key = `ws:${  instanceKey}`;
     if (!APIClientFactory.instances.has(key)) {
       const client = new WebSocketClient(url);
       APIClientFactory.instances.set(key, client);
@@ -148,7 +148,7 @@ export class APIClientFactory {
 // Default configuration
 export const DEFAULT_API_CONFIG: APIInterfaceConfig = {
   baseUrl: getWebDashboardURL(),
-  websocketUrl: getWebDashboardURL({ protocol: 'ws' }).replace(/^https?/, 'ws') + '/ws',
+  websocketUrl: `${getWebDashboardURL({ protocol: 'ws' }).replace(/^https?/, 'ws')  }/ws`,
   timeout: 5000,
   retries: 3,
   reconnect: true,

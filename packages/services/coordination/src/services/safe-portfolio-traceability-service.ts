@@ -181,7 +181,7 @@ export class SafePortfolioTraceabilityService {
   private calculateWSJFScore(context: EpicGenerationContext, analysis: any): any {
     // TODO: Implement WSJF calculation
     const jobSize = this.estimateJobSize(analysis);
-    const businessValue = context.strategic.businessValue;
+    const {businessValue} = context.strategic;
     const timeCriticality = this.calculateTimeCriticality(context.trigger.urgency);
     const riskReduction = this.calculateRiskReduction(context);
 

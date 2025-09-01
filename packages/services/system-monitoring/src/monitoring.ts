@@ -32,27 +32,27 @@ interface PerformanceMetrics {
 
 // Helper functions for telemetry
 function recordMetric(name: string, value: number): void {
-  logger.debug('Metric recorded: ' + (name) + ' = ' + value);
+  logger.debug(`Metric recorded: ${  name  } = ${  value}`);
 }
 
 function recordHistogram(name: string, value: number): void {
-  logger.debug('Histogram recorded: ' + (name) + ' = ' + value);
+  logger.debug(`Histogram recorded: ${  name  } = ${  value}`);
 }
 
 function recordGauge(name: string, value: number): void {
-  logger.debug('Gauge recorded: ' + (name) + ' = ' + value);
+  logger.debug(`Gauge recorded: ${  name  } = ${  value}`);
 }
 
 function withAsyncTrace<T>(name: string, fn: () => Promise<T>): Promise<T> {
   const start = Date.now();
-  logger.debug('Trace started: ' + name);
+  logger.debug(`Trace started: ${  name}`);
   return fn().then(
     (result) => {
-      logger.debug('Trace completed: ' + (name) + ' (' + Date.now() - start + 'ms)');
+      logger.debug(`${`Trace completed: ${  name  } (${  Date.now()}` - start  }ms)`);
       return result;
     },
     (error) => {
-      logger.debug('Trace failed: ' + (name) + ' (' + Date.now() - start + 'ms)');
+      logger.debug(`${`Trace failed: ${  name  } (${  Date.now()}` - start  }ms)`);
       throw error;
     }
   );
@@ -332,13 +332,13 @@ export class SystemMonitor {
           status: (processMetrics.cpu ?? 0) > 80 ? 'warning' : 'ok',
           value: processMetrics.cpu ?? 0,
           threshold: 80,
-          message: 'Process CPU usage: ' + processMetrics.cpu ?? 0 + '%',
+          message: `Process CPU usage: ${  processMetrics.cpu}` ?? `${0  }%`,
         },
         uptime: {
           status: 'ok',
           value: metrics.uptime,
           threshold: 0,
-          message: 'System uptime: ' + Math.round(metrics.uptime / 3600) + ' hours',
+          message: `System uptime: ${  Math.round(metrics.uptime / 3600)  } hours`,
         },
       };
 
@@ -354,11 +354,11 @@ export class SystemMonitor {
           processCount:(await this.getAllProcessesMetrics()).length,
           memoryDetails:{
             total:
-              Math.round(metrics.memory.total / (1024 * 1024 * 1024)) + ' GB',
+              `${Math.round(metrics.memory.total / (1024 * 1024 * 1024))  } GB`,
             used:
-              Math.round(metrics.memory.used / (1024 * 1024 * 1024)) + ' GB',
+              `${Math.round(metrics.memory.used / (1024 * 1024 * 1024))  } GB`,
             free:
-              Math.round(metrics.memory.free / (1024 * 1024 * 1024)) + ' GB',
+              `${Math.round(metrics.memory.free / (1024 * 1024 * 1024))  } GB`,
           },
         },
       };
@@ -634,14 +634,14 @@ export class InfrastructureMetrics {
    * Track resource utilization
    */
   trackResourceUtilization(resource:string, utilization:number): void {
-    recordGauge('infrastructure.resource.' + resource, utilization);
+    recordGauge(`infrastructure.resource.${  resource}`, utilization);
   }
 
   /**
    * Track infrastructure event
    */
   trackEvent(event: string, _attributes: Record<string, any> = {}): void {
-    recordMetric('infrastructure.event.' + event, 1);
+    recordMetric(`infrastructure.event.${  event}`, 1);
   }
 }
 

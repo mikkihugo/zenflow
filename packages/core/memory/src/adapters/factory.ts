@@ -71,7 +71,7 @@ export class MemoryBackendFactory {
     instanceId?: string
   ): Promise<BaseMemoryBackend & BackendInterface> {
     const fullConfig = this.mergeConfig(config);
-    const id = instanceId || (type) + '-' + Date.now();
+    const id = instanceId || `${type  }-${  Date.now()}`;
 
     // Check if backend is already created
     if (this.backends.has(id)) {
@@ -108,7 +108,7 @@ export class MemoryBackendFactory {
     config: DatabaseMemoryConfig,
     instanceId?: string
   ): Promise<DatabaseBackedAdapter> {
-    const id = instanceId || 'database-' + Date.now();
+    const id = instanceId || `database-${  Date.now()}`;
 
     // Check if backend is already created
     if (this.backends.has(id)) {
@@ -243,7 +243,7 @@ export class MemoryBackendFactory {
       setTimeout(() => {
         const type = this.detectOptimalBackend(config);
         logger.info(
-          'Auto-detected optimal backend type:' + type + ' for config:',
+          `Auto-detected optimal backend type:${  type  } for config:`,
           config
         );
         resolve(type);
@@ -268,7 +268,7 @@ export class MemoryBackendFactory {
 
     // Async validation of backend type and configuration
     await new Promise((resolve) => setTimeout(resolve, 1));
-    logger.debug('Creating backend of type:' + type + ' with static factory method');
+    logger.debug(`Creating backend of type:${  type  } with static factory method`);
 
     return factory.createBackend(type, config);
   }
@@ -309,14 +309,14 @@ export class MemoryBackendFactory {
   ): Promise<new (config: MemoryConfig) => BaseMemoryBackend> {
     const loader = backendRegistry.get(type);
     if (!loader) {
-      throw new Error('Unsupported backend type:' + type);
+      throw new Error(`Unsupported backend type:${  type}`);
     }
 
     try {
       return await loader();
     } catch (error) {
       throw new Error(
-        'Failed to load backend (type):' + (error as Error).message
+        `Failed to load backend (type):${  (error as Error).message}`
       );
     }
   }

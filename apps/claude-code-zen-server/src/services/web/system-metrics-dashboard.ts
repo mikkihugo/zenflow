@@ -273,8 +273,8 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         },
         metrics: {
           uptime: metrics.uptime,
-          memoryUsage: Math.round(metrics.memoryUsage / 1024 / 1024) + 'MB',
-          cpuUsage: metrics.cpuUsage.toFixed(2) + '%',
+          memoryUsage: `${Math.round(metrics.memoryUsage / 1024 / 1024)  }MB`,
+          cpuUsage: `${metrics.cpuUsage.toFixed(2)  }%`,
           activeConnections: metrics.activeConnections,
           performance: metrics.performance,
         },
@@ -325,7 +325,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     );
     logger.info(` Refresh interval:${this.configuration.refreshInterval}ms`);
     logger.info(
-      ' Real-time monitoring:' + this.configuration.enableRealtime ? 'enabled' : ' disabled'
+      ` Real-time monitoring:${  this.configuration.enableRealtime}` ? 'enabled' : ' disabled'
     );
   }
 
@@ -340,7 +340,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
           ? ''
           : '';
 
-    logger.info((healthEmoji) + ' System Health:' + status.health.overall);
+    logger.info(`${healthEmoji  } System Health:${  status.health.overall}`);
 
     if (status.health.alerts.length > 0) {
       for (const alert of status.health.alerts) {
@@ -350,7 +350,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
             : alert.level === 'warning'
               ? ''
               : 'ℹ️';
-        logger.info((alertEmoji) + ' ' + (alert.component) + ':' + alert.message);
+        logger.info(`${alertEmoji  } ${  alert.component  }:${  alert.message}`);
       }
     }
   }

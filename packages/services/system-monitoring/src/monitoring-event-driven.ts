@@ -11,22 +11,22 @@
 
 const createLogger = (name:string) => ({
   info:(message: string, meta?:unknown) => {
-    // eslint-disable-next-line no-console
+     
     // Internal logging - replaced console.log
     void message; void meta; void name;
 },
   debug:(message: string, meta?:unknown) => {
-    // eslint-disable-next-line no-console
+     
     // Internal logging - replaced console.log
     void message; void meta; void name;
 },
   warn:(message: string, meta?:unknown) => {
-    // eslint-disable-next-line no-console
+     
     // Internal logging - replaced console.warn
     void message; void meta; void name;
 },
   error:(message: string, meta?:unknown) => {
-    // eslint-disable-next-line no-console
+     
     // Internal logging - replaced console.error
     void message; void meta; void name;
 },
@@ -214,7 +214,7 @@ export class EventDrivenSystemMonitor {
       try {
         listener(data);
 } catch (error) {
-        this.logger.error('Event listener error for ' + event, {
+        this.logger.error(`Event listener error for ${  event}`, {
           error:error instanceof Error ? error.message : String(error)
 });
 }
@@ -433,7 +433,7 @@ export class EventDrivenSystemMonitor {
       uptime:{
         status: 'ok',        value:metrics.uptime,
         threshold:0,
-        message:'System uptime: ' + Math.round(metrics.uptime / 3600) + ' hours',
+        message:`System uptime: ${  Math.round(metrics.uptime / 3600)  } hours`,
 },
 };
 
@@ -447,9 +447,9 @@ export class EventDrivenSystemMonitor {
         systemLoad:metrics.cpu.load,
         processCount:Math.round(Math.random() * 200), // Mock process count
         memoryDetails:{
-          total:Math.round(metrics.memory.total / (1024 * 1024 * 1024)) + ' GB',
-          used:Math.round(metrics.memory.used / (1024 * 1024 * 1024)) + ' GB',
-          free:Math.round(metrics.memory.free / (1024 * 1024 * 1024)) + ' GB',
+          total:`${Math.round(metrics.memory.total / (1024 * 1024 * 1024))  } GB`,
+          used:`${Math.round(metrics.memory.used / (1024 * 1024 * 1024))  } GB`,
+          free:`${Math.round(metrics.memory.free / (1024 * 1024 * 1024))  } GB`,
 },
 },
 };

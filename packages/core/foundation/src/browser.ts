@@ -55,19 +55,19 @@ export enum LogLevel {
 // Simple browser logger implementation
 export const getLogger = (name: string): Logger => ({
   debug: (message: string, ...args: unknown[]) =>
-    console.debug('[' + (name) + '] ' + String(message), ...args),
+    console.debug(`[${  name  }] ${  String(message)}`, ...args),
 
   info: (message: string, ...args: unknown[]) =>
-    console.info('[' + (name) + '] ' + String(message), ...args),
+    console.info(`[${  name  }] ${  String(message)}`, ...args),
 
   warn: (message: string, ...args: unknown[]) =>
-    console.warn('[' + (name) + '] ' + String(message), ...args),
+    console.warn(`[${  name  }] ${  String(message)}`, ...args),
 
   error: (message: string, ...args: unknown[]) =>
-    console.error('[' + (name) + '] ' + String(message), ...args),
+    console.error(`[${  name  }] ${  String(message)}`, ...args),
 
   fatal: (message: string, ...args: unknown[]) =>
-    console.error('[' + (name) + '] FATAL: ' + String(message), ...args),
+    console.error(`[${  name  }] FATAL: ${  String(message)}`, ...args),
 });
 
 export const getLogEntries = () => [];
@@ -195,7 +195,7 @@ export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> =>
     new Promise<T>((resolve, reject) => {
       resolve; // Mark as used for linter
       setTimeout(
-        () => reject(new TimeoutError('Operation timed out after ' + String(ms) + 'ms')),
+        () => reject(new TimeoutError(`Operation timed out after ${  String(ms)  }ms`)),
         ms
       );
     }),
@@ -343,8 +343,8 @@ export const generateUUID = (): string => {
 };
 
 export const generateShortId = () => nanoid(8);
-export const generateTimestampId = () => (Date.now()) + '-' + String(nanoid(6)) + '';
-export const generateSessionId = () => 'session-' + String(nanoid(16)) + '';
+export const generateTimestampId = () => `${Date.now()  }-${  String(nanoid(6))  }`;
+export const generateSessionId = () => `session-${  String(nanoid(16))  }`;
 
 // Time utilities (browser compatible)
 export const now = () => Date.now();
@@ -365,7 +365,7 @@ export const z = {
     min: (minLength: number) => ({
       parse: (val: string) => {
         if (val.length < minLength) {
-          throw new Error('String must be at least ' + String(minLength) + ' characters');
+          throw new Error(`String must be at least ${  String(minLength)  } characters`);
         }
         return val;
       },

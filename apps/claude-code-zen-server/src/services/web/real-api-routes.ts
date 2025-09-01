@@ -115,10 +115,10 @@ export class RealApiRoutes {
    */
   private setupSwarmRoutes(app: Express, api: string): void {
     // Initialize swarm
-    app.post(api + '/v1/swarm/init', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/swarm/init`, (_req: Request, _res: Response) => {
       try {
         const { topology, maxAgents, strategy } = req.body;
-        const swarmId = 'swarm-' + Date.now();
+        const swarmId = `swarm-${  Date.now()}`;
         
         const swarm: SwarmStatus = {
           id: swarmId,
@@ -135,7 +135,7 @@ export class RealApiRoutes {
         };
         
         this.swarms.set(swarmId, swarm);
-        logger.info('Swarm initialized: ' + swarmId);
+        logger.info(`Swarm initialized: ${  swarmId}`);
         
         res.status(201).json({
           success: true,
@@ -152,7 +152,7 @@ export class RealApiRoutes {
     });
 
     // Get swarm status
-    app.get(api + '/v1/swarm/status', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/swarm/status`, (_req: Request, _res: Response) => {
       try {
         const swarmsArray = Array.from(this.swarms.values());
         
@@ -177,7 +177,7 @@ export class RealApiRoutes {
     });
 
     // Get swarm stats
-    app.get(api + '/v1/swarm/stats', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/swarm/stats`, (_req: Request, _res: Response) => {
       try {
         const swarms = Array.from(this.swarms.values());
         const tasks = Array.from(this.tasks.values());
@@ -210,16 +210,16 @@ export class RealApiRoutes {
     });
 
     // Spawn agent in swarm
-    app.post(api + '/v1/swarm/:swarmId/agents', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/swarm/:swarmId/agents`, (_req: Request, _res: Response) => {
       try {
         const { swarmId } = req.params;
         const { type, name, capabilities } = req.body;
         
-        const agentId = 'agent-' + Date.now();
+        const agentId = `agent-${  Date.now()}`;
         const agent: Agent = {
           id: agentId,
           type: type || 'general',
-          name: name || (type) + '-agent-' + Date.now(),
+          name: name || `${type  }-agent-${  Date.now()}`,
           status: 'active',
           capabilities: capabilities || ['coordination', 'analysis'],
           created: new Date().toISOString(),
@@ -235,7 +235,7 @@ export class RealApiRoutes {
           swarm.activeAgents++;
         }
         
-        logger.info('Agent spawned: ' + (agentId) + ' in swarm ' + swarmId);
+        logger.info(`Agent spawned: ${  agentId  } in swarm ${  swarmId}`);
         
         res.status(201).json({
           success: true,
@@ -251,11 +251,11 @@ export class RealApiRoutes {
     });
 
     // Orchestrate task
-    app.post(api + '/v1/swarm/tasks', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/swarm/tasks`, (_req: Request, _res: Response) => {
       try {
         const { task, strategy, priority, maxAgents } = req.body;
         
-        const taskId = 'task-' + Date.now();
+        const taskId = `task-${  Date.now()}`;
         const newTask: Task = {
           id: taskId,
           description: task,
@@ -275,7 +275,7 @@ export class RealApiRoutes {
           }
         }
         
-        logger.info('Task orchestrated: ' + taskId);
+        logger.info(`Task orchestrated: ${  taskId}`);
         
         res.status(201).json({
           success: true,
@@ -291,7 +291,7 @@ export class RealApiRoutes {
     });
 
     // Get tasks
-    app.get(api + '/v1/swarm/tasks', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/swarm/tasks`, (_req: Request, _res: Response) => {
       try {
         const tasksArray = Array.from(this.tasks.values());
         res.json({
@@ -308,7 +308,7 @@ export class RealApiRoutes {
     });
 
     // Get specific task
-    app.get(api + '/v1/swarm/tasks/:taskId', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/swarm/tasks/:taskId`, (_req: Request, _res: Response) => {
       try {
         const { taskId } = req.params;
         const task = this.tasks.get(taskId);
@@ -334,7 +334,7 @@ export class RealApiRoutes {
     });
 
     // Shutdown swarm
-    app.post(api + '/v1/swarm/shutdown', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/swarm/shutdown`, (_req: Request, _res: Response) => {
       try {
         // Set all swarms to inactive
         for (const swarm of this.swarms) {
@@ -376,7 +376,7 @@ export class RealApiRoutes {
    */
   private setupAgentRoutes(app: Express, api: string): void {
     // Get all agents
-    app.get(api + '/v1/coordination/agents', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/coordination/agents`, (_req: Request, _res: Response) => {
       try {
         const agentsArray = Array.from(this.agents.values());
         res.json({
@@ -393,15 +393,15 @@ export class RealApiRoutes {
     });
 
     // Create agent
-    app.post(api + '/v1/coordination/agents', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/coordination/agents`, (_req: Request, _res: Response) => {
       try {
         const { type, name, capabilities } = req.body;
         
-        const agentId = 'agent-' + Date.now();
+        const agentId = `agent-${  Date.now()}`;
         const agent: Agent = {
           id: agentId,
           type: type || 'general',
-          name: name || 'Agent-' + Date.now(),
+          name: name || `Agent-${  Date.now()}`,
           status: 'active',
           capabilities: capabilities || ['general'],
           created: new Date().toISOString(),
@@ -426,7 +426,7 @@ export class RealApiRoutes {
    */
   private setupTaskRoutes(app: Express, api: string): void {
     // Get all tasks
-    app.get(api + '/v1/coordination/tasks', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/coordination/tasks`, (_req: Request, _res: Response) => {
       try {
         const tasksArray = Array.from(this.tasks.values());
         res.json({
@@ -448,7 +448,7 @@ export class RealApiRoutes {
    */
   private setupSystemRoutes(app: Express, api: string): void {
     // System health
-    app.get(api + '/v1/coordination/health', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/coordination/health`, (_req: Request, _res: Response) => {
       try {
         const uptime = Math.floor((Date.now() - this.started) / 1000);
         const memoryUsage = process.memoryUsage();
@@ -479,7 +479,7 @@ export class RealApiRoutes {
     });
 
     // System metrics
-    app.get(api + '/v1/coordination/metrics', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/coordination/metrics`, (_req: Request, _res: Response) => {
       try {
         const memoryUsage = process.memoryUsage();
         
@@ -505,7 +505,7 @@ export class RealApiRoutes {
    */
   private setupDatabaseRoutes(app: Express, api: string): void {
     // Database status
-    app.get(api + '/v1/database/status', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/database/status`, (_req: Request, _res: Response) => {
       try {
         res.json({
           status: 'healthy',
@@ -533,7 +533,7 @@ export class RealApiRoutes {
     });
 
     // Database health
-    app.get(api + '/v1/database/health', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/database/health`, (_req: Request, _res: Response) => {
       try {
         res.json({
           status: 'healthy',
@@ -551,7 +551,7 @@ export class RealApiRoutes {
     });
 
     // Database analytics
-    app.get(api + '/v1/database/analytics', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/database/analytics`, (_req: Request, _res: Response) => {
       try {
         res.json({
           totalQueries: 1247,
@@ -573,7 +573,7 @@ export class RealApiRoutes {
     });
 
     // Execute query
-    app.post(api + '/v1/database/query', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/database/query`, (_req: Request, _res: Response) => {
       try {
         const { sql } = req.body;
         
@@ -602,7 +602,7 @@ export class RealApiRoutes {
     });
 
     // Execute command
-    app.post(api + '/v1/database/execute', (_req: Request, _res: Response) => {
+    app.post(`${api  }/v1/database/execute`, (_req: Request, _res: Response) => {
       try {
         res.json({
           success: true,
@@ -625,7 +625,7 @@ export class RealApiRoutes {
    */
   private setupMemoryRoutes(app: Express, api: string): void {
     // Memory health
-    app.get(api + '/v1/memory/health', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/memory/health`, (_req: Request, _res: Response) => {
       try {
         const memoryUsage = process.memoryUsage();
         
@@ -646,7 +646,7 @@ export class RealApiRoutes {
     });
 
     // Memory stores
-    app.get(api + '/v1/memory/stores', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/memory/stores`, (_req: Request, _res: Response) => {
       try {
         res.json({
           stores: [
@@ -681,7 +681,7 @@ export class RealApiRoutes {
    */
   private setupFacadeRoutes(app: Express, api: string): void {
     // Facade status
-    app.get(api + '/v1/facades/status', (_req: Request, _res: Response) => {
+    app.get(`${api  }/v1/facades/status`, (_req: Request, _res: Response) => {
       try {
         res.json({
           overall: 'healthy',

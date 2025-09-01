@@ -10,13 +10,13 @@ import { type Writable, writable } from 'svelte/store';
 // Simple browser logger
 const logger = {
   info: (msg: string, ...args: unknown[]) =>
-    console.info('[websocket] ' + msg, ...args),
+    console.info(`[websocket] ${  msg}`, ...args),
 
   warn: (msg: string, ...args: unknown[]) =>
-    console.warn('[websocket] ' + msg, ...args),
+    console.warn(`[websocket] ${  msg}`, ...args),
 
   error: (msg: string, ...args: unknown[]) =>
-    console.error('[websocket] ' + msg, ...args),
+    console.error(`[websocket] ${  msg}`, ...args),
 };
 
 interface WebSocketData {
@@ -263,7 +263,7 @@ export class WebSocketManager {
 
     for (const { event, store, name } of dataChannels) {
       this.socket?.on(event, (data: WebSocketData) => {
-        logger.debug(name + ' data received', { data: data.data });
+        logger.debug(`${name  } data received`, { data: data.data });
         store.set(data.data);
       });
     }
@@ -331,7 +331,7 @@ export class WebSocketManager {
 
     for (const { event, store, name, key } of safeChannels) {
       this.socket?.on(event, (data: WebSocketData) => {
-        logger.debug(name + ' data received', { data: data.data });
+        logger.debug(`${name  } data received`, { data: data.data });
         store.set(data.data?.[key] || []);
       });
     }
@@ -480,7 +480,7 @@ export class WebSocketManager {
       error: error.message,
     }));
 
-    toast.push(' Connection error: ' + error.message, {
+    toast.push(` Connection error: ${  error.message}`, {
       theme: {
         '--toastBackground': '#f56565',
         '--toastColor': 'white',

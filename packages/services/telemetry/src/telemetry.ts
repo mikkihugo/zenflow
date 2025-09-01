@@ -80,7 +80,7 @@ export class TelemetryManager {
       timestamp: Date.now(),
     };
 
-    this.metrics.set((name) + '-' + Date.now(), metric);
+    this.metrics.set(`${name  }-${  Date.now()}`, metric);
     this.logger.debug('Recorded metric', metric);
   }
 
@@ -89,7 +89,7 @@ export class TelemetryManager {
     value: number,
     attributes?: Record<string, any>
   ): void {
-    this.recordMetric(name + '.histogram', value, attributes);
+    this.recordMetric(`${name  }.histogram`, value, attributes);
   }
 
   recordGauge(
@@ -97,7 +97,7 @@ export class TelemetryManager {
     value: number,
     attributes?: Record<string, any>
   ): void {
-    this.recordMetric(name + '.gauge', value, attributes);
+    this.recordMetric(`${name  }.gauge`, value, attributes);
   }
 
   recordEvent(name: string, data?: any): void {
@@ -115,7 +115,7 @@ export class TelemetryManager {
       return { setAttributes: () => {}, end: () => {} };
     }
 
-    const traceId = (name) + '-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9);
+    const traceId = `${name  }-${  Date.now()  }-${  Math.random().toString(36).substr(2, 9)}`;
     const trace = {
       name,
       traceId,
@@ -318,7 +318,7 @@ export function traced(name?: string) {
     const originalMethod = descriptor.value;
     descriptor.value = function (...args: unknown[]) {
       const className = target?.constructor?.name ?? 'UnknownClass';
-      const traceName = name || (className) + '.' + propertyKey;
+      const traceName = name || `${className  }.${  propertyKey}`;
       return withTrace(traceName, () => originalMethod.apply(this, args));
     };
   };
@@ -333,7 +333,7 @@ export function tracedAsync(name?: string) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: unknown[]) {
       const className = (target as any)?.constructor?.name ?? 'UnknownClass';
-      const traceName = name || (className) + '.' + propertyKey;
+      const traceName = name || `${className  }.${  propertyKey}`;
       return await withAsyncTrace(traceName, () =>
         originalMethod.apply(this, args)
       );
@@ -350,7 +350,7 @@ export function metered(name?: string) {
     const originalMethod = descriptor.value;
     descriptor.value = function (this: unknown, ...args: unknown[]) {
       const className = (target as any)?.constructor?.name ?? 'UnknownClass';
-      const metricName = name || (className) + `.${propertyKey}.calls`
+      const metricName = name || `${className  }.${propertyKey}.calls`
       recordMetric(metricName, 1);
       return originalMethod.apply(this, args);
     };

@@ -96,7 +96,7 @@ interface RequestMetadata {
  * Uses timestamp + random string for uniqueness.
  */
 const generateRequestId = (): string =>
-  'req-' + (Date.now()) + '-' + Math.random().toString(36).substring(2, 8);
+  `req-${  Date.now()  }-${  Math.random().toString(36).substring(2, 8)}`;
 
 /**
  * Get client IP address from request.
@@ -157,9 +157,9 @@ const getResponseSize = (_res: Response): number => {
  */
 const formatDuration = (milliseconds: number): string => {
   if (milliseconds < 1000) {
-    return milliseconds.toFixed(2) + 'ms';
+    return `${milliseconds.toFixed(2)  }ms`;
   }
-  return (milliseconds / 1000).toFixed(2) + 's';
+  return `${(milliseconds / 1000).toFixed(2)  }s`;
 };
 
 /**
@@ -315,12 +315,12 @@ const outputLog = (logEntry: LogEntry): void => {
     const url = httpRequest?.requestUrl || '';
 
     if (httpRequest) {
-      logger.info((method) + ' ' + (url) + ' ' + (status) + ' ' + duration);
+      logger.info(`${method  } ${  url  } ${  status  } ${  duration}`);
       if (level === LogLevel.ERROR && metadata) {
         logger.error('Error details: ', metadata);
       }
     } else {
-      logger.info((level) + ' ' + message);
+      logger.info(`${level  } ${  message}`);
     }
 
     if (metadata && level !== LogLevel.ERROR) {
@@ -397,7 +397,7 @@ export const requestLogger = (
         req,
         res,
         metadata: {
-          duration: duration + 'ms',
+          duration: `${duration  }ms`,
           responseHeaders: sanitizeData({
             [CONTENT_TYPE_HEADER]: res.get(CONTENT_TYPE_HEADER),
             [CACHE_CONTROL_HEADER]: res.get(CACHE_CONTROL_HEADER),
@@ -430,7 +430,7 @@ export const logError = (
 ): void => {
   const logEntry = createLogEntry({
     level: LogLevel.ERROR,
-    message: 'Error: ' + (error as Error).message,
+    message: `Error: ${  (error as Error).message}`,
     req,
     metadata: {
       error: {
@@ -462,11 +462,11 @@ export const logPerformance = (
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
   const logEntry = createLogEntry({
     level,
-    message: 'Performance: ' + (operation) + ' took ' + formatDuration(duration),
+    message: `Performance: ${  operation  } took ${  formatDuration(duration)}`,
     req,
     metadata: {
       operation,
-      duration: duration + 'ms',
+      duration: `${duration  }ms`,
       performanceMetric: metadata,
     },
   });
@@ -530,13 +530,13 @@ export const logDatabaseOperation = ({
   const level = duration > 1000 ? LogLevel.WARNING : LogLevel.DEBUG;
   const logEntry = createLogEntry({
     level,
-    message: 'Database: ' + (operation) + ' on ' + table,
+    message: `Database: ${  operation  } on ${  table}`,
     req,
     metadata: {
       database: {
         operation,
         table,
-        duration: duration + 'ms',
+        duration: `${duration  }ms`,
         rowCount,
         slow: duration > 1000,
       },
@@ -574,13 +574,13 @@ export const logExternalService = ({
     statusCode >= 400 || duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
   const logEntry = createLogEntry({
     level,
-    message: 'External: ' + (service) + ' ' + operation,
+    message: `External: ${  service  } ${  operation}`,
     req,
     metadata: {
       externalService: {
         service,
         operation,
-        duration: duration + 'ms',
+        duration: `${duration  }ms`,
         statusCode,
         success: statusCode < 400,
         slow: duration > 5000,

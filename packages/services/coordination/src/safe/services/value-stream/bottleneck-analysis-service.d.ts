@@ -4,43 +4,29 @@
 * Service for advanced bottleneck detection and root cause analysis.
 * Handles deep bottleneck identification, contributing factor analysis, and impact assessment.
 *
-* SINGLE RESPONSIBILITY: dateFns;';
-import {
-filter,
-groupBy,
-map,
-maxBy,
-meanBy,
-orderBy,
-sumBy,
-'} from 'lodash-es')../../types');
+* SINGLE RESPONSIBILITY: Bottleneck analysis and root cause identification
+*/
+
+/**
 * Advanced bottleneck analysis configuration
 */
 export interface BottleneckAnalysisConfig {
-readonly analysisId: 'capacity';
-
+  readonly analysisId: string;
 }
 /**
 * Bottleneck severity levels
 */
 export declare enum BottleneckSeverity {
-') = 0,
-critical = 1,
-') = 2,
-high = 3,
-') = 4,
-medium = 5,
-') = 6,
-low = 7,
-')resource_constraint';
-
+  critical = 1,
+  high = 3,
+  medium = 5,
+  low = 7
 }
+
 /**
 * Impact assessment
 */
 export interface ImpactAssessment {
-readonly assessmentId: new () => Map<string, AdvancedBottleneckAnalysis>;
-(): any;
-
+  readonly assessmentId: string;
 }
 //# sourceMappingURL=bottleneck-analysis-service.d.ts.map

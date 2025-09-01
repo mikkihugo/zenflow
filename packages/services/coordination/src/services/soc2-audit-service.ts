@@ -1,104 +1,711 @@
+import { getLogger } from '@claude-zen/foundation';
+import { createHash } from 'crypto';
+
 /**
-* @fileoverview SOC2-Compliant Audit Service - Complete Audit Trail for SAFe 6.0 Framework
-*
-* **COMPREHENSIVE SOC2 COMPLIANCE: **
-*
-* **SECURITY CONTROLS:**
-* - Access control logging with user authentication
-* - Session management and tracking
-* - IP address and device fingerprinting
-* - Privilege escalation monitoring
-*
-* **AVAILABILITY CONTROLS:**
-* - System uptime and performance monitoring
-* - Backup and recovery tracking
-* - Capacity management logging
-* - Incident response documentation
-*
-* **PROCESSING INTEGRITY:**
-* - Data validation and verification
-* - Transaction integrity checking
-* - Error handling and correction
-* - Change management tracking
-*
-* **CONFIDENTIALITY CONTROLS:**
-* - Data classification and handling
-* - Encryption key management
-* - Access pattern analysis
-* - Data leak prevention
-*
-* ️ **PRIVACY CONTROLS:**
-* - Personal data processing logs
-* - Consent management tracking
-* - Data retention compliance
-* - GDPR/CCPA compliance monitoring
-*/
-// ============================================================================
-// SOC2 AUDIT TYPES
-// ============================================================================
-/**
-* SOC2 Trust Service Categories
-*/
-export enum SOC2Category {
-  SECURITY = 'security',
-  AVAILABILITY = 'availability',
-  PROCESSING_INTEGRITY = 'processing_integrity',
-  CONFIDENTIALITY = 'confidentiality',
-  PRIVACY = 'privacy'
-}
-/**
-* SOC2 Event Types for comprehensive logging
-*/
+ * SOC2 Event Types for comprehensive logging
+ */
 export enum SOC2EventType {
   // Security Events
-  USER_AUTHENTICATION = 'user_authentication',
-  ACCESS_GRANTED = 'access_granted',
-  ACCESS_DENIED = 'access_denied',
-  PRIVILEGE_ESCALATION = 'privilege_escalation',
-  SESSION_START = 'session_start',
-  SESSION_END = 'session_end',
-  PASSWORD_CHANGE = 'password_change',
-  ACCOUNT_LOCKOUT = 'account_lockout',
+  UserAuthentication = 'user_authentication',
+  AccessGranted = 'access_granted',
+  AccessDenied = 'access_denied',
+  PrivilegeEscalation = 'privilege_escalation',
+  SessionStart = 'session_start',
+  SessionEnd = 'session_end',
+  PasswordChange = 'password_change',
+  AccountLockout = 'account_lockout',
   // Availability Events
-  SYSTEM_START = 'system_start',
-  SYSTEM_SHUTDOWN = 'system_shutdown',
-  SERVICE_UNAVAILABLE = 'service_unavailable',
-  PERFORMANCE_DEGRADATION = 'performance_degradation',
-  BACKUP_COMPLETED = 'backup_completed',
-  BACKUP_FAILED = 'backup_failed',
-  RECOVERY_INITIATED = 'recovery_initiated',
+  SystemStart = 'system_start',
+  SystemShutdown = 'system_shutdown',
+  ServiceUnavailable = 'service_unavailable',
+  PerformanceDegradation = 'performance_degradation',
+  BackupCompleted = 'backup_completed',
+  BackupFailed = 'backup_failed',
+  RecoveryInitiated = 'recovery_initiated',
   // Processing Integrity Events
-  DATA_VALIDATION_SUCCESS = 'data_validation_success',
-  DATA_VALIDATION_FAILURE = 'data_validation_failure',
-  TRANSACTION_START = 'transaction_start',
-  TRANSACTION_COMMIT = 'transaction_commit',
-  TRANSACTION_ROLLBACK = 'transaction_rollback',
-  CONFIGURATION_CHANGE = 'configuration_change',
+  DataValidationSuccess = 'data_validation_success',
+  DataValidationFailure = 'data_validation_failure',
+  TransactionStart = 'transaction_start',
+  TransactionCommit = 'transaction_commit',
+  TransactionRollback = 'transaction_rollback',
+  ConfigurationChange = 'configuration_change',
   // Confidentiality Events
-  DATA_ACCESS = 'data_access',
-  DATA_EXPORT = 'data_export',
-  ENCRYPTION_KEY_ROTATION = 'encryption_key_rotation',
-  UNAUTHORIZED_ACCESS_ATTEMPT = 'unauthorized_access_attempt',
-  DATA_CLASSIFICATION_CHANGE = 'data_classification_change',
+  DataAccess = 'data_access',
+  DataExport = 'data_export',
+  EncryptionKeyRotation = 'encryption_key_rotation',
+  UnauthorizedAccessAttempt = 'unauthorized_access_attempt',
+  DataClassificationChange = 'data_classification_change',
   // Privacy Events
-  PERSONAL_DATA_COLLECTION = 'personal_data_collection',
-  PERSONAL_DATA_PROCESSING = 'personal_data_processing',
-  PERSONAL_DATA_DELETION = 'personal_data_deletion',
-  CONSENT_GRANTED = 'consent_granted',
-  CONSENT_WITHDRAWN = 'consent_withdrawn',
-  DATA_SUBJECT_REQUEST = 'data_subject_request',
+  PersonalDataCollection = 'personal_data_collection',
+  PersonalDataProcessing = 'personal_data_processing',
+  PersonalDataDeletion = 'personal_data_deletion',
+  ConsentGranted = 'consent_granted',
+  ConsentWithdrawn = 'consent_withdrawn',
+  DataSubjectRequest = 'data_subject_request',
   // SAFE Framework Specific Events
-  EPIC_GENERATED = 'epic_generated',
-  GATE_APPROVED = 'gate_approved',
-  GATE_REJECTED = 'gate_rejected',
-  AI_DECISION_MADE = 'ai_decision_made',
-  HUMAN_OVERRIDE = 'human_override',
-  WORKFLOW_TRANSITION = 'workflow_transition'
-
+  EpicGenerated = 'epic_generated',
+  GateApproved = 'gate_approved',
+  GateRejected = 'gate_rejected',
+  AiDecisionMade = 'ai_decision_made',
+  HumanOverride = 'human_override',
+  WorkflowTransition = 'workflow_transition'
 }
+
 /**
-* Complete SOC2 audit log entry
-*/
+ * SOC2 Categories for compliance classification
+ */
+export enum SOC2Category {
+  Security = 'security',
+  Availability = 'availability',
+  ProcessingIntegrity = 'processing_integrity',
+  Confidentiality = 'confidentiality',
+  Privacy = 'privacy'
+}
+
+/**
+ * Complete SOC2 audit log entry
+ */
 export interface SOC2AuditLogEntry {
-// Unique identifiers;
-id: 'public| internal| confidential| restricted',\n containsPII: ' development| staging| production',\n}\n\n/**\n * SOC2 audit configuration\n */\nexport interface SOC2AuditConfig {\n enabled: ' compliant| non_compliant| partial',\n findings: ' low| medium| high',\n mitigation: string;\n}>;\n};\n \n // Recommendations\n recommendations: Array<{\n priority: low' | ' medium'|' high' | ' critical';\n category: SOC2Category;\n title: string;\n description: string;\n implementation: string;\n estimatedEffort: string;\n}>';\n}\n\n// ============================================================================\n// SOC2 AUDIT SERVICE IMPLEMENTATION\n// ============================================================================\n\n/**\n * SOC2-Compliant Audit Service\n * \n * Provides comprehensive audit logging and compliance monitoring for all\n * SAFE framework activities with complete traceability and integrity.\n */\nexport class SOC2AuditService {\n private readonly logger = getLogger(' SOC2AuditService');\n \n // Infrastructure\n private database: [];\n private lastFlushTime = Date.now(');\n private previousEntryHash = ';\n \n // Monitoring\n private eventCounts = new Map<SOC2EventType, number>();\n private alertThresholds = new Map<string, number>()'; \n \n constructor(config: config';\n}\n \n /**\n * Initialize SOC2 audit service\n */\n async initialize(): Promise<void> {\n try {\n this.logger.info(' Initializing SOC2 Audit Service...');\n \n // Initialize infrastructure\n const dbSystem = await import('@claude-zen/database').then(db => db.DatabaseProvider.create()');\n this.database = dbSystem.createProvider(' sql');\n \n this.eventSystem = await getEventSystem();\n this.telemetryManager = await getTelemetryManager();\n \n // Create audit tables\n await this.createAuditTables();\n \n // Initialize audit chain\n await this.initializeAuditChain();\n \n // Set up periodic flushing\n this.startPeriodicFlush();\n \n // Register event handlers\n this.registerEventHandlers(');\n \n // Log service initialization\n await this.logEvent({\n category: ' service_initialization,\n description: ' success,\n targetResource: ' system,\n dataClassification: ' service_initialization,\n description: ' failure,\n targetResource: ' system,\n dataClassification: ' Unknown error,\n metadata: generateUUID(');\n \n await this.logEvent({\n category: ' epic_generation,\n description: 'confidential,\n containsPII: false,\n containsPHI: false,\n complianceFrameworks: [',SOC2,'SAFE'],\n metadata: {\n epicId: context.epicId,\n title: context.title,\n generatedBy: context.generatedBy,\n aiModel: context.aiModel,\n confidence: context.confidence,\n businessValue: context.businessValue,\n strategicTheme: context.strategicTheme,\n stakeholderCount: context.stakeholders.length,\n generationMethod: context.generatedBy ===' ai '?' automated : 'manual'\n}\n}, {\n userId: generateUUID(');\n \n const severity = context.decision ===' rejected '?' high: \n context.decision ==='escalated '?' medium : 'low`\n \n await this.logEvent({\n category: SOC2Category.SECURITY,\n eventType: context.decisionBy == = ` ai `? SOC2EventType.AI_DECISION_MADE: ` Gate``${context.gateName} ` ${context.decision} by ${context.decisionBy},\n outcome: context.decision ===``,approved ?` success:`failure,\n targetResource,\n targetId: ` gate,\n dataClassification: ',confidential,\n containsPII: false,\n containsPHI: false,\n complianceFrameworks: [' SOC2,'SAFE'],\n metadata: {\n gateId: context.gateId,\n gateName: context.gateName,\n decision: context.decision,\n decisionBy: context.decisionBy,\n aiModel: context.aiModel,\n confidence: context.confidence,\n reasoning: context.reasoning,\n processingTime: context.processingTime,\n businessImpact: context.businessImpact,\n automatedDecision: context.decisionBy == = ' ai\n}\n}, {\n userId: generateUUID(`)'; \n \n await this.logEvent({\n category: 'confidential,\n containsPII: false,\n containsPHI: false,\n complianceFrameworks: [',SOC2,'SAFE'],\n metadata: {\n gateId: context.gateId,\n originalAIDecision: context.originalAIDecision,\n humanDecision: context.humanDecision,\n decisionAlignment: context.originalAIDecision.decision === context.humanDecision.decision,\n confidenceGap: generateUUID(');\n \n await this.logEvent({\n category: `state_transition,\n description: await this.queryAuditLogs(period);\n \n // Analyze compliance by category\n const categoryCompliance = await this.analyzeComplianceByCategory(auditLogs);\n \n // Calculate overall compliance score\n const overallCompliance = this.calculateOverallCompliance(categoryCompliance);\n \n // Generate audit statistics\n const auditStatistics = this.generateAuditStatistics(auditLogs);\n \n // Perform risk assessment\n const riskAssessment = await this.performRiskAssessment(auditLogs);\n \n // Generate recommendations\n const recommendations = this.generateRecommendations(categoryCompliance, riskAssessment);\n \n const report: {\n reportId: ' valid| tampered| unknown`,\n}>> {\n \n // Query audit logs for entity\n const logs = await this.database(` soc2_audit_logs)\n .where(` target_resource,`like,``${{entityType}:${entityId}%};)\n .orWhere(` metadata,`like,``%``${entityType}Id`:`${entityId}%``)\n .orderBy(` timestamp,'asc');\n \n // Verify audit chain integrity\n const verifiedLogs = await this.verifyAuditChain(logs);\n \n return verifiedLogs';\n}\n \n /**\n * Shutdown audit service\n */\n async shutdown(): Promise<void> {\n try {\n this.logger.info(' Shutting down SOC2 Audit Service...');\n \n // Flush remaining audit entries\n await this.flushAuditBuffer(');\n \n // Log service shutdown\n await this.logEvent({\n category: ' service_shutdown,\n description: ' success,\n targetResource: ' system,\n dataClassification: ',internal,\n containsPII: false,\n containsPHI: false,\n complianceFrameworks: [' SOC2'],\n metadata: {}\n};);\n \n this.logger.info(' SOC2 Audit Service shutdown complete');\n \n} catch (error) {\n this.logger.error(' Error during SOC2 Audit Service shutdown, error);\n}\n}\n \n // ============================================================================\n // PRIVATE IMPLEMENTATION METHODS\n // ============================================================================\n \n private async logEvent(\n eventData: {\n id: ',\n previousEntryHash: ' TaskMaster-SAFE,\n environment: this.calculateAuditHash(entry);\n this.previousEntryHash = entry.auditHash;\n \n // Add to buffer for batch processing\n this.auditBuffer.push(entry');\n \n // Update event counts\n const currentCount = this.eventCounts.get(entry.eventType)||'0';\n this.eventCounts.set(entry.eventType, currentCount + 1)';\n \n // Check for immediate flush conditions\n if (entry.severity ===critical'|| \n this.auditBuffer.length >= this.config.batchSize||'\n Date.now() - this.lastFlushTime > this.config.flushIntervalMs) {\n await this.flushAuditBuffer(');\n}\n \n // Check for alert conditions\n await this.checkAlertConditions(entry)';\n}\n \n private async createAuditTables(): Promise<void> {\n // Create comprehensive SOC2 audit table\n await this.database.schema.createTableIfNotExists(' soc2_audit_logs,(table: any) => {\n table.uuid('id').primary(');\n table.uuid(' correlation_id').notNullable(');\n table.string(' session_id').notNullable(');\n table.string(' trace_id').nullable(');\n \n table.string(' category').notNullable(');\n table.string(' event_type').notNullable(');\n table.string(' severity').notNullable(');\n \n table.timestamp(' timestamp').notNullable(');\n table.string(' timezone').notNullable(');\n \n table.string(' user_id').nullable(');\n table.string(' user_name').nullable(');\n table.string(' user_role').nullable(');\n table.string(' service_account').nullable(');\n \n table.string(' source_ip_address').notNullable(');\n table.integer(' source_port').nullable(');\n table.text(' user_agent').nullable(');\n table.string(' device_fingerprint').nullable(');\n table.json(' geolocation').nullable(');\n \n table.string(' target_resource').notNullable(');\n table.string(' target_id').nullable(');\n table.string(' resource_type').notNullable(');\n \n table.string(' action').notNullable(');\n table.text(' description').notNullable(');\n table.string(' outcome').notNullable(');\n \n table.string(' data_classification').notNullable(');\n table.boolean(' contains_pii').notNullable(');\n table.boolean(' contains_phi').notNullable(');\n \n table.json(' request_data').nullable(');\n table.json(' response_data').nullable(');\n \n table.string(' authentication_method').nullable(');\n table.string(' authorization_level').nullable(');\n table.json(' privileges_used').nullable(');\n \n table.string(' data_integrity_hash').nullable(');\n table.json(' validation_results').nullable(');\n \n table.string(' error_code').nullable(');\n table.text(' error_message').nullable(');\n table.text(' stack_trace').nullable(');\n \n table.json(' compliance_frameworks').notNullable(');\n table.integer(' retention_period').notNullable(');\n table.boolean(' legal_hold').notNullable(');\n \n table.json(' metadata').notNullable(');\n table.json(' tags').notNullable(');\n \n table.string(' audit_hash').notNullable(');\n table.string(' previous_entry_hash').nullable(');\n \n table.string(' system_version').notNullable(');\n table.string(' application_name').notNullable(');\n table.string(' environment').notNullable(');\n \n // Indexes for performance\n table.index([' category,'event_type]);\n table.index([' timestamp]);\n table.index(['user_id]);\n table.index([' target_resource]);\n table.index(['session_id]);\n table.index([' correlation_id']);\n};);\n \n // Create audit chain verification table\n await this.database.schema.createTableIfNotExists(' audit_chain_verification,(table: any) => {\n table.uuid('id').primary(');\n table.timestamp(' verification_time').notNullable(');\n table.string(' chain_hash').notNullable(');\n table.integer(' entries_verified').notNullable(');\n table.boolean(' integrity_valid').notNullable(');\n table.json(' verification_details').notNullable();\n};);\n}\n \n private async initializeAuditChain(): Promise<void> {\n // Get the last audit entry hash to continue the chain\n const lastEntry = await this.database(' soc2_audit_logs')\n .orderBy(' timestamp,'desc')\n .first();\n \n if (lastEntry) {\n this.previousEntryHash = lastEntry.audit_hash;\n}\n}\n \n private startPeriodicFlush(): void {\n setInterval(async () => {\n if (this.auditBuffer.length > 0) {\n await this.flushAuditBuffer();\n}\n}, this.config.flushIntervalMs');\n}\n \n private registerEventHandlers(): void {\n // Register for system events that need auditing\n this.eventSystem.on(' approval: granted, this.handleApprovalEvent.bind(this)');\n this.eventSystem.on(' approval: rejected, this.handleApprovalEvent.bind(this)');\n this.eventSystem.on(' ai: decision, this.handleAIDecisionEvent.bind(this));\n}\n \n private async flushAuditBuffer(): Promise<void> {\n if (this.auditBuffer.length === 0) return';\n \n try {\n // Insert all buffered entries\n await this.database(' soc2_audit_logs').insert(\n this.auditBuffer.map(entry => this.serializeAuditEntry(entry))\n );\n \n // Clear buffer\n const flushedCount = this.auditBuffer.length;\n this.auditBuffer = [];\n this.lastFlushTime = Date.now(');\n \n this.logger.debug(' Flushed audit buffer,{ entriesCount: [\n entry.id,\n entry.timestamp.toISOString(),\n entry.category,\n entry.eventType,\n entry.action,\n entry.targetResource,\n entry.outcome,\n entry.previousEntryHash||`\n].join(||`\n \n return createHash( sha256`).update(hashInput).digest(` hex`\n}\n \n private calculateRetentionPeriod(category: this.config.retentionDays;\n \n if (severity ===`critical)return basePeriod * 3; // 3x for critical events\n if (category === SOC2Category.SECURITY) return basePeriod * 2; // 2x for security events\n \n return basePeriod;\n}\n \n private generateTags(eventData: [];\n \n tags.push(`category: ${eventData.category});\n tags.push(`event_type: ${eventData.eventType});\n tags.push(`severity: `${eventData.severity});\n tags.push(``outcome: ${eventData.outcome});\n \n if (eventData.containsPII) tags.push(`` contains_pii`\n if (eventData.containsPHI) tags.push(` contains_phi');\n \n return tags';\n}\n \n private async checkAlertConditions(entry: SOC2AuditLogEntry): Promise<void> {\n // Check for conditions that require immediate alerts\n if (entry.severity == = ' critical){\n await this.sendCriticalAlert(entry);\n}\n \n // Check for suspicious patterns\n if (entry.eventType === SOC2EventType.ACCESS_DENIED) {\n await this.checkForBruteForceAttack(entry)'; \n}\n}\n \n private serializeAuditEntry(entry: 'compliant ',as const,\n findings: 'low ',as const,\n riskFactors: []\n};\n}\n \n private generateRecommendations(categoryCompliance: any, riskAssessment: any): any[] {\n return [];;\n}\n \n private async verifyAuditChain(logs: any[]): Promise<any[]> {\n // Verify the integrity of the audit chain\n return logs.map(log => ({\n ...log,\n chainVerified: ' valid ',as const\n}));\n}\n \n private async sendCriticalAlert(entry: SOC2AuditLogEntry): Promise<void> {\n // Send critical alert through appropriate channels\n}\n \n private async checkForBruteForceAttack(entry: SOC2AuditLogEntry): Promise<void> {\n // Check for potential brute force attacks\n}\n}\n\nexport default SOC2AuditService';`
+  id: string;
+  correlationId: string;
+  sessionId: string;
+  traceId?: string;
+  category: SOC2Category;
+  eventType: SOC2EventType;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  timestamp: Date;
+  timezone: string;
+  userId?: string;
+  userName?: string;
+  userRole?: string;
+  serviceAccount?: string;
+  sourceIpAddress: string;
+  sourcePort?: number;
+  userAgent?: string;
+  deviceFingerprint?: string;
+  geolocation?: Record<string, unknown>;
+  targetResource: string;
+  targetId?: string;
+  resourceType: string;
+  action: string;
+  description: string;
+  outcome: 'success' | 'failure' | 'partial';
+  dataClassification: 'public' | 'internal' | 'confidential' | 'restricted';
+  containsPII: boolean;
+  containsPHI: boolean;
+  requestData?: Record<string, unknown>;
+  responseData?: Record<string, unknown>;
+  authenticationMethod?: string;
+  authorizationLevel?: string;
+  privilegesUsed?: Record<string, unknown>;
+  dataIntegrityHash?: string;
+  validationResults?: Record<string, unknown>;
+  errorCode?: string;
+  errorMessage?: string;
+  stackTrace?: string;
+  complianceFrameworks: string[];
+  retentionPeriod: number;
+  legalHold: boolean;
+  metadata: Record<string, unknown>;
+  tags: string[];
+  auditHash: string;
+  previousEntryHash?: string;
+  systemVersion: string;
+  applicationName: string;
+  environment: 'development' | 'staging' | 'production';
+}
+
+/**
+ * SOC2 compliance report
+ */
+export interface SOC2ComplianceReport {
+  reportId: string;
+  period: { start: Date; end: Date };
+  overallCompliance: {
+    status: 'compliant' | 'non_compliant' | 'partial';
+    score: number;
+    findings: 'low' | 'medium' | 'high' | 'critical';
+    riskFactors: string[];
+  };
+  categoryCompliance: Record<string, {
+    status: 'compliant' | 'non_compliant' | 'partial';
+    score: number;
+  }>;
+  auditStatistics: Record<string, unknown>;
+  riskAssessment: Record<string, unknown>;
+  recommendations: unknown[];
+  generatedAt: Date;
+}
+
+/**
+ * SOC2 audit service implementation
+ */
+export class SOC2AuditService {
+  private readonly logger = getLogger('SOC2AuditService');
+  private database: unknown;
+  private eventSystem: unknown;
+  private telemetryManager: unknown;
+  private auditBuffer: SOC2AuditLogEntry[] = [];
+  private lastFlushTime = Date.now();
+  private previousEntryHash = '';
+  private eventCounts = new Map<SOC2EventType, number>();
+  private alertThresholds = new Map<string, number>();
+
+  constructor(private config: SOC2AuditConfig) {}
+
+  /**
+   * Initialize SOC2 audit service
+   */
+  async initialize(): Promise<void> {
+    try {
+      this.logger.info('Initializing SOC2 Audit Service...');
+
+      // Initialize infrastructure
+      const dbSystem = await import('@claude-zen/database').then(db => db.DatabaseProvider.create());
+      this.database = dbSystem.createProvider('sql');
+
+      this.eventSystem = await getEventSystem();
+      this.telemetryManager = await getTelemetryManager();
+
+      // Create audit tables
+      await this.createAuditTables();
+
+      // Initialize audit chain
+      await this.initializeAuditChain();
+
+      // Set up periodic flushing
+      this.startPeriodicFlush();
+
+      // Register event handlers
+      this.registerEventHandlers();
+
+      // Log service initialization
+      await this.logEvent({
+        category: SOC2Category.AVAILABILITY,
+        eventType: SOC2EventType.SYSTEM_START,
+        severity: 'low',
+        action: 'service_initialization',
+        description: 'SOC2 Audit Service initialized successfully',
+        outcome: 'success',
+        targetResource: 'system',
+        dataClassification: 'internal',
+        containsPII: false,
+        containsPHI: false,
+        complianceFrameworks: ['SOC2'],
+        metadata: {}
+      });
+
+      this.logger.info('SOC2 Audit Service initialized successfully');
+    } catch (error) {
+      this.logger.error('Error during SOC2 Audit Service initialization', error);
+
+      await this.logEvent({
+        category: SOC2Category.AVAILABILITY,
+        eventType: SOC2EventType.SYSTEM_START,
+        severity: 'high',
+        action: 'service_initialization',
+        description: 'SOC2 Audit Service initialization failed',
+        outcome: 'failure',
+        targetResource: 'system',
+        dataClassification: 'internal',
+        containsPII: false,
+        containsPHI: false,
+        complianceFrameworks: ['SOC2'],
+        metadata: { error: error.message }
+      });
+
+      throw error;
+    }
+  }
+
+  /**
+   * Log an audit event
+   */
+  async logEvent(eventData: Partial<SOC2AuditLogEntry>): Promise<void> {
+    const entry: SOC2AuditLogEntry = {
+      id: generateUUID(),
+      correlationId: eventData.correlationId || generateUUID(),
+      sessionId: eventData.sessionId || 'system',
+      category: eventData.category || SOC2Category.SECURITY,
+      eventType: eventData.eventType || SOC2EventType.SYSTEM_START,
+      severity: eventData.severity || 'low',
+      timestamp: new Date(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      targetResource: eventData.targetResource || 'system',
+      resourceType: eventData.resourceType || 'service',
+      action: eventData.action || 'unknown',
+      description: eventData.description || '',
+      outcome: eventData.outcome || 'success',
+      dataClassification: eventData.dataClassification || 'internal',
+      containsPII: eventData.containsPII || false,
+      containsPHI: eventData.containsPHI || false,
+      complianceFrameworks: eventData.complianceFrameworks || ['SOC2'],
+      retentionPeriod: this.calculateRetentionPeriod(eventData.category, eventData.severity),
+      legalHold: false,
+      metadata: eventData.metadata || {},
+      tags: this.generateTags(eventData),
+      systemVersion: '1.0.0',
+      applicationName: 'TaskMaster-SAFE',
+      environment: 'development',
+      ...eventData
+    };
+
+    // Calculate audit hash for chain integrity
+    entry.auditHash = this.calculateAuditHash(entry);
+    entry.previousEntryHash = this.previousEntryHash;
+    this.previousEntryHash = entry.auditHash;
+
+    // Add to buffer for batch processing
+    this.auditBuffer.push(entry);
+
+    // Update event counts
+    const currentCount = this.eventCounts.get(entry.eventType) || 0;
+    this.eventCounts.set(entry.eventType, currentCount + 1);
+
+    // Check for immediate flush conditions
+    if (entry.severity === 'critical' ||
+        this.auditBuffer.length >= this.config.batchSize ||
+        Date.now() - this.lastFlushTime > this.config.flushIntervalMs) {
+      await this.flushAuditBuffer();
+    }
+
+    // Check for alert conditions
+    await this.checkAlertConditions(entry);
+  }
+
+  /**
+   * Query audit logs with compliance verification
+   */
+  async queryAuditLogs(
+    entityType: string,
+    entityId: string,
+    period?: { start: Date; end: Date }
+  ): Promise<SOC2AuditLogEntry[]> {
+    // Query audit logs for entity
+    const query = this.database('soc2_audit_logs')
+      .where('target_resource', 'like', `${entityType}:${entityId}%`)
+      .orWhere('metadata', 'like', `%${entityType}Id:${entityId}%`);
+
+    if (period) {
+      query.whereBetween('timestamp', [period.start, period.end]);
+    }
+
+    const logs = await query.orderBy('timestamp', 'asc');
+
+    // Verify audit chain integrity
+    return this.verifyAuditChain(logs);
+  }
+
+  /**
+   * Generate compliance report
+   */
+  async generateComplianceReport(period: { start: Date; end: Date }): Promise<SOC2ComplianceReport> {
+    // Query audit logs for period
+    const auditLogs = await this.queryAuditLogs('system', 'all', period);
+
+    // Analyze compliance by category
+    const categoryCompliance = this.analyzeComplianceByCategory(auditLogs);
+
+    // Calculate overall compliance score
+    const overallCompliance = this.calculateOverallCompliance(categoryCompliance);
+
+    // Generate audit statistics
+    const auditStatistics = this.generateAuditStatistics(auditLogs);
+
+    // Perform risk assessment
+    const riskAssessment = this.performRiskAssessment(auditLogs);
+
+    // Generate recommendations
+    const recommendations = this.generateRecommendations(categoryCompliance, riskAssessment);
+
+    return {
+      reportId: generateUUID(),
+      period,
+      overallCompliance,
+      categoryCompliance,
+      auditStatistics,
+      riskAssessment,
+      recommendations,
+      generatedAt: new Date()
+    };
+  }
+
+  /**
+   * Shutdown audit service
+   */
+  async shutdown(): Promise<void> {
+    try {
+      this.logger.info('Shutting down SOC2 Audit Service...');
+
+      // Flush remaining audit entries
+      await this.flushAuditBuffer();
+
+      // Log service shutdown
+      await this.logEvent({
+        category: SOC2Category.AVAILABILITY,
+        eventType: SOC2EventType.SYSTEM_SHUTDOWN,
+        severity: 'low',
+        action: 'service_shutdown',
+        description: 'SOC2 Audit Service shutdown successfully',
+        outcome: 'success',
+        targetResource: 'system',
+        dataClassification: 'internal',
+        containsPII: false,
+        containsPHI: false,
+        complianceFrameworks: ['SOC2'],
+        metadata: {}
+      });
+
+      this.logger.info('SOC2 Audit Service shutdown complete');
+    } catch (error) {
+      this.logger.error('Error during SOC2 Audit Service shutdown', error);
+      throw error;
+    }
+  }
+
+  // Private implementation methods
+
+  private async createAuditTables(): Promise<void> {
+    // Create comprehensive SOC2 audit table
+    await this.database.schema.createTableIfNotExists('soc2_audit_logs', (table: Record<string, (columnName: string) => unknown>) => {
+      table.uuid('id').primary();
+      table.uuid('correlation_id').notNullable();
+      table.string('session_id').notNullable();
+      table.string('trace_id').nullable();
+
+      table.string('category').notNullable();
+      table.string('event_type').notNullable();
+      table.string('severity').notNullable();
+
+      table.timestamp('timestamp').notNullable();
+      table.string('timezone').notNullable();
+
+      table.string('user_id').nullable();
+      table.string('user_name').nullable();
+      table.string('user_role').nullable();
+      table.string('service_account').nullable();
+
+      table.string('source_ip_address').notNullable();
+      table.integer('source_port').nullable();
+      table.text('user_agent').nullable();
+      table.string('device_fingerprint').nullable();
+      table.json('geolocation').nullable();
+
+      table.string('target_resource').notNullable();
+      table.string('target_id').nullable();
+      table.string('resource_type').notNullable();
+
+      table.string('action').notNullable();
+      table.text('description').notNullable();
+      table.string('outcome').notNullable();
+
+      table.string('data_classification').notNullable();
+      table.boolean('contains_pii').notNullable();
+      table.boolean('contains_phi').notNullable();
+
+      table.json('request_data').nullable();
+      table.json('response_data').nullable();
+
+      table.string('authentication_method').nullable();
+      table.string('authorization_level').nullable();
+      table.json('privileges_used').nullable();
+
+      table.string('data_integrity_hash').nullable();
+      table.json('validation_results').nullable();
+
+      table.string('error_code').nullable();
+      table.text('error_message').nullable();
+      table.text('stack_trace').nullable();
+
+      table.json('compliance_frameworks').notNullable();
+      table.integer('retention_period').notNullable();
+      table.boolean('legal_hold').notNullable();
+
+      table.json('metadata').notNullable();
+      table.json('tags').notNullable();
+
+      table.string('audit_hash').notNullable();
+      table.string('previous_entry_hash').nullable();
+
+      table.string('system_version').notNullable();
+      table.string('application_name').notNullable();
+      table.string('environment').notNullable();
+
+      // Indexes for performance
+      table.index(['category', 'event_type']);
+      table.index(['timestamp']);
+      table.index(['user_id']);
+      table.index(['target_resource']);
+      table.index(['session_id']);
+      table.index(['correlation_id']);
+    });
+
+    // Create audit chain verification table
+    await this.database.schema.createTableIfNotExists('audit_chain_verification', (table: Record<string, (columnName: string) => unknown>) => {
+      table.uuid('id').primary();
+      table.timestamp('verification_time').notNullable();
+      table.string('chain_hash').notNullable();
+      table.integer('entries_verified').notNullable();
+      table.boolean('integrity_valid').notNullable();
+      table.json('verification_details').notNullable();
+    });
+  }
+
+  private async initializeAuditChain(): Promise<void> {
+    // Get the last audit entry hash to continue the chain
+    const lastEntry = await this.database('soc2_audit_logs')
+      .orderBy('timestamp', 'desc')
+      .first();
+
+    if (lastEntry) {
+      this.previousEntryHash = lastEntry.audit_hash;
+    }
+  }
+
+  private startPeriodicFlush(): void {
+    setInterval(async () => {
+      if (this.auditBuffer.length > 0) {
+        await this.flushAuditBuffer();
+      }
+    }, this.config.flushIntervalMs);
+  }
+
+  private registerEventHandlers(): void {
+    // Register for system events that need auditing
+    this.eventSystem.on('approval:granted', this.handleApprovalEvent.bind(this));
+    this.eventSystem.on('approval:rejected', this.handleApprovalEvent.bind(this));
+    this.eventSystem.on('ai:decision', this.handleAIDecisionEvent.bind(this));
+  }
+
+  private async flushAuditBuffer(): Promise<void> {
+    if (this.auditBuffer.length === 0) return;
+
+    try {
+      // Insert all buffered entries
+      await this.database('soc2_audit_logs').insert(
+        this.auditBuffer.map(entry => this.serializeAuditEntry(entry))
+      );
+
+      // Clear buffer
+      const flushedCount = this.auditBuffer.length;
+      this.auditBuffer = [];
+      this.lastFlushTime = Date.now();
+
+      this.logger.debug('Flushed audit buffer', { entriesCount: flushedCount });
+    } catch (error) {
+      this.logger.error('Error flushing audit buffer', error);
+      throw error;
+    }
+  }
+
+  private serializeAuditEntry(entry: SOC2AuditLogEntry): Record<string, unknown> {
+    return {
+      id: entry.id,
+      correlation_id: entry.correlationId,
+      session_id: entry.sessionId,
+      trace_id: entry.traceId,
+      category: entry.category,
+      event_type: entry.eventType,
+      severity: entry.severity,
+      timestamp: entry.timestamp,
+      timezone: entry.timezone,
+      user_id: entry.userId,
+      user_name: entry.userName,
+      user_role: entry.userRole,
+      service_account: entry.serviceAccount,
+      source_ip_address: entry.sourceIpAddress,
+      source_port: entry.sourcePort,
+      user_agent: entry.userAgent,
+      device_fingerprint: entry.deviceFingerprint,
+      geolocation: entry.geolocation,
+      target_resource: entry.targetResource,
+      target_id: entry.targetId,
+      resource_type: entry.resourceType,
+      action: entry.action,
+      description: entry.description,
+      outcome: entry.outcome,
+      data_classification: entry.dataClassification,
+      contains_pii: entry.containsPII,
+      contains_phi: entry.containsPHI,
+      request_data: entry.requestData,
+      response_data: entry.responseData,
+      authentication_method: entry.authenticationMethod,
+      authorization_level: entry.authorizationLevel,
+      privileges_used: entry.privilegesUsed,
+      data_integrity_hash: entry.dataIntegrityHash,
+      validation_results: entry.validationResults,
+      error_code: entry.errorCode,
+      error_message: entry.errorMessage,
+      stack_trace: entry.stackTrace,
+      compliance_frameworks: entry.complianceFrameworks,
+      retention_period: entry.retentionPeriod,
+      legal_hold: entry.legalHold,
+      metadata: entry.metadata,
+      tags: entry.tags,
+      audit_hash: entry.auditHash,
+      previous_entry_hash: entry.previousEntryHash,
+      system_version: entry.systemVersion,
+      application_name: entry.applicationName,
+      environment: entry.environment
+    };
+  }
+
+  private calculateAuditHash(entry: SOC2AuditLogEntry): string {
+    const hashInput = [
+      entry.id,
+      entry.timestamp.toISOString(),
+      entry.category,
+      entry.eventType,
+      entry.action,
+      entry.targetResource,
+      entry.outcome,
+      entry.previousEntryHash || ''
+    ].join('|');
+
+    return createHash('sha256').update(hashInput).digest('hex');
+  }
+
+  private calculateRetentionPeriod(category?: SOC2Category, severity?: string): number {
+    const basePeriod = this.config.retentionDays;
+
+    if (severity === 'critical') return basePeriod * 3; // 3x for critical events
+    if (category === SOC2Category.SECURITY) return basePeriod * 2; // 2x for security events
+
+    return basePeriod;
+  }
+
+  private generateTags(eventData: Partial<SOC2AuditLogEntry>): string[] {
+    const tags: string[] = [];
+
+    if (eventData.category) tags.push(`category:${eventData.category}`);
+    if (eventData.eventType) tags.push(`event_type:${eventData.eventType}`);
+    if (eventData.severity) tags.push(`severity:${eventData.severity}`);
+    if (eventData.outcome) tags.push(`outcome:${eventData.outcome}`);
+
+    if (eventData.containsPII) tags.push('contains_pii');
+    if (eventData.containsPHI) tags.push('contains_phi');
+
+    return tags;
+  }
+
+  private async checkAlertConditions(entry: SOC2AuditLogEntry): Promise<void> {
+    // Check for conditions that require immediate alerts
+    if (entry.severity === 'critical') {
+      await this.sendCriticalAlert(entry);
+    }
+
+    // Check for suspicious patterns
+    if (entry.eventType === SOC2EventType.AccessDenied) {
+      await this.checkForBruteForceAttack(entry);
+    }
+  }
+
+  private analyzeComplianceByCategory(auditLogs: SOC2AuditLogEntry[]): Record<string, { status: string; score: number }> {
+    // TODO: Implement compliance analysis using auditLogs
+    this.logger.debug('Analyzing compliance by category', { logCount: auditLogs.length });
+    return {
+      security: { status: 'compliant', score: 95 },
+      availability: { status: 'compliant', score: 98 },
+      processingIntegrity: { status: 'compliant', score: 92 },
+      confidentiality: { status: 'compliant', score: 96 },
+      privacy: { status: 'compliant', score: 94 }
+    };
+  }
+
+  private calculateOverallCompliance(categoryCompliance: Record<string, { status: string; score: number }>): { status: string; score: number; findings: string; riskFactors: string[] } {
+    // TODO: Implement overall compliance calculation using categoryCompliance
+    this.logger.debug('Calculating overall compliance', { categoryCompliance });
+    return {
+      status: 'compliant',
+      score: 95,
+      findings: 'low',
+      riskFactors: []
+    };
+  }
+
+  private generateAuditStatistics(auditLogs: SOC2AuditLogEntry[]): Record<string, unknown> {
+    // Generate audit statistics
+    return {
+      totalEvents: auditLogs.length,
+      eventsByCategory: {},
+      eventsBySeverity: {},
+      eventsByOutcome: {}
+    };
+  }
+
+  private performRiskAssessment(auditLogs: SOC2AuditLogEntry[]): Record<string, unknown> {
+    // TODO: Implement risk assessment using auditLogs
+    this.logger.debug('Performing risk assessment', { logCount: auditLogs.length });
+    return {
+      overallRisk: 'low',
+      riskFactors: [],
+      recommendations: []
+    };
+  }
+
+  private generateRecommendations(categoryCompliance: Record<string, { status: string; score: number }>, riskAssessment: Record<string, unknown>): unknown[] {
+    // TODO: Generate recommendations using categoryCompliance and riskAssessment
+    this.logger.debug('Generating recommendations', { categoryCompliance, riskAssessment });
+    return [];
+  }
+
+  private verifyAuditChain(logs: SOC2AuditLogEntry[]): SOC2AuditLogEntry[] {
+    // Verify the integrity of the audit chain
+    return logs.map(log => ({
+      ...log,
+      chainVerified: 'valid' as const
+    }));
+  }
+
+  private sendCriticalAlert(entry: SOC2AuditLogEntry): void {
+    // Send critical alert through appropriate channels
+    this.logger.warn('Critical audit event detected', { entryId: entry.id, eventType: entry.eventType });
+  }
+
+  private checkForBruteForceAttack(entry: SOC2AuditLogEntry): void {
+    // Check for potential brute force attacks
+    const accessDeniedCount = this.eventCounts.get(SOC2EventType.AccessDenied) || 0;
+    const threshold = this.config.alertThresholds?.bruteForce || 10;
+    if (accessDeniedCount > threshold) {
+      this.logger.warn('Potential brute force attack detected', { entryId: entry.id });
+    }
+  }
+
+  private async handleApprovalEvent(event: { type: string; resource: string }): Promise<void> {
+    // Handle approval events
+    await this.logEvent({
+      category: SOC2Category.Security,
+      eventType: event.type === 'granted' ? SOC2EventType.AccessGranted : SOC2EventType.AccessDenied,
+      severity: 'medium',
+      action: 'approval',
+      description: `Approval ${event.type} for ${event.resource}`,
+      outcome: event.type === 'granted' ? 'success' : 'failure',
+      targetResource: event.resource,
+      dataClassification: 'confidential',
+      containsPII: false,
+      containsPHI: false,
+      complianceFrameworks: ['SOC2', 'SAFE'],
+      metadata: event
+    });
+  }
+
+  private async handleAIDecisionEvent(event: { resource: string }): Promise<void> {
+    // Handle AI decision events
+    await this.logEvent({
+      category: SOC2Category.ProcessingIntegrity,
+      eventType: SOC2EventType.AiDecisionMade,
+      severity: 'medium',
+      action: 'ai_decision',
+      description: `AI decision made for ${event.resource}`,
+      outcome: 'success',
+      targetResource: event.resource,
+      dataClassification: 'confidential',
+      containsPII: false,
+      containsPHI: false,
+      complianceFrameworks: ['SOC2', 'SAFE'],
+      metadata: event
+    });
+  }
+}
+
+export default SOC2AuditService;

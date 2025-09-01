@@ -210,7 +210,7 @@ export abstract class BaseClaudeZenError extends Error {
           ? 'warn'
           : 'info';
 
-    logger[logLevel]('[' + (this.category) + '] ' + this.message, {
+    logger[logLevel](`[${  this.category  }] ${  this.message}`, {
       severity: this.severity,
       context: this.context,
       recoverable: this.recoverable,

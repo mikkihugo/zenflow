@@ -19,7 +19,7 @@ requestId: string;
 messages: {
 role: string;
 content: string;
-'}[];
+}[];
 model: string;
 
 }

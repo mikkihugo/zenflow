@@ -8,12 +8,8 @@ id: string;
 /**
 * Technical debt categories
 */
-export type TechnicalDebtCategory = code_quality | security_vulnerability | performance_issue | maintainability | scalability | architecture_drift | deprecated_technology | test_debt | documentation_gap | 'infrastructure_debt';
-export type BusinessImpactLevel = {
-readonly level: {
-readonly level: 'accelerating|';
-'};
-'};
+export type TechnicalDebtCategory = 'code_quality' | 'security_vulnerability' | 'performance_issue' | 'maintainability' | 'scalability' | 'architecture_drift' | 'deprecated_technology' | 'test_debt' | 'documentation_gap' | 'infrastructure_debt';
+export type BusinessImpactLevel = 'critical' | 'high' | 'medium' | 'low';
 /**
 * Technical Debt Management Service - Technical debt tracking and remediation
 *

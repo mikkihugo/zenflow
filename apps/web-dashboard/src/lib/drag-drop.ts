@@ -393,7 +393,7 @@ export class DragDropManager {
 
       const newWidget: Widget = {
         ...availableWidget,
-        id: (widgetId) + '-' + Date.now(),
+        id: `${widgetId  }-${  Date.now()}`,
         position,
         enabled: true,
       };

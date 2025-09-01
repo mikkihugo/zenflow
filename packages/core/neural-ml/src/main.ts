@@ -123,7 +123,7 @@ function recordMetric(name: string, value?:number, tags?:unknown): Promise<void>
     timestamp: Date.now(),
     tags: tags || {},
   });
-  logger.debug('Metric recorded: ' + name + ' = ' + value, tags);
+  logger.debug(`Metric recorded: ${  name  } = ${  value}`, tags);
   return Promise.resolve();
 }
 
@@ -132,7 +132,7 @@ function recordHistogram(
   value: number,
   tags?: Record<string, unknown>,
 ): Promise<void> {
-  const histogramKey = name + '_histogram';
+  const histogramKey = `${name  }_histogram`;
   const existing = metrics.get(histogramKey);
   const newValue = existing ? (existing.value + value) / 2 : value;
 
@@ -141,30 +141,30 @@ function recordHistogram(
     timestamp: Date.now(),
     tags: tags || {},
   });
-  logger.debug('Histogram recorded: ' + name + ' = ' + value, tags);
+  logger.debug(`Histogram recorded: ${  name  } = ${  value}`, tags);
   return Promise.resolve();
 }
 
 function recordGauge(name: string, value: number, tags?: Record<string, unknown>): Promise<void> {
-  metrics.set(name + '_gauge', {
+  metrics.set(`${name  }_gauge`, {
     value,
     timestamp: Date.now(),
     tags: tags || {},
   });
-  logger.debug('Gauge recorded: ' + name + ' = ' + value, tags);
+  logger.debug(`Gauge recorded: ${  name  } = ${  value}`, tags);
   return Promise.resolve();
 }
 function startTrace(name: string): Span {
   const startTime = Date.now();
-  logger.debug('Trace started: ' + name);
+  logger.debug(`Trace started: ${  name}`);
 
   return {
     setAttributes:(attrs: Record<string, unknown>) => {
-      logger.debug('Trace attributes for ' + name + ':', attrs);
+      logger.debug(`Trace attributes for ${  name  }:`, attrs);
     },
     end:() => {
       const duration = Date.now() - startTime;
-      logger.debug('Trace ended: ' + name + ' (' + duration + 'ms)');
+      logger.debug(`Trace ended: ${  name  } (${  duration  }ms)`);
     },
   };
 }
@@ -190,17 +190,17 @@ function getDatabaseAccess() {
       return {
         set: (key: string, value: string) => {
           kvStore.set(key, value);
-          logger.debug('KV Set: ' + namespace + '.' + key + ' = ' + value);
+          logger.debug(`KV Set: ${  namespace  }.${  key  } = ${  value}`);
           return Promise.resolve();
         },
         get: (key: string) => {
           const result = kvStore.get(key) || null;
-          logger.debug('KV Get: ' + namespace + '.' + key + ' = ' + result);
+          logger.debug(`KV Get: ${  namespace  }.${  key  } = ${  result}`);
           return Promise.resolve(result);
         },
         delete: (key: string) => {
           const existed = kvStore.delete(key);
-          logger.debug('KV Delete: ' + namespace + '.' + key + ' (existed: ' + existed + ')');
+          logger.debug(`KV Delete: ${  namespace  }.${  key  } (existed: ${  existed  })`);
           return Promise.resolve();
 },
 };
@@ -234,7 +234,7 @@ class MLMonitor {
       data,
       timestamp: Date.now(),
     });
-    logger.debug('Prediction tracked: ' + name, data);
+    logger.debug(`Prediction tracked: ${  name}`, data);
   }
 
   getPredictionHistory(name: string): unknown[] {
@@ -247,7 +247,7 @@ class PerformanceTracker {
 
   startTimer(name: string): { label: string } {
     this.timers.set(name, Date.now());
-    logger.debug('Timer started: ' + name);
+    logger.debug(`Timer started: ${  name}`);
     return { label: name };
   }
 
@@ -261,7 +261,7 @@ class PerformanceTracker {
     this.durations.get(label)?.push(duration);
 
     this.timers.delete(label);
-    logger.debug('Timer ended: ' + label + ' (' + duration + 'ms)');
+    logger.debug(`Timer ended: ${  label  } (${  duration  }ms)`);
     return { duration };
   }
 
@@ -339,7 +339,7 @@ export function inject(token: unknown) {
     }
     targetWithInjections.__injections.push({ token, key, index });
     logger.debug(
-      'Dependency injection registered: ' + key + ' at index ' + index,
+      `Dependency injection registered: ${  key  } at index ${  index}`,
       token
     );
   };
@@ -736,7 +736,7 @@ export class NeuralMLEngine {
           {
             backend: this.detectedBackend.type,
             features: this.detectedBackend.features,
-            initializationTime: initTime.duration + 'ms',
+            initializationTime: `${initTime.duration  }ms`,
             telemetryEnabled: this.config.enableTelemetry,
           }
         );
@@ -810,13 +810,13 @@ export class NeuralMLEngine {
         await neuralML.createAdaptiveOptimizer(optimizerConfig);
 
       // Log the created Rust optimizer with tracing
-      const trace = startTrace('create-optimizer-' + id);
+      const trace = startTrace(`create-optimizer-${  id}`);
       trace.setAttributes({
         optimizerId: rustOptimizerId,
         backend: this.detectedBackend,
       });
       this.foundationLogger.info(
-        'Created Rust optimizer with ID: ' + rustOptimizerId
+        `Created Rust optimizer with ID: ${  rustOptimizerId}`
       );
       trace.end();
 
@@ -848,7 +848,7 @@ export class NeuralMLEngine {
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
         await kv.set(
-          'neural-ml: metadata: ' + id,
+          `neural-ml: metadata: ${  id}`,
           JSON.stringify({
             id,
             config: optimizerConfig,
@@ -859,7 +859,7 @@ export class NeuralMLEngine {
       }
 
       this.foundationLogger.info(
-        'Created neural-ml adaptive optimizer: ' + id,
+        `Created neural-ml adaptive optimizer: ${  id}`,
         {
           optimizerId: id,
           config: optimizerConfig,
@@ -1010,7 +1010,7 @@ export class NeuralMLEngine {
           {
             operation: 'matrix_multiply',
             backend: rustResult.backendUsed,
-            dimensions: (m) + 'x' + (n) + 'x' + k,
+            dimensions: `${m  }x${  n  }x${  k}`,
           }
         );
 
@@ -1032,7 +1032,7 @@ export class NeuralMLEngine {
         this.mlMonitor.trackPrediction('neural-ml-matrix-multiply', {
           confidence: Math.min(rustResult.efficiency * 1.2, 1.0), // Confidence based on efficiency
           latency: processingTime / 1000, // Convert to milliseconds
-          input: { dimensions: (m) + 'x' + (n) + 'x' + k, operationSize },
+          input: { dimensions: `${m  }x${  n  }x${  k}`, operationSize },
           prediction: {
             backend: rustResult.backendUsed,
             efficiency: rustResult.efficiency,
@@ -1077,11 +1077,11 @@ export class NeuralMLEngine {
           'Matrix multiply completed with comprehensive telemetry',
           {
             optimizerId,
-            dimensions: (m) + 'x' + (n) + 'x' + k,
+            dimensions: `${m  }x${  n  }x${  k}`,
             backend: rustResult.backendUsed,
-            processingTime: processingTime + 'μs',
-            throughput: result.metrics.throughput.toFixed(0) + ' ops/sec',
-            efficiency: (rustResult.efficiency * 100).toFixed(1) + '%',
+            processingTime: `${processingTime  }μs`,
+            throughput: `${result.metrics.throughput.toFixed(0)  } ops/sec`,
+            efficiency: `${(rustResult.efficiency * 100).toFixed(1)  }%`,
           }
         );
 
@@ -1262,8 +1262,8 @@ export class NeuralMLEngine {
             optimizerId,
             vectorLength: a.length,
             simdLevel: rustResult.simdLevel,
-            processingTime: processingTime + 'μs',
-            throughput: ((a.length / processingTime) * 1000000).toFixed(0) + ' elements/sec',
+            processingTime: `${processingTime  }μs`,
+            throughput: `${((a.length / processingTime) * 1000000).toFixed(0)  } elements/sec`,
           }
         );
 
@@ -1425,10 +1425,10 @@ export class NeuralMLEngine {
       // Remove from database
       if (this.dbAccess) {
         const kv = await this.dbAccess.getKV('neural');
-        await kv.delete('neural-ml: metadata: ' + optimizerId);
+        await kv.delete(`neural-ml: metadata: ${  optimizerId}`);
       }
 
-      this.foundationLogger.info('Removed neural-ml optimizer: ' + optimizerId);
+      this.foundationLogger.info(`Removed neural-ml optimizer: ${  optimizerId}`);
       return true;
     }).then((result) =>
       result.mapErr((error) =>
@@ -1652,10 +1652,10 @@ export class NeuralMLEngine {
         this.foundationLogger.info(
           'Neural-ML Engine shutdown complete with comprehensive telemetry',
           {
-            shutdownTime: shutdownTime + 'ms',
+            shutdownTime: `${shutdownTime  }ms`,
             optimizersRemoved: finalStats.totalOptimizers,
             totalOperationsProcessed: finalStats.totalOperations,
-            finalSuccessRate: (finalStats.performance.successRate * 100).toFixed(1) + '%',
+            finalSuccessRate: `${(finalStats.performance.successRate * 100).toFixed(1)  }%`,
           }
         );
       }).then((result) =>
@@ -1716,7 +1716,7 @@ export class NeuralMLEngine {
     if (stats.performance.successRate < 0.95 && stats.totalOperations > 10) {
       status = status === 'critical' ? 'critical' : 'degraded';
       recommendations.push(
-        'Low success rate (' + (stats.performance.successRate * 100).toFixed(1) + '%) - check for hardware issues'
+        `Low success rate (${  (stats.performance.successRate * 100).toFixed(1)  }%) - check for hardware issues`
       );
     }
 
@@ -1911,7 +1911,7 @@ export class NeuralMLEngine {
       try {
         const kv = await this.dbAccess.getKV('neural');
         await kv.set(
-          'neural-ml: stats: ' + optimizerId,
+          `neural-ml: stats: ${  optimizerId}`,
           JSON.stringify({
             stats: updatedStats,
             lastUpdate: new Date().toISOString(),
@@ -1957,8 +1957,8 @@ export class NeuralMLEngine {
           {
             optimizerId,
             operationsCount: updatedStats.operationsCount,
-            successRate: ((updatedStats.successCount / updatedStats.operationsCount) * 100).toFixed(1) + '%',
-            avgThroughput: updatedStats.avgThroughput.toFixed(0) + ' ops/sec',
+            successRate: `${((updatedStats.successCount / updatedStats.operationsCount) * 100).toFixed(1)  }%`,
+            avgThroughput: `${updatedStats.avgThroughput.toFixed(0)  } ops/sec`,
             backendUsage: updatedStats.backendUsage,
           }
         );
