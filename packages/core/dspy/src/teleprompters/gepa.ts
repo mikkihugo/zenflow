@@ -405,7 +405,7 @@ export class GEPA extends Teleprompter {
 		this.reflection_lm = (x:string) =>
 			// Simplified reflection LM interface - in production would call actual LM
 			 `Reflected analysis:${x}`;
-;
+`
 
 		this.skip_perfect_score = config.skip_perfect_score ?? true;
 		this.add_format_failure_as_feedback =

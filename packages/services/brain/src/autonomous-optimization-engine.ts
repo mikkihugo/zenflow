@@ -497,9 +497,11 @@ method:'dspy|ml|hybrid') ):Promise<OptimizationResult> {
 const startTime = Date.now();
 
 switch (method) {
-case 'dspy': ')' return await this.executeDSPyOptimization(context, startTime);
+case 'dspy':
+          ' return await this.executeDSPyOptimization(context, startTime);
 
-case 'ml': ')' return await this.executeMLOptimization(context, startTime);
+case 'ml':
+          ' return await this.executeMLOptimization(context, startTime);
 
 case 'hybrid`: `)` return await this.executeHybridOptimization(context, startTime);
 

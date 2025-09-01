@@ -609,8 +609,8 @@ export class KuzuAdapter implements DatabaseConnection {
  .join(', ');
 
  const primaryKeyClause = primaryKey
- ? `, PRIMARY KEY (${primaryKey})`;
- : '';
+  ? `, PRIMARY KEY (${primaryKey})`
+  : '';
  const cypher = `CREATE NODE TABLE IF NOT EXISTS ${tableName} (${propertyDefs}${primaryKeyClause})`;
 
  await this.query(cypher, undefined, { correlationId });
@@ -805,8 +805,8 @@ export class KuzuAdapter implements DatabaseConnection {
 
  // Add relationship pattern with optional hop limits
  cypher += options?.maxHops
- ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`;
- : `-[r:${relationshipPattern}]-`;
+  ? `-[r:${relationshipPattern}*1..${options.maxHops}]-`
+  : `-[r:${relationshipPattern}]-`;
 
  // Add end node condition if specified
  if (endNodeCondition) {

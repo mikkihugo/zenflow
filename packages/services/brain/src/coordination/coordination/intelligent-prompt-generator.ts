@@ -510,11 +510,14 @@ Remember: Write code that tells a story - it should be self-documenting and easy
 
     // Phase-specific complexity adjustments
     switch (phase) {
-      case'specification': ')'        score *= 0.8; // Specification is typically less complex
+      case 'specification':
+        score *= 0.8; // Specification is typically less complex
         break;
-      case 'architecture': ')'        score *= 1.5; // Architecture is more complex
+      case 'architecture':
+        score *= 1.5; // Architecture is more complex
         break;
-      case 'completion': ')'        score *= 1.3; // Completion has integration complexity
+      case 'completion':
+        score *= 1.3; // Completion has integration complexity
         break;
 }
 
@@ -531,10 +534,10 @@ Remember: Write code that tells a story - it should be self-documenting and easy
   ):Promise<IntelligentPrompt | null> {
     try {
       // Import DSPy LLM Bridge for prompt optimization
-      const { DSPyLLMBridge} = await import('../../coordination/dspy-llm-bridge')      );
-      const { NeuralBridge} = await import('../../neural-bridge');')
+      const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge');
+      const { NeuralBridge } = await import('../../neural-bridge');
       // Initialize DSPy bridge if not available
-      const { getLogger} = await import('@claude-zen/foundation');')      const logger = getLogger('NeuralBridge');
+      const { getLogger } = await import('@claude-zen/foundation');      const logger = getLogger('NeuralBridge');
       const neuralBridge = new NeuralBridge(logger);
       const dspyBridge = new DSPyLLMBridge(
         {
@@ -577,7 +580,7 @@ Generate a complete, ready-to-use development prompt.`,
           maxLinesPerFunction:config.maxLinesPerFunction,
           includePerformance:config.includePerformance,
           includeSecurity:config.includeSecurity,
-          fewShotExamples:this.generateFewShotPromptExamples(phase, config),,
+          fewShotExamples: this.generateFewShotPromptExamples(phase, config),
         priority:'high' as const,
 };
 
@@ -587,11 +590,12 @@ Generate a complete, ready-to-use development prompt.`,
       if (result.success && result.result) {
         // Parse DSPy result into structured prompt components
         const dspyResult =
-          typeof result.result === 'string'? JSON.parse(result.result)')            :result.result;
+          typeof result.result === 'string' ? JSON.parse(result.result) : result.result;
 
         return {
           content:
-            dspyResult.content || dspyResult.result || 'DSPy generated prompt content',          codingStandards:
+            dspyResult.content || dspyResult.result || 'DSPy generated prompt content',
+          codingStandards:
             dspyResult.codingStandards || this.generateCodingStandards(config),
           phaseGuidelines:
             dspyResult.phaseGuidelines || this.generatePhaseGuidelines(phase, context, config),
@@ -602,18 +606,22 @@ Generate a complete, ready-to-use development prompt.`,
 }
 
       return null;
-} catch (error) 
-      this.logger.warn('DSPy prompt generation failed:', error);')      return null;
-}
+    } catch (error) {
+      this.logger.warn('DSPy prompt generation failed:', error);
+      return null;
+    }
 
   /**
    * Get phase-specific example guidelines for DSPy training
    */
   private getPhaseExampleGuidelines(phase:DevelopmentPhase): string {
     switch (phase) {
-      case 'specification': ')'        return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`;`;
-      case 'pseudocode': ')'        return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`;`;
-      case 'architecture': ')'        return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;`;
+      case 'specification':
+        return `- Define clear, testable requirements\n- Model domain entities with TypeScript interfaces\n- Specify validation rules and constraints`;
+      case 'pseudocode':
+        return `- Write self-documenting algorithm steps\n- Choose appropriate data structures\n- Plan error handling and edge cases`;
+      case 'architecture':
+        return `- Design modular, loosely coupled components\n- Separate concerns into logical layers\n- Use dependency injection for testability`;
       case 'refinement':{
     ')        return `- Optimize performance critical paths\n- Eliminate code smells and technical debt\n- Achieve 80%+ test coverage`;`;
       case 'completion': ')'        return `- Ensure production-ready error handling\n- Implement proper logging and monitoring\n- Complete security validation`;`;

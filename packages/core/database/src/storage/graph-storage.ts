@@ -633,7 +633,7 @@ export class GraphStorageImpl implements GraphStorage {
  await this.ensureEdgesTable();
 
  const nodeResult = await this.connection.query<{ count: number }>(
- `SELECT COUNT(*) as count FROM graph_nodes`;
+ `SELECT COUNT(*) as count FROM graph_nodes`
  );
  const edgeResult = await this.connection.query<{ count: number }>(
  `SELECT COUNT(*) as count FROM graph_edges`;

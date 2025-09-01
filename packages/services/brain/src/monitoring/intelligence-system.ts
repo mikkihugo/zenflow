@@ -394,11 +394,16 @@ lastUpdated:Date.now(),
 */
 private convertHorizonToDays(horizon:ForecastHorizon): number {
 switch (horizon) {
-case '1h': ')' return 1 / 24;
-case '6h': ')' return 6 / 24;
-case '24h': ')' return 1;
-case '7d': ')' return 7;
-case '30d': ')' return 30;
+case '1h':
+          ' return 1 / 24;
+case '6h':
+          ' return 6 / 24;
+case '24h':
+          ' return 1;
+case '7d':
+          ' return 7;
+case '30d':
+          ' return 30;
 default:
 return 7; // default to 7 days
 }

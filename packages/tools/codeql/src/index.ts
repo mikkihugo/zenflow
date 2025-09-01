@@ -146,31 +146,36 @@ projectType:'web-app' | ' library' | ' api' | ' cli' | ' monorepo')):Partial<imp
 ') const baseConfig = { ...DEFAULT_CODEQL_CONFIG};
 
 switch (projectType) {
-case 'web-app': ')' return {
+case 'web-app':
+          ' return {
 ...baseConfig,
 maxMemory:6144,
 timeout:600000, // 10 minutes for larger web apps
 };
 
-case 'library': ')' return {
+case 'library':
+          ' return {
 ...baseConfig,
 maxMemory:2048,
 timeout:180000, // 3 minutes for smaller libraries
 };
 
-case 'api': ')' return {
+case 'api':
+          ' return {
 ...baseConfig,
 maxMemory:4096,
 timeout:300000, // 5 minutes for APIs
 };
 
-case 'cli': ')' return {
+case 'cli':
+          ' return {
 ...baseConfig,
 maxMemory:1024,
 timeout:120000, // 2 minutes for CLI tools
 };
 
-case 'monorepo': ')' return {
+case 'monorepo':
+          ' return {
 ...baseConfig,
 maxMemory:8192,
 timeout:1200000, // 20 minutes for large monorepos

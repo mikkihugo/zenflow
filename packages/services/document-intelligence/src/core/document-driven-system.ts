@@ -131,17 +131,23 @@ context.activeDocuments.set(docPath, doc);
 
 // Route to appropriate processor based on document type
 switch (docType) {
-case 'vision': ')' await this.processVisionDocument(workspaceId, doc);
+case 'vision':
+          ' await this.processVisionDocument(workspaceId, doc);
 break;
-case 'adr': ')' await this.processADR(workspaceId, doc);
+case 'adr':
+          ' await this.processADR(workspaceId, doc);
 break;
-case 'prd': ')' await this.processPRD(workspaceId, doc);
+case 'prd':
+          ' await this.processPRD(workspaceId, doc);
 break;
-case 'epic': ')' await this.processEpic(workspaceId, doc);
+case 'epic':
+          ' await this.processEpic(workspaceId, doc);
 break;
-case 'feature': ')' await this.processFeature(workspaceId, doc);
+case 'feature':
+          ' await this.processFeature(workspaceId, doc);
 break;
-case 'task': ')' await this.processTask(workspaceId, doc);
+case 'task':
+          ' await this.processTask(workspaceId, doc);
 break;
 }
 

@@ -795,7 +795,7 @@ export class SQLiteAdapter implements DatabaseConnection {
 
  // Get indexes
  const indexResult = await this.query<{ name: string }>(
- `PRAGMA index_list(${tableName})`;
+ `PRAGMA index_list(${tableName})`
  );
  const indexes: IndexSchema[] = [];
 

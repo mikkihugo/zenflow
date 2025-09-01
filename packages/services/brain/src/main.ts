@@ -274,7 +274,8 @@ let confidence:number;
 let expectedPerformance:number;
 
 switch (strategy) {
-case 'DSPy': ')' logger.debug(' Using DSPy optimization for complex task');') optimizedPrompt = await this.optimizeWithDSPy(
+case 'DSPy':
+          ' logger.debug(' Using DSPy optimization for complex task');') optimizedPrompt = await this.optimizeWithDSPy(
 request.basePrompt,
 request.context
 );
@@ -282,7 +283,8 @@ confidence = 0.9;
 expectedPerformance = 0.85;
 break;
 
-case 'DSPyConstrained': ')' logger.debug(' Using constrained DSPy optimization');') optimizedPrompt = await this.optimizeWithConstrainedDSPy(
+case 'DSPyConstrained':
+          ' logger.debug(' Using constrained DSPy optimization');') optimizedPrompt = await this.optimizeWithConstrainedDSPy(
 request.basePrompt,
 request.context
 );
@@ -290,7 +292,8 @@ confidence = 0.8;
 expectedPerformance = 0.75;
 break;
 
-case 'Basic': ')' default:
+case 'Basic':
+          ' default:
 logger.debug(' Using basic optimization for simple task');') optimizedPrompt = await this.optimizeBasic(
 request.basePrompt,
 request.context
@@ -1000,7 +1003,8 @@ operation:string,
 ...args:any[]
 ):Promise<any>
 switch (operation) {
-case 'processNeuralTask': ')' return this.orchestrator.processNeuralTask(args[0]);
+case 'processNeuralTask':
+          ' return this.orchestrator.processNeuralTask(args[0]);
 case 'storeNeuralData': `)` return this.orchestrator.storeNeuralData(args[0]);
 default:
 throw new Error(`Unknown neural operation:${operation}`);`;
@@ -1073,9 +1077,11 @@ taskMetrics:any,
 resourceState:any
 ):string {
 switch (strategy) {
-case 'DSPy': ')` return `Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, CPU:${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ${taskMetrics.token_count} tokens.`;`;
+case 'DSPy':
+          ` return `Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, CPU:${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ${taskMetrics.token_count} tokens.`;`;
 
-case `DSPyConstrained': ')` return `Selected constrained DSPy optimization balancing complexity (${taskMetrics.complexity.toFixed(2)}) with resource constraints (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, Load:${resourceState.system_load.toFixed(2)}). Optimized for ${taskMetrics.priority} priority task.`;`;
+case `DSPyConstrained':
+          ` return `Selected constrained DSPy optimization balancing complexity (${taskMetrics.complexity.toFixed(2)}) with resource constraints (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, Load:${resourceState.system_load.toFixed(2)}). Optimized for ${taskMetrics.priority} priority task.`;`;
 
 case `Basic': `)` default:
 return `Selected basic optimization for simple task (complexity:${taskMetrics.complexity.toFixed(2)}) to minimize resource usage (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, ${taskMetrics.token_count} tokens). Fast execution prioritized.`;`;
