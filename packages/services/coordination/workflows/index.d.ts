@@ -111,14 +111,14 @@
  *
  * // Monitor execution in real-time
  * analytics.onStepCompleted(workflowId, (stepResult) => {
- * logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms`);`
+ * logger.info(`Step ${stepResult.stepId} completed in ${stepResult.duration}ms``
  *});
  *
  * // Get workflow performance insights
  * const insights = await analytics.getWorkflowInsights(workflowId);
- * logger.info(`Total execution time:${insights.totalDuration}ms`);`
- * logger.info(`Bottleneck step:${insights.bottleneckStep}`);`
- * logger.info(`Success rate:${insights.successRate}%`);`
+ * logger.info(`Total execution time:${insights.totalDuration}ms``
+ * logger.info(`Bottleneck step:${insights.bottleneckStep}``
+ * logger.info(`Success rate:${insights.successRate}%``
  * ````
  *
  * @author Claude Code Zen Team
@@ -277,7 +277,7 @@ export declare const WorkflowUtils:{
  input:string;
  transformation:unknown;
 };
- output:string | undefined;
+ output: 'string' | 'undefined';
 };
  /**
  * Create a conditional step.

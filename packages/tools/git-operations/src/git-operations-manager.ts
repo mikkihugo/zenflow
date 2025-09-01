@@ -96,7 +96,7 @@ sandboxRoot: this.config.sandboxRoot,
 }
 
 async createSandbox(projectId: string): Promise<SandboxEnvironment> {
-const sandboxId = `${projectId}-${Date.now()}`;
+const sandboxId = `${projectId}-${Date.now()}`
 const sandboxPath = path.join(this.config.sandboxRoot, sandboxId);
 
 await fs.mkdir(sandboxPath, { recursive: true });
@@ -701,7 +701,7 @@ projectId,
 try {
 // Safety check: don`t delete protected branches
 if (this.branchStrategy.protectedBranches.includes(branchName)) {
-throw new Error(`Cannot delete protected branch: ${branchName}`);
+throw new Error(`Cannot delete protected branch: ${branchName}`
 }
 
 const sandbox = await this.getSandboxForProject(projectId);
@@ -765,7 +765,7 @@ const strategy =
 options.strategy || this.branchStrategy.defaultMergeStrategy;
 
 switch (strategy) {
-case `merge`:
+case 'merge':
 await git.merge([sourceBranch]);
 break;
 case 'squash':
@@ -842,7 +842,7 @@ try {
 const rebaseOptions: string[] = [targetBranch];
 
 if (options.interactive) {
-rebaseOptions.push(`--interactive`);
+rebaseOptions.push(`--interactive`
 }
 if (options.preserveMerges) {
 rebaseOptions.push('--preserve-merges');
@@ -913,7 +913,7 @@ await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 const pushOptions: string[] = [];
 
 if (options.force) {
-pushOptions.push(`--force`);
+pushOptions.push(`--force`
 }
 if (options.setUpstream) {
 pushOptions.push('--set-upstream');
@@ -967,7 +967,7 @@ try {
 const pullOptions: string[] = [];
 
 if (options.rebase) {
-pullOptions.push(`--rebase`);
+pullOptions.push(`--rebase`
 }
 
 const remote = options.remote || 'origin';
@@ -1565,7 +1565,7 @@ logger.debug(` Verified repository integrity: ${projectId}`, {
 managerId: this.managerId,
 });
 } catch (error) {
-const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}`;
+const issue = `Repository integrity issue in ${projectId}:${error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE}`
 issues.push(issue);
 
 logger.warn(`Repository integrity issue: ${projectId}`, {
@@ -1592,7 +1592,7 @@ issues,
 */
 private async getCurrentBranch(git: SimpleGit): Promise<string> {
 const status = await git.status();
-return status.current || `main`;
+return status.current || `main`
 }
 
 /**
@@ -1881,9 +1881,9 @@ projectId,
 
 try {
 const sandbox = await this.getSandboxForProject(projectId);
-const branch = options.branch || `worktree/${worktreeName}`;
-const baseBranch = options.baseBranch || `main`;
-const worktreePath = options.path || `../worktrees/${worktreeName}`;
+const branch = options.branch || `worktree/${worktreeName}`
+const baseBranch = options.baseBranch || `main`
+const worktreePath = options.path || `../worktrees/${worktreeName}`
 
 await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 // Create new branch from base branch
@@ -1944,7 +1944,7 @@ projectId,
 
 try {
 const sandbox = await this.getSandboxForProject(projectId);
-const worktreePath = `../worktrees/${worktreeName}`;
+const worktreePath = `../worktrees/${worktreeName}`
 
 await this.sandbox.executeSafeGitOp(sandbox, async (git: SimpleGit) => {
 const removeFlags = options.force ? [`--force`] : [];
@@ -1954,7 +1954,7 @@ await git.raw(['worktree', `remove`, worktreePath, ...removeFlags]);
 
 // Delete branch if requested
 if (options.deleteBranch) {
-const branch = `worktree/${worktreeName}`;
+const branch = `worktree/${worktreeName}`
 const deleteFlag = options.force ? `-D` : '-d';
 await git.raw(['branch', deleteFlag, branch]);
 }

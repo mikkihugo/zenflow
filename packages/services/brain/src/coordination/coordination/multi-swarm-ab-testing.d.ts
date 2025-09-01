@@ -165,7 +165,7 @@ collectDetailedMetrics?:boolean;
 * Get recommendations based on test history
 */
 getRecommendations(taskType:string): {
-recommendedStrategy:ABTestStrategy | null;
+recommendedStrategy: 'ABTestStrategy' | 'null';
 confidence:number;
 reasoning:string[];
 };

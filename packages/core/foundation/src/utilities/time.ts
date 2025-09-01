@@ -295,7 +295,7 @@ export function highResTime(): bigint {
  * const { result, durationMs} = await measureTime(async () => {
  *   return await expensiveOperation();
  *});
- * logger.info(`Operation took ${durationMs}ms`);
+ * logger.info(`Operation took ${durationMs}ms`
  * '
  */
 export async function measureTime<T>(

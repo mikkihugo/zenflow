@@ -38,7 +38,7 @@ export class GraphStorageImpl implements GraphStorage {
 
  await this.ensureNodesTable();
 
- const sql = `INSERT INTO graph_nodes (id, labels, properties, created_at) VALUES (?, ?, ?, datetime('now'))`;
+ const sql = `INSERT INTO graph_nodes (id, labels, properties, created_at) VALUES (?, ?, ?, datetime('now'))`
  await this.connection.execute(sql, [
  nodeId,
  JSON.stringify(node.labels || []),
@@ -68,7 +68,7 @@ export class GraphStorageImpl implements GraphStorage {
 
  await this.ensureNodesTable();
 
- const sql = `SELECT id, labels, properties FROM graph_nodes WHERE id = ?`;
+ const sql = `SELECT id, labels, properties FROM graph_nodes WHERE id = ?`
  const result = await this.connection.query<{
  id: string;
  labels: string;
@@ -132,7 +132,7 @@ export class GraphStorageImpl implements GraphStorage {
  }
 
  params.push(id);
- const sql = `UPDATE graph_nodes SET ${setParts.join(', ')} WHERE id = ?`;
+ const sql = `UPDATE graph_nodes SET ${setParts.join(', ')} WHERE id = ?`
  await this.connection.execute(sql, params);
 
  logger.debug('Graph node updated', { id });
@@ -196,7 +196,7 @@ export class GraphStorageImpl implements GraphStorage {
 
  await this.ensureEdgesTable();
 
- const sql = `INSERT INTO graph_edges (id, from_id, to_id, type, properties, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'))`;
+ const sql = `INSERT INTO graph_edges (id, from_id, to_id, type, properties, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'))`
  await this.connection.execute(sql, [
  edgeId,
  edge.fromId,
@@ -228,7 +228,7 @@ export class GraphStorageImpl implements GraphStorage {
 
  await this.ensureEdgesTable();
 
- const sql = `SELECT id, from_id, to_id, type, properties FROM graph_edges WHERE id = ?`;
+ const sql = `SELECT id, from_id, to_id, type, properties FROM graph_edges WHERE id = ?`
  const result = await this.connection.query<{
  id: string;
  from_id: string;
@@ -306,7 +306,7 @@ export class GraphStorageImpl implements GraphStorage {
  }
 
  params.push(id);
- const sql = `UPDATE graph_edges SET ${setParts.join(', ')} WHERE id = ?`;
+ const sql = `UPDATE graph_edges SET ${setParts.join(', ')} WHERE id = ?`
  await this.connection.execute(sql, params);
 
  logger.debug('Graph edge updated', { id });
@@ -384,7 +384,7 @@ export class GraphStorageImpl implements GraphStorage {
  params.push(edgeType);
  }
 
- const sql = `SELECT id, from_id, to_id, type, properties FROM graph_edges ${whereClause}`;
+ const sql = `SELECT id, from_id, to_id, type, properties FROM graph_edges ${whereClause}`
  const result = await this.connection.query<{
  id: string;
  from_id: string;
@@ -521,7 +521,7 @@ export class GraphStorageImpl implements GraphStorage {
  id: string;
  labels: string;
  properties: string;
- }>(`SELECT id, labels, properties FROM graph_nodes LIMIT 10`);
+ }>(`SELECT id, labels, properties FROM graph_nodes LIMIT 10`
 
  const nodes = nodeResult.rows.map((row) => ({
  id: row.id,
@@ -567,7 +567,7 @@ export class GraphStorageImpl implements GraphStorage {
  });
 
  // Create constraint for node uniqueness
- const constraintQuery = `CREATE TABLE IF NOT EXISTS node_labels_${label} (id TEXT PRIMARY KEY)`;
+ const constraintQuery = `CREATE TABLE IF NOT EXISTS node_labels_${label} (id TEXT PRIMARY KEY)`
  await this.connection.execute(constraintQuery);
 
  logger.info('Node label created', {
@@ -600,7 +600,7 @@ export class GraphStorageImpl implements GraphStorage {
  });
 
  // Create table for edge type
- const edgeTableQuery = `CREATE TABLE IF NOT EXISTS edge_types_${type} (from_id TEXT, to_id TEXT, properties TEXT)`;
+ const edgeTableQuery = `CREATE TABLE IF NOT EXISTS edge_types_${type} (from_id TEXT, to_id TEXT, properties TEXT)`
  await this.connection.execute(edgeTableQuery);
 
  logger.info('Edge type created', {
@@ -682,15 +682,15 @@ export class GraphStorageImpl implements GraphStorage {
 
  // Private helper methods
  private generateCorrelationId(): string {
- return `graph-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+ return `graph-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
  }
 
  private generateNodeId(): string {
- return `node-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+ return `node-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
  }
 
  private generateEdgeId(): string {
- return `edge-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+ return `edge-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
  }
 
  private async ensureNodesTable(): Promise<void> {
@@ -700,7 +700,7 @@ export class GraphStorageImpl implements GraphStorage {
  labels TEXT NOT NULL,
  properties TEXT NOT NULL,
  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
- )`;
+ )`
 
  await this.connection.execute(sql);
  } catch (error) {
@@ -728,7 +728,7 @@ export class GraphStorageImpl implements GraphStorage {
  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
  FOREIGN KEY (from_id) REFERENCES graph_nodes(id),
  FOREIGN KEY (to_id) REFERENCES graph_nodes(id)
- )`;
+ )`
 
  await this.connection.execute(sql);
  } catch (error) {

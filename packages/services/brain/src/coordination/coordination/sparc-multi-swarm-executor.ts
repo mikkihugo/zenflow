@@ -175,11 +175,11 @@ timeoutMs?:number;
 cleanupWorktrees?:boolean;
 } = {}
 ):Promise<SPARCMultiSwarmResult> {
-const testId = `sparc-multiswarm-${generateNanoId()}`;
+const testId = `sparc-multiswarm-${generateNanoId()}`
 const startTime = new Date();
 
-logger.info(` Starting SPARC Multi-Swarm A/B test: ${testId}`);
-logger.info(` Task: ${taskDescription}`);
+logger.info(` Starting SPARC Multi-Swarm A/B test: ${testId}`
+logger.info(` Task: ${taskDescription}`
 logger.info(
 ` Testing ${sparcStrategies.length} SPARC strategies with git tree isolation`
 );
@@ -239,17 +239,17 @@ totalWorktreesCreated,
 },
 };
 
-logger.info(` SPARC Multi-Swarm test completed: ${testId}`);
+logger.info(` SPARC Multi-Swarm test completed: ${testId}`
 logger.info(
 ` Winner: ${comparison.winner.name} (${comparison.confidence.toFixed(
 2
 )} confidence)`
 );
-logger.info(` Git trees created: ${totalWorktreesCreated}`);
+logger.info(` Git trees created: ${totalWorktreesCreated}`
 
 return multiSwarmResult;
 } catch (error) {
-logger.error(` SPARC Multi-Swarm test failed:$testId`, error);`
+logger.error(` SPARC Multi-Swarm test failed:${testId}`, error);`
 throw error;
 }
 }
@@ -345,7 +345,7 @@ case 'comprehensive': ')' return [
 ];
 
 default:{
-throw new Error(`Unknown SPARC strategy scenario:${scenario}`);`
+throw new Error(`Unknown SPARC strategy scenario:${scenario}``
 }
 }
 
@@ -513,8 +513,8 @@ await new Promise((resolve) => setTimeout(resolve, executionDelay));
 // Generate git tree info
 const worktreePath = `.claude-zen/tmp/sparc-worktrees/sparc-${
 strategy.id
-}-${generateNanoId(6)}`;
-const branchName = `sparc-${strategy.id}-${Date.now()}`;
+}-${generateNanoId(6)}`
+const branchName = `sparc-${strategy.id}-${Date.now()}`
 const commitsCreated =
 strategy.sparcConfig.methodology === `full-sparc` ? 5 : 3;
 return {
@@ -704,7 +704,7 @@ comparison: SPARCMultiSwarmResult['comparison']
 ): SPARCMultiSwarmResult['recommendations'] {
 const winner = results.find((r) => r.strategy.id === comparison.winner.id);
 if (!winner) {
-throw new Error(`Winner strategy not found in results`);
+throw new Error(`Winner strategy not found in results`
 }
 
 const reasoning:string[] = [];

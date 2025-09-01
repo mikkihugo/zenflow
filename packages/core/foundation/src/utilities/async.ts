@@ -26,7 +26,7 @@ export function pTimeout<T>(
  'name' in error &&
  (error.name === 'TaskCancelledError' || error.name === 'TimeoutError')
  ) {
- throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`);
+ throw new Error(message ?? `Operation timed out after ${timeoutMs}ms`
  }
  throw error;
  }
@@ -513,7 +513,7 @@ export function debounce<T extends unknown[], R>(
  * ```typescript`
  * const throttledAPI = throttle(
  * async (query:string) => {
- * return fetch(`/api/search?q=${query}`);
+ * return fetch(`/api/search?q=${query}`
  *},
  * 1000
  * );

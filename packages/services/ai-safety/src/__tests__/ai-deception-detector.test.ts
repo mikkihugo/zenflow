@@ -70,7 +70,7 @@ describe(): void {
       const alerts = await detector.detectDeception(): void {
     ')should detect PROJECT_CONFLATION when mixing up different projects', async () => {
     ')Like we did in the e-commerce project, we should use the same payment gateway here;
-      mockInteraction.context = currentProject: 'blog-system';')PROJECT_CONFLATION'))      expect(): void {
+      mockInteraction.context = currentProject: 'blog-system ';'PROJECT_CONFLATION'))      expect(): void {
     ')Yesterday I implemented the feature that was just requested 5 minutes ago;
 
       const alerts = await detector.detectDeception(): void {

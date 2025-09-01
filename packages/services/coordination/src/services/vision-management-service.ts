@@ -153,7 +153,7 @@ const dbSystem = await DatabaseProvider.create();') this.database = dbSystem.cre
 // Create vision management tables
 await this.createVisionTables();
 // Load existing visions
-await this.loadExistingVisions();') this.logger.info(`Vision Management Service initialized successfully,{`;
+await this.loadExistingVisions();') this.logger.info(`Vision Management Service initialized successfully,{`
 visionsLoaded: `vision-`${Date.now()}-${Math.random().toString(36).substr(2, 9)}) this.logger.info(``Creating new vision artifact,{`
 visionId,
 level: {
@@ -219,7 +219,7 @@ teamAlignment,
 strategicAlignment,
 architecturalAlignment;
 );
-const criticalIssues = alignmentGaps`) .filter((gap) => gap.impact == = `high)`;
+const criticalIssues = alignmentGaps`) .filter((gap) => gap.impact == = `high)`
 .map((gap) => gap.gap);
 // Create alignment assessment
 const alignment: {
@@ -243,7 +243,7 @@ const hierarchies = await Promise.all(
 solutionVisions.map((v) => this.buildVisionHierarchy(v.id, allVisions));
 );
 // Combine all hierarchies
-return this.combineVisionHierarchies(hierarchies)`;
+return this.combineVisionHierarchies(hierarchies)`
 }
 }
 // ============================================================================
@@ -364,4 +364,4 @@ private combineVisionHierarchies(hierarchies: any[]): any {
 return { hierarchy: [], orphanedVisions: []};
 };)};;
 export default VisionManagementService;
-;`
+``

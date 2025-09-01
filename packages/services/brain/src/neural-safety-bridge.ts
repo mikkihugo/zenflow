@@ -383,7 +383,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  ? data.toolCalls.length
  :0;
  if (toolCallsLength === 0 && data.response.includes('analyzed')) {
- ') patterns.push('VERIFICATION_MISMATCH`);`)}
+ ') patterns.push('VERIFICATION_MISMATCH``)}
 
  return patterns;
 }
@@ -455,7 +455,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  if (neuralPatterns.length > 0) {
  deceptionIndicators += 1;
  combinedConfidence += 0.1 * Math.min(neuralPatterns.length / 2, 1);
- reasoning.push(`Neural patterns:${neuralPatterns.join(', ')}`);
+ reasoning.push(`Neural patterns:${neuralPatterns.join(', ')}`
  }
 
  const isDeceptive =
@@ -594,7 +594,7 @@ export class NeuralSafetyBridge extends TypedEventBase {
  actualDeception,
  featureComplexity:featureComplexity.toFixed(3),
  learningPerformance,
- featureAnalysis:`$features.lengthbehavioral indicators processed`,`
+ featureAnalysis:`${features}.lengthbehavioral indicators processed`,
  improvementDirection:actualDeception
  ? 'enhance_detection') : 'maintain_accuracy',);
 

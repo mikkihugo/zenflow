@@ -343,7 +343,7 @@ export class AvatarOptimizer extends Teleprompter {
 			const feedback =
 				'Based on the analysis of positive vs negative examples, ' +
 				}the tool usage needs improvement. Focus on better action selection and ' +
-				`more effective instruction following for the problematic cases.`;
+				`more effective instruction following for the problematic cases.`
 
 			return { feedback };
 		};
@@ -358,7 +358,7 @@ export class AvatarOptimizer extends Teleprompter {
 			// Simulate instruction improvement
 			const new_instruction =
 				(inputs.previous_instruction) + `\n\nBased on feedback: ${inputs.feedback}\n` +
-				`Please pay special attention to tool selection and action planning to improve performance on challenging cases.`;
+				`Please pay special attention to tool selection and action planning to improve performance on challenging cases.`
 
 			return { new_instruction };
 		};

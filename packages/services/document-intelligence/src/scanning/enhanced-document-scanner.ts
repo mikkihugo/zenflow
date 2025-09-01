@@ -195,7 +195,7 @@ patternCounts: this.calculatePatternCounts(analysisResults),
 scanDuration: Date.now() - startTime,
 };
 
-logger.info(` Enhanced scan completed: ` + (analysisResults.length) + ` issues found in ${scannedFiles} files`);
+logger.info(` Enhanced scan completed: ` + (analysisResults.length) + ` issues found in ${scannedFiles} files`
 
 return results;
 } finally {
@@ -245,8 +245,8 @@ return scannedFiles;
 */
 private async analyzeFile(filePath: string, results: CodeAnalysisResult[]): Promise<void> {
 try {
-const content = await readFile(filePath, `utf8`);
-const lines = content.split(`\n`);
+const content = await readFile(filePath, `utf8`
+const lines = content.split(`\n`
 
 // Analyze each enabled pattern
 for (const pattern of this.config.enabledPatterns) {
@@ -282,7 +282,7 @@ filePath: string,
 lineNumber: number,
 codeSnippet: string
 ): CodeAnalysisResult | null {
-const matchText = match[1] || ``;
+const matchText = match[1] || ``
 
 return {
 id: this.generateId(),

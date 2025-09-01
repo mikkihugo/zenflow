@@ -11,7 +11,7 @@
  * import { getLogger, Result, ok, err} from '@claude-zen/foundation';
  *
  * const logger = getLogger('browser-component');
- * logger.info('Browser component initialized`);
+ * logger.info('Browser component initialized`
  * `
  */
 

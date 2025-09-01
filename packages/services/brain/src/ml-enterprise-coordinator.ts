@@ -124,10 +124,10 @@ export class MLEnterpriseCoordinator {
 	private logger = getLogger('ml-enterprise-coordinator');
 
 	// ML-specific dedicated databases - foundation redirects to database package
-	private mlModelStore:VectorStore | null = null; // For ML model embeddings/vectors
-	private mlTrainingDataStore:KeyValueStore | null = null; // For training data and checkpoints
-	private mlWorkflowGraph:GraphStore | null = null; // For ML pipeline relationships
-	private mlMetricsStore:KeyValueStore | null = null; // For performance metrics
+	private mlModelStore: 'VectorStore' | 'null' = null; // For ML model embeddings/vectors
+	private mlTrainingDataStore: 'KeyValueStore' | 'null' = null; // For training data and checkpoints
+	private mlWorkflowGraph: 'GraphStore' | 'null' = null; // For ML pipeline relationships
+	private mlMetricsStore: 'KeyValueStore' | 'null' = null; // For performance metrics
 
 	// Event-driven architecture with EventBus
 	private eventBus = new EventBus();
@@ -159,12 +159,12 @@ export class MLEnterpriseCoordinator {
 	 * Initialize ML-specific dedicated databases - foundation redirects to database package
 	 */
 	private async initializeMLDatabases():Promise<void> {
-		this.logger.debug(` Initializing ML-specific dedicated databases...`);
+		this.logger.debug(` Initializing ML-specific dedicated databases...`
 
 		try {
 			// Check database capability through foundation
 			const capability = getDatabaseCapability();
-			this.logger.info(` Database capability level:${capability}`);
+			this.logger.info(` Database capability level:${capability}`
 
 			// Initialize ML model storage (dedicated vector store for ML model embeddings)
 			const mlModelStoreResult = await createVectorStore({
@@ -325,7 +325,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const trainingId = `train_${modelId}_${Date.now()}`;
+		const trainingId = `train_${modelId}_${Date.now()}`
 		
 		// Create workflow state event
 		const workflowEvent:MLWorkflowStateEvent = {
@@ -391,7 +391,7 @@ export class MLEnterpriseCoordinator {
 			this.emit("ml_training_started", trainingEvent);
 }
 		
-		this.logger.info(`Started training job ${trainingId} in SPARC phase:${sparc_phase}`);
+		this.logger.info(`Started training job ${trainingId} in SPARC phase:${sparc_phase}`
 		
 		return trainingId;
 }
@@ -414,7 +414,7 @@ export class MLEnterpriseCoordinator {
 		// PERFORMANCE:Direct Rust neural-ml integration (if available)
 		try {
 			// Import Rust neural-ml for high performance
-			const rustNeuralML = await import(`@claude-zen/neural-ml`);
+			const rustNeuralML = await import(`@claude-zen/neural-ml`
 			
 			// Create model configuration
 			const modelConfig = {
@@ -549,7 +549,7 @@ export class MLEnterpriseCoordinator {
 
 		const existingJob = this.activeTrainingJobs.get(trainingId);
 		if (!existingJob) {
-			this.logger.warn(`Training job ${trainingId} not found`);
+			this.logger.warn(`Training job ${trainingId} not found`
 			return;
 }
 
@@ -586,7 +586,7 @@ export class MLEnterpriseCoordinator {
 		// Update workflow state
 		const workflow = this.workflowStates.get(trainingId);
 		if (workflow) {
-			workflow.state = `completed`;
+			workflow.state = `completed`
 			workflow.timestamp = Date.now();
 			if (this.config.enable_event_emission) {
 				this.emit("ml_workflow_state_changed", workflow);
@@ -604,7 +604,7 @@ export class MLEnterpriseCoordinator {
 		// Clean up
 		this.activeTrainingJobs.delete(trainingId);
 		
-		this.logger.info(`Training job ${trainingId} completed successfully`);
+		this.logger.info(`Training job ${trainingId} completed successfully`
 }
 
 	// =============================================================================
@@ -623,7 +623,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const inferenceId = `infer_${modelId}_${Date.now()}`;
+		const inferenceId = `infer_${modelId}_${Date.now()}`
 		const startTime = Date.now();
 		
 		try {
@@ -649,7 +649,7 @@ export class MLEnterpriseCoordinator {
 				this.emit("ml_inference_completed", inferenceEvent);
 }
 			
-			this.logger.debug(`Inference ${inferenceId} completed in ${processingTime}ms`);
+			this.logger.debug(`Inference ${inferenceId} completed in ${processingTime}ms`
 			
 			return inferenceEvent;
 } catch (error) {
@@ -673,7 +673,7 @@ export class MLEnterpriseCoordinator {
 			throw new Error("ML Enterprise Coordinator not initialized");
 }
 
-		const validationId = `val_${modelId}_${Date.now()}`;
+		const validationId = `val_${modelId}_${Date.now()}`
 		
 		try {
 			// Run validation based on type
@@ -862,7 +862,7 @@ export class MLEnterpriseCoordinator {
 
 		// SPARC quality gates
 		switch (progress.sparc_phase) {
-			case `specification`:
+			case 'specification':
 				return progress.accuracy > 0.5; // Basic functionality
 			case 'pseudocode':
 				return progress.accuracy > 0.7 && progress.loss < 1.0;
@@ -870,7 +870,7 @@ export class MLEnterpriseCoordinator {
 				return progress.accuracy > 0.8 && progress.loss < 0.5;
 			case 'refinement':
 				return progress.accuracy > 0.9 && progress.loss < 0.3;
-			case `completion`:
+			case 'completion':
 				return progress.accuracy > 0.95 && progress.loss < 0.1 &&
 					 progress.validationAccuracy && progress.validationAccuracy > 0.93;
 			default:
@@ -914,7 +914,7 @@ export class MLEnterpriseCoordinator {
 
 		// SPARC-specific thresholds
 		switch (sparc_phase) {
-			case `specification`:return { accuracy: 0.5, precision:0.5, recall:0.5};
+			case 'specification':return { accuracy: 0.5, precision:0.5, recall:0.5};
 			case 'pseudocode':return { accuracy: 0.7, precision:0.65, recall:0.7};
 			case 'architecture':return { accuracy: 0.8, precision:0.75, recall:0.8};
 			case 'refinement':return { accuracy: 0.9, precision:0.85, recall:0.9};

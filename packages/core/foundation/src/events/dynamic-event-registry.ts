@@ -225,7 +225,8 @@ export class DynamicEventRegistry extends EventBus {
     const eventName = args[0] as string;
     const payload = args[1];
 
-    if (eventName.startsWith('registry: ')) {
+    if (eventName.startsWith('registry:
+          ) {
       return; // Don't track registry events to avoid recursion
     }
 
@@ -458,7 +459,8 @@ export class DynamicEventRegistry extends EventBus {
   }
 
   private inferEventSource(eventName: string): string {
-    const prefix = eventName.split(': ')[0];
+    const prefix = eventName.split(':
+          [0];
     return prefix || 'unknown';
   }
 

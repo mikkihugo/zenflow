@@ -466,7 +466,7 @@ this.initialized = true;
 this.logger.info('GRPOML initialized successfully with RL components');
 } catch (error) {
 this.logger.error(`Failed to initialize GRPOML:`, error);
-throw new Error(`GRPOML initialization failed:${error}`);
+throw new Error(`GRPOML initialization failed:${error}`
 }
 }
 
@@ -579,7 +579,7 @@ this.logger.info(
 return result;
 } catch (error) {
 this.logger.error(`GRPOML compilation failed:`, error);
-throw new Error(`GRPOML compilation error:${error}`);
+throw new Error(`GRPOML compilation error:${error}`
 }
 }
 
@@ -835,7 +835,7 @@ if (this.episodeRewards.length < this.config.minSampleSize) {
 return tests;
 }
 
-this.logger.info(`Validating policy improvement with statistical tests...`);
+this.logger.info(`Validating policy improvement with statistical tests...`
 
 // Split episodes into early and late phases
 const midPoint = Math.floor(this.episodeRewards.length / 2);

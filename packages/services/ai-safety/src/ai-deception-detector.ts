@@ -383,7 +383,7 @@ export class AIDeceptionDetector {
     const baseIntervention = interventions[type] || 'General deception intervention';
     
     if (severity === 'CRITICAL') {
-      return `CRITICAL: ${baseIntervention}. Escalate to human oversight.`;
+      return `CRITICAL: ${baseIntervention}. Escalate to human oversight.`
     }
     
     return baseIntervention;

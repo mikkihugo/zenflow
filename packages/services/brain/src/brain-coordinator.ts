@@ -300,7 +300,7 @@ this.logger.info(
 // Initialize EventBus first
 const eventBusResult = await super.initialize();
 if (eventBusResult.isErr()) {
-throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`);
+throw new Error(`EventBus initialization failed:${eventBusResult.error?.message}`
 }
 
 // Initialize monitoring components through operations facade

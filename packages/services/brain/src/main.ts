@@ -89,7 +89,8 @@ message:string,
 context?:Record<string, unknown>,
 code?:string
 ) {
-super(message, { ...context, domain: 'brain'}, code);') this.name = 'BrainError';
+super(message, { ...context, domain: 'brain'}, code);
+ this.name = 'BrainError';
 }
 }
 
@@ -110,9 +111,9 @@ private logger:Logger;
 private errorAggregator = createErrorAggregator();
 
 // Database storage - foundation redirects to database package
-private neuralDataStore:VectorStore | null = null;
-private configStore:KeyValueStore | null = null;
-private knowledgeGraph:GraphStore | null = null;
+private neuralDataStore: 'VectorStore' | 'null' = null;
+private configStore: 'KeyValueStore' | 'null' = null;
+private knowledgeGraph: 'GraphStore' | 'null' = null;
 
 // Event-driven architecture with EventBus
 private eventBus = new EventBus();
@@ -140,9 +141,10 @@ this.logger = getLogger('foundation-brain-coordinator');
 // Performance tracking initialization - lazy loaded via operations facade
 
 // Circuit breaker would be initialized from operations package
-this.circuitBreaker =
-execute:async (fn: () => any) => fn(),
-getState:() => 'closed',;
+this.circuitBreaker = {
+execute: async (fn: () => any) => fn(),
+getState: () => 'closed'
+};
 
 // Initialize neural orchestrator
 this.orchestrator = new NeuralOrchestrator();
@@ -182,7 +184,7 @@ this.logger.info(
 ` Foundation brain coordinator initialized with intelligent neural routing`, {
 sessionId:this.brainConfig.sessionId,
 enableLearning:this.brainConfig.enableLearning,
-duration:`${duration}ms`,`
+duration:`${duration}ms`,
 }
 );
 
@@ -231,9 +233,9 @@ reasoning:string;
 expectedPerformance:number;
 }> {
 if (!this.initialized) {
-throw new Error('Brain coordinator not initialized`);`)}
+throw new Error('Brain coordinator not initialized``)}
 
-logger.debug(`Optimizing prompt for task:${request.task}`);`
+logger.debug(`Optimizing prompt for task:${request.task}``
 
 // Create cache key for this optimization request
 const cacheKey = this.createOptimizationCacheKey(request);
@@ -272,7 +274,8 @@ let confidence:number;
 let expectedPerformance:number;
 
 switch (strategy) {
-case 'DSPy': ')' logger.debug(' Using DSPy optimization for complex task');') optimizedPrompt = await this.optimizeWithDSPy(
+case 'DSPy':
+          ' logger.debug(' Using DSPy optimization for complex task');') optimizedPrompt = await this.optimizeWithDSPy(
 request.basePrompt,
 request.context
 );
@@ -280,7 +283,8 @@ confidence = 0.9;
 expectedPerformance = 0.85;
 break;
 
-case 'DSPyConstrained': ')' logger.debug(' Using constrained DSPy optimization');') optimizedPrompt = await this.optimizeWithConstrainedDSPy(
+case 'DSPyConstrained':
+          ' logger.debug(' Using constrained DSPy optimization');') optimizedPrompt = await this.optimizeWithConstrainedDSPy(
 request.basePrompt,
 request.context
 );
@@ -288,7 +292,8 @@ confidence = 0.8;
 expectedPerformance = 0.75;
 break;
 
-case 'Basic': ')' default:
+case 'Basic':
+          ' default:
 logger.debug(' Using basic optimization for simple task');') optimizedPrompt = await this.optimizeBasic(
 request.basePrompt,
 request.context
@@ -350,9 +355,9 @@ const strategy = complexity > 0.7 ? 'dspy' : ` basic;
 `
 const fallbackResult = {
 strategy,
-prompt:`Optimized (${strategy}):$request.basePrompt`,`
+prompt:`Optimized (${strategy}):${request}.basePrompt`,
 confidence:0.75,
-reasoning:`Heuristic selection based on complexity: $complexity.toFixed(2)`,`
+reasoning:`Heuristic selection based on complexity: ${complexity}.toFixed(2)`,
 expectedPerformance:complexity > 0.7 ? 0.8 : 0.65,
 };
 
@@ -368,7 +373,7 @@ return fallbackResult;
 */
 async processNeuralTask(task:NeuralTask): Promise<NeuralResult> {
 if (!this.initialized) {
-throw new Error(`Brain coordinator not initialized`);`)}
+throw new Error(`Brain coordinator not initialized``)}
 
 logger.debug(
 ` Brain routing neural task:${task.id} (type:${task.type})``
@@ -381,9 +386,9 @@ return await this.orchestrator.processNeuralTask(task);
 */
 async storeNeuralData(data:NeuralData): Promise<void> {
 if (!this.initialized) {
-throw new Error(`Brain coordinator not initialized`);`)}
+throw new Error(`Brain coordinator not initialized``)}
 
-logger.debug(` Brain orchestrating storage for:${data.id}`);`
+logger.debug(` Brain orchestrating storage for:${data.id}``
 return await this.orchestrator.storeNeuralData(data);
 }
 
@@ -408,7 +413,7 @@ async predict(
 input:number[],
 type:'prediction' | ' classification' = ` prediction`) ):Promise<number[]> {
 const task:NeuralTask = {
-id:`simple-$Date.now()`,`
+id:`simple-${Date}.now()`,
 type,
 data:input,
 };
@@ -425,7 +430,7 @@ timeSeries:number[],
 horizon:number = 10
 ):Promise<number[]> {
 const task:NeuralTask = {
-id:`forecast-${Date.now()}`,`
+id:`forecast-${Date.now()}`,
 type: `forecasting`, data:{
 input:timeSeries,
 metadata:{
@@ -447,7 +452,7 @@ return result.result as number[];
 */
 async storeNeuralData(networkId:string, weights:number[], metadata?:Record<string, unknown>):Promise<Result<void, BrainError>> {
 if (!this.neuralDataStore) {
-this.logger.debug(`Brain neural data store not available, neural data stored in memory only`);
+this.logger.debug(`Brain neural data store not available, neural data stored in memory only`
 return ok(); // Graceful fallback
 }
 
@@ -506,7 +511,7 @@ similarity:result.score,
 metadata:result.metadata
 }));
 
-this.logger.debug(` Found ${patterns.length} similar brain neural patterns`);
+this.logger.debug(` Found ${patterns.length} similar brain neural patterns`
 
 // Event-driven notification - pattern search completed
 await this.eventBus.emit(`BrainPatternsSearched`, {
@@ -533,13 +538,13 @@ return err(brainError);
 */
 async saveBrainConfig(config:Record<string, unknown>):Promise<Result<void, BrainError>> {
 if (!this.configStore) {
-this.logger.debug(`Brain config store not available, configuration saved in memory only`);
+this.logger.debug(`Brain config store not available, configuration saved in memory only`
 return ok();
 }
 
 try {
 // Save in brain-specific key-value store with brain context
-const brainConfigKey = `brain:config:${this.brainConfig.sessionId || 'default'}`;
+const brainConfigKey = `brain:config:${this.brainConfig.sessionId || 'default'}`
 await this.configStore.set(brainConfigKey, {
 ...config,
 brainInstance: `foundation-brain-coordinator`, savedAt:Date.now(),
@@ -564,13 +569,13 @@ return err(brainError);
 */
 async loadBrainConfig():Promise<Result<Record<string, unknown>, BrainError>> {
 if (!this.configStore) {
-this.logger.debug(`Brain config store not available, returning default configuration`);
+this.logger.debug(`Brain config store not available, returning default configuration`
 return ok({});
 }
 
 try {
 // Load from brain-specific key-value store
-const brainConfigKey = `brain:config:${this.brainConfig.sessionId || 'default'}`;
+const brainConfigKey = `brain:config:${this.brainConfig.sessionId || 'default'}`
 const storedConfig = await this.configStore.get<Record<string, unknown>>(brainConfigKey);
 
 if (storedConfig) {
@@ -600,7 +605,7 @@ return err(brainError);
 */
 async addKnowledgeRelationship(from:string, to:string, relationship:string, metadata?:Record<string, unknown>):Promise<Result<void, BrainError>> {
 if (!this.knowledgeGraph) {
-this.logger.debug(`Brain knowledge graph not available, relationship stored in memory only`);
+this.logger.debug(`Brain knowledge graph not available, relationship stored in memory only`
 return ok();
 }
 
@@ -613,7 +618,7 @@ timestamp:Date.now(),
 ...metadata
 });
 
-this.logger.debug(` Added brain knowledge relationship:${from} --[${relationship}]--> ${to}`);
+this.logger.debug(` Added brain knowledge relationship:${from} --[${relationship}]--> ${to}`
 return ok();
 
 } catch (error) {
@@ -678,7 +683,7 @@ flowDistribution:0.72,
 
 // Create neural task for SAFe coordination
 const neuralTask:NeuralTask = {
-id:`safe6-coordination-${Date.now()}`,`
+id:`safe6-coordination-${Date.now()}`,
 type:this.mapToValidNeuralTaskType(request.neuralTaskType),
 data:{
 input:[1, 2, 3], // Required neural input
@@ -798,12 +803,12 @@ this.logger.debug(
 * Initialize brain-specific database storage - foundation redirects to database package
 */
 private async initializeDatabaseStorage():Promise<void> {
-this.logger.debug(` Initializing brain-specific database storage...`);
+this.logger.debug(` Initializing brain-specific database storage...`
 
 try {
 // Check database capability through foundation
 const capability = getDatabaseCapability();
-this.logger.info(` Database capability level:${capability}`);
+this.logger.info(` Database capability level:${capability}`
 
 // Initialize brain neural data storage (dedicated vector store for brain ML weights)
 const brainVectorStoreResult = await createVectorStore({
@@ -940,14 +945,14 @@ const baseRecommendation =
 (neuralResult as any).recommendation||`Proceed with current approach;
 
 if (!flowMetrics) {
-return `Neural Analysis:${baseRecommendation}`;`
+return `Neural Analysis:${baseRecommendation}``
 }
 
 const flowContext = [];
 
 // Analyze flow efficiency
 if (flowMetrics.flowEfficiency < 0.7) {
-flowContext.push(`improve flow efficiency through reduced wait times`);')}
+flowContext.push(`improve flow efficiency through reduced wait times`')}
 
 // Analyze flow velocity
 if (flowMetrics.flowVelocity < 0.8) {
@@ -958,10 +963,10 @@ if (flowMetrics.predictability < 0.75) {
 flowContext.push('enhance flow predictability through better planning');')}
 
 if (flowContext.length > 0) {
-return `$baseRecommendation. SAFe 6.0 Flow Optimization:$flowContext.join(', ').`;`
+return `${baseRecommendation}. SAFe 6.0 Flow Optimization:${flowContext}.join(', ').``
 }
 
-return `$baseRecommendation. Flow metrics are optimal - continue current SAFe 6.0 practices.`;`
+return `${baseRecommendation}. Flow metrics are optimal - continue current SAFe 6.0 practices.``
 }
 
 /**
@@ -998,10 +1003,11 @@ operation:string,
 ...args:any[]
 ):Promise<any>
 switch (operation) {
-case 'processNeuralTask': ')' return this.orchestrator.processNeuralTask(args[0]);
+case 'processNeuralTask':
+          ' return this.orchestrator.processNeuralTask(args[0]);
 case 'storeNeuralData': `)` return this.orchestrator.storeNeuralData(args[0]);
 default:
-throw new Error(`Unknown neural operation:${operation}`);`
+throw new Error(`Unknown neural operation:${operation}``
 }
 }
 
@@ -1071,12 +1077,14 @@ taskMetrics:any,
 resourceState:any
 ):string {
 switch (strategy) {
-case 'DSPy': ')` return `Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, CPU:${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ${taskMetrics.token_count} tokens.`;`
+case 'DSPy':
+          ` return `Selected DSPy optimization due to high complexity (${taskMetrics.complexity.toFixed(2)}) and sufficient resources (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, CPU:${resourceState.cpu_usage.toFixed(2)}s). Task requires advanced reasoning with ${taskMetrics.token_count} tokens.``
 
-case `DSPyConstrained': ')` return `Selected constrained DSPy optimization balancing complexity (${taskMetrics.complexity.toFixed(2)}) with resource constraints (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, Load:${resourceState.system_load.toFixed(2)}). Optimized for ${taskMetrics.priority} priority task.`;`
+case `DSPyConstrained':
+          ` return `Selected constrained DSPy optimization balancing complexity (${taskMetrics.complexity.toFixed(2)}) with resource constraints (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, Load:${resourceState.system_load.toFixed(2)}). Optimized for ${taskMetrics.priority} priority task.``
 
 case `Basic': `)` default:
-return `Selected basic optimization for simple task (complexity:${taskMetrics.complexity.toFixed(2)}) to minimize resource usage (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, ${taskMetrics.token_count} tokens). Fast execution prioritized.`;`
+return `Selected basic optimization for simple task (complexity:${taskMetrics.complexity.toFixed(2)}) to minimize resource usage (Memory:${(resourceState.memory_usage * 100).toFixed(1)}%, ${taskMetrics.token_count} tokens). Fast execution prioritized.``
 }
 
 /**
@@ -1166,12 +1174,12 @@ const examples = [{ inputs:{ prompt}, outputs:{ optimized: prompt}}];
 // Use DSPy`s few-shot optimization`) const __optimized = await dspyOptimization.fewShot(module, examples, 3);
 
 // Return optimized prompt with DSPy enhancement
-return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context||{})}`;`
+return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context||{})}``
 } catch (error) {
 this.logger.warn(`DSPy optimization failed, using enhanced prompt`, {
 ') error:String(error),
 });
-return `[Enhanced] $prompt\n\nOptimization Context:$JSON.stringify(context||{})`;`
+return `[Enhanced] ${prompt}\n\nOptimization Context:${JSON}.stringify(context||{})``
 }
 }
 
@@ -1194,7 +1202,7 @@ this.logger.info('DSPy module not available, using basic optimization');') retur
 
 // Type guard for DSPy module
 if (!this.isValidDSPyModule(dspyModule)) {
-throw new Error('Invalid DSPy module structure`);`)}
+throw new Error('Invalid DSPy module structure``)}
 
 const { dspySystem} = dspyModule;
 
@@ -1208,11 +1216,11 @@ const examples = [{ inputs:{ prompt}, outputs:{ optimized: prompt}}];
 const __optimized = await dspyOptimization.bootstrap(module, examples, 2); // Fewer rounds
 
 // Return constrained optimization
-return `[DSPy Constrained] ${prompt}\n\nEfficient Context:${JSON.stringify(context||{})}`;`
+return `[DSPy Constrained] ${prompt}\n\nEfficient Context:${JSON.stringify(context||{})}``
 } catch (error) {
 this.logger.warn(`Constrained DSPy optimization failed, using basic enhancement`, { error:String(error)}
 );
-return `[Efficient] $prompt`;`
+return `[Efficient] ${prompt}``
 }
 }
 
@@ -1227,7 +1235,7 @@ context?:Record<string, unknown>
 const hasContext = context && Object.keys(context).length > 0;
 
 if (hasContext) {
-return `${prompt}\n\nAdditional context:${JSON.stringify(context, null, 2)}`;`
+return `${prompt}\n\nAdditional context:${JSON.stringify(context, null, 2)}``
 }
 
 return prompt;
@@ -1276,7 +1284,7 @@ qualityRequirement?:number;
 }):string {
 // Create a hash-like key based on request properties
 const contextStr = request.context ? JSON.stringify(request.context) : ';
-' const key = `$request.task-$request.basePrompt.substring(0, 50)-$request.priority || 'medium'-$request.qualityRequirement || 0.8-$contextStr`;`
+' const key = `${request}.task-${request}.basePrompt.substring(0, 50)-${request}.priority || 'medium'-${request}.qualityRequirement || 0.8-${contextStr}``
 return Buffer.from(key).toString('base64').substring(0, 32);')}
 
 /**
@@ -1351,9 +1359,9 @@ async train(
 data:Array<{ input: number[]; output: number[]}>
 ):Promise<void> {
 if (!this.initialized) {
-throw new Error('Neural bridge not initialized`);`)}
+throw new Error('Neural bridge not initialized``)}
 
-logger.debug(`Training with ${data.length} samples`);`
+logger.debug(`Training with ${data.length} samples``
 // Training simulation
 }
 }
@@ -1367,7 +1375,7 @@ private initialized = false;
 async initialize():Promise<void> {
 if (this.initialized) return;
 
-logger.info(` Initializing behavioral intelligence...`);') this.initialized = true;
+logger.info(` Initializing behavioral intelligence...`') this.initialized = true;
 logger.info(' Behavioral intelligence initialized');')}
 
 async analyzePattern(data:unknown[]): Promise<{
@@ -1375,9 +1383,9 @@ pattern:string;
 confidence:number;
 }> {
 if (!this.initialized) {
-throw new Error('Behavioral intelligence not initialized`);`)}
+throw new Error('Behavioral intelligence not initialized``)}
 
-logger.debug(`Analyzing pattern for ${data.length} data points`);`
+logger.debug(`Analyzing pattern for ${data.length} data points``
 
 return {
 pattern:data.length > 10 ? `complex` : ' simple', confidence:0.7,
@@ -1410,9 +1418,9 @@ timestamp:number;
 context:Record<string, unknown>;
 }):Promise<void> {
 if (!this.initialized) {
-throw new Error('Behavioral intelligence not initialized`);`)}
+throw new Error('Behavioral intelligence not initialized``)}
 
-logger.debug(`Learning from execution:${data.agentId} - ${data.taskType}`);`
+logger.debug(`Learning from execution:${data.agentId} - ${data.taskType}``
 // Store learning data for behavioral analysis
 }
 
@@ -1425,9 +1433,9 @@ success:boolean;
 metadata?:Record<string, unknown>;
 }):Promise<void> {
 if (!this.initialized) {
-throw new Error(`Behavioral intelligence not initialized`);')}
+throw new Error(`Behavioral intelligence not initialized`')}
 
-logger.debug(`Recording behavior:$data.agentId- $data.behaviorType`);`
+logger.debug(`Recording behavior:${data}.agentId- ${data}.behaviorType``
 // Store behavior data for pattern analysis
 }
 
@@ -1449,7 +1457,7 @@ export function createNeuralNetwork(
 config?:Record<string, unknown>
 ):Promise<{ id: string; config: Record<string, unknown>}> {
 logger.debug('Creating neural network`, config);`) return Promise.resolve({
-id:`network-${Date.now()}`,`
+id:`network-${Date.now()}`,
 config:config||{},
 });
 }
@@ -1469,7 +1477,7 @@ export function predictWithNetwork(
 network:{ id: string},
 input:number[]
 ):Promise<number[]> {
-logger.debug(`Predicting with network $network.id`, {`
+logger.debug(`Predicting with network ${network}.id`, {`
 inputSize:input.length,
 });
 return Promise.resolve(input.map((x) => Math.tanh(x)));
@@ -1481,7 +1489,7 @@ available:boolean;
 type?:string;
 memory?:number;
 }> {
-logger.debug(`Detecting GPU capabilities...`);') return {
+logger.debug(`Detecting GPU capabilities...`') return {
 available:false,
 type: 'none', memory:0,
 };
@@ -1520,7 +1528,7 @@ simulationDuration: '1d', learningEnabled:true,
 logger.debug('Running behavioral intelligence demo with config:`, defaults);`)
 // Simulate behavioral intelligence capabilities
 const agents = Array.from({ length:defaults.agentCount}, (_, i) => ({
-id:`agent-${i}`,`
+id:`agent-${i}`,
 type:defaults.taskTypes[i % defaults.taskTypes.length],
 performance:0.7 + Math.random() * 0.3,
 learningProgress:defaults.learningEnabled ? Math.random() * 0.5 : 0,

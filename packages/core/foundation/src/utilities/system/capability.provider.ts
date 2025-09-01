@@ -211,11 +211,11 @@ export async function displaySystemStatus(): Promise<void> {
  );
 
  if (facade.missingPackages.length > 0) {
- logger.info(` Missing:${facade.missingPackages.join(', ')}`);
+ logger.info(` Missing:${facade.missingPackages.join(', ')}`
  }
 
  if (facade.registeredServices.length > 0) {
- logger.info(` Services:${facade.registeredServices.join(', ')}`);
+ logger.info(` Services:${facade.registeredServices.join(', ')}`
  }
  }
 
@@ -229,12 +229,12 @@ export async function displaySystemStatus(): Promise<void> {
  : suggestion.priority === 'medium'
  ? ''
  : '';
- logger.info(` ${priorityEmoji} pnpm add ${suggestion.package}`);
- logger.info(` └─ ${suggestion.reason}`);
+ logger.info(` ${priorityEmoji} pnpm add ${suggestion.package}`
+ logger.info(` └─ ${suggestion.reason}`
  }
  }
 
- logger.info(`\n Last Updated:${dashboard.timestamp}`);
+ logger.info(`\n Last Updated:${dashboard.timestamp}`
  logger.info('='.repeat(50));
 }
 

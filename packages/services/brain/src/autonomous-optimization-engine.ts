@@ -121,13 +121,13 @@ async autonomousOptimize(
 context:OptimizationContext
 ): Promise<OptimizationResult> {
 if (!this.initialized) {
-throw new Error(`Autonomous Optimization Engine not initialized`);
+throw new Error(`Autonomous Optimization Engine not initialized`
 }
 
 const __startTime = Date.now();
 
 try {
-logger.info(` Autonomous optimization for:"${context.task}"`);`
+logger.info(` Autonomous optimization for:"${context.task}"``
 
 // 1. Estimate task complexity automatically
 let complexityEstimate:ComplexityEstimate|null = null;
@@ -432,7 +432,7 @@ return complexityEstimate.suggestedMethod;
 logger.debug(
 ` Insufficient data for autonomous decision, using hybrid approach`
 );
-return `hybrid`;
+return `hybrid`
 }
 
 // Async ML-enhanced method scoring
@@ -497,14 +497,16 @@ method:'dspy|ml|hybrid') ):Promise<OptimizationResult> {
 const startTime = Date.now();
 
 switch (method) {
-case 'dspy': ')' return await this.executeDSPyOptimization(context, startTime);
+case 'dspy':
+          ' return await this.executeDSPyOptimization(context, startTime);
 
-case 'ml': ')' return await this.executeMLOptimization(context, startTime);
+case 'ml':
+          ' return await this.executeMLOptimization(context, startTime);
 
 case 'hybrid`: `)` return await this.executeHybridOptimization(context, startTime);
 
 default:{
-throw new Error(`Unknown optimization method:${method}`);`
+throw new Error(`Unknown optimization method:${method}``
 }
 }
 
@@ -513,11 +515,11 @@ context:OptimizationContext,
 startTime:number
 ):Promise<OptimizationResult> {
 if (!this.dspyBridge) {
-throw new Error(`DSPy bridge not available`);`)}
+throw new Error(`DSPy bridge not available``)}
 
 const coordinationTask:CoordinationTask = {
-id:`auto-dspy-$Date.now()`,`
-type: `generation`, input:`Optimize this prompt: $context.basePrompt`,`
+id:`auto-dspy-${Date}.now()`,
+type: `generation`, input:`Optimize this prompt: ${context}.basePrompt`,
 ...context.context,
 originalPrompt:context.basePrompt,
 taskType:context.task,
@@ -538,8 +540,8 @@ confidence:result.confidence,
 method: `dspy`, processingTime:Date.now() - startTime,
 improvementScore:result.confidence * 1.2, // DSPy typically provides good improvements
 reasoning:[
-`DSPy optimization with ${coordinationTask.priority} priority`,`
-`Confidence:${result.confidence.toFixed(2)}`,`
+`DSPy optimization with ${coordinationTask.priority} priority`,
+`Confidence:${result.confidence.toFixed(2)}`,
 ],
 };
 }
@@ -550,7 +552,7 @@ context:OptimizationContext,
 startTime:number
 ):Promise<OptimizationResult> {
 if (!this.smartOptimizer) {
-throw new Error(`Smart ML optimizer not available`);`)}
+throw new Error(`Smart ML optimizer not available``)}
 
 const result = await this.smartOptimizer.optimizePrompt(
 context.basePrompt,
@@ -568,7 +570,7 @@ confidence:result.confidence,
 method: `ml`, processingTime:Date.now() - startTime,
 improvementScore:result.improvementFactor,
 reasoning:[
-`ML optimization applied ${result.appliedPatterns.length} patterns`,`
+`ML optimization applied ${result.appliedPatterns.length} patterns`,
 ...result.reasoning,
 ],
 };
@@ -883,7 +885,7 @@ optimizationFocus:['performance', 'accuracy`, `efficiency`]`)};
 private async validateLearningRate(rate:number): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 50));
 if (rate < 0.01 || rate > 0.5) {
-logger.warn(`Learning rate ${rate} is outside optimal range [0.01, 0.5]`);`
+logger.warn(`Learning rate ${rate} is outside optimal range [0.01, 0.5]``
 }
 }
 
@@ -892,7 +894,7 @@ logger.warn(`Learning rate ${rate} is outside optimal range [0.01, 0.5]`);`
 */
 private async calibrateAdaptationThreshold(threshold:number): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 75));
-logger.debug(`Adaptation threshold calibrated to ${threshold}`);`
+logger.debug(`Adaptation threshold calibrated to ${threshold}``
 }
 
 /**
@@ -900,7 +902,7 @@ logger.debug(`Adaptation threshold calibrated to ${threshold}`);`
 */
 private async setupOptimizationStrategy(profile:any): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 125));
-logger.debug(`Optimization strategy configured:$profile.profileType`);`
+logger.debug(`Optimization strategy configured:${profile}.profileType``
 }
 
 /**
@@ -941,7 +943,7 @@ hybridBoost:0.08
 */
 private async applySelectionInsights(strategy:any): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 50));
-logger.debug(`Applied selection insights from ${strategy.strategy}`);`
+logger.debug(`Applied selection insights from ${strategy.strategy}``
 }
 
 /**
@@ -1097,7 +1099,7 @@ insights:['hybrid_outperforms_others', 'dspy_good_for_complex_tasks']')};
 */
 private async applyStrategyAdaptations(patterns:any, _recommendations:any): Promise<void> {
 await new Promise(resolve => setTimeout(resolve, 100));
-logger.debug(`Applied strategy adaptations based on $patterns.dominantPattern`);`
+logger.debug(`Applied strategy adaptations based on ${patterns}.dominantPattern``
 }
 }
 

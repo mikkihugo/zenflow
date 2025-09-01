@@ -77,7 +77,7 @@ timestamp:number;
 };
 'knowledge:item': {
 requestId:string;
-item:KnowledgeItem | null;
+item: 'KnowledgeItem' | 'null';
 timestamp:number;
 };
 'knowledge:query-results': {
@@ -215,7 +215,7 @@ maxItemSize?:number;
 
 export class EventDrivenKnowledgeService {
 private eventListeners:Map<string, Function[]> = new Map();
-private logger = createLogger(`EventDrivenKnowledgeService`);
+private logger = createLogger(`EventDrivenKnowledgeService`
 private config:KnowledgeConfig;
 private initialized = false;
 private knowledgeItems = new Map<string, KnowledgeItem>();
@@ -456,7 +456,7 @@ this.initialized = true;
 
 private generateId():string {
 // Simple ID generation without UUID imports
-return `knowledge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+return `knowledge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
 
 private async storeItemInternal(itemInput:KnowledgeItemInput): Promise<string> {
@@ -650,7 +650,7 @@ const averageConfidence = activeItems.length > 0 ? totalConfidence / activeItems
 // Simple storage health calculation
 const storageHealth:KnowledgeStats['storageHealth'] =
 activeItems.length > 10000 ? 'degraded' :
-activeItems.length > 0 ? 'healthy' : ` unhealthy`;
+activeItems.length > 0 ? 'healthy' : ` unhealthy`
 
 return {
 totalItems:activeItems.length,
@@ -692,7 +692,7 @@ let relevanceScore = 0;
 const content = item.content.toLowerCase();
 for (const term of searchTerms) {
 if (content.includes(term)) {
-matches.push(`content:${term}`);
+matches.push(`content:${term}`
 relevanceScore += 1;
 }
 }
@@ -703,7 +703,7 @@ for (const tag of item.tags) {
 const tagLower = tag.toLowerCase();
 for (const term of searchTerms) {
 if (tagLower.includes(term)) {
-matches.push(`tag:${tag}`);
+matches.push(`tag:${tag}`
 relevanceScore += 0.5;
 }
 }
@@ -760,7 +760,7 @@ this.searchIndex.delete(word);
 
 async initialize():Promise<void> {
 this.setupBrainEventHandlers();
-this.logger.info(`Event-driven knowledge service ready to receive brain events`);
+this.logger.info(`Event-driven knowledge service ready to receive brain events`
 }
 
 async shutdown():Promise<void> {

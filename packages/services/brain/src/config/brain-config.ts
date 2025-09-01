@@ -84,7 +84,7 @@ getNeuralConfigAvailable:Boolean(getNeuralConfig),
 const debugMode = isDebugMode();
 // Use NODE_ENV or fallback to debug mode inference
 const __environment =
-process.env.NODE_ENV || (debugMode ? 'development' : `production`);
+process.env.NODE_ENV || (debugMode ? 'development' : `production`
 logger.info(`Loading brain config for environment: ${__environment}`, {
 debugMode,
 });

@@ -50,7 +50,7 @@ export const asyncUtils = {
       if (await condition()) return true;
       await asyncUtils.waitFor(50);
     }
-    throw new Error(`Condition not met within ${timeout}ms`);
+    throw new Error(`Condition not met within ${timeout}ms`
   },
 
   timeout: (ms: number) =>

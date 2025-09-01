@@ -575,7 +575,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
  result.actionsExecuted.push(actionResult);
 
  if (!actionResult.success && !action.retryable) {
- throw new Error(`Recovery action failed:${actionResult.error}`);
+ throw new Error(`Recovery action failed:${actionResult.error}`
  }
  }
 
@@ -701,7 +701,7 @@ export class ErrorRecoverySystem extends EventEmitter<ServiceEvents> {
  };
 
  default:
- throw new Error(`Unknown recovery action type:${action.type}`);
+ throw new Error(`Unknown recovery action type:${action.type}`
  }
  }
 

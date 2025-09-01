@@ -21,7 +21,7 @@ import type {
  */
 export class ConfigManager {
   private logger:Logger;
-  private config:CollectorConfig | null = null;
+  private config: 'CollectorConfig' | 'null' = null;
 
   constructor() {
     this.logger = getLogger('ConfigManager');

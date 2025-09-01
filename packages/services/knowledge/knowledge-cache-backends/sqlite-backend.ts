@@ -216,7 +216,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  access_count INTEGER DEFAULT 0,
  size_bytes INTEGER
  )
- `;
+ `
 
  const createFTSTable = `
  CREATE VIRTUAL TABLE IF NOT EXISTS knowledge_fts USING fts5(
@@ -224,7 +224,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  content='knowledge_entries',
  content_rowid='rowid'
  )
- `;
+ `
 
  const createMetricsTable = `
  CREATE TABLE IF NOT EXISTS storage_metrics (
@@ -232,7 +232,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  metric_value TEXT,
  updated_at INTEGER DEFAULT (unixepoch())
  )
- `;
+ `
 
  // In a real implementation, these would execute
  this.logger.debug('Creating database tables', {

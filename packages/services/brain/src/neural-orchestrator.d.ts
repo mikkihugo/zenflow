@@ -206,7 +206,7 @@ type: '...[proper format needed];
 characteristics: {
 size: number;
 dimensions?: number;
-accessFrequency: 'rare|occasional|frequent|realtime;;
+accessFrequency: 'rare' | 'occasional' | 'frequent' | 'realtime';;
 };
 }
 /**

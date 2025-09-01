@@ -238,7 +238,7 @@
 * const complexityAnalysis = await complexityEstimator.estimateComplexity({
 * task: 'microservices-architecture-design', * prompt:`Design a fault-tolerant microservices architecture for a global`
 * e-commerce platform handling 100M+ users with real-time inventory,
-* payment processing, recommendation engine, and fraud detection`,`
+* payment processing, recommendation engine, and fraud detection`,
 * context:{
 * domain: 'enterprise-architecture', * scale: 'global', * constraints:{
 * availability: '99.99%', * latency: '<100ms', * security: 'enterprise-grade', * compliance:['pci-dss', 'gdpr', 'sox']') *},

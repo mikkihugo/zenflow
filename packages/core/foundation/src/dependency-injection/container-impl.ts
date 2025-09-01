@@ -155,7 +155,7 @@ export class ContainerImpl implements Container {
  async resolveAsync<T>(token: string): Promise<T> {
  const metadata = this.serviceMetadata.get(token);
  if (!metadata) {
- throw new Error(`Service '${token}' is not registered`);
+ throw new Error(`Service '${token}' is not registered`
  }
 
  if (metadata.singleton && this.singletonCache.has(token)) {
@@ -181,7 +181,7 @@ export class ContainerImpl implements Container {
  resolve<T>(token: string): T {
  const metadata = this.serviceMetadata.get(token);
  if (!metadata) {
- throw new Error(`Service '${token}' is not registered`);
+ throw new Error(`Service '${token}' is not registered`
  }
 
  if (metadata.singleton && this.singletonCache.has(token)) {
@@ -190,7 +190,7 @@ export class ContainerImpl implements Container {
 
  const serviceDefinition = this.services.get(token);
  if (!serviceDefinition) {
- throw new Error(`Service definition for '${token}' not found`);
+ throw new Error(`Service definition for '${token}' not found`
  }
 
  const instance = this.createServiceInstance<T>(
@@ -228,7 +228,7 @@ export class ContainerImpl implements Container {
  );
  }
  } catch (error) {
- const message = `Failed to resolve service '${token}': ${error instanceof Error ? error.message : String(error)}`;
+ const message = `Failed to resolve service '${token}': ${error instanceof Error ? error.message : String(error)}`
  this.emit('serviceResolutionFailed', { token, error: message });
  throw new Error(message);
  }
@@ -420,7 +420,7 @@ export class ContainerImpl implements Container {
  const logger = require('../core/logging').getLogger(
  'foundation:service-discovery'
  );
- logger.debug(`Service ${serviceToken} has tag:${tag}`);
+ logger.debug(`Service ${serviceToken} has tag:${tag}`
  matchingServices.push(metadata);
  }
  }

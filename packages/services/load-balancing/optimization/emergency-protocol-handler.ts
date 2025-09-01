@@ -72,7 +72,7 @@ export class EmergencyProtocolHandler
     // 2. Reject or queue them
     // 3. Reduce processing capacity temporarily
 
-    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`);
+    this.recordEmergency('load_shed', 'high', `shed_${percentage}%`
   }
 
   public async activateFailover(): Promise<void> {
@@ -90,7 +90,7 @@ export class EmergencyProtocolHandler
     // 2. Queue excess requests
     // 3. Apply backpressure
 
-    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`);
+    this.recordEmergency('throttle', 'medium', `throttle_${rate}rps`
   }
 
   public async sendAlert(

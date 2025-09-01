@@ -1,7 +1,7 @@
 export type { Task, ApprovalGate, WorkflowState, '; } from './core/types';
-export { ';, TaskService, ApprovalService, WorkflowEngine } from './core/services';
+export { '; TaskService, ApprovalService, WorkflowEngine } from './core/services';
 export type { PIPlanningEvent, ARTManagement, FlowMetrics, '; } from './safe/domain';
-export { ';, PIPlanningCoordination, ARTSyncCoordination, SystemDemoCoordination } from './safe/events';
+export { '; PIPlanningCoordination, ARTSyncCoordination, SystemDemoCoordination } from './safe/events';
 export { CompleteSafeDashboard } from './ui/safe-dashboard';
 export { getTaskMaster, createTaskMaster } from './main';
 export { TaskIntelligence, PIPredictionService, LLMApprovalService, '; } from './intelligence';

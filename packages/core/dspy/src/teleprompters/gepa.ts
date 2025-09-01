@@ -285,9 +285,9 @@ export class DspyGEPAResult {
 *});
 *
 * // Access detailed optimization results
-* logger.info(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`);
-* logger.info(`Total evaluations:${customResult.total_metric_calls}`);
-* logger.info(`Discovery budget:${customResult.discovery_eval_counts}`);
+* logger.info(`Best score:${customResult.val_aggregate_scores[customResult.best_idx]}`
+* logger.info(`Total evaluations:${customResult.total_metric_calls}`
+* logger.info(`Discovery budget:${customResult.discovery_eval_counts}`
 *
 * // Get per-instance best candidates
 * const perInstanceBest = customResult.per_val_instance_best_candidates;
@@ -405,7 +405,7 @@ export class GEPA extends Teleprompter {
 		this.reflection_lm = (x:string) =>
 			// Simplified reflection LM interface - in production would call actual LM
 			 `Reflected analysis:${x}`
-;
+`
 
 		this.skip_perfect_score = config.skip_perfect_score ?? true;
 		this.add_format_failure_as_feedback =
@@ -649,7 +649,7 @@ export class GEPA extends Teleprompter {
 
 			if (typeof result === "object" && "feedback" in result) {
 				if (!result.feedback) {
-					result.feedback = `This trajectory got a score of ${result.score}.`;
+					result.feedback = `This trajectory got a score of ${result.score}.`
 }
 				return result;
 } else {
@@ -771,7 +771,7 @@ export class GEPA extends Teleprompter {
 			config.max_metric_calls / config.valset.length,
 		);
 
-		logger.info(` Running for up to ${max_generations} generations`);
+		logger.info(` Running for up to ${max_generations} generations`
 
 		// Evolution loop
 		while (
@@ -779,7 +779,7 @@ export class GEPA extends Teleprompter {
 			generation < max_generations
 		) {
 			generation++;
-			logger.info(`\n Generation ${generation}`);
+			logger.info(`\n Generation ${generation}`
 
 			// Generate new candidates through reflection
 			const new_candidates = await this.generateCandidates(
@@ -833,7 +833,7 @@ export class GEPA extends Teleprompter {
 
 			// Report best score
 			const best_score = Math.max(...val_aggregate_scores);
-			logger.info(` Best score so far:${best_score.toFixed(3)}`);
+			logger.info(` Best score so far:${best_score.toFixed(3)}`
 
 			// Early stopping if perfect score achieved
 			if (best_score >= config.perfect_score && config.skip_perfect_score) {
@@ -969,7 +969,7 @@ export class GEPA extends Teleprompter {
 
 		const elaboration =
 			elaborations[Math.floor(Math.random() * elaborations.length)];
-		return `${instruction} ${elaboration}`;
+		return `${instruction} ${elaboration}`
 }
 
 	/**
@@ -985,7 +985,7 @@ export class GEPA extends Teleprompter {
 
 		const specialization =
 			specializations[Math.floor(Math.random() * specializations.length)];
-		return `${instruction} ${specialization}`;
+		return `${instruction} ${specialization}`
 }
 
 	/**
@@ -1013,7 +1013,7 @@ export class GEPA extends Teleprompter {
 			debugging_additions[
 				Math.floor(Math.random() * debugging_additions.length)
 ];
-		return `${instruction} ${addition}`;
+		return `${instruction} ${addition}`
 }
 
 	/**

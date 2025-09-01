@@ -217,14 +217,15 @@ export class AgentMonitoringBridge {
    */
   private validateAndNormalizeEventName(eventName: string): string | null {
     // Check if already has agent-monitoring prefix (with or without space)
-    if (eventName.startsWith('agent-monitoring:') || eventName.startsWith('agent-monitoring: ')) {
+    if (eventName.startsWith('agent-monitoring:') || eventName.startsWith('agent-monitoring:
+          ) {
       // For EventBus, normalize to use colon without space
       const normalizedName = eventName.replace('agent-monitoring: ', 'agent-monitoring:');
       return isValidEventName(normalizedName) ? normalizedName : null;
     }
 
     // Add agent-monitoring prefix for validation
-    const normalizedName = `agent-monitoring:${eventName}`;
+    const normalizedName = `agent-monitoring:${eventName}`
     return isValidEventName(normalizedName) ? normalizedName : null;
   }
 

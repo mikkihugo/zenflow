@@ -20,7 +20,7 @@ id: 'Initial version,',
 ` performance: {
 id: await this.getPromptTemplate(promptId);
 if (!template) {
-throw new Error(`Prompt template `${promptId} not found``);`)};;
+throw new Error(`Prompt template `${promptId} not found```)};;
 // Check permissions
 await this.checkPermission(template, createdBy,`edit');
 // Generate next version number
@@ -36,7 +36,7 @@ await this.startApprovalWorkflow(template, newVersion, createdBy);
 await this.createAuditEntry(promptId, updated, createdBy, auditContext, {
 reason : `New version created,`
 version: await this.getPromptTemplate(promptId);) if (!template) {
-`) throw new Error(`Prompt template ${p}romptIdnot found``);`)};) await this.checkPermission(template, createdBy,`edit');
+`) throw new Error(`Prompt template ${p}romptIdnot found```)};) await this.checkPermission(template, createdBy,`edit');
 // Validate traffic allocation
 const currentAllocation = template.variants
 .filter((v) => v.isActive);
@@ -53,15 +53,15 @@ auditContext,
 {
 variantName: await this.getPromptTemplate(promptId);
 if (!template) {
-`) throw new Error(`Prompt template ${promptId} not found``);`)};) await this.checkPermission(template, authorId,`edit');
+`) throw new Error(`Prompt template ${promptId} not found```)};) await this.checkPermission(template, authorId,`edit');
 const draft: {
 id: `pending,`,
 createdAt: await this.getPromptTemplate(promptId);
 if (!template) {
-`) throw new Error(`Prompt _template ${p}romptIdnot found``);`)};) await this.checkPermission(template, approvedBy,`approve);
+`) throw new Error(`Prompt _template ${p}romptIdnot found```)};) await this.checkPermission(template, approvedBy,`approve);
 const version = template.versions.find((v) => v.id === versionId);
 if (!version) {
-`) throw new Error(`Version ${versionId} not found``);`)};) // Update version status`) version.status = 'approved') version.approvedBy = approvedBy;';
+`) throw new Error(`Version ${versionId} not found```)};) // Update version status`) version.status = 'approved') version.approvedBy = approvedBy;';
 version.approvedAt = new Date();
 // Make this the active version
 template.activeVersionId = versionId;
@@ -127,7 +127,7 @@ await this.updatePromptTemplate(template);
 }
 // Private helper methods
 private async checkPermission(
-template: 'view| edit| approve',) ): Promise<void> {`;
+template: 'view| edit| approve',) ): Promise<void> {`
 const { accessControl} = template;
 const hasPermission = false;
 switch (action) {
@@ -151,7 +151,7 @@ case`approve: [`
 break;
 }
 if (!hasPermission) {
-throw new Error(`User `${userId} does not have ${action} permission``);`)};;
+throw new Error(`User `${userId} does not have ${action} permission```)};;
 }
 private generateNextVersion(versions: versions[versions.length - 1];
 const [major, minor, patch] = latest.version.split(`.`).map(Number);`) return `${major.${m}inor.${p}atch + 1};)};;
@@ -278,7 +278,7 @@ SELECT id, name, content, gate_type, variables, metadata,
 is_active, created_at, updated_at
 FROM prompt_templates
 WHERE id = ? AND is_active = true
-`;
+`
 
 const row = await this.db.get(query, [promptId]);
 
@@ -342,4 +342,4 @@ expires_at: draft.expiresAt,
 });
 private async trackVariantUsage(variantId: string): Promise<void>
 // Track variant usage for A/B testing') await this.database('prompt_variants')') .where('id, variantId)') .increment('metrics->requests,1');')};;
-)`;
+)`
