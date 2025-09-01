@@ -279,57 +279,63 @@ export class IntelligentPromptGenerator {
       { performanceRecommendations, securityRecommendations, testingRecommendations}
     );
 
-    let __standards = ``
-## 🎯 Coding Standards & Best Practices ($language.toUpperCase())
-$enhancedStandards.contextualIntro
+    let __standards = `
+## 🎯 Coding Standards & Best Practices (${language.toUpperCase()})
+${enhancedStandards.contextualIntro}
 
 ### 📁 File Organization & Naming:
-- **Descriptive filenames**:Use clear, descriptive names that indicate file purpose
-  - ✅ user-authentication-service.$language === 'typescript' ? ' ts' :' js')  - ✅ product-catalog-manager.$language === 'typescript' ? ' ts' :' js')  - ✅ order-validation-utils.$language === 'typescript' ? ' ts' :' js')  - ❌ helper.$language === 'typescript' ? ' ts' : ' js', utils.$language === ' typescript' ? ' ts' : ' js', data.$language === ' typescript' ? ' ts' :' js')- **Single responsibility**:Each file should have ONE clear purpose
-- **Naming convention**:Use $fileNamingfor files
-- **Max functions per file**:5-7 focused functions maximum
+- **Descriptive filenames**: Use clear, descriptive names that indicate file purpose
+  - ✅ user-authentication-service.${language === 'typescript' ? 'ts' : 'js'}
+  - ✅ product-catalog-manager.${language === 'typescript' ? 'ts' : 'js'}  
+  - ✅ order-validation-utils.${language === 'typescript' ? 'ts' : 'js'}
+  - ❌ helper.${language === 'typescript' ? 'ts' : 'js'}, utils.${language === 'typescript' ? 'ts' : 'js'}, data.${language === 'typescript' ? 'ts' : 'js'}
+- **Single responsibility**: Each file should have ONE clear purpose
+- **Naming convention**: Use ${fileNaming} for files
+- **Max functions per file**: 5-7 focused functions maximum
 
 ### ⚡ Function Quality Guidelines:
-- **Single responsibility**:Each function _does ONE thing well
-- **Max $maxLinesPerFunctionlines**:Keep functions focused and readable
-- **Max $maxParametersparameters**:Use objects for complex parameter sets
-- **Cyclomatic complexity**:Keep below $maxComplexity
-- **Pure functions**:Prefer pure functions when possible
-- **Clear naming**:Function names should describe what they do`;`
+- **Single responsibility**: Each function _does ONE thing well
+- **Max ${maxLinesPerFunction} lines**: Keep functions focused and readable
+- **Max ${maxParameters} parameters**: Use objects for complex parameter sets
+- **Cyclomatic complexity**: Keep below ${maxComplexity}
+- **Pure functions**: Prefer pure functions when possible
+- **Clear naming**: Function names should describe what they do`;
 
     if (language === 'typescript') {
-    ')      standards += ``
+      __standards += `
 
 ### 🔷 TypeScript Quality Standards:
-- **Strict typing**:Always use explicit types, avoid 'any')- **Interface definitions**:Define clear interfaces for all data structures
-- **Generic types**:Use generics for reusable components
-- **Null safety**:Handle undefined/null cases explicitly
-- **Union types**:Use union types for controlled variants
-- **Type guards**:Implement proper type guards for runtime checks`;`
-}
+- **Strict typing**: Always use explicit types, avoid 'any'
+- **Interface definitions**: Define clear interfaces for all data structures
+- **Generic types**: Use generics for reusable components
+- **Null safety**: Handle undefined/null cases explicitly
+- **Union types**: Use union types for controlled variants
+- **Type guards**: Implement proper type guards for runtime checks`;
+    }
 
     if (config.includePerformance) {
-      _standards += ``
+      __standards += `
 
 ### ⚡ Performance Guidelines:
-- **Big O awareness**:Consider algorithmic complexity
-- **Memory management**:Avoid memory leaks and excessive allocations
-- **Lazy loading**:Load resources only when needed
-- **Caching strategies**:Implement appropriate caching
-- **Bundle optimization**:Minimize bundle size and dependencies`;`
-}
+- **Big O awareness**: Consider algorithmic complexity
+- **Memory management**: Avoid memory leaks and excessive allocations
+- **Lazy loading**: Load resources only when needed
+- **Caching strategies**: Implement appropriate caching
+- **Bundle optimization**: Minimize bundle size and dependencies`;
+    }
 
     if (config.includeSecurity) {
-      standards += ``
+      __standards += `
 
 ### 🔒 Security Best Practices:
-- **Input validation**:Validate all external inputs
-- **Error handling**:Don't expose sensitive information in errors')- **Authentication**:Implement proper authentication and authorization
-- **Data sanitization**:Sanitize user inputs to prevent injection attacks
-- **Dependency security**:Regularly update and audit dependencies`;`
-}
+- **Input validation**: Validate all external inputs
+- **Error handling**: Don't expose sensitive information in errors
+- **Authentication**: Implement proper authentication and authorization
+- **Data sanitization**: Sanitize user inputs to prevent injection attacks
+- **Dependency security**: Regularly update and audit dependencies`;
+    }
 
-    return standards;
+    return __standards;
 }
 
   /**
@@ -341,22 +347,25 @@ $enhancedStandards.contextualIntro
     config:Required<CodingStandardsConfig>
   ):string {
     switch (phase) {
-      case 'specification': ')'        return ``
+      case 'specification':
+        return `
 ### 📋 Specification Phase Guidelines:
-- **Clear requirements**:Each requirement should be testable and specific
-- **Domain modeling**:Use ${config.language === 'typescript' ? ' TypeScript interfaces' : ' clear data structures'} to model domain entities')- **API contracts**:Define clear input/output interfaces
-- **Validation rules**:Specify data validation requirements
-- **User stories**:Write clear user stories with acceptance criteria
-- **Edge cases**:Identify and document edge cases and error scenarios`;`
+- **Clear requirements**: Each requirement should be testable and specific
+- **Domain modeling**: Use ${config.language === 'typescript' ? 'TypeScript interfaces' : 'clear data structures'} to model domain entities
+- **API contracts**: Define clear input/output interfaces
+- **Validation rules**: Specify data validation requirements
+- **User stories**: Write clear user stories with acceptance criteria
+- **Edge cases**: Identify and document edge cases and error scenarios`;
 
-      case 'pseudocode': ')'        return ``
+      case 'pseudocode':
+        return `
 ### 🔄 Pseudocode Phase Guidelines:
-- **Algorithm clarity**:Write self-documenting pseudocode
-- **Data structures**:Choose appropriate data structures (Map, Set, Array)
-- **Error handling**:Plan for error scenarios and edge cases
-- **Performance considerations**:Consider Big O complexity
-- **Step-by-step logic**:Break down complex operations into clear steps
-- **Variable naming**:Use descriptive names in pseudocode`;`
+- **Algorithm clarity**: Write self-documenting pseudocode
+- **Data structures**: Choose appropriate data structures (Map, Set, Array)
+- **Error handling**: Plan for error scenarios and edge cases
+- **Performance considerations**: Consider Big O complexity
+- **Step-by-step logic**: Break down complex operations into clear steps
+- **Variable naming**: Use descriptive names in pseudocode`;
 
       case 'architecture': ')'        return ``
 ### 🏗️ Architecture Phase Guidelines:
