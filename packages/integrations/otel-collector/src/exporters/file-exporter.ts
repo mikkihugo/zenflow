@@ -195,10 +195,10 @@ export class FileExporter implements BaseExporter {
     let output:string;
     if (this.format === 'jsonl') {
       // JSON Lines format - one JSON object per line
-      output = JSON.stringify(data) + '\n';
+      output = `${JSON.stringify(data)  }\n`;
 } else {
       // JSON format - array of objects (requires more complex handling)
-      output = JSON.stringify(data, null, 2) + '\n';
+      output = `${JSON.stringify(data, null, 2)  }\n`;
 }
 
     // Write to file
@@ -225,7 +225,7 @@ export class FileExporter implements BaseExporter {
 }
 
     // Generate new file path
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[.:]/g, '-');
     const extension = this.format === 'jsonl' ? 'jsonl' : 'json';
     this.currentFilePath = `${this.baseFilePath}-${timestamp}.${extension}`;
 

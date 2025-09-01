@@ -9,8 +9,7 @@
 import { EventEmitter } from '@claude-zen/foundation';
 
 import type { AutoScaler } from '../interfaces';
-import type { Agent, AutoScalingConfig, LoadMetrics } from '../types';
-import { AgentStatus } from '../types';
+import { AgentStatus, type Agent, type AutoScalingConfig, type LoadMetrics } from '../types';
 
 interface ScalingDecision {
   action: 'scale_up' | ' scale_down' | ' no_action';

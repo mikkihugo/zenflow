@@ -243,7 +243,19 @@ export function detectBeamLanguage(
 
   const languageMap: Record<string, import('./types/beam-types').BeamLanguage> =
     {
-      '.erl': ' erlang',      '.hrl': ' erlang',      '.ex': ' elixir',      '.exs': ' elixir',      '.gleam': ' gleam',      '.lfe': ' lfe',};
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '.erl': 'erlang',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '.hrl': 'erlang',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '.ex': 'elixir',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '.exs': 'elixir',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '.gleam': 'gleam',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '.lfe': 'lfe',
+    };
 
   return languageMap[ext] || null;
 }

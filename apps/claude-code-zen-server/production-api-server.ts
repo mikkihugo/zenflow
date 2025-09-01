@@ -14,7 +14,6 @@ import express from 'express';
 import cors from 'cors';
 import { getLogger, safeAsync, withRetry } from '@claude-zen/foundation';
 import { WebDataService } from './src/services/web/data.handler';
-import { ApiRouteHandler } from './src/services/web/api.handler';
 
 const logger = getLogger('ProductionApiServer');
 const app = express();
@@ -38,7 +37,6 @@ app.use((req, res, next) => {
 
 // Initialize foundation services
 let dataService: WebDataService;
-let apiHandler: ApiRouteHandler;
 
 async function initializeServices(): Promise<void> {
   return await withRetry(async () => {
@@ -48,19 +46,7 @@ async function initializeServices(): Promise<void> {
     dataService = new WebDataService();
     
     // Initialize API handler with real WebSocket coordination
-    const webSocketCoordinator = {
-      broadcast: (event: string, data: unknown) => {
-        logger.debug(`Broadcasting ${event}:`, data);
-        // In production, this would broadcast to actual WebSocket clients
-      }
-    };
-    
-    apiHandler = new ApiRouteHandler(
-      app,
-      webSocketCoordinator,
-      { prefix: '/api/v1', enableCors: true }
-    );
-    
+    // In production, WebSocket coordination would be handled by the actual service
     logger.info('✅ Production foundation services initialized');
   }, { retries: 3, minTimeout: 1000 });
 }

@@ -40,10 +40,15 @@ export const SUPPORTED_LANGUAGE_FAMILIES = [
  */
 export const SUPPORTED_EXTENSIONS = {
   // BEAM Languages
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '.ex': 'beam',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '.exs': 'beam',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '.erl': 'beam',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '.hrl': 'beam',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '.gleam': 'beam',
 } as const;
 

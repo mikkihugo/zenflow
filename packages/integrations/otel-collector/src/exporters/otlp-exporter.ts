@@ -16,7 +16,7 @@ export class OTLPExporter implements BaseExporter {
 
   constructor(config:ExporterConfig) {
     this.config = config;
-    this.logger = getLogger('OTLPExporter:' + config.name);
+    this.logger = getLogger(`OTLPExporter:${  config.name}`);
 
     this.maxQueueSize = config.config?.maxQueueSize || 1000;
     this.batchTimeout = config.config?.batchTimeout || 5000;
@@ -35,14 +35,14 @@ export class OTLPExporter implements BaseExporter {
       if (signals.includes('traces')) {
         this.traceExporter = new OTLPTraceExporter({
           ...baseConfig,
-          url: config.config.url + '/v1/traces',
+          url: `${config.config.url  }/v1/traces`,
         });
       }
 
       if (signals.includes('metrics')) {
         this.metricExporter = new OTLPMetricExporter({
           ...baseConfig,
-          url: config.config.url + '/v1/metrics',
+          url: `${config.config.url  }/v1/metrics`,
         });
       }
 
@@ -179,7 +179,7 @@ export class OTLPExporter implements BaseExporter {
     // Process remaining queue
     if (this.queue.length > 0) {
       this.logger.info(
-        'Processing ' + this.queue.length + ' remaining items before shutdown'
+        `Processing ${  this.queue.length  } remaining items before shutdown`
       );
       await this.processBatch();
 }
@@ -271,7 +271,7 @@ export class OTLPExporter implements BaseExporter {
 } else {
           reject(
             new Error(
-              'OTLP trace export failed: ' + (result.error || 'Unknown error')
+              `OTLP trace export failed: ${  result.error || 'Unknown error'}`
             )
           );
 }
@@ -295,7 +295,7 @@ export class OTLPExporter implements BaseExporter {
 } else {
           reject(
             new Error(
-              'OTLP metric export failed: ' + (result.error || 'Unknown error')
+              `OTLP metric export failed: ${  result.error || 'Unknown error'}`
             )
           );
 }
@@ -310,7 +310,7 @@ export class OTLPExporter implements BaseExporter {
     // For now, convert logs to metrics or traces
     // Full OTLP log export would require additional OTLP log exporter
     this.logger.debug(
-      'Skipping ' + dataItems.length + ' log items (OTLP log export not yet implemented)'
+      `Skipping ${  dataItems.length  } log items (OTLP log export not yet implemented)`
     );
     return 0;
 }

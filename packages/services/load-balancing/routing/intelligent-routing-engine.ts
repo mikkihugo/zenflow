@@ -10,14 +10,7 @@ import { EventEmitter } from '@claude-zen/foundation';
 
 import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
-import type {
-  Agent,
-  NetworkTopology,
-  QoSRequirement,
-  RoutingResult,
-  Task,
-} from '../types';
-import { AgentStatus, taskPriorityToNumber } from '../types';
+import { AgentStatus, taskPriorityToNumber, type Agent, type NetworkTopology, type QoSRequirement, type RoutingResult, type Task } from '../types';
 
 import { FailoverManager } from './failover-manager';
 import { TaskAgentMatcher } from './task-agent-matcher';
