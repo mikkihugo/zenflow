@@ -221,7 +221,7 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
       if (getBrainCoordinator) {
         const coordinator = getBrainCoordinator();
         // @ts-expect-error: coordinator type is unknown
-        return await (coordinator as any).createAgent({
+        return await (coordinator as { createAgent: (config: { name: string; type: string; capabilities: string[] }) => Promise<Agent> }).createAgent({
           name: agentData.name || 'New Agent',
           type: agentData.type || 'general',
           capabilities: agentData.capabilities || ['coordination'],
@@ -257,13 +257,13 @@ app.get('/api/v1/coordination/tasks', async (req, res) => {
       const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
       if (getTaskMaster) {
-        const taskMaster = new (getTaskMaster() as any)();
+        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
         return await taskMaster.getAllTasks();
       }
       return [];
     }, []);
     res.json({
-      tasks: (tasks as unknown[]).map((task: any) => ({
+      tasks: (tasks as unknown[]).map((task: { id?: string; title?: string; name?: string; description?: string; status?: string; priority?: string; assignedAgent?: string; assignee?: string; createdAt?: string; estimatedCompletion?: string; dueDate?: string }) => ({
         id: task.id || `task-${  Date.now()}`,
         title: task.title || task.name || 'Unnamed Task',
         description: task.description || 'No description',
@@ -289,7 +289,7 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
       const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
       if (getTaskMaster) {
-        const taskMaster = new (getTaskMaster() as any)();
+        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
         return await taskMaster.createTask({
           title: taskData.title || 'New Task',
           description: taskData.description || 'Task description',
@@ -370,7 +370,7 @@ app.get('/api/v1/memory/status', async (req, res) => {
       const { getMemoryManager } = (global as { foundation?: { getMemoryManager: () => unknown } })
         .foundation || { getMemoryManager: () => null };
       if (getMemoryManager) {
-        const memoryManager = new (getMemoryManager() as any)();
+        const memoryManager = new (getMemoryManager() as { getStatus: () => Promise<{ status: string; totalMemory: number; usedMemory: number; sessions: number }> })();
         return await memoryManager.getStatus();
       }
       return {
@@ -405,7 +405,7 @@ app.get('/api/v1/database/status', async (req, res) => {
       const { getDatabaseProvider } = (global as { foundation?: { getDatabaseProvider: () => unknown } })
         .foundation || { getDatabaseProvider: () => null };
       if (getDatabaseProvider) {
-        const dbProvider = new (getDatabaseProvider() as any)();
+        const dbProvider = new (getDatabaseProvider() as { getStatus(): Promise<{ status: string; type: string; totalRecords: number }> })();
         return await dbProvider.getStatus();
       }
       return {
@@ -431,7 +431,7 @@ app.get('/api/v1/database/status', async (req, res) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({
     error: 'Internal server error',

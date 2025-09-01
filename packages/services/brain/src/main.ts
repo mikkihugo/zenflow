@@ -38,8 +38,6 @@ import {
   createKeyValueStore,
   createVectorStore,
   createGraphStore,
-  getDatabaseCapability,
-  type DatabaseConfig,
   type KeyValueStore,
   type VectorStore,
   type GraphStore
@@ -59,7 +57,6 @@ import type {
 } from './neural-orchestrator';
 import {
   NeuralOrchestrator,
-  StorageStrategy,
   TaskComplexity,
 } from './neural-orchestrator';
 

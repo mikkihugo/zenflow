@@ -160,7 +160,7 @@ export class AutonomousOptimizationEngine {
         context,
         complexityEstimate
       );
-      logger.info('Autonomous decision: Using ' + selectedMethod + ' method');
+      logger.info(`Autonomous decision: Using ${  selectedMethod  } method`);
 
       // 3. Execute optimization using selected method
       const result = await this.executeOptimization(context, selectedMethod);
@@ -525,7 +525,7 @@ export class AutonomousOptimizationEngine {
 
     // Placeholder implementation - replace with actual optimization logic
     return {
-      optimizedPrompt: context.basePrompt + ' [optimized]',
+      optimizedPrompt: `${context.basePrompt  } [optimized]`,
       confidence: 0.8,
       method,
       processingTime: Date.now() - startTime,

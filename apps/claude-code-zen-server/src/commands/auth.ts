@@ -261,7 +261,7 @@ async function pollForToken(
       throw new Error('Access denied by user.');
     }
 
-    throw new Error(`OAuth _error:${  data.error_description}` || data._error);
+    throw new Error(`OAuth error: ${data.error_description || data._error}`);
   }
 
   throw new Error('Authentication timeout. Please try again.');
@@ -311,16 +311,16 @@ async function copyToClipboard(text: string): Promise<void> {
 
     for (const cmd of clipboardCommands) {
       try {
-        const _proc = spawn(cmd?.[0] || "", cmd?.slice(1) || [], { stdio: 'pipe' });
-        (_proc as any).stdin.write(text);
-        (_proc as any).stdin?.end();
+        const proc = spawn(cmd?.[0] || "", cmd?.slice(1) || [], { stdio: 'pipe' });
+        proc.stdin?.write(text);
+        proc.stdin?.end();
 
         await new Promise<void>((resolve, reject) => {
-          (_proc as any).on('exit', (_code: number) => {
-            if (_code === 0) resolve();
-            else reject(new Error(`Exit code ${  _code}`));
+          proc.on('exit', (code: number) => {
+            if (code === 0) resolve();
+            else reject(new Error(`Exit code ${  code}`));
           });
-          (_proc as any).on('_error', reject);
+          proc.on('error', reject);
         });
 
         logger.debug('Successfully copied to clipboard using', cmd?.[0]);

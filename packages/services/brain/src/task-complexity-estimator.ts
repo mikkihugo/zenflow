@@ -115,7 +115,7 @@ export class TaskComplexityEstimator {
       // 2. Analyze context complexity
       const contextComplexity = this.analyzeContextComplexity(context);
       totalComplexity += contextComplexity.score * 0.3;
-      reasoning.push('Context analysis: ' + contextComplexity.reasoning);
+      reasoning.push(`Context analysis: ${  contextComplexity.reasoning}`);
 
       // 3. Pattern matching against historical data
       const patternComplexity = await this.matchComplexityPatterns(
@@ -124,12 +124,12 @@ export class TaskComplexityEstimator {
         context
       );
       totalComplexity += patternComplexity.score * 0.2;
-      reasoning.push('Pattern matching: ' + patternComplexity.reasoning);
+      reasoning.push(`Pattern matching: ${  patternComplexity.reasoning}`);
 
       // 4. Agent role complexity adjustment
       const roleComplexity = this.analyzeRoleComplexity(agentRole);
       totalComplexity += roleComplexity.score * 0.1;
-      reasoning.push('Role analysis: ' + roleComplexity.reasoning);
+      reasoning.push(`Role analysis: ${  roleComplexity.reasoning}`);
 
       // Normalize complexity to 0-1 range
       const finalComplexity = Math.max(0, Math.min(1, totalComplexity));
@@ -236,7 +236,7 @@ export class TaskComplexityEstimator {
       await this.updateKeywordWeights(prompt, actualComplexity);
 
       logger.debug(
-        '📚 Learned from task outcome: ' + task + ' (complexity: ' + actualComplexity.toFixed(2) + ')'
+        `📚 Learned from task outcome: ${  task  } (complexity: ${  actualComplexity.toFixed(2)  })`
       );
     } catch (error) {
       logger.error('❌ Failed to learn from outcome:', error);
@@ -301,7 +301,7 @@ export class TaskComplexityEstimator {
     const factors: string[] = [];
 
     // Length analysis
-    const length = prompt.length;
+    const {length} = prompt;
     if (length > 500) {
       complexity += 0.3;
       factors.push('long prompt');

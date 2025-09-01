@@ -210,7 +210,7 @@ interface Claude {
 messages?: unknown;
 }
 
-const logger = getLogger('git-operations');
+
 
 export interface GitOperationConfig {
 /** Enable AI-powered conflict resolution */

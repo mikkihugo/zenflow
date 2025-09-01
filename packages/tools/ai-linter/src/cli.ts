@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+ #!/usr/bin/env node
 /**
 * Minimal CLI for @claude-zen/ai-linter
 */
@@ -89,7 +89,7 @@ process.exit(2);
 }
 
 const { data } = batch;
-if (format === 'sarif{
+if (format === 'sarif') {
 log.info(JSON.stringify(toSarif(data.results as MinimalResult[]), null, 2));
 } else {
 log.info(JSON.stringify(data, null, 2));

@@ -348,11 +348,11 @@ const absolutePath = path.resolve(this.repositoryPath, filePath);
 // Detect language
 const language = this.detectLanguage(absolutePath);
 if (!language) {
-throw new Error(`Unsupported file type:${filePath}``
+throw new Error(`Unsupported file type: ${filePath}`);
 }
 
 // Read file content
-const content = await fs.readFile(absolutePath, `utf-8`
+const content = await fs.readFile(absolutePath, 'utf-8');
 // Create analysis ID
 const analysisId = this.generateSessionId();
 
@@ -364,8 +364,8 @@ this.performQualityAnalysis(content, language, absolutePath),
 ]);
 
 // Generate AI insights if enabled
-let aiInsights: 'AICodeInsights' | 'undefined';
-if (options.enableAIRecommendations && this.brainSystem) {
+let aiInsights: AICodeInsights | undefined;
+if (_options.enableAIRecommendations && this.brainSystem) {
 const insightsResult = await this.generateAIInsights(
 content,
 language,

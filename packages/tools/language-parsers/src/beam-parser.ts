@@ -41,16 +41,16 @@ exports: BeamFunction[];
 types: BeamType[];
 
 /** Documentation strings */
-documentation:string[];
+documentation: string[];
 
 /** Module dependencies */
-dependencies:string[];
+dependencies: string[];
 
 /** Language-specific metadata */
-metadata:Record<string, unknown>;
+metadata: Record<string, unknown>;
 
 /** Module complexity metrics */
-metrics?:BeamModuleMetrics;
+metrics?: BeamModuleMetrics;
 }
 
 /**
@@ -61,25 +61,25 @@ export interface BeamFunction {
 name: string;
 
 /** Function arity (number of parameters) */
-arity:number;
+arity: number;
 
 /** Visibility scope */
 visibility:'public' | 'private';
 
 /** Function signature */
-signature:string;
+signature: string;
 
 /** Function documentation */
-documentation?:string;
+documentation?: string;
 
 /** Line number in source */
-lineNumber:number;
+lineNumber: number;
 
 /** Function complexity score */
-complexity?:number;
+complexity?: number;
 
 /** Function tags/attributes */
-attributes?:string[];
+attributes?: string[];
 }
 
 /**
@@ -90,13 +90,13 @@ export interface BeamType {
 name: string;
 
 /** Type definition */
-definition:string;
+definition: string;
 
 /** Type documentation */
-documentation?:string;
+documentation?: string;
 
 /** Line number in source */
-lineNumber:number;
+lineNumber: number;
 
 /** Type category */
 category?: 'custom' | 'alias' | 'opaque' | 'spec';
@@ -469,7 +469,6 @@ lineNumber:lineNumber,
 category: 'custom',
 });
 }
-}
 
 // @spec definitions
 const specRegex = /@spec\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
@@ -560,8 +559,9 @@ const funcRegex = /^([a-z]\w*)\s*\(([^)]*)\)\s*->/gm;
 let match;
 while ((match = funcRegex.exec(content)) !== null) {
 const functionName = match[1];
-const params = match[2]||';
-const arity = params ? params.split(', ').length:0;') const lineNumber = content.substring(0, match.index).split('\n').length;')
+const params = match[2] || '';
+const arity = params ? params.split(',').length : 0;
+const lineNumber = content.substring(0, match.index).split('\n').length;
 const func:BeamFunction = {
 name:functionName,
 arity:arity,
@@ -702,7 +702,7 @@ return attributes;
 
 private isOTPBehaviour(content: string): boolean {
 const otpBehaviours = [
-'gen_server', 'gen_statem', 'supervisor', `application`
+'gen_server', 'gen_statem', 'supervisor', 'application'
 ];
 return otpBehaviours.some((behaviour) =>
 content.includes(`-behaviour(${behaviour})`)

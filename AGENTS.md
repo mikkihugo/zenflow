@@ -258,7 +258,9 @@ pnpm run build:rust                        # WASM modules (1-2 minutes)
 | `pnpm build` | 1-2min | ✅ | Creates cross-platform binaries |
 | `pnpm test` | 15+min | ⚠️ | Memory constraints, use individual packages |
 
-### Quality Assurance
+## 🧪 Quality Assurance
+
+## 🧪 Quality Assurance
 
 **Always validate changes**:
 
@@ -266,8 +268,629 @@ pnpm run build:rust                        # WASM modules (1-2 minutes)
 2. **Web Dashboard**: Load `http://localhost:3000` and test navigation
 3. **Build Integrity**: `pnpm build` completes successfully
 4. **Domain Separation**: Follow architecture boundaries
+## 🛡️ Functionality Preservation Guidelines
 
-## 🎯 Development Best Practices
+### Critical Distinction: "Compiles" vs "Compiles AND Works"
+
+**ENTERPRISE REQUIREMENT**: All code changes must prioritize **functionality preservation over compilation-only fixes**. The goal is **"compiles AND works"** - not just **"compiles"**.
+
+#### Core Principles
+
+**NEVER use bulk file replacements that lose functionality:**
+```typescript
+// ❌ WRONG - Bulk replacement loses critical error handling
+function processAgent(agentId: string) {
+  const agent = await agentRegistry.get(agentId);
+  return agent;
+}
+
+// ✅ CORRECT - Surgical fix preserves existing error handling
+async function processAgent(agentId: string): Promise<Result<AgentState, Error>> {
+  try {
+    const agent = await agentRegistry.get(agentId);
+    if (!agent) {
+      return err(new Error(`Agent ${agentId} not found`));
+    }
+    return ok(agent);
+  } catch (error) {
+    return err(error);
+  }
+}
+```
+
+**ALWAYS require manual verification of AI-generated changes:**
+- **Step 1**: AI generates proposed changes
+- **Step 2**: Human developer reviews each line for functionality impact
+- **Step 3**: Run existing unit tests to validate behavior preservation
+- **Step 4**: Perform integration testing with dependent systems
+- **Step 5**: Manual testing of critical user workflows
+
+**REQUIRE unit tests to validate intended behavior preservation:**
+```typescript
+// Example: Test that preserves existing functionality
+describe('Agent Processing', () => {
+  it('should return error for non-existent agent', async () => {
+    const result = await processAgent('non-existent-id');
+    expect(result.isErr()).toBe(true);
+    expect(result.error.message).toContain('not found');
+  });
+
+  it('should return agent data for valid agent', async () => {
+    const result = await processAgent('valid-id');
+    expect(result.isOk()).toBe(true);
+    expect(result.value.id).toBe('valid-id');
+  });
+});
+```
+
+### Enterprise-Level Functionality Preservation Requirements
+
+#### 1. Surgical Fix Guidelines
+
+**Line-by-line modifications only:**
+- Change one logical unit at a time
+- Preserve all existing error handling paths
+- Maintain backward compatibility
+- Keep existing performance characteristics
+
+**Forbidden practices:**
+- ❌ Bulk search-and-replace operations
+- ❌ Complete file rewrites without line-by-line review
+- ❌ Removing error handling without replacement
+- ❌ Changing return types without updating callers
+
+#### 2. AI-Assisted Change Verification Process
+
+**Mandatory verification steps:**
+1. **Pre-change baseline**: Run full test suite and capture metrics
+2. **Change application**: Apply AI suggestions surgically
+3. **Post-change validation**: Re-run tests and compare metrics
+4. **Integration testing**: Test with connected systems
+5. **Performance validation**: Ensure no degradation
+
+#### 3. TaskMaster Approval Workflow
+
+**Major AI-assisted changes require approval:**
+```typescript
+// Example TaskMaster integration for AI changes
+import { TaskMaster } from '@claude-zen/coordination/taskmaster';
+
+const taskMaster = new TaskMaster();
+const approvalRequest = {
+  type: 'ai-assisted-code-change',
+  scope: 'functionality-preservation',
+  changes: proposedChanges,
+  impact: 'enterprise-critical',
+  tests: validationTests
+};
+
+const approval = await taskMaster.requestApproval(approvalRequest);
+if (!approval.granted) {
+  throw new Error('AI-assisted changes require TaskMaster approval');
+}
+```
+
+#### 4. Quality Gates for AI-Generated Code
+
+**Enterprise quality requirements:**
+- **Unit test coverage**: ≥90% for modified code paths
+- **Integration tests**: All dependent systems validated
+- **Performance benchmarks**: No degradation >5%
+- **Security review**: AI safety monitor validation
+- **Documentation**: Updated API docs and inline comments
+
+#### 5. Error Handling Preservation
+
+**Never remove existing error handling:**
+```typescript
+// ❌ WRONG - Removes critical error handling
+function riskyOperation() {
+  return externalService.call();
+}
+
+// ✅ CORRECT - Preserves error handling
+async function riskyOperation(): Promise<Result<Data, Error>> {
+  try {
+    const result = await externalService.call();
+    return ok(result);
+  } catch (error) {
+    // Preserve existing error logging and recovery
+    await errorLogger.log(error);
+    await recoveryService.attemptRecovery();
+    return err(error);
+  }
+}
+```
+
+#### 6. Performance Characteristic Preservation
+
+**Maintain existing performance profiles:**
+- Response times within ±10% of baseline
+- Memory usage patterns preserved
+- Database query efficiency maintained
+- WASM acceleration usage preserved
+
+#### 7. Backward Compatibility Requirements
+
+**Enterprise systems require stability:**
+- API contracts preserved
+- Data migration paths provided
+- Deprecation notices for breaking changes
+- Gradual rollout capabilities
+
+### AI Limitations and Safeguards
+
+#### Known AI Code Generation Issues
+
+**Compilation vs Functionality Gap:**
+- AI excels at syntax correction but often misses semantic requirements
+- Error handling patterns frequently omitted or simplified
+- Performance implications not considered
+- Integration points may be broken
+
+**Safeguard Implementation:**
+```typescript
+// AI Safety Monitor integration
+import { AISafetyMonitor } from '@claude-zen/ai-safety';
+
+const safetyMonitor = new AISafetyMonitor();
+const aiGeneratedCode = await aiAssistant.generateFix(problem);
+
+const safetyCheck = await safetyMonitor.validateCodeChange({
+  originalCode,
+  proposedCode: aiGeneratedCode,
+  context: 'functionality-preservation'
+});
+
+if (!safetyCheck.safe) {
+  console.warn('AI-generated code requires manual review:', safetyCheck.issues);
+  // Force manual review process
+}
+```
+
+#### Enterprise Compliance Requirements
+
+**SAFe 6.0 Integration:**
+- All changes mapped to Program Increments
+- Architecture runway preservation
+- Risk mitigation for AI-assisted changes
+
+**SPARC Methodology Alignment:**
+- Specification phase includes functionality requirements
+- Pseudocode validates logic preservation
+- Architecture review ensures system integrity
+- Refinement focuses on behavior validation
+- Completion requires comprehensive testing
+
+#### Success Metrics for Functionality Preservation
+
+**Quantitative measures:**
+- **Test pass rate**: ≥99% after changes
+- **Performance delta**: ≤±5% change
+- **Error rate**: No increase in production errors
+- **User workflow success**: ≥99.9% success rate
+
+**Qualitative measures:**
+- Code review approval rate
+- TaskMaster approval compliance
+- Incident response time for issues
+- Developer confidence in AI-assisted changes
+## 🛡️ Functionality Preservation Guidelines
+
+### Critical Distinction: "Compiles" vs "Compiles AND Works"
+
+**ENTERPRISE REQUIREMENT**: All code changes must prioritize **functionality preservation over compilation-only fixes**. The goal is **"compiles AND works"** - not just **"compiles"**.
+
+#### Core Principles
+
+**NEVER use bulk file replacements that lose functionality:**
+```typescript
+// ❌ WRONG - Bulk replacement loses critical error handling
+function processAgent(agentId: string) {
+  const agent = await agentRegistry.get(agentId);
+  return agent;
+}
+
+// ✅ CORRECT - Surgical fix preserves existing error handling
+async function processAgent(agentId: string): Promise<Result<AgentState, Error>> {
+  try {
+    const agent = await agentRegistry.get(agentId);
+    if (!agent) {
+      return err(new Error(`Agent ${agentId} not found`));
+    }
+    return ok(agent);
+  } catch (error) {
+    return err(error);
+  }
+}
+```
+
+**ALWAYS require manual verification of AI-generated changes:**
+- **Step 1**: AI generates proposed changes
+- **Step 2**: Human developer reviews each line for functionality impact
+- **Step 3**: Run existing unit tests to validate behavior preservation
+- **Step 4**: Perform integration testing with dependent systems
+- **Step 5**: Manual testing of critical user workflows
+
+**REQUIRE unit tests to validate intended behavior preservation:**
+```typescript
+// Example: Test that preserves existing functionality
+describe('Agent Processing', () => {
+  it('should return error for non-existent agent', async () => {
+    const result = await processAgent('non-existent-id');
+    expect(result.isErr()).toBe(true);
+    expect(result.error.message).toContain('not found');
+  });
+
+  it('should return agent data for valid agent', async () => {
+    const result = await processAgent('valid-id');
+    expect(result.isOk()).toBe(true);
+    expect(result.value.id).toBe('valid-id');
+  });
+});
+```
+
+### Enterprise-Level Functionality Preservation Requirements
+
+#### 1. Surgical Fix Guidelines
+
+**Line-by-line modifications only:**
+- Change one logical unit at a time
+- Preserve all existing error handling paths
+- Maintain backward compatibility
+- Keep existing performance characteristics
+
+**Forbidden practices:**
+- ❌ Bulk search-and-replace operations
+- ❌ Complete file rewrites without line-by-line review
+- ❌ Removing error handling without replacement
+- ❌ Changing return types without updating callers
+
+#### 2. AI-Assisted Change Verification Process
+
+**Mandatory verification steps:**
+1. **Pre-change baseline**: Run full test suite and capture metrics
+2. **Change application**: Apply AI suggestions surgically
+3. **Post-change validation**: Re-run tests and compare metrics
+4. **Integration testing**: Test with connected systems
+5. **Performance validation**: Ensure no degradation
+
+#### 3. TaskMaster Approval Workflow
+
+**Major AI-assisted changes require approval:**
+```typescript
+// Example TaskMaster integration for AI changes
+import { TaskMaster } from '@claude-zen/coordination/taskmaster';
+
+const taskMaster = new TaskMaster();
+const approvalRequest = {
+  type: 'ai-assisted-code-change',
+  scope: 'functionality-preservation',
+  changes: proposedChanges,
+  impact: 'enterprise-critical',
+  tests: validationTests
+};
+
+const approval = await taskMaster.requestApproval(approvalRequest);
+if (!approval.granted) {
+  throw new Error('AI-assisted changes require TaskMaster approval');
+}
+```
+
+#### 4. Quality Gates for AI-Generated Code
+
+**Enterprise quality requirements:**
+- **Unit test coverage**: ≥90% for modified code paths
+- **Integration tests**: All dependent systems validated
+- **Performance benchmarks**: No degradation >5%
+- **Security review**: AI safety monitor validation
+- **Documentation**: Updated API docs and inline comments
+
+#### 5. Error Handling Preservation
+
+**Never remove existing error handling:**
+```typescript
+// ❌ WRONG - Removes critical error handling
+function riskyOperation() {
+  return externalService.call();
+}
+
+// ✅ CORRECT - Preserves error handling
+async function riskyOperation(): Promise<Result<Data, Error>> {
+  try {
+    const result = await externalService.call();
+    return ok(result);
+  } catch (error) {
+    // Preserve existing error logging and recovery
+    await errorLogger.log(error);
+    await recoveryService.attemptRecovery();
+    return err(error);
+  }
+}
+```
+
+#### 6. Performance Characteristic Preservation
+
+**Maintain existing performance profiles:**
+- Response times within ±10% of baseline
+- Memory usage patterns preserved
+- Database query efficiency maintained
+- WASM acceleration usage preserved
+
+#### 7. Backward Compatibility Requirements
+
+**Enterprise systems require stability:**
+- API contracts preserved
+- Data migration paths provided
+- Deprecation notices for breaking changes
+- Gradual rollout capabilities
+
+### AI Limitations and Safeguards
+
+#### Known AI Code Generation Issues
+
+**Compilation vs Functionality Gap:**
+- AI excels at syntax correction but often misses semantic requirements
+- Error handling patterns frequently omitted or simplified
+- Performance implications not considered
+- Integration points may be broken
+
+**Safeguard Implementation:**
+```typescript
+// AI Safety Monitor integration
+import { AISafetyMonitor } from '@claude-zen/ai-safety';
+
+const safetyMonitor = new AISafetyMonitor();
+const aiGeneratedCode = await aiAssistant.generateFix(problem);
+
+const safetyCheck = await safetyMonitor.validateCodeChange({
+  originalCode,
+  proposedCode: aiGeneratedCode,
+  context: 'functionality-preservation'
+});
+
+if (!safetyCheck.safe) {
+  console.warn('AI-generated code requires manual review:', safetyCheck.issues);
+  // Force manual review process
+}
+```
+
+#### Enterprise Compliance Requirements
+
+**SAFe 6.0 Integration:**
+- All changes mapped to Program Increments
+- Architecture runway preservation
+- Risk mitigation for AI-assisted changes
+
+**SPARC Methodology Alignment:**
+- Specification phase includes functionality requirements
+- Pseudocode validates logic preservation
+- Architecture review ensures system integrity
+- Refinement focuses on behavior validation
+- Completion requires comprehensive testing
+
+#### Success Metrics for Functionality Preservation
+
+**Quantitative measures:**
+- **Test pass rate**: ≥99% after changes
+- **Performance delta**: ≤±5% change
+- **Error rate**: No increase in production errors
+- **User workflow success**: ≥99.9% success rate
+
+**Qualitative measures:**
+- Code review approval rate
+- TaskMaster approval compliance
+- Incident response time for issues
+- Developer confidence in AI-assisted changes
+## 🛡️ Functionality Preservation Guidelines
+
+### Critical Distinction: "Compiles" vs "Compiles AND Works"
+
+**ENTERPRISE REQUIREMENT**: All code changes must prioritize **functionality preservation over compilation-only fixes**. The goal is **"compiles AND works"** - not just **"compiles"**.
+
+#### Core Principles
+
+**NEVER use bulk file replacements that lose functionality:**
+```typescript
+// ❌ WRONG - Bulk replacement loses critical error handling
+function processAgent(agentId: string) {
+  const agent = await agentRegistry.get(agentId);
+  return agent;
+}
+
+// ✅ CORRECT - Surgical fix preserves existing error handling
+async function processAgent(agentId: string): Promise<Result<AgentState, Error>> {
+  try {
+    const agent = await agentRegistry.get(agentId);
+    if (!agent) {
+      return err(new Error(`Agent ${agentId} not found`));
+    }
+    return ok(agent);
+  } catch (error) {
+    return err(error);
+  }
+}
+```
+
+**ALWAYS require manual verification of AI-generated changes:**
+- **Step 1**: AI generates proposed changes
+- **Step 2**: Human developer reviews each line for functionality impact
+- **Step 3**: Run existing unit tests to validate behavior preservation
+- **Step 4**: Perform integration testing with dependent systems
+- **Step 5**: Manual testing of critical user workflows
+
+**REQUIRE unit tests to validate intended behavior preservation:**
+```typescript
+// Example: Test that preserves existing functionality
+describe('Agent Processing', () => {
+  it('should return error for non-existent agent', async () => {
+    const result = await processAgent('non-existent-id');
+    expect(result.isErr()).toBe(true);
+    expect(result.error.message).toContain('not found');
+  });
+
+  it('should return agent data for valid agent', async () => {
+    const result = await processAgent('valid-id');
+    expect(result.isOk()).toBe(true);
+    expect(result.value.id).toBe('valid-id');
+  });
+});
+```
+
+### Enterprise-Level Functionality Preservation Requirements
+
+#### 1. Surgical Fix Guidelines
+
+**Line-by-line modifications only:**
+- Change one logical unit at a time
+- Preserve all existing error handling paths
+- Maintain backward compatibility
+- Keep existing performance characteristics
+
+**Forbidden practices:**
+- ❌ Bulk search-and-replace operations
+- ❌ Complete file rewrites without line-by-line review
+- ❌ Removing error handling without replacement
+- ❌ Changing return types without updating callers
+
+#### 2. AI-Assisted Change Verification Process
+
+**Mandatory verification steps:**
+1. **Pre-change baseline**: Run full test suite and capture metrics
+2. **Change application**: Apply AI suggestions surgically
+3. **Post-change validation**: Re-run tests and compare metrics
+4. **Integration testing**: Test with connected systems
+5. **Performance validation**: Ensure no degradation
+
+#### 3. TaskMaster Approval Workflow
+
+**Major AI-assisted changes require approval:**
+```typescript
+// Example TaskMaster integration for AI changes
+import { TaskMaster } from '@claude-zen/coordination/taskmaster';
+
+const taskMaster = new TaskMaster();
+const approvalRequest = {
+  type: 'ai-assisted-code-change',
+  scope: 'functionality-preservation',
+  changes: proposedChanges,
+  impact: 'enterprise-critical',
+  tests: validationTests
+};
+
+const approval = await taskMaster.requestApproval(approvalRequest);
+if (!approval.granted) {
+  throw new Error('AI-assisted changes require TaskMaster approval');
+}
+```
+
+#### 4. Quality Gates for AI-Generated Code
+
+**Enterprise quality requirements:**
+- **Unit test coverage**: ≥90% for modified code paths
+- **Integration tests**: All dependent systems validated
+- **Performance benchmarks**: No degradation >5%
+- **Security review**: AI safety monitor validation
+- **Documentation**: Updated API docs and inline comments
+
+#### 5. Error Handling Preservation
+
+**Never remove existing error handling:**
+```typescript
+// ❌ WRONG - Removes critical error handling
+function riskyOperation() {
+  return externalService.call();
+}
+
+// ✅ CORRECT - Preserves error handling
+async function riskyOperation(): Promise<Result<Data, Error>> {
+  try {
+    const result = await externalService.call();
+    return ok(result);
+  } catch (error) {
+    // Preserve existing error logging and recovery
+    await errorLogger.log(error);
+    await recoveryService.attemptRecovery();
+    return err(error);
+  }
+}
+```
+
+#### 6. Performance Characteristic Preservation
+
+**Maintain existing performance profiles:**
+- Response times within ±10% of baseline
+- Memory usage patterns preserved
+- Database query efficiency maintained
+- WASM acceleration usage preserved
+
+#### 7. Backward Compatibility Requirements
+
+**Enterprise systems require stability:**
+- API contracts preserved
+- Data migration paths provided
+- Deprecation notices for breaking changes
+- Gradual rollout capabilities
+
+### AI Limitations and Safeguards
+
+#### Known AI Code Generation Issues
+
+**Compilation vs Functionality Gap:**
+- AI excels at syntax correction but often misses semantic requirements
+- Error handling patterns frequently omitted or simplified
+- Performance implications not considered
+- Integration points may be broken
+
+**Safeguard Implementation:**
+```typescript
+// AI Safety Monitor integration
+import { AISafetyMonitor } from '@claude-zen/ai-safety';
+
+const safetyMonitor = new AISafetyMonitor();
+const aiGeneratedCode = await aiAssistant.generateFix(problem);
+
+const safetyCheck = await safetyMonitor.validateCodeChange({
+  originalCode,
+  proposedCode: aiGeneratedCode,
+  context: 'functionality-preservation'
+});
+
+if (!safetyCheck.safe) {
+  console.warn('AI-generated code requires manual review:', safetyCheck.issues);
+  // Force manual review process
+}
+```
+
+#### Enterprise Compliance Requirements
+
+**SAFe 6.0 Integration:**
+- All changes mapped to Program Increments
+- Architecture runway preservation
+- Risk mitigation for AI-assisted changes
+
+**SPARC Methodology Alignment:**
+- Specification phase includes functionality requirements
+- Pseudocode validates logic preservation
+- Architecture review ensures system integrity
+- Refinement focuses on behavior validation
+- Completion requires comprehensive testing
+
+#### Success Metrics for Functionality Preservation
+
+**Quantitative measures:**
+- **Test pass rate**: ≥99% after changes
+- **Performance delta**: ≤±5% change
+- **Error rate**: No increase in production errors
+- **User workflow success**: ≥99.9% success rate
+
+**Qualitative measures:**
+- Code review approval rate
+- TaskMaster approval compliance
+- Incident response time for issues
+- Developer confidence in AI-assisted changes
+
+
 
 ### Code Organization
 
