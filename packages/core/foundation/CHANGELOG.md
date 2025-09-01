@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **BREAKING**: Main entry point now minimal (2.8KB vs 36KB)
-- **Migration**: Use `/full` entry point for backwards compatibility
+- **Migration**: Use focused entry points for smaller bundles
 - **Improved**: Package exports now optimized for tree-shaking
 - **Enhanced**: TypeScript strict mode configuration
 - **Updated**: All dependencies to latest secure versions
@@ -53,12 +53,6 @@ import { getLogger } from '@claude-zen/foundation/core'; // 923B
 import { Result, ok, err } from '@claude-zen/foundation/resilience'; // 1.8KB
 import { createContainer } from '@claude-zen/foundation/di'; // 1.2KB
 import { z, validateInput } from '@claude-zen/foundation/utils'; // 2.1KB
-```
-
-**Legacy Import (Larger Bundle):**
-
-```typescript
-import { getLogger } from '@claude-zen/foundation/full'; // 36KB
 ```
 
 ## [1.1.0] - 2025-08-22
@@ -112,24 +106,12 @@ import { Result } from '@claude-zen/foundation/resilience';
 import { createContainer } from '@claude-zen/foundation/di';
 ```
 
-**Backwards Compatibility:**
-
-```typescript
-// If you need everything (maintains same bundle size)
-import {
-  getLogger,
-  Result,
-  createContainer,
-} from '@claude-zen/foundation/full';
-```
-
 ### Bundle Size Impact
 
 | Version       | Bundle Size | Tree-Shaking |
 | ------------- | ----------- | ------------ |
 | 1.1.0         | 36KB        | ❌ No        |
 | 1.1.1         | 2.8KB       | ✅ Yes       |
-| 1.1.1 `/full` | 36KB        | ❌ Legacy    |
 
 **🎯 Result: 92% bundle size reduction with focused imports**
 

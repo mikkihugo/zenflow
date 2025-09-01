@@ -170,16 +170,9 @@ describe('Foundation Package - Core Functionality', () => {
   });
 
   describe('Bundle Size Optimization', () => {
-    it('should have different sized entry points', async () => {
-      // Bundle size optimization should exist
+    it('should verify main entry exposes sufficient exports', async () => {
       const main = await import('../src/index');
-      const full = await import('../src/index.full');
-
-      // Main should have reasonable number of exports
       expect(Object.keys(main).length).toBeGreaterThan(100);
-
-      // Full should be comprehensive (same or more exports than main)
-      expect(Object.keys(full).length).toBeGreaterThanOrEqual(Object.keys(main).length);
     });
   });
 });
