@@ -114,10 +114,6 @@
       "types": "./dist/brain-coordinator.d.ts",
       "import": "./dist/brain-coordinator.js"
     },
-    "./neural": {
-      "types": "./dist/neural-bridge.d.ts",
-      "import": "./dist/neural-bridge.js"
-    },
     "./brain-js": {
       "types": "./dist/brain-js-bridge.d.ts",
       "import": "./dist/brain-js-bridge.js"

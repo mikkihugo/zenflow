@@ -311,7 +311,7 @@ distanceMetric: this.config.diversityMeasure,
 this.logger.info('ML components initialized successfully');
 } catch (error) {
 this.logger.error(`Failed to initialize ML components:`, error);
-throw new Error(`GEPAML initialization failed:${error.message}`
+throw new Error(`GEPAML initialization failed:${error.message}`);
 }
 }
 
@@ -661,7 +661,7 @@ trainset?: any[],
 valset?: any[]
 ): Promise<number> {
 // Create cache key for fitness caching
-const cacheKey = Array.from(individual.genes).join(`,`
+const cacheKey = Array.from(individual.genes).join(`,`);
 
 if (this.config.cacheResults && this.fitnessCache.has(cacheKey)) {
 return this.fitnessCache.get(cacheKey)!;
@@ -942,7 +942,7 @@ this.currentCrossoverRate * 1.05
 
 this.crossoverRateHistory.push(this.currentCrossoverRate);
 this.mutationRateHistory.push(this.currentMutationRate);
-this.selectionPressureHistory.push(this.calculateSelectionPressure())();
+this.selectionPressureHistory.push(this.calculateSelectionPressure());
 }
 
 private calculateFitnessVariance(): number {
