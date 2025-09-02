@@ -379,7 +379,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			);
 }
 
-		logger.info(`${keyToData.size} fine-tuning job(s) to start`
+		logger.info(`${keyToData.size} fine-tuning job(s) to start`);
 		const keyToLM = await this.finetuneLMs(keyToData);
 
 		logger.info("Updating the student program with the fine-tuned LMs...");
@@ -390,7 +390,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			const finetunedLM = keyToLM.get(trainingKey);
 
 			if (finetunedLM instanceof Error) {
-				throw new Error(`Finetuned LM for predictor ${predInd} failed.`
+				throw new Error(`Finetuned LM for predictor ${predInd} failed.`);
 }
 
 			if (finetunedLM) {
@@ -414,7 +414,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		finetuneDict:Map<string, any>,
 	):Promise<Map<string, LMInterface | Error>> {
 		const numJobs = finetuneDict.size;
-		logger.info(`Starting ${numJobs} fine-tuning job(s)...`
+		logger.info(`Starting ${numJobs} fine-tuning job(s)...`);
 
 		const keyToJob = new Map<string, FinetuneJob>();
 
@@ -434,7 +434,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			const job:FinetuneJob = {
 				async result():Promise<LMInterface | Error> {
 					try {
-						logger.info(`Fine-tuning job for ${key} completed`
+						logger.info(`Fine-tuning job for ${key} completed`);
 						return lm; // Return the fine-tuned LM
 } catch (error) {
 						return error instanceof Error ? error:new Error(String(error));
@@ -457,7 +457,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 			keyToLM.set(key, result);
 			job.thread.join();
-			logger.info(`Job ${++jobIndex}/${numJobs} is done`
+			logger.info(`Job ${++jobIndex}/${numJobs} is done`);
 }
 
 		return keyToLM;
