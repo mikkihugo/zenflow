@@ -223,9 +223,10 @@ export class DatabaseFacade {
 
       async transaction<T>(
         operation: (conn: TransactionConnection) => Promise<T>,
-        _context?: TransactionContext
+        context?: TransactionContext
       ): Promise<T> {
         logger.warn('Fallback transaction - executing without transaction safety');
+        void context;
         const connectionResult = await this.connect({ type, database: 'fallback' });
         const baseConnection = connectionResult.unwrapOr(null);
         if (!baseConnection) {
@@ -236,9 +237,9 @@ export class DatabaseFacade {
           ...baseConnection,
           async commit() { /* no-op for fallback */ },
           async rollback() { /* no-op for fallback */ },
-          async savepoint(_name: string) { /* no-op for fallback */ },
-          async releaseSavepoint(_name: string) { /* no-op for fallback */ },
-          async rollbackToSavepoint(_name: string) { /* no-op for fallback */ },
+          savepoint(name: string) { void name; /* no-op for fallback */ },
+          releaseSavepoint(name: string) { void name; /* no-op for fallback */ },
+          rollbackToSavepoint(name: string) { void name; /* no-op for fallback */ },
         };
         return operation(txConnection);
       },
