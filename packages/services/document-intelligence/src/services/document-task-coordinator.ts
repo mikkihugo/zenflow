@@ -381,7 +381,7 @@ if (updatedDoc.success) {
 updatedDocuments.push(docId);
 }
 }
-} catch (_docError) {
+} catch (docError) {
 logger.warn(
 `Could not update related document ${docId}:`,
 docError

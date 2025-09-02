@@ -56,8 +56,8 @@ this.logger.info(`Creating CodeQL database`, {
 await fs.mkdir(this.config.tempDir!, { recursive:true});
 
 // Remove existing database if overwrite is enabled
-if (options.overwrite && (await this.databaseExists(__databasePath))) {
-await this.deleteDatabaseFiles(__databasePath);
+if (options.overwrite && (await this.databaseExists(_databasePath))) {
+await this.deleteDatabaseFiles(_databasePath);
 }
 
 // Build command arguments
@@ -151,7 +151,7 @@ this.logger.error('Database creation failed', {
 
 // Clean up failed database
 try {
-await this.deleteDatabaseFiles(__databasePath);
+await this.deleteDatabaseFiles(_databasePath);
 } catch (cleanupError) {
 this.logger.warn('Failed to clean up failed database', {
   cleanupError,

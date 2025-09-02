@@ -273,7 +273,7 @@ export class InternalOTELCollector {
     app.get('/stats', (_req, res) => {
       try {
         const __stats = this.getStats();
-        res.json(__stats);
+        res.json(_stats);
 } catch (error) {
         res.status(500).json({ error:String(error)});
 }

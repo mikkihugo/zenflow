@@ -488,7 +488,7 @@ export const log = (
   req?: Request,
   metadata?: Record<string, unknown>
 ): void => {
-  if (_req) {
+  if (req) {
     const logEntry = createLogEntry({ level, message, req, metadata });
     outputLog(logEntry);
   } else {

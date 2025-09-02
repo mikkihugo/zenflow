@@ -360,7 +360,7 @@ this.logger.info(
 this.mlEngine = {
 policyOptimizer: {
 configure: async () => {},
-updatePolicy: async (_experiences) => ({
+updatePolicy: async (experiences) => ({
 policyLoss: 0.1,
 valueLoss: 0.05,
 entropyBonus: 0.01,
@@ -370,8 +370,8 @@ trustRegionViolation: false,
 }),
 getPolicy: async () => ({
 parameters: new Float32Array([0.5, 0.3, 0.2]),
-actionProbabilities: async (_state) => [0.4, 0.3, 0.3],
-selectAction: async (_state) => ({ action: 0, probability: 0.4 }),
+actionProbabilities: async (state) => [0.4, 0.3, 0.3],
+selectAction: async (state) => ({ action: 0, probability: 0.4 }),
 }),
 computeAdvantages: async (rewards, values) =>
 rewards.map((r, i) => r - (values[i] || 0)),
@@ -384,8 +384,8 @@ updateRewardModel: async () => {},
 experienceBuffer: {
 configure: async () => {},
 addExperience: async () => {},
-sampleBatch: async (_size) => [],
-prioritizedSample: async (_size) => [],
+sampleBatch: async (size) => [],
+prioritizedSample: async (size) => [],
 size: () => 0,
 },
 banditOptimizer: {
