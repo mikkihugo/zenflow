@@ -20,6 +20,13 @@ export type GeminiResponse = {
   error?: string
 }
 
+export type GeminiStreamChunk = {
+  correlationId: string
+  text: string
+  done: boolean
+  error?: string
+}
+
 type GeminiAuthConfig = {
   authMode: 'api-key' | 'oauth' | 'vertex'
   apiKey?: string
@@ -56,6 +63,7 @@ function buildClientOptions(modelId: string): GeminiClientOptions {
   if (apiKey && apiKey.length > 0) {
     return { auth: { apiKey }, model: modelId }
   }
+  // Use Vertex AI only when explicitly requested to avoid accidental billing.
   if (process.env.GOOGLE_GENAI_USE_VERTEXAI === 'true') {
     const projectId = process.env.GOOGLE_CLOUD_PROJECT
     const region = process.env.GOOGLE_CLOUD_REGION
@@ -84,6 +92,7 @@ export async function registerGeminiHandlers(bus = new EventBus()) {
 
   async function getClient(modelId: string): Promise<GeminiClient> {
     const options = buildClientOptions(modelId)
+    // A key based on a stable serialization of the options is more robust.
     const cacheKey = JSON.stringify(options)
 
     if (!clientCache.has(cacheKey)) {
@@ -95,36 +104,101 @@ export async function registerGeminiHandlers(bus = new EventBus()) {
 
   // text generation (non-stream)
   bus.on('llm:gemini:generate:request', async (env: GeminiRequest) => {
-    try {
-      const modelId = env.model ?? DEFAULT_GEMINI_MODEL
-      const client = await getClient(modelId)
-      const gen = contentGenerator({ client })
-      const res = await gen.generate({ prompt: env.prompt })
-      const msg: GeminiResponse = { correlationId: env.correlationId, text: res.text ?? '' }
-      bus.emit('llm:gemini:generate:response', msg)
-    } catch (error) {
-      logger.error('Gemini generate error', { error })
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
-      const msg: GeminiResponse = { correlationId: env.correlationId, error: errorMessage }
-      bus.emit('llm:gemini:generate:response', msg)
+    if (env.stream) {
+      // Handle streaming generation
+      try {
+        const modelId = env.model ?? DEFAULT_GEMINI_MODEL
+        const client = await getClient(modelId)
+        const gen = contentGenerator({ client })
+        // Assuming `generateStream` exists and returns an async iterable
+        const stream = await gen.generateStream({ prompt: env.prompt })
+        for await (const chunk of stream) {
+          const msg: GeminiStreamChunk = {
+            correlationId: env.correlationId,
+            text: chunk.text ?? '',
+            done: false,
+          }
+          bus.emit('llm:gemini:generate:stream:chunk', msg)
+        }
+        const finalMsg: GeminiStreamChunk = { correlationId: env.correlationId, text: '', done: true }
+        bus.emit('llm:gemini:generate:stream:chunk', finalMsg)
+      } catch (error) {
+        logger.error('Gemini generate stream error', { error })
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+        const errorMsg: GeminiStreamChunk = {
+          correlationId: env.correlationId,
+          text: '',
+          done: true,
+          error: errorMessage,
+        }
+        bus.emit('llm:gemini:generate:stream:chunk', errorMsg)
+      }
+    } else {
+      // Handle non-streaming generation
+      try {
+        const modelId = env.model ?? DEFAULT_GEMINI_MODEL
+        const client = await getClient(modelId)
+        const gen = contentGenerator({ client })
+        const res = await gen.generate({ prompt: env.prompt })
+        const msg: GeminiResponse = { correlationId: env.correlationId, text: res.text ?? '' }
+        bus.emit('llm:gemini:generate:response', msg)
+      } catch (error) {
+        logger.error('Gemini generate error', { error })
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+        const msg: GeminiResponse = { correlationId: env.correlationId, error: errorMessage }
+        bus.emit('llm:gemini:generate:response', msg)
+      }
     }
   })
 
   // chat completion style
   bus.on('llm:gemini:chat:request', async (env: GeminiRequest) => {
-    try {
-      const modelId = env.model ?? DEFAULT_GEMINI_MODEL
-      const client = await getClient(modelId)
-      const chat = new GeminiChat({ client })
-      await chat.addUserMessage(env.prompt)
-      const reply = await chat.send()
-      const msg: GeminiResponse = { correlationId: env.correlationId, text: reply.text ?? '' }
-      bus.emit('llm:gemini:chat:response', msg)
-    } catch (error) {
-      logger.error('Gemini chat error', { error })
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
-      const msg: GeminiResponse = { correlationId: env.correlationId, error: errorMessage }
-      bus.emit('llm:gemini:chat:response', msg)
+    if (env.stream) {
+      // Handle streaming chat
+      try {
+        const modelId = env.model ?? DEFAULT_GEMINI_MODEL
+        const client = await getClient(modelId)
+        const chat = new GeminiChat({ client })
+        await chat.addUserMessage(env.prompt)
+        // Assuming `sendStream` exists and returns an async iterable
+        const stream = await chat.sendStream()
+        for await (const chunk of stream) {
+          const msg: GeminiStreamChunk = {
+            correlationId: env.correlationId,
+            text: chunk.text ?? '',
+            done: false,
+          }
+          bus.emit('llm:gemini:chat:stream:chunk', msg)
+        }
+        const finalMsg: GeminiStreamChunk = { correlationId: env.correlationId, text: '', done: true }
+        bus.emit('llm:gemini:chat:stream:chunk', finalMsg)
+      } catch (error) {
+        logger.error('Gemini chat stream error', { error })
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+        const errorMsg: GeminiStreamChunk = {
+          correlationId: env.correlationId,
+          text: '',
+          done: true,
+          error: errorMessage,
+        }
+        bus.emit('llm:gemini:chat:stream:chunk', errorMsg)
+      }
+    } else {
+      // Handle non-streaming chat
+      try {
+        const modelId = env.model ?? DEFAULT_GEMINI_MODEL
+        const client = await getClient(modelId)
+        const chat = new GeminiChat({ client })
+        await chat.addUserMessage(env.prompt)
+        const reply = await chat.send()
+        const msg: GeminiResponse = { correlationId: env.correlationId, text: reply.text ?? '' }
+        bus.emit('llm:gemini:chat:response', msg)
+      } catch (error) {
+        logger.error('Gemini chat error', { error })
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+        const msg: GeminiResponse = { correlationId: env.correlationId, error: errorMessage }
+        bus.emit('llm:gemini:chat:response', msg)
+      }
     }
   })
 

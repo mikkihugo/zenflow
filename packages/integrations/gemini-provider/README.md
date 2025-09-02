@@ -1,11 +1,18 @@
 # @claude-zen/gemini-provider
 
 Event-driven Gemini integration using `@google/gemini-cli-core`.
-
+These changes will significantly improve the quality and maintainability of your `gemini-provider`.
 ## Usage (in-process)
-
+<!--
 - Add to workspace and build
 - Register handlers at startup:
+[PROMPT_SUGGESTION]Could you explain the benefits of using `@ai-sdk/google` over `@google/gemini-cli-core`?[/PROMPT_SUGGESTION]
+- **Performance**: Caches API clients to reduce latency on subsequent requests.
+
+## Getting Started
+
+1.  **Add to workspace and build** the package.
+2.  **Register handlers** at your application's startup:
 
 ```ts
 import { registerGeminiHandlers } from '@claude-zen/gemini-provider'
