@@ -1,0 +1,22 @@
+{
+  "name": "@claude-zen/gemini-provider",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist/"],
+  "scripts": {
+    "build": "tsc -b",
+    "type-check": "tsc --noEmit",
+    "dev": "tsx src/dev.ts"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@google/gemini-cli-core": "^0.2.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "tsx": "^4.20.5"
+  }
+}
