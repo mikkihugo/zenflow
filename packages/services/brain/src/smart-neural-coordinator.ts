@@ -502,3 +502,13 @@ export class SmartNeuralCoordinator {
           await (this.config.loading.lazyLoading
             ? this.initializeLazyLoading()
             : this.initializeEagerLoading())();
+
+          this.isInitialized = true;
+          this.logger.info('SmartNeuralCoordinator initialization completed');
+        } catch (error) {
+          this.logger.error('Failed to initialize SmartNeuralCoordinator:', error);
+          throw error;
+        }
+      }
+    }
+  }

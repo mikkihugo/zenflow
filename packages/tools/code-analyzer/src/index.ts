@@ -56,7 +56,7 @@ return analyzer;
 }
 
 export function createRepoAnalyzer(repositoryPath: string, config?: any) {
-const { RepoAnalyzer } = require('./repo-analyzer').
+const { RepoAnalyzer } = require('./repo-analyzer');
 return new RepoAnalyzer({ rootPath: repositoryPath, ...config });
 }
 

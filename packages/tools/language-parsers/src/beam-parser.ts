@@ -589,11 +589,13 @@ const types:BeamType[] = [];
 const typeRegex = /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
 let match;
 while ((match = typeRegex.exec(content)) !== null) {
-const lineNumber = content.substring(0, match.index).split(`\n').length;'); types.push({
-name:match[1],
-definition:match[2].trim(),
-lineNumber:lineNumber,
-category: 'custom'});
+			const lineNumber = content.substring(0, match.index).split(`\n`).length;
+			types.push({
+				name: match[1],
+				definition: match[2].trim(),
+				lineNumber: lineNumber,
+				category: 'custom'
+			});
 }
 
 // -opaque definitions - ReDoS-safe regex with atomic groups and limits

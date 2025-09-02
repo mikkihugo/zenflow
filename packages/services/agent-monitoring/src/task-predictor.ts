@@ -248,7 +248,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
         record.metadata
       );
 }
-    logger.info(`Updated learning with ${records.length} records`
+    		logger.info(`Updated learning with ${records.length} records`);
 }
 
   /**

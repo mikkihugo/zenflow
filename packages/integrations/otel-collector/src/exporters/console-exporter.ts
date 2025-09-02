@@ -22,7 +22,7 @@ export class ConsoleExporter implements BaseExporter {
 
  constructor(config:ExporterConfig) {
  this.config = config;
- this.logger = getLogger(`ConsoleExporter:${config.name}`
+ 		this.logger = getLogger(`ConsoleExporter:${config.name}`);
 }
 
  async initialize():Promise<void> {
