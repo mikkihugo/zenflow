@@ -15,6 +15,17 @@ use super::{
     Usage, ToolDefinition, MessageRole, MessageContent
 };
 
+/// Event-driven bridge contract: Rust core requests LLM ops via the platform EventBus.
+/// Implementations live outside this crate in the host runtime (e.g., TS providers).
+#[async_trait]
+pub trait EventDrivenLlmBridge: Send + Sync {
+    /// Generate a completion using a logical model id (e.g., "anthropic/claude-3.7")
+    async fn generate(&self, model: &str, messages: Vec<Message>, options: GenerateOptions) -> Result<GenerateResult>;
+
+    /// Stream a completion
+    async fn stream(&self, model: &str, messages: Vec<Message>, options: GenerateOptions) -> Result<Pin<Box<dyn Stream<Item = Result<StreamChunk>> + Send>>>;
+}
+
 /// Provider trait for LLM providers
 #[async_trait]
 pub trait Provider: Send + Sync {

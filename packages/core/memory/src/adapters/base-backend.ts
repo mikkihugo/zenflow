@@ -67,7 +67,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   constructor(config: MemoryConfig) {
     super();
     this.memoryConfig = config;
-    this._stats = {
+    this.stats = {
       totalEntries: 0,
       totalSize: 0,
       cacheHits: 0,
@@ -113,7 +113,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
       uptime: currentTime - (this.stats.lastAccessed || currentTime),
     };
 
-    this._stats = updatedStats;
+    this.stats = updatedStats;
     return updatedStats;
   }
 
@@ -243,7 +243,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
     try {
       await this.ensureInitialized();
       // Test basic operations
-      const testKey = `__health_check_${  Date.now()}`;
+      const testKey = `_health_check_${  Date.now()}`;
       await this.store(testKey, { test: true });
       const retrieved = await this.retrieve(testKey);
       await this.delete(testKey);

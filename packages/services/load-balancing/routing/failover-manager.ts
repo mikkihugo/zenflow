@@ -29,9 +29,9 @@ export class FailoverManager {
     }
   }
 
-  private async redistributeLoad(_failedAgentId: string): Promise<void> {}
+  private async redistributeLoad(failedAgentId: string): Promise<void> {}
 
-  private async activateStandbyAgent(_failedAgentId: string): Promise<void> {}
+  private async activateStandbyAgent(failedAgentId: string): Promise<void> {}
 
-  private async gracefulDegradation(_failedAgentId: string): Promise<void> {}
+  private async gracefulDegradation(failedAgentId: string): Promise<void> {}
 }

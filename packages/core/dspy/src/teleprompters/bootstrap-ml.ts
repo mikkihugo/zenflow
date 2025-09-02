@@ -257,7 +257,7 @@ this.statisticalAnalyzer = createStatisticalAnalyzer();
 this.logger.info('ML components initialized successfully');
 } catch (error) {
 this.logger.error(`Failed to initialize ML components:`, error);
-throw new Error(`BootstrapML initialization failed:${error.message}`
+throw new Error(`BootstrapML initialization failed:${error.message}`);
 }
 }
 
@@ -463,8 +463,9 @@ return embeddings;
 * Perform clustering on embeddings
 */
 private async performClustering(embeddings: MLVector[]): Promise<number[]> {
-if (!this.patternLearner)
-throw new Error(`Pattern learner not initialized`
+if (!this.patternLearner) {
+throw new Error(`Pattern learner not initialized`);
+}
 
 // Convert embeddings to dataset format
 const dataset: MLDataset = {
@@ -685,7 +686,7 @@ wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
 // Create embedding based on word hashes and frequencies
 for (const [word, freq] of wordFreq.entries()) {
 const hash1 = this.simpleHash(word) % dimension;
-const hash2 = this.simpleHash(`${word}_alt); % dimension;
+const hash2 = this.simpleHash(word + 'alt') % dimension;
 
 // Use multiple hash functions for better distribution
 embedding[hash1] += freq * 0.1;
@@ -729,7 +730,7 @@ return Math.abs(hash);
 private getBigrams(words: string[]): string[] {
 const bigrams: string[] = [];
 for (let i = 0; i < words.length - 1; i++) {
-bigrams.push(`${words[i]}_${words[i + 1]}`
+bigrams.push(words[i] + '_' + words[i + 1]);
 }
 return bigrams;
 }
@@ -737,7 +738,7 @@ return bigrams;
 // Additional helper methods (simplified for brevity)
 private async calculateUncertaintyScores(
 examples: any[],
-_embeddings: MLVector[]
+embeddings: MLVector[]
 ): Promise<number[]> {
 // Implementation would calculate uncertainty based on model predictions
 return examples.map(() => Math.random())();
@@ -745,7 +746,7 @@ return examples.map(() => Math.random())();
 
 private selectRepresentativeFromCluster(
 examples: any[],
-_embeddings: MLVector[],
+embeddings: MLVector[],
 count: number
 ): any[] {
 // Select most representative examples from cluster
@@ -754,7 +755,7 @@ return examples.slice(0, count);
 
 private selectExamplesIntelligent(
 examples: any[],
-_embeddings: MLVector[],
+embeddings: MLVector[],
 selectionSize: number
 ): any[] {
 // Intelligent selection based on adaptive weights
@@ -768,13 +769,13 @@ return shuffled.slice(0, selectionSize);
 
 private async trainRound(
 student: DSPyModule,
-_examples: any[]
+examples: any[]
 ): Promise<DSPyModule> {
 // Implementation would train the student module with selected examples
 return student;
 }
 
-private async evaluate(_module: DSPyModule, _valset: any[]): Promise<number> {
+private async evaluate(module: DSPyModule, valset: any[]): Promise<number> {
 // Implementation would evaluate module performance
 return Math.random();
 }
@@ -810,7 +811,7 @@ Math.min(1, this.adaptiveWeights[i])
 }
 
 // Statistical analysis methods (simplified)
-private async performStatisticalValidation(_history: number[]): Promise<any> {
+private async performStatisticalValidation(history: number[]): Promise<any> {
 if (!this.statisticalAnalyzer) return { overallSignificance: 0.5 };
 
 return {
@@ -851,8 +852,8 @@ private async calculateActiveLearningGain(): Promise<number> {
 return 0.15;
 }
 private async calculateDiversityScore(
-_examples: any[],
-_embeddings: MLVector[]
+examples: any[],
+embeddings: MLVector[]
 ): Promise<number> {
 return 0.7;
 }

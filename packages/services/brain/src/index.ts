@@ -599,7 +599,6 @@
 * @see {@link ./main} Main Implementation
 *
 * @requires @claude-zen/foundation - Core utilities and infrastructure
-* @requires @claude-zen/dspy - DSPy Stanford integration for neural programming
 * @requires fann-wasm - FANN neural network library with WebAssembly
 * @requires brain.js - Neural networks in JavaScript (fallback)
 *
@@ -787,16 +786,11 @@ CNNPreset,GraphNeuralNetwork,
 LSTMPreset,
 NeuralModelPresets,TransformerModel, VAEModel
 } from './models-dir';
-export type {
-NeuralConfig,
-NeuralNetwork,
-PredictionResult,
-TrainingData,
-} from './neural-bridge';
+// Note: NeuralBridge types are internal; prefer @claude-zen/neural-ml externally
 // =============================================================================
 // LEGACY COMPATIBILITY - Backward compatibility exports
 // =============================================================================
-export { NeuralBridge as IntelligenceBridge} from './neural-bridge';
+// Legacy NeuralBridge export removed; use @claude-zen/neural-ml instead
 /**
 * SmartPromptOptimizer - ML-powered prompt enhancement
 *
@@ -1088,7 +1082,6 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 *
 * **Core Dependencies:**
 * - @claude-zen/foundation for utilities and telemetry
-* - @claude-zen/dspy for neural program optimization
 * - fann-wasm for high-performance neural networks
 * - brain.js for JavaScript neural network fallback
 *
@@ -1103,7 +1096,7 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 *
 * ```bash`
 * # Install core brain package
-* npm install @claude-zen/brain @claude-zen/foundation @claude-zen/dspy
+* npm install @claude-zen/brain @claude-zen/foundation
 *
 * # Install neural network dependencies
 * npm install fann-wasm brain.js
@@ -1115,18 +1108,7 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 * See the comprehensive examples above for detailed usage patterns and enterprise features.
 */
 
-// Export neural orchestrator for brain-as-coordinator architecture
-export {
-NeuralOrchestrator,
-TaskComplexity,
-StorageStrategy,
-} from './neural-orchestrator';
-
-export type {
-NeuralData,
-NeuralResult,
-NeuralTask,
-} from './neural-orchestrator';
+// Legacy neural orchestrator exports removed — use @claude-zen/neural-ml via event-driven flows
 
 // =============================================================================
 // PROFESSIONAL NAMING PATTERNS - Enterprise Brain System Access
@@ -1139,56 +1121,57 @@ NeuralTask,
 * so strategic facades don't need to translate function names.; */
 
 // Core brain system access with lazy loading
-const brainSystemInstance:any = null;
+let brainSystemInstance: unknown | null = null;
 
-export async function getBrainSystemAccess():Promise<any> {
+export async function getBrainSystemAccess(): Promise<unknown> {
 if (!brainSystemInstance) {
-const { BrainCoordinator } = await import('./main');
-brainSystemInstance = new BrainCoordinator({
+const brainModule = await import('./main');
+ 
+brainSystemInstance = new brainModule.BrainCoordinator({
   enabled: true,
   learningRate: 0.1,
   adaptationThreshold: 0.7,
 });
-await brainSystemInstance.initialize();
+// @ts-expect-error runtime init shape
+await (brainSystemInstance as { initialize: () => Promise<void> }).initialize();
 }
 return brainSystemInstance;
 }
 
-export async function getBrainCoordinator(config?:any): Promise<any> {
-const brainSystem = await getBrainSystemAccess();
+export async function getBrainCoordinator(config?: Record<string, unknown>): Promise<unknown> {
+const brainSystem = (await getBrainSystemAccess()) as { createCoordinator: (c?: Record<string, unknown>) => unknown };
 return brainSystem.createCoordinator(config);
 }
 
-export async function getSmartNeuralCoordinator(config?:any): Promise<any> {
-const { SmartNeuralCoordinator } = await import('./smart-neural-coordinator');
-return new SmartNeuralCoordinator(config);
+export async function getSmartNeuralCoordinator(config?: Record<string, unknown>): Promise<unknown> {
+const mod = await import('./smart-neural-coordinator');
+ 
+return new mod.SmartNeuralCoordinator(config);
 }
 
-export async function getNeuralOrchestrator(_config?:any): Promise<any> {
-const { NeuralOrchestrator } = await import('./neural-orchestrator');
-return new NeuralOrchestrator();
-}
+// getNeuralOrchestrator removed — ML orchestration now lives in @claude-zen/neural-ml
 
-export async function getTaskComplexityEstimator(config?:any): Promise<any> {
-const brainSystem = await getBrainSystemAccess();
+export async function getTaskComplexityEstimator(config?: Record<string, unknown>): Promise<unknown> {
+const brainSystem = (await getBrainSystemAccess()) as { createTaskComplexityEstimator: (c?: Record<string, unknown>) => unknown };
 return brainSystem.createTaskComplexityEstimator(config);
 }
 
-export async function getAutonomousOptimizer(_config?:any): Promise<any> {
-const { AutonomousOptimizationEngine } = await import(
+export async function getAutonomousOptimizer(config?: Record<string, unknown>): Promise<unknown> {
+const mod = await import(
   './autonomous-optimization-engine'
 );
-return new AutonomousOptimizationEngine();
+ 
+void config;
+ 
+return new mod.AutonomousOptimizationEngine();
 }
 
-export async function getBehavioralIntelligence(_config?:any): Promise<any> {
-const { BehavioralIntelligence } = await import('./main');
-return new BehavioralIntelligence();
-}
-
-export async function getNeuralBridge(_config?:any): Promise<any> {
-const { NeuralBridge } = await import('./main');
-return new NeuralBridge();
+export async function getBehavioralIntelligence(config?: Record<string, unknown>): Promise<unknown> {
+const mod = await import('./main');
+ 
+void config;
+ 
+return new mod.BehavioralIntelligence();
 }
 
 // Professional brain system object with proper naming (matches Storage/Telemetry patterns)
@@ -1196,11 +1179,9 @@ export const brainSystem = {
 getAccess:getBrainSystemAccess,
 getCoordinator:getBrainCoordinator,
 getSmartCoordinator:getSmartNeuralCoordinator,
-getOrchestrator:getNeuralOrchestrator,
 getComplexityEstimator:getTaskComplexityEstimator,
 getAutonomousOptimizer,
 getBehavioralIntelligence,
-getNeuralBridge,
 };
 
 // Type definitions for external consumers

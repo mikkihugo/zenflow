@@ -132,7 +132,7 @@ function recordHistogram(
   value: number,
   tags?: Record<string, unknown>,
 ): Promise<void> {
-  const histogramKey = `${name  }_histogram`;
+  const histogramKey = `${name  }histogram`;
   const existing = metrics.get(histogramKey);
   const newValue = existing ? (existing.value + value) / 2 : value;
 
@@ -146,7 +146,7 @@ function recordHistogram(
 }
 
 function recordGauge(name: string, value: number, tags?: Record<string, unknown>): Promise<void> {
-  metrics.set(`${name  }_gauge`, {
+  metrics.set(`${name  }gauge`, {
     value,
     timestamp: Date.now(),
     tags: tags || {},
@@ -1492,7 +1492,7 @@ export class NeuralMLEngine {
       }
     }
 
-    const __stats = {
+    const _stats = {
       totalOptimizers: optimizers.length,
       activeOptimizers: optimizers.filter(
         (opt) => opt.stats.operationsCount > 0
@@ -1700,7 +1700,7 @@ export class NeuralMLEngine {
     };
     recommendations: string[];
   } {
-    const __stats = this.getStats();
+    const _stats = this.getStats();
     const recommendations: string[] = [];
 
     // Determine overall health status
@@ -1815,8 +1815,9 @@ export class NeuralMLEngine {
 
     if (!globalThis.neuralMLModule) {
       // In a real implementation, this would be:
-      // const neuralML = await import('@claude-zen/neural-ml-native');
-      // or: const neuralML = require('@claude-zen/neural-ml-native');
+  // NOTE: Native module would be loaded here by the runtime host.
+  // Example (disabled to comply with import policy):
+  //   const neuralML = await import('NATIVE_MODULE_PLACEHOLDER');
 
       throw new ConfigurationError('Neural-ML Rust module not available', {
         config: this.config,

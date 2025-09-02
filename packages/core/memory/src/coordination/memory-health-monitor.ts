@@ -65,7 +65,7 @@ export class MemoryHealthMonitor extends EventEmitter {
     super();
     this.config = config;
     this.logger = getLogger('MemoryHealthMonitor');
-    this._stats = {
+    this.stats = {
       totalChecks: 0,
       successfulChecks: 0,
       failedChecks: 0,
@@ -498,7 +498,7 @@ export class MemoryHealthMonitor extends EventEmitter {
   }
 
   reset(): void {
-    this._stats = {
+    this.stats = {
       totalChecks: 0,
       successfulChecks: 0,
       failedChecks: 0,

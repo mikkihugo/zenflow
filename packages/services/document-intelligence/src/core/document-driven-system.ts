@@ -75,7 +75,7 @@ logger.info(' SAFe Artifact Intelligence ready').; this.emit('initialized`, time
 *
 * @param workspacePath
 */
-async loadWorkspace(workspaceName:string, _databaseConnections:any): Promise<string> {
+async loadWorkspace(workspaceName:string, databaseConnections:any): Promise<string> {
 const workspaceId = `safe-workspace-${Date.now()}``
 
 const workspace:SafeWorkspace = {

@@ -51,7 +51,7 @@ launch(): void {
 class MockModule extends DSPyModule {
 private name: string;
 private mockResponse: Prediction;
-public _compiled: boolean = false;
+public compiled: boolean = false;
 private mockPredictors: any[];
 
 constructor(name: string, mockResponse: Prediction, lm?: MockLM) {
@@ -60,7 +60,7 @@ this.name = name;
 this.mockResponse = mockResponse;
 this.mockPredictors = [
 {
-name: name + '_predictor',
+name: name + 'predictor',
 signature: { instructions: 'Follow instructions carefully.' },
 lm: lm || new MockLM(),
 demos: [],
@@ -91,7 +91,7 @@ return this.mockPredictors.map(
 
 deepcopy(): MockModule {
 const copy = new MockModule(this.name, { ...this.mockResponse });
-copy._compiled = this._compiled;
+copy.compiled = this.compiled;
 copy.mockPredictors = this.mockPredictors.map((pred) => ({ ...pred }));
 return copy;
 }
@@ -261,7 +261,7 @@ const result = await bootstrapFinetune.compile(mockStudent, trainset);
 
 expect(result).toBeDefined();
 expect(result).toBeInstanceOf(MockModule);
-expect((result as any)._compiled).toBe(true);
+expect((result as any).compiled).toBe(true);
 });
 
 it('should compile with student, trainset, and single teacher', async () => {
@@ -614,7 +614,7 @@ expect(result).toBeDefined();
 
 it('should handle custom adapter per LM', async () => {
 const adapter1 = new ChatAdapter();
-const __adapter2 = new ChatAdapter();
+const _adapter2 = new ChatAdapter();
 
 const adapterMap = new Map([[mockLM, adapter1]]);
 
@@ -631,7 +631,7 @@ expect(result).toBeDefined();
 it('should handle metric filtering during data preparation', async () => {
 // Create metric that filters out some examples
 const selectiveMetric: MetricFunction = (
-_example: Example,
+example: Example,
 prediction: Prediction
 ): number => {
 // Only accept even-numbered answers
@@ -715,10 +715,10 @@ mockTeacher,
 expect(result3).toBeDefined();
 });
 
-it('should set _compiled flag like Stanford DSPy', async () => {
+it('should set compiled flag like Stanford DSPy', async () => {
 const result = await bootstrapFinetune.compile(mockStudent, trainset);
 
-expect((result as any)._compiled).toBe(true);
+expect((result as any).compiled).toBe(true);
 });
 
 it('should handle Stanford DSPy-style error messages', async () => {

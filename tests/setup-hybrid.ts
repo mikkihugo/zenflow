@@ -132,7 +132,7 @@ function setupClassicalTDD() {
           { input: [1, 1], output: [0] },
         ];
       case 'linear':
-        return Array.from({ length: config.samples || 100 }, (_, _i) => {
+        return Array.from({ length: config.samples || 100 }, (_, i) => {
           const x = Math.random() * 10;
           const y = 2 * x + 3 + (Math.random() - 0.5) * (config.noise || 0.1);
           return { input: [x], output: [y] };

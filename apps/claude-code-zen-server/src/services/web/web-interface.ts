@@ -20,6 +20,7 @@ import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
 // Import existing implementations
 import { WebDataService } from './data.handler';
 import { ApiRouteHandler } from './api.handler';
+import { EventGateway } from '../events/event-gateway';
 
 // Real WebConfig implementation with proper validation
 class WebConfig {
@@ -235,6 +236,10 @@ class WebApiRoutes {
         webSocketCoordinator,
         { prefix: '/api/v1', enableCors: true }
       );
+
+  // Initialize event gateway to handle API event requests
+  const gateway = new EventGateway(this.dataService);
+  gateway.initialize();
 
       this.logger.info('API routes configured successfully');
     } catch (error) {

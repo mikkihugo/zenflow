@@ -1,103 +1,43 @@
-# Code Mode Guidelines for Claude Code Zen
+to# Code Mode Guidelines for Claude Code Zen
 
-## 🛡️ Functionality Preservation Guidelines
+## 🛡️ Code Change Guidelines
 
-### Critical Distinction: "Compiles" vs "Compiles AND Works"
+**Enterprise Requirement**: Prioritize functionality over compilation-only fixes.
 
-**ENTERPRISE REQUIREMENT**: All code changes must prioritize **functionality preservation over compilation-only fixes**. The goal is **"compiles AND works"** - not just **"compiles"**.
+### Core Principles
+- [ ] Surgical changes only (one logical unit at a time)
+- [ ] Preserve error handling and performance characteristics
+- [ ] Require manual verification for AI-generated changes
+- [ ] Use unit tests to validate behavior preservation
+- [ ] Include TaskMaster approval for major changes
 
-#### Surgical Fix Guidelines
+### Forbidden Practices
+- ❌ Bulk file replacements
+- ❌ Complete rewrites without review
+- ❌ Removing error handling
+- ❌ Changing return types without updates
 
-- **NEVER use bulk file replacements that lose functionality**
-- **ALWAYS require manual verification of AI-generated changes**
-- **PRIORITIZE functionality preservation over compilation-only fixes**
-- **REQUIRE unit tests to validate intended behavior preservation**
-- **INCLUDE TaskMaster approval for major AI-assisted changes**
-
-**Line-by-line modifications only:**
-- Change one logical unit at a time
-- Preserve all existing error handling paths
-- Maintain backward compatibility
-- Keep existing performance characteristics
-
-**Forbidden practices:**
-- ❌ Bulk search-and-replace operations
-- ❌ Complete file rewrites without line-by-line review
-- ❌ Removing error handling without replacement
-- ❌ Changing return types without updating callers
-
-#### AI Limitations
-
-- AI excels at syntax correction but often misses semantic requirements
-- Error handling patterns frequently omitted or simplified
-- Performance implications not considered
-- Integration points may be broken
-
-**Safeguard Implementation:**
+### AI Safeguards
 ```typescript
 import { AISafetyMonitor } from '@claude-zen/ai-safety';
-
-const safetyMonitor = new AISafetyMonitor();
-const aiGeneratedCode = await aiAssistant.generateFix(problem);
-
 const safetyCheck = await safetyMonitor.validateCodeChange({
   originalCode,
   proposedCode: aiGeneratedCode,
   context: 'functionality-preservation'
 });
-
-if (!safetyCheck.safe) {
-  console.warn('AI-generated code requires manual review:', safetyCheck.issues);
-  // Force manual review process
-}
 ```
 
-## 🔍 Library Research Integration
+## 🔍 Research Workflow
 
-### Context7 Library Research
-```typescript
-// Research libraries, frameworks, and best practices
-// Use Context7 to find:
-// - Package documentation and API references
-// - Code examples and implementation patterns
-// - Best practices for specific technologies
-// - Integration guides and troubleshooting tips
-```
+**Multi-step implementation research workflow:**
+1. Identify technical requirements and constraints
+2. Research available libraries and frameworks
+3. Evaluate options against project architecture
+4. Analyze integration complexity and maintenance costs
+5. Validate implementation approach with prototypes
+6. Document chosen solution and rationale
 
-### SequentialThinking for Implementation Research
-```typescript
-// Multi-step implementation research workflow:
-// 1. Identify technical requirements and constraints
-// 2. Research available libraries and frameworks
-// 3. Evaluate options against project architecture
-// 4. Analyze integration complexity and maintenance costs
-// 5. Validate implementation approach with prototypes
-// 6. Document chosen solution and rationale
-```
-
-### Research-Driven Implementation Scenarios
-
-**Database Integration Research:**
-- **Context7**: Research database adapter patterns and optimization techniques
-- **SequentialThinking**: Evaluate SQLite/LanceDB/Kuzu integration approaches
-- **Integration**: Use project-research mode for existing database implementations
-
-**WASM Neural Acceleration:**
-- **Context7**: Research Rust/WebAssembly integration patterns and performance optimization
-- **SequentialThinking**: Design neural computation routing and gateway patterns
-- **Integration**: Investigate existing WASM gateway implementations
-
-**Event System Implementation:**
-- **Context7**: Research TypedEventBase patterns and event-driven architecture
-- **SequentialThinking**: Design cross-domain event communication patterns
-- **Integration**: Analyze existing event system implementations
-
-**Performance Optimization:**
-- **Context7**: Research performance profiling tools and optimization techniques
-- **SequentialThinking**: Implement performance monitoring and optimization strategies
-- **Integration**: Deep codebase analysis for performance patterns
-
-### Tool Selection Criteria
+### Tool Selection Decision Tree
 
 **Use Context7 when:**
 - Researching unfamiliar libraries or frameworks
@@ -116,6 +56,13 @@ if (!safetyCheck.safe) {
 - Investigating integration with existing systems
 - Analyzing historical implementation patterns
 - Researching system-wide integration requirements
+
+### Research-Driven Implementation Scenarios
+
+**Database Integration:** Use SequentialThinking to evaluate SQLite/LanceDB/Kuzu approaches
+**WASM Neural Acceleration:** Use Context7 for Rust/WebAssembly integration patterns
+**Event System Implementation:** Use SequentialThinking for cross-domain communication design
+**Performance Optimization:** Use Context7 for profiling tools and optimization techniques
 
 ## 🛠️ Development Workflow & Build System
 
@@ -170,13 +117,16 @@ import { _, dateFns, getLogger } from '@claude-zen/foundation';
 ```
 
 **Complete restricted list:**
-- `lodash` → `import { _, lodash } from '@claude-zen/foundation'`
-- `nanoid` → `import { generateNanoId } from '@claude-zen/foundation'`
-- `uuid` → `import { generateUUID } from '@claude-zen/foundation'`
-- `date-fns` → `import { dateFns, format, addDays } from '@claude-zen/foundation'`
-- `commander` → `import { Command, program } from '@claude-zen/foundation'`
-- `zod` → `import { z, validateInput } from '@claude-zen/foundation'`
-- `winston/pino` → `import { getLogger } from '@claude-zen/foundation'`
+
+| Forbidden Import | Use Instead |
+|------------------|-------------|
+| `lodash` | `import { _, lodash } from '@claude-zen/foundation'` |
+| `nanoid` | `import { generateNanoId } from '@claude-zen/foundation'` |
+| `uuid` | `import { generateUUID } from '@claude-zen/foundation'` |
+| `date-fns` | `import { dateFns, format, addDays } from '@claude-zen/foundation'` |
+| `commander` | `import { Command, program } from '@claude-zen/foundation'` |
+| `zod` | `import { z, validateInput } from '@claude-zen/foundation'` |
+| `winston/pino` | `import { getLogger } from '@claude-zen/foundation'` |
 
 ### TypeScript Configuration Quirks
 

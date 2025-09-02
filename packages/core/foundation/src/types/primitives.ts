@@ -5,11 +5,11 @@
 
 // Basic IDs
 export type ID = string | number;
-export type UUID = string & { __brand: 'UUID' };
+export type UUID = string & { _brand: 'UUID' };
 
 // Time
-export type Timestamp = number & { __brand: 'Timestamp' };
-export type ISODateString = string & { __brand: 'ISODateString' };
+export type Timestamp = number & { _brand: 'Timestamp' };
+export type ISODateString = string & { _brand: 'ISODateString' };
 
 // JSON types
 export type JsonPrimitive = string | number | boolean | null;
@@ -19,10 +19,10 @@ export type JsonArray = JsonValue[];
 
 // Utility types
 export type UnknownRecord = Record<string, unknown>;
-export type Email = string & { __brand: 'Email' };
+export type Email = string & { _brand: 'Email' };
 
 // Branded type helper
-export type Branded<T, Brand> = T & { __brand: Brand };
+export type Branded<T, Brand> = T & { _brand: Brand };
 
 // Enums
 export enum Priority {

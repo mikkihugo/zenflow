@@ -21,30 +21,30 @@ import { getLogger, type Logger } from '@claude-zen/foundation';
 
 // Telemetry helpers - will be replaced by operations facade calls
 const recordMetric = (
-  _name: string,
-  _value: number,
-  _metadata?: Record<string, unknown>
+  name: string,
+  value: number,
+  metadata?: Record<string, unknown>
 ) => {};
 const recordHistogram = (
-  _name: string,
-  _value: number,
-  _metadata?: Record<string, unknown>
+  name: string,
+  value: number,
+  metadata?: Record<string, unknown>
 ) => {};
-const __recordGauge = (
-  _name: string,
-  _value: number,
-  _metadata?: Record<string, unknown>
+const _recordGauge = (
+  name: string,
+  value: number,
+  metadata?: Record<string, unknown>
 ) => {};
-const withTrace = (_name: string, fn: (span: any) => any) => fn({});
-const withAsyncTrace = (_name: string, fn: (span: any) => Promise<any>) =>
+const withTrace = (name: string, fn: (span: any) => any) => fn({});
+const withAsyncTrace = (name: string, fn: (span: any) => Promise<any>) =>
   fn({});
-const recordEvent = (_name: string, _data: any) => {};
+const recordEvent = (name: string, data: any) => {};
 type Span = any;
 
 // Neural backend imports with smart loading
-const _transformersModule: any = null;
+const transformersModule: any = null;
 let brainJsModule: any = null;
-const _onnxModule: any = null;
+const onnxModule: any = null;
 let openaiModule: any = null;
 
 // Interface definitions
@@ -403,7 +403,7 @@ export interface ModelStatus {
  * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);
  * ```
  */
-export class SmartNeuralCoordinator {
+export class VectorEmbeddingService {
   private logger: Logger;
   private config: NeuralBackendConfig;
   private initialized = false;
@@ -431,7 +431,7 @@ export class SmartNeuralCoordinator {
     qualityDistribution: new Map<string, number>(),
   };
 
-  constructor(_config: Partial<NeuralBackendConfig> = {}) {
+  constructor(config: Partial<NeuralBackendConfig> = {}) {
     this.logger = getLogger('smart-neural-coordinator').
 
     // Default configuration with intelligent defaults
@@ -453,7 +453,7 @@ export class SmartNeuralCoordinator {
         maxConcurrency: 4,
         enableProfiling: true,
       },
-      ..._config,
+      ...config,
     };
 
     this.logger.info(

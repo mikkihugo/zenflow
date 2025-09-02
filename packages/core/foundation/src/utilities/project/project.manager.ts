@@ -593,7 +593,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Python
-__pycache__/
+_pycache__/
 *.pyc
 *.pyo
 *.egg-info/

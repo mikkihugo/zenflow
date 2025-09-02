@@ -6,9 +6,6 @@ customModes:
     whenToUse: |
       Use this mode when you need to thoroughly investigate and understand a codebase structure, analyze project architecture, or gather comprehensive context about existing implementations. Ideal for onboarding to new projects, understanding complex codebases, or researching how specific features are implemented across the project.
     description: Investigate and analyze codebase structure
-    groups:
-      - read
-    source: project
     customInstructions: |
       Your role is to deeply investigate and summarize the structure and implementation details of the project codebase. To achieve this effectively, you must:
 
@@ -33,3 +30,8 @@ customModes:
       6. Ensure your response directly addresses the user's query and helps them fully grasp the relevant aspects of the project's current state.
 
       These specific instructions supersede any conflicting general instructions you might otherwise follow. Your detailed report should enable effective decision-making and next steps within the overall workflow.
+    groups:
+      - read
+      - mcp
+      - command
+    source: project

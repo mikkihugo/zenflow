@@ -422,7 +422,7 @@ export class GEPA extends Teleprompter {
 
 		// Logging configuration
 		this.log_dir = config.log_dir;
-		this._track_stats = config.track_stats ?? false;
+		this.track_stats = config.track_stats ?? false;
 		this.use_wandb = config.use_wandb ?? false;
 		this.wandb_api_key = config.wandb_api_key;
 		this.wandb_init_kwargs = config.wandb_init_kwargs;
@@ -505,25 +505,25 @@ export class GEPA extends Teleprompter {
 
 		if (!trainset || trainset.length === 0) {
 			throw new Error("Trainset must be provided and non-empty");
-}
+		}
 
 		if (teacher !== null) {
 			throw new Error("Teacher is not supported in GEPA yet.");
-}
+		}
 
 		// Calculate max metric calls based on budget configuration
 		if (this.auto !== null && this.auto !== undefined) {
 			this.max_metric_calls = this.auto_budget(
 				student.predictors().length,
 				AUTO_RUN_SETTINGS[this.auto].n,
-				valset ? valset.length:trainset.length,
+				valset ? valset.length : trainset.length,
 			);
 } else if (
 			this.max_full_evals !== null &&
 			this.max_full_evals !== undefined
 		) {
 			this.max_metric_calls =
-				this.max_full_evals * (trainset.length + (valset ? valset.length:0));
+				this.max_full_evals * (trainset.length + (valset ? valset.length : 0));
 } else if (
 			this.max_metric_calls === null ||
 			this.max_metric_calls === undefined
@@ -531,25 +531,25 @@ export class GEPA extends Teleprompter {
 			throw new Error(
 				"Either auto, max_full_evals, or max_metric_calls must be set.",
 			);
-}
+		}
 
+		const metricCallsAmount = (
+			this.max_metric_calls /
+			(valset === null
+				? trainset.length
+				: trainset.length + valset.length)
+		).toFixed(2);
+		const setType = valset === null ? "train" : "train+val";
 		logger.info(
 			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +
-				`This amounts to ${(
-					this.max_metric_calls /
-						(valset === null
-							? trainset.length
-							: trainset.length + valset.length)
-				).toFixed(
-					2,
-				)} full evals on the ${valset === null ? "train" : "train+val"} set.`,
+			`This amounts to ${metricCallsAmount} full evals on the ${setType} set.`
 		);
 
 		const actualValset = valset || trainset;
 		logger.info(
 			`Using ${actualValset.length} examples for tracking Pareto scores. ` +
-				`You can consider using a smaller sample of the valset to allow GEPA to explore ` +
-				`more diverse solutions within the same budget.`,
+			`You can consider using a smaller sample of the valset to allow GEPA to explore ` +
+			`more diverse solutions within the same budget.`
 		);
 
 		// Initialize random number generator
@@ -557,7 +557,7 @@ export class GEPA extends Teleprompter {
 
 		// Create feedback function for each predictor
 		const feedback_map:Record<string, any> = {};
-		const __predictors = student.predictors();
+		const _predictors = student.predictors();
 
 		for (const [pred_name, predictor] of Object.entries(
 			student.named_predictors(),
@@ -649,15 +649,15 @@ export class GEPA extends Teleprompter {
 
 			if (typeof result === "object" && "feedback" in result) {
 				if (!result.feedback) {
-					result.feedback = `This trajectory got a score of ${result.score}.`
-}
+					result.feedback = `This trajectory got a score of ${result.score}.`;
+				}
 				return result;
-} else {
+			} else {
 				return {
-					score:result,
-					feedback:`This trajectory got a score of ${result}.`,
-};
-}
+					score: result,
+					feedback: `This trajectory got a score of ${result}.`,
+				};
+			}
 };
 }
 
@@ -874,11 +874,11 @@ export class GEPA extends Teleprompter {
 	 */
 	private async generateCandidates(
 		existing_candidates:Record<string, string>[],
-		_trainset:Example[],
-		_valset:Example[],
-		_adapter:any,
+		trainset:Example[],
+		valset:Example[],
+		adapter:any,
 		reflection_lm:(input: string) => string,
-		_minibatch_size:number,
+		minibatch_size:number,
 	):Promise<Record<string, string>[]> {
 		const new_candidates:Record<string, string>[] = [];
 
@@ -914,7 +914,7 @@ export class GEPA extends Teleprompter {
 	private async mutateCandidate(
 		candidate:Record<string, string>,
 		strategy:string,
-		_reflection_lm:(input: string) => string,
+		reflection_lm:(input: string) => string,
 	):Promise<Record<string, string> | null> {
 		const mutated:Record<string, string> = {};
 

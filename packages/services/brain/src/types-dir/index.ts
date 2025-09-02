@@ -4,18 +4,12 @@
 * Central export point for all neural system types and utilities.
 */
 
-// DSPy types - optional import to avoid circular dependencies
-try {
-const dspy = require('@claude-zen/dspy');
-// Export types only if dspy is available
-if (dspy) {
-module.exports.DSPyExample = dspy.Example;
-module.exports.DSPyPrediction = dspy.Prediction;
-module.exports.DSPyModule = dspy.DSPyModule;
-}
-} catch {
-// DSPy not available - provide fallback types
-}
+// Event-driven policy: do not import optional @claude-zen/dspy directly
+// Provide minimal fallback type aliases to avoid compile-time coupling
+// Consumers should depend on brain types only
+export type DSPyExample = unknown;
+export type DSPyPrediction = unknown;
+export type DSPyModule = unknown;
 
 // Note:Signature and Teleprompter types will be enabled when those modules are ready
 

@@ -227,9 +227,9 @@ export class TransformProcessor implements BaseProcessor {
       if (!transformedData.attributes) {
         transformedData.attributes = {};
       }
-      transformedData.attributes['_transformed'] = true;
-      transformedData.attributes['_transformedAt'] = Date.now();
-      transformedData.attributes['_transformedBy'] = this.config.name;
+      transformedData.attributes['transformed'] = true;
+      transformedData.attributes['transformedAt'] = Date.now();
+      transformedData.attributes['transformedBy'] = this.config.name;
     }
 
     return transformedData;

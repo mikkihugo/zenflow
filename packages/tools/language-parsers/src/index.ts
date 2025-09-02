@@ -173,19 +173,19 @@ switch (family) {
 case 'beam': {
 const parser = factory.createBeamParser(options);
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result._unsafeUnwrap() : [];
+return result.isOk() ? result.unsafeUnwrap() : [];
 }
 case 'functional': {
 // Future: Add functional language parser support
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result._unsafeUnwrap() : [];
+return result.isOk() ? result.unsafeUnwrap() : [];
 }
 case 'concurrent': {
 // Future: Add concurrent language parser support
 const parser = factory.createBeamParser(options); // Fallback to beam for now
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result._unsafeUnwrap() : [];
+return result.isOk() ? result.unsafeUnwrap() : [];
 }
 default:
 return [];

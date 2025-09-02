@@ -115,17 +115,17 @@ valset_ratio?: number;
 const { trainset, strategy = 'p -> w -> p', valset_ratio = 0.1 } = config;
 
 logger.info('Validating the strategy');
-const parsed_strategy = this._parse_strategy(strategy);
+const parsed_strategy = this.parse_strategy(strategy);
 
 logger.info('Preparing the student program...');
-let prepared_student = this._prepare_student(student);
-this._all_predictors_have_lms(prepared_student);
+let prepared_student = this.prepare_student(student);
+this.all_predictors_have_lms(prepared_student);
 
 // Make shallow copy of trainset to preserve original order
 const working_trainset = [...trainset];
 
 logger.info('Compiling the student program...');
-prepared_student = await this._run_strategies(
+prepared_student = await this.run_strategies(
 parsed_strategy,
 prepared_student,
 working_trainset,
@@ -139,7 +139,7 @@ return prepared_student;
 /**
 * Parse and validate strategy exactly matching Stanford implementation
 */
-private _parse_strategy(strategy: string): string[] {
+private parse_strategy(strategy: string): string[] {
 const parsed_strategy = strategy.toLowerCase().split(STRAT_SEP);
 
 if (!parsed_strategy.every((s) => s === 'p' || s === 'w')) {
@@ -154,17 +154,17 @@ return parsed_strategy;
 /**
 * Prepare student exactly matching Stanford prepare_student
 */
-private _prepare_student(student: DSPyModule): DSPyModule {
-const prepared = this._deepcopy(student);
-(prepared as any)._compiled = false;
+private prepare_student(student: DSPyModule): DSPyModule {
+const prepared = this.deepcopy(student);
+(prepared as any).compiled = false;
 return prepared;
 }
 
 /**
 * Validate all predictors have LMs exactly matching Stanford implementation
 */
-private _all_predictors_have_lms(student: DSPyModule): void {
-const predictors = this._get_predictors(student);
+private all_predictors_have_lms(student: DSPyModule): void {
+const predictors = this.get_predictors(student);
 for (const predictor of predictors) {
 if (!predictor.lm) {
 throw new Error('All predictors must have language models assigned');
@@ -175,7 +175,7 @@ throw new Error('All predictors must have language models assigned');
 /**
 * Run strategies exactly matching Stanford implementation
 */
-private async _run_strategies(
+private async run_strategies(
 parsed_strategy: string[],
 student: DSPyModule,
 trainset: Example[],
@@ -200,22 +200,22 @@ logger.info('Shuffling the trainset...');
 this.rng.shuffle(trainset);
 
 if (!launched_flag) {
-this._launch_lms(student);
+this.launch_lms(student);
 launched_flag = true;
 }
 
 // Create fresh copy exactly matching Stanford implementation
-student = this._deepcopy(student);
-(student as any)._compiled = false;
+student = this.deepcopy(student);
+(student as any).compiled = false;
 
 if (step_code === 'p') {
-  student = await this._compile_prompt_optimizer(
+  student = await this.compile_prompt_optimizer(
     student,
     trainset,
     valset_ratio
   );
 } else if (step_code === 'w') {
-  student = await this._compile_weight_optimizer(student, trainset);
+  student = await this.compile_weight_optimizer(student, trainset);
   launched_flag = false;
 }
 
@@ -224,7 +224,7 @@ candidate_programs.push([current_strategy, student]);
 }
 
 if (launched_flag) {
-this._kill_lms(student);
+this.kill_lms(student);
 }
 
 (student as any).candidate_programs = candidate_programs;
@@ -234,7 +234,7 @@ return student;
 /**
 * Compile prompt optimizer exactly matching Stanford implementation
 */
-private async _compile_prompt_optimizer(
+private async compile_prompt_optimizer(
 student: DSPyModule,
 trainset: Example[],
 valset_ratio: number
@@ -261,7 +261,7 @@ const prompt_trainset = processed_trainset.slice(num_val);
 logger.info('Compiling the prompt optimizer...');
 
 // Save predictor LMs before optimization exactly matching Stanford implementation
-const pred_lms = this._get_predictors(student).map((pred) => pred.lm);
+const pred_lms = this.get_predictors(student).map((pred) => pred.lm);
 
 student = await this.prompt_optimizer.compile(student, {
 trainset: prompt_trainset,
@@ -269,7 +269,7 @@ valset: prompt_valset,
 });
 
 // Restore LMs exactly matching Stanford implementation
-const current_predictors = this._get_predictors(student);
+const current_predictors = this.get_predictors(student);
 for (let i = 0; i < current_predictors.length && i < pred_lms.length; i++) {
 if (pred_lms[i]) {
 current_predictors[i].lm = pred_lms[i];
@@ -282,20 +282,20 @@ return student;
 /**
 * Compile weight optimizer exactly matching Stanford implementation
 */
-private async _compile_weight_optimizer(
+private async compile_weight_optimizer(
 student: DSPyModule,
 trainset: Example[]
 ): Promise<DSPyModule> {
 logger.info('Preparing for weight optimization...');
 
 // Save original LMs exactly matching Stanford implementation
-const original_lms = this._get_predictors(student).map((pred) => pred.lm);
+const original_lms = this.get_predictors(student).map((pred) => pred.lm);
 
 logger.info('Compiling the weight optimizer...');
 student = await this.weight_optimizer.compile(student, { trainset });
 
 // Update train kwargs for new LMs exactly matching Stanford implementation
-const new_lms = this._get_predictors(student).map((pred) => pred.lm);
+const new_lms = this.get_predictors(student).map((pred) => pred.lm);
 
 if ((this.weight_optimizer as any).train_kwargs) {
 for (let i = 0; i < original_lms.length && i < new_lms.length; i++) {
@@ -320,7 +320,7 @@ return student;
 /**
 * Get all predictors from module exactly matching Stanford implementation
 */
-private _get_predictors(student: DSPyModule): any[] {
+private get_predictors(student: DSPyModule): any[] {
 const predictors: any[] = [];
 
 // In Stanford DSPy, student.predictors() returns a list of predictors
@@ -342,9 +342,9 @@ return predictors;
 /**
 * Launch LMs exactly matching Stanford launch_lms
 */
-private _launch_lms(student: DSPyModule): void {
+private launch_lms(student: DSPyModule): void {
 // In Stanford implementation, this launches distributed LM servers
-const predictors = this._get_predictors(student);
+const predictors = this.get_predictors(student);
 for (const predictor of predictors) {
   if (predictor.lm && typeof predictor.lm.launch === 'function') {
     predictor.lm.launch();
@@ -355,8 +355,8 @@ for (const predictor of predictors) {
 /**
  * Kill LMs exactly matching Stanford kill_lms
  */
-private _kill_lms(student: DSPyModule): void {
-  const predictors = this._get_predictors(student);
+private kill_lms(student: DSPyModule): void {
+  const predictors = this.get_predictors(student);
   for (const predictor of predictors) {
     if (predictor.lm && typeof predictor.lm.kill === 'function') {
       predictor.lm.kill();
@@ -367,7 +367,7 @@ private _kill_lms(student: DSPyModule): void {
 /**
 * Deep copy exactly matching Stanford deepcopy
 */
-private _deepcopy<T>(obj: T): T {
+private deepcopy<T>(obj: T): T {
 return JSON.parse(JSON.stringify(obj));
 }
 }

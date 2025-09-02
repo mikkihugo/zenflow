@@ -50,7 +50,7 @@ export class CapacityPredictor {
 
   public async predictDemand(
     profile: AgentCapacityProfile,
-    _timeHorizon: number
+    timeHorizon: number
   ): Promise<number> {
     // Predict future demand based on historical patterns
     const history = profile.utilizationHistory.slice(-30);

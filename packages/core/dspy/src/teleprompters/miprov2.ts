@@ -19,7 +19,7 @@ import { Teleprompter } from './teleprompter.js';
 /**
 * Auto run settings - exact match with Stanford DSPy
 */
-const _AUTO_RUN_SETTINGS = {
+const AUTO_RUN_SETTINGS = {
 light: { n: 6, val_size: 100 },
 medium: { n: 12, val_size: 300 },
 heavy: { n: 18, val_size: 1000 },
@@ -28,9 +28,9 @@ heavy: { n: 18, val_size: 1000 },
 /**
 * Constants - exact match with Stanford DSPy
 */
-const _BOOTSTRAPPED_FEWSHOT_EXAMPLES_IN_CONTEXT = 3;
-const _LABELED_FEWSHOT_EXAMPLES_IN_CONTEXT = 0;
-const _MIN_MINIBATCH_SIZE = 50;
+const BOOTSTRAPPED_FEWSHOT_EXAMPLES_IN_CONTEXT = 3;
+const LABELED_FEWSHOT_EXAMPLES_IN_CONTEXT = 0;
+const MIN_MINIBATCH_SIZE = 50;
 
 /**
 * Configuration interface for MIPROv2 teleprompter
@@ -292,12 +292,12 @@ this.config.num_candidates !== null &&
 num_trials === null
 ) {
 throw new Error(
-`If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we`d recommend setting num_trials to ~${this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates)}.`
+`If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we'd recommend setting num_trials to ~${this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates)}.`
 );
 }
 
 if (this.config.auto === null && this.config.num_candidates === null) {
-throw new Error(`If auto is None, num_candidates must also be provided.');
+throw new Error('If auto is None, num_candidates must also be provided.');
 }
 
 if (

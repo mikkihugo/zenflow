@@ -421,7 +421,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     }
 
     // Get predictions from traditional models
-    for (const [modelType, _model] of this.models) {
+    for (const [modelType, model] of this.models) {
       try {
         const prediction = await this.predictionEngine.predict(
           this.normalizeFeatures(features)
@@ -713,12 +713,12 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   /**
    * Fallback selection when ML predictions are not available.
    *
-   * @param _task
+   * @param task
    * @param availableAgents
    * @param metrics
    */
   private fallbackSelection(
-    _task: Task,
+    task: Task,
     availableAgents: Agent[],
     metrics: Map<string, LoadMetrics>
   ): RoutingResult {
@@ -863,7 +863,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private calculateFeatureImportance(
-    _features: MLFeatures
+    features: MLFeatures
   ): Record<string, number> {
     // Simplified feature importance calculation
     return {
@@ -877,7 +877,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     };
   }
 
-  private createResourceUsageSnapshot(_agentId: string): LoadMetrics {
+  private createResourceUsageSnapshot(agentId: string): LoadMetrics {
     // Create a snapshot of current resource usage
     return {
       timestamp: new Date(),
@@ -909,18 +909,18 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private async updateModelPerformance(
-    _agentId: string,
-    _task: Task,
-    _duration: number,
-    _success: boolean
+    agentId: string,
+    task: Task,
+    duration: number,
+    success: boolean
   ): Promise<void> {
     // Update model performance metrics based on actual outcomes
     // This would involve comparing predictions with actual results
   }
 
   private async updateAgentReliabilityModel(
-    _agentId: string,
-    _reliable: boolean
+    agentId: string,
+    reliable: boolean
   ): Promise<void> {
     // Update agent reliability in the model
     // This would adjust the agent's reliability score in the training data
@@ -943,8 +943,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private async evaluateModel(
-    _modelType: string,
-    _trainingData: unknown[]
+    modelType: string,
+    trainingData: unknown[]
   ): Promise<void> {
     // Evaluate model performance using cross-validation
     // This would implement proper ML evaluation metrics

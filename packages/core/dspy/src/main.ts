@@ -86,7 +86,7 @@ TrainingData,
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getDSPySystemAccess(_config?: any): Promise<any> {
+export async function getDSPySystemAccess(config?: any): Promise<any> {
 const { createDSPyEngine: createEngine } = await import('./core/dspy-engine');
 const { getDSPyService: getService, initializeDSPyService } = await import(
 './core/service'

@@ -265,7 +265,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       }
 
       // Start event adapter if available
-      if (this.adapters._event) {
+      if (this.adapters.event) {
         await this.adapters.event.start(this.config);
       }
 
@@ -296,7 +296,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       await this.executeLifecycleHooks('running');
 
       // Stop adapters in reverse order
-      if (this.adapters._event) {
+      if (this.adapters.event) {
         await this.adapters.event.stop();
       }
       if (this.adapters.websocket) {

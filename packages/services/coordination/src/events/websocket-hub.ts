@@ -211,7 +211,7 @@ export class WebsocketHub {
   /**
    * Handle publish requests - forward to EventBus
    */
-  private handlePublish(_connection: WebSocketConnection, message: InboundMessage): void {
+  private handlePublish(connection: WebSocketConnection, message: InboundMessage): void {
     if (!message.event) {
       EventLogger.log('websocket-hub:publish-missing-event');
       return;
@@ -309,7 +309,7 @@ export class WebsocketHub {
       if (subscription.endsWith('*') && messageType.startsWith(subscription.slice(0, -1))) {
         return true;
       }
-      if (messageType.startsWith(`${subscription}:); || messageType === subscription) {
+  if (messageType.startsWith(`${subscription}:`) || messageType === subscription) {
         return true;
       }
     }

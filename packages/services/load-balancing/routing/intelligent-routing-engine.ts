@@ -587,22 +587,22 @@ export class IntelligentRoutingEngine
   }
 
   // Helper methods for measurements and calculations
-  private async measureLatency(_endpoint: string): Promise<number> {
+  private async measureLatency(endpoint: string): Promise<number> {
     // Mock latency measurement
     return 50 + Math.random() * 200;
   }
 
-  private async measureBandwidth(_endpoint: string): Promise<number> {
+  private async measureBandwidth(endpoint: string): Promise<number> {
     // Mock bandwidth measurement
     return 1000 + Math.random() * 5000;
   }
 
-  private async calculateAgentReliability(_agent: Agent): Promise<number> {
+  private async calculateAgentReliability(agent: Agent): Promise<number> {
     // Mock reliability calculation based on historical data
     return 0.85 + Math.random() * 0.15;
   }
 
-  private async calculateAverageLatency(_agent: Agent): Promise<number> {
+  private async calculateAverageLatency(agent: Agent): Promise<number> {
     // Mock average latency calculation
     return 100 + Math.random() * 500;
   }
@@ -617,15 +617,15 @@ export class IntelligentRoutingEngine
   }
 
   private async calculateQoSScore(
-    _task: Task,
-    _routingEntry: RoutingTable
+    task: Task,
+    routingEntry: RoutingTable
   ): Promise<number> {
     // Calculate QoS score based on task requirements
     // This would consider task priority, SLA requirements, etc.
     return 0.8 + Math.random() * 0.2;
   }
 
-  private calculateConfidence(routingEntry: RoutingTable, _task: Task): number {
+  private calculateConfidence(routingEntry: RoutingTable, task: Task): number {
     // Calculate confidence in routing decision
     const reliabilityFactor = routingEntry.reliability;
     const routeCountFactor = Math.min(1, routingEntry.routes.length / 3);

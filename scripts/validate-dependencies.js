@@ -58,10 +58,12 @@ const FORBIDDEN_DEPENDENCIES = {
 	"env-var": "Use @claude-zen/foundation env utilities instead",
 };
 
-// Packages that are allowed to have these dependencies
+// Packages that are allowed to bypass internal import restriction
 const ALLOWED_PACKAGES = [
-	"packages/public-api/core/foundation", // Foundation can have these dependencies
-	"apps/claude-code-zen-server", // Main apps can have some direct dependencies if needed
+	"packages/core/foundation", // Foundation can have these dependencies
+	"packages/core/database", // Database core allowed
+	"apps/claude-code-zen-server", // Main server app can wire multiple services
+	"apps/web-dashboard", // Web app can import UI deps
 	"scripts", // Scripts can have utility dependencies
 ];
 
@@ -146,7 +148,30 @@ function checkPackageJson(packagePath) {
 			}
 		}
 
-		// Also check if the package is missing @claude-zen/foundation dependency
+				// Enforce internal boundary: only allow @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml
+						const internalDeps = Object.entries({
+					...(packageJson.dependencies || {}),
+					...(packageJson.devDependencies || {}),
+					...(packageJson.peerDependencies || {}),
+					...(packageJson.optionalDependencies || {}),
+				}).filter(([name]) => name.startsWith("@claude-zen/"));
+
+				for (const [depName, version] of internalDeps) {
+							if (
+								depName !== "@claude-zen/foundation" &&
+								depName !== "@claude-zen/database" &&
+								depName !== "@claude-zen/neural-ml"
+							) {
+						logger.error(` ${relativePath}`);
+						logger.error(
+							`   Restricted internal dependency: ${depName}@${version} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
+						);
+						logger.error("");
+						violations++;
+					}
+				}
+
+				// Also check if the package is missing @claude-zen/foundation dependency
 		// (but doesn't have any forbidden deps, suggesting they should add foundation)
 		const hasForbiddenDeps = depTypes.some((depType) => {
 			const deps = packageJson[depType];

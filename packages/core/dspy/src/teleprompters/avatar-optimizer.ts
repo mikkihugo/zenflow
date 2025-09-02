@@ -137,8 +137,8 @@ export class AvatarOptimizer extends Teleprompter {
 			config.max_negative_inputs ?? DEFAULT_MAX_EXAMPLES;
 
 		// Initialize predictors exactly matching Stanford implementation
-		this.comparator = this._createComparator();
-		this.feedback_instruction = this._createFeedbackInstruction();
+		this.comparator = this.createComparator();
+		this.feedback_instruction = this.createFeedbackInstruction();
 }
 
 	/**
@@ -155,14 +155,14 @@ export class AvatarOptimizer extends Teleprompter {
 	):Promise<AvatarModule> {
 		const { trainset} = config;
 
-		const best_actor = this._deepcopy(student);
+		const best_actor = this.deepcopy(student);
 		let best_score = this.optimize_for === "max" ? -999:999;
 
 		for (let i = 0; i < this.max_iters; i++) {
 			logger.info("=".repeat(20));
 			logger.info('Iteration ' + (i + 1) + '/' + this.max_iters);
 
-			const { score, pos_inputs, neg_inputs} = await this._get_pos_neg_results(
+			const { score, pos_inputs, neg_inputs} = await this.get_pos_neg_results(
 				best_actor,
 				trainset,
 			);
@@ -181,14 +181,14 @@ export class AvatarOptimizer extends Teleprompter {
 				this.max_positive_inputs &&
 				pos_inputs.length > this.max_positive_inputs
 			) {
-				sampled_pos_inputs = this._sample(pos_inputs, this.max_positive_inputs);
+				sampled_pos_inputs = this.sample(pos_inputs, this.max_positive_inputs);
 }
 
 			if (
 				this.max_negative_inputs &&
 				neg_inputs.length > this.max_negative_inputs
 			) {
-				sampled_neg_inputs = this._sample(neg_inputs, this.max_negative_inputs);
+				sampled_neg_inputs = this.sample(neg_inputs, this.max_negative_inputs);
 }
 
 			// Generate feedback exactly matching Stanford implementation
@@ -218,14 +218,14 @@ export class AvatarOptimizer extends Teleprompter {
 			if (should_update) {
 				best_actor.actor.signature =
 					best_actor.actor.signature.with_instructions(new_instruction);
-				best_actor.actor_clone = this._deepcopy(best_actor.actor);
+				best_actor.actor_clone = this.deepcopy(best_actor.actor);
 				best_score = score;
 }
 }
 
 		logger.info(`Best Actor: ${best_actor}`);
 
-		(best_actor as any)._compiled = true;
+		(best_actor as any).compiled = true;
 		return best_actor;
 }
 
@@ -237,7 +237,7 @@ export class AvatarOptimizer extends Teleprompter {
 		example:Example,
 		return_outputs:boolean,
 	):Promise<any> {
-		const actor_copy = this._deepcopy(actor);
+		const actor_copy = this.deepcopy(actor);
 
 		try {
 			const prediction = await actor_copy.forward(example.inputs);
@@ -258,7 +258,7 @@ export class AvatarOptimizer extends Teleprompter {
 		devset:Example[],
 		actor:AvatarModule,
 		return_outputs:boolean = false,
-		_num_threads?:number,
+		num_threads?:number,
 	):Promise<any> {
 		let total_score = 0;
 		const total_examples = devset.length;
@@ -284,7 +284,7 @@ export class AvatarOptimizer extends Teleprompter {
 	/**
 	 * Get positive and negative results exactly matching Stanford implementation
 	 */
-	private async _get_pos_neg_results(
+	private async get_pos_neg_results(
 		actor:AvatarModule,
 		trainset:Example[],
 	):Promise<{
@@ -338,9 +338,9 @@ export class AvatarOptimizer extends Teleprompter {
 	/**
 	 * Create comparator exactly matching Stanford implementation
 	 */
-	private _createComparator():any {
+	private createComparator():any {
 		// Mock predictor for comparator signature
-		return async (_inputs: ComparatorSignature) => {
+		return async (inputs: ComparatorSignature) => {
 			// Simulate LLM-based feedback generation
 			const feedback =
 				'Based on the analysis of positive vs negative examples, ' +
@@ -354,7 +354,7 @@ export class AvatarOptimizer extends Teleprompter {
 	/**
 	 * Create feedback instruction predictor exactly matching Stanford implementation
 	 */
-	private _createFeedbackInstruction(): any {
+	private createFeedbackInstruction(): any {
 		// Mock predictor for feedback-based instruction generation
 		return async (inputs: FeedbackBasedInstructionSignature) => {
 			// Simulate instruction improvement
@@ -369,7 +369,7 @@ export class AvatarOptimizer extends Teleprompter {
 	/**
 	 * Sample array exactly matching Stanford random.sample
 	 */
-	private _sample<T>(array:T[], n:number): T[] {
+	private sample<T>(array:T[], n:number): T[] {
 		const shuffled = [...array];
 		for (let i = shuffled.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
@@ -381,7 +381,7 @@ export class AvatarOptimizer extends Teleprompter {
 	/**
 	 * Deep copy exactly matching Stanford deepcopy
 	 */
-	private _deepcopy<T>(obj:T): T {
+	private deepcopy<T>(obj:T): T {
 		return JSON.parse(JSON.stringify(obj));
 }
 }

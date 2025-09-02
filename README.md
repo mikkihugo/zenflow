@@ -9,14 +9,14 @@ Advanced AI development platform with sophisticated agent coordination, multi-da
 
 ## ✨ Features
 
-- **🌐 Web-First Interface**: Comprehensive Svelte-based dashboard for enterprise AI development
-- **🤖 Agent Coordination**: Sophisticated multi-agent orchestration with SAFe 6.0 and SPARC methodologies  
+- **🌐 Web-First Interface**: Comprehensive Svelte-based dashboard for enterprise AI development and management
+- **🤖 Agent Coordination**: Sophisticated multi-agent orchestration with SAFe 6.0 and SPARC methodologies
 - **📊 Enterprise Workflows**: TaskMaster, Teamwork coordination, and XState-powered workflow engines
-- **💾 Multi-Database Architecture**: SQLite, LanceDB, and Kuzu graph database integration
-- **🧠 Neural WASM Modules**: High-performance neural processing with Rust acceleration
-- **📦 31-Package Monorepo**: Comprehensive enterprise-grade component library
-- **⚡ Cross-Platform Deployment**: Self-contained executables for Linux, macOS, Windows
-- **🔧 GitHub Integration**: Authentication and development workflow integration
+- **💾 Multi-Database Architecture**: SQLite, LanceDB, and Kuzu graph database integration with connection pooling
+- **🧠 Neural WASM Modules**: High-performance neural processing with Rust acceleration for heavy compute
+- **📦 31-Package Monorepo**: Comprehensive enterprise-grade component library with strict domain boundaries
+- **⚡ Cross-Platform Deployment**: Self-contained executables (116MB each) for Linux, macOS, Windows
+- **🔧 GitHub Integration**: Authentication and development workflow integration for CI/CD
 
 ## 🚀 Quick Start
 
@@ -54,9 +54,16 @@ pnpm build
 
 # Run production binaries
 ./dist/bundle/claude-zen-linux
-./dist/bundle/claude-zen-macos  
+./dist/bundle/claude-zen-macos
 ./dist/bundle/claude-zen-win.exe
 ```
+
+## 🚀 Next Steps
+
+- [ ] Read the [Development Guidelines](AGENTS.md) for comprehensive coding standards
+- [ ] Explore the web dashboard at `http://localhost:3000`
+- [ ] Review the [Architecture Documentation](docs/architecture/) for system design
+- [ ] Check out the [API Documentation](docs/api/) for integration details
 
 ## 🏗️ Architecture
 
@@ -179,38 +186,138 @@ The platform supports **flexible agent types** without arbitrary restrictions:
 
 - **Cross-Platform Binaries**: Self-contained executables (116MB each)
 - **Zero Dependencies**: Complete bundling with no external requirements
-- **Enterprise Scaling**: Supports 1000+ concurrent agents and 10,000+ tasks/minute
-- **Multi-Database Performance**: Optimized for SQLite, LanceDB, and Kuzu backends
-- **WASM Acceleration**: Rust-powered neural processing for performance-critical operations
 
-### Compliance & Enterprise
 
-- **SOC2 Compliance**: TaskMaster provides audit trails and approval workflows
-- **Enterprise Workflows**: SAFe 6.0 portfolio management and program increments
-- **Quality Gates**: SPARC methodology ensures systematic development quality
-- **Multi-Stakeholder Approval**: Human and AI reviewer coordination systems
-- **Risk Management**: Advanced approval gates with escalation procedures
+## ✨ Highlights
+
+- 🌐 Web-first dashboard (primary interface) — Svelte, starts in ~1s
+- 🔔 Typed EventBus (from foundation) — single bus for all cross-package communication
+- 🧠 Rust/WASM acceleration — heavy compute via gateway, never re-implemented in JS
+- 🗄️ Multi-database — SQLite, LanceDB, Kuzu via backend-agnostic adapters
+- 🧩 52+ package monorepo — strict domain boundaries, SEA binaries (~116MB)
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 22.18.0+
+- pnpm 10.15.0+ (npm/yarn not supported)
+- Rust (stable) — auto-installed for WASM when needed
+
+### Development
+
+```bash
+# Install deps (2–3s)
+pnpm install
+
+# Fast type pass (25–30s, may show pre-existing errors)
+pnpm type-check
+
+# Start web dashboard (PRIMARY interface)
+pnpm --filter @claude-zen/web-dashboard dev
+# ➜ http://localhost:3000/
+```
+
+### Build (NEVER CANCEL)
+
+```bash
+# Full build (5–6 min) — produces SEA binaries
+pnpm build
+
+# Optional: WASM-only (1–2 min)
+./build-wasm.sh
+```
+
+Artifacts:
+- dist/bundle/claude-zen-{linux|macos|win.exe} (~116MB)
+- dist/wasm/* (WASM modules + d.ts)
+
+## 🏗️ Architecture at a glance
+
+- 52+ packages across apps/, packages/{core,services,tools,integrations}
+- Domain separation: coordination, neural, interfaces, memory, database
+- Event-driven only: one typed EventBus from @claude-zen/foundation
+- Backend-agnostic DB: adapters for SQLite/LanceDB/Kuzu
+- Web-first: dashboard is the primary developer and operator interface
+
+### Critical rules
+
+- Use the single foundation EventBus for inter-package calls
+- Only direct internal imports allowed: @claude-zen/foundation and @claude-zen/database
+- All heavy compute must route through the Rust/WASM gateway
+- Keep domain boundaries intact (no ad-hoc cross-domain helpers)
+
+## 🌐 Web Dashboard
+
+Start the dashboard and navigate to http://localhost:3000/.
+Validate that VITE is ready and basic navigation works.
+
+```bash
+pnpm --filter @claude-zen/web-dashboard dev
+```
+
+## 🧪 Testing
+
+- Run tests per-package only (don’t run monorepo tests)
+- Foundation has some failing tests by design; others vary
+
+Examples:
+```bash
+pnpm --filter @claude-zen/foundation test
+pnpm --filter @claude-zen/coordination test
+```
+
+## 🧰 Daily development
+
+```bash
+pnpm install
+pnpm type-check
+pnpm --filter @claude-zen/web-dashboard dev
+pnpm build
+```
+
+Linting and type-checking have pre-existing issues across the repo; fix only where you touch.
+
+## ✅ Validation before you’re done
+
+1) Type-check runs to completion (errors may exist elsewhere)
+2) Build completes and creates binaries in dist/bundle/
+3) Dashboard starts and navigates without errors
+4) Changes respect domain boundaries and EventBus routing
+
+Event-driven enforcement and validators
+- Cross-package calls must go through the single typed EventBus from @claude-zen/foundation
+- Only direct internal imports allowed: @claude-zen/foundation and @claude-zen/database
+- Pre-commit runs scripts/validate-imports.js and scripts/validate-dependencies.js to enforce this
+- Server TaskMaster routes now proxy via the typed EventBus; no direct @claude-zen/coordination imports
+
+## 🆘 Troubleshooting
+
+If build fails:
+- Check Node ≥ 22.18.0 and pnpm ≥ 10.15.0
+- Clean install: remove node_modules + pnpm-lock.yaml, then pnpm install
+- Build packages or WASM separately if needed
+
+If tests OOM/fail: run per-package only.
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT — see LICENSE.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes following the domain separation principles
-4. Run quality checks (`pnpm type-check && pnpm build`)
-5. Test web dashboard functionality (`pnpm --filter @claude-zen/web-dashboard dev`)
-6. Submit a pull request
+1) Branch from main
+2) Keep edits surgical and within domain boundaries
+3) Prefer EventBus for cross-package work
+4) Validate: type-check, build, dashboard smoke
+5) Open a PR
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/mikkihugo/zenflow/issues)
-- **Documentation**: See `/docs` directory and `CLAUDE.md`
-- **Agent Guidelines**: See `AGENTS.md` for development practices
-- **Web Dashboard**: Primary interface at `http://localhost:3000`
+- Issues: https://github.com/mikkihugo/zenflow/issues
+- Docs: /docs and [Development Guidelines](AGENTS.md)
+- Agents: [AGENTS.md](AGENTS.md)
 
----
+—
 
-**Claude Code Zen** - Enterprise AI development platform with sophisticated coordination, multi-database architecture, and comprehensive web-based management. 🚀
+Claude Code Zen — event-driven, typed, and web-first. 🚀

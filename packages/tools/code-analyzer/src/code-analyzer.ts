@@ -24,71 +24,52 @@ safeAsync,
 withRetry,
 } from '@claude-zen/foundation';
 
-// Enhanced strategic facade imports with fallbacks for comprehensive analysis
-let getBrainSystem:any;
-let getPerformanceTracker:any;
-let getDatabaseSystem:any;
-let getEventSystem:any;
+// Event-driven policy: avoid direct facade imports; provide local fallbacks and use EventBus for requests
+import { EventBus } from '@claude-zen/foundation';
+const eventBus = new EventBus();
+const getBrainSystem = async () => ({
+	createCoordinator: () => ({
+		optimizePrompt: async (params: any) => ({
+			result: params.basePrompt,
+			strategy: 'fallback',
+		}),
+	}),
+	storeEmbedding: async (collection: string, id: string, data: any) => {
+		logger.debug('Brain system fallback: storing embedding', {
+			collection,
+			id,
+			data,
+		});
+		eventBus.emit?.('brain:embedding:store' as any, { collection, id, data } as any);
+	},
+});
 
-// Try to import strategic facades, with enhanced fallbacks if not available
-try {
-const intelligence = require('@claude-zen/intelligence').
-getBrainSystem = intelligence.getBrainSystem;
-} catch {
-getBrainSystem = async () => ({
-createCoordinator:() => ({
-optimizePrompt:async (params: any) => ({
-result:params.basePrompt,
-strategy: 'fallback',}),
-}),
-storeEmbedding:async (collection: string, id:string, data:any) => {
-logger.debug('Brain system fallback: storing embedding', {
-collection,
-id,
-data,
+const getPerformanceTracker = async () => ({
+	startSession: async (id: string) => ({ sessionId: id, startTime: Date.now() }),
+	endSession: async (id: string) => ({ sessionId: id, endTime: Date.now() }),
 });
-},
-});
-}
 
-try {
-const operations = require('@claude-zen/operations').
-getPerformanceTracker = operations.getPerformanceTracker;
-} catch {
-getPerformanceTracker = async () => ({
-startSession:async (id: string) => ({
-sessionId:id,
-startTime:Date.now(),
-}),
-endSession:async (id: string) => ({ sessionId: id, endTime:Date.now()}),
+const getDatabaseSystem = async () => ({
+	store: async (collection: string, id: string, data: any) => {
+		logger.debug('Database fallback: storing', { collection, id, data });
+		eventBus.emit?.('database:store' as any, { collection, id, data } as any);
+	},
+	storeGraph: async (nodeType: string, id: string, data: any) => {
+		logger.debug('Graph fallback: storing node', { nodeType, id, data });
+		eventBus.emit?.('graph:store' as any, { nodeType, id, data } as any);
+	},
 });
-}
 
-try {
-const infrastructure = require('@claude-zen/infrastructure').
-getDatabaseSystem = infrastructure.getDatabaseSystem;
-getEventSystem = infrastructure.getEventSystem;
-} catch {
-getDatabaseSystem = async () => ({
-store:async (collection: string, id:string, data:any) => {
-logger.debug('Database fallback: storing', { collection, id, data });
-},
-storeGraph: async (nodeType: string, id: string, data: any) => {
-logger.debug('Graph fallback: storing node', { nodeType, id, data });
-},
+const getEventSystem = async () => ({
+	emit: async (event: string, data: any) => {
+		logger.debug('Event emit (via bus)', { event, data });
+		eventBus.emit?.(event as any, data as any);
+	},
+	on: (event: string, callback: Function) => {
+		logger.debug('Event listener (local stub)', { event });
+		eventBus.on?.(event as any, callback as any);
+	},
 });
-getEventSystem = async () => ({
-emit:async (event: string, data:any) => {
-logger.debug('Event fallback', { event, data });
-},
-on: (event: string, callback: Function) => {
-logger.debug('Event listener fallback', { event });
-if (callback) {
-callback();
-}
-},
-});
-}
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
@@ -174,7 +155,7 @@ diContainer.registerSingleton(ANALYSIS_TOKENS.AnalysisMetrics, AnalysisMetrics);
 @injectable
 export class CodeAnalyzer {
 private readonly repositoryPath:string;
-private readonly _project:Project; // Used for TypeScript analysis
+private readonly project:Project; // Used for TypeScript analysis
 
 // Strategic facade systems - real implementations
 private brainSystem?:any;
@@ -190,7 +171,7 @@ this.repositoryPath = path.resolve(repositoryPath);
 
 // Initialize TypeScript project for advanced analysis
 const tsConfigPath = this.findTsConfig();
-this._project = new Project({
+this.project = new Project({
 ...(tsConfigPath ? { tsConfigFilePath:tsConfigPath} :{}),
 useInMemoryFileSystem:false,
 });
@@ -205,7 +186,7 @@ logger.warn('Failed to initialize repository analyzer', { error });
 
 logger.info('CodeAnalyzer initialized', {
 repositoryPath: this.repositoryPath,
-hasProject: !!this._project,
+hasProject: !!this.project,
 hasRepoAnalyzer: !!this.repoAnalyzer
 });
 
@@ -334,9 +315,9 @@ return session;
 */
 async analyzeFile(
 filePath:string,
-_options:Partial<EnhancedAnalysisOptions> = {},
+options:Partial<EnhancedAnalysisOptions> = {},
 ):Promise<Result<CodeAnalysisResult, Error>> {
-const __startTime = Date.now();
+const _startTime = Date.now();
 
 return await safeAsync(async ():Promise<CodeAnalysisResult> => {
 // Get metrics service from DI container
@@ -366,7 +347,7 @@ this.performQualityAnalysis(content, language, absolutePath),
 
 // Generate AI insights if enabled
 let aiInsights: AICodeInsights | undefined;
-if (_options.enableAIRecommendations && this.brainSystem) {
+if (options.enableAIRecommendations && this.brainSystem) {
 const insightsResult = await this.generateAIInsights(
 content,
 language,
@@ -384,16 +365,17 @@ filePath:absolutePath,
 language,
 timestamp:new Date(),
 ast:
-ast.status ==='fulfilled; ? ast.value
-:this.createEmptyASTAnalysis(),
-syntaxErrors:[],
-parseSuccess:ast.status === 'fulfilled', semantics:
-semantics.status === 'fulfilled; ? semantics.value
-:this.createEmptySemanticAnalysis(),
-typeErrors:[],
+ast.status === 'fulfilled' ? ast.value
+: this.createEmptyASTAnalysis(),
+syntaxErrors: [],
+parseSuccess: ast.status === 'fulfilled',
+semantics:
+semantics.status === 'fulfilled' ? semantics.value
+: this.createEmptySemanticAnalysis(),
+typeErrors: [],
 quality:
-quality.status === 'fulfilled; ? quality.value
-:this.createEmptyQualityMetrics(),
+quality.status === 'fulfilled' ? quality.value
+: this.createEmptyQualityMetrics(),
 suggestions:[],
 ...(aiInsights && { aiInsights}),
 analysisTime:Date.now() - startTime,
@@ -411,7 +393,7 @@ this.updateSessionMetrics(result);
 // Store analysis result via infrastructure database system
 if (this.databaseSystem) {
 await this.databaseSystem.store('code_analysis_results', analysisId, {
-; filePath:absolutePath,
+filePath: absolutePath,
 language:language,
 timestamp:result.timestamp.toISOString(),
 complexity:result.ast.complexity,
@@ -423,7 +405,7 @@ sessionId:this.currentSession?.id,
 
 // Store file relationships in graph database
 await this.databaseSystem.storeGraph('CodeFile', analysisId, {
-; filePath:absolutePath,
+filePath: absolutePath,
 language:language,
 complexity:result.ast.complexity,
 imports:result.ast.imports,
@@ -433,7 +415,7 @@ exports:result.ast.exports,
 // Brain system handles embeddings automatically
 if (this.brainSystem) {
 await this.brainSystem.storeEmbedding('code_analysis', analysisId, {
-; content:content,
+content: content,
 metadata:{
 filePath:absolutePath,
 language:language,
@@ -445,7 +427,7 @@ suggestions:result.suggestions,
 }
 
 logger.debug('File analysis completed', {
-; filePath:absolutePath,
+filePath: absolutePath,
 language,
 analysisTime:result.analysisTime,
 });
@@ -1205,7 +1187,7 @@ const files = await this.discoverFiles(options);
 this.logger.debug(`Discovered ${files}.lengthfiles for analysis``
 
 // Phase 2:Node Extraction - Extract all dependency nodes
-const __nodes = await this.extractNodes(files);
+const _nodes = await this.extractNodes(files);
 this.logger.debug(`Extracted ${nodes.length} dependency nodes``
 
 // Phase 3:Edge Analysis - Analyze relationships between nodes
@@ -1332,7 +1314,7 @@ return violations;
 private async discoverFiles(options:any): Promise<string[]> {
 const files:string[] = [];
 const extensions = ['.ts', '.tsx', '.js', '.jsx'];')
-const __walkDir = async (dir:string): Promise<void> => {
+const _walkDir = async (dir:string): Promise<void> => {
 try {
 const entries = await fs.readdir(dir, { withFileTypes:true});
 
@@ -1342,7 +1324,7 @@ const fullPath = path.join(dir, entry.name);
 if (entry.isDirectory()) {
 // Skip node_modules unless explicitly included
 if (entry.name === 'node_modules' && !options.includeNodeModules) continue;// Skip test directories unless explicitly included
-if ((entry.name === '__tests__' || entry.name === ' test' || entry.name === ' tests); && !options.includeTests) continue;`)
+if ((entry.name === '_tests__' || entry.name === ' test' || entry.name === ' tests); && !options.includeTests) continue;`)
 await walkDir(fullPath);
 } else if (entry.isFile()) {
 const ext = path.extname(entry.name);
@@ -1387,13 +1369,13 @@ variable:/(?:const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)/g,
 export:/export\s+(?:(?:default\s+)?(?:class|function|interface|type|const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)|{([^}]+)})/g,
 };
 
-for (const [_nodeType, pattern] of Object.entries(patterns)) {
+for (const [nodeType, pattern] of Object.entries(patterns)) {
 let match;
 while ((match = pattern.exec(content)) !== null) {
 const name = match[1] || match[2];
 if (name) {
-const lineIndex = content.substring(0, match.index).split('\n').length - 1; const __line = lines[lineIndex];
-const __column = match.index - content.lastIndexOf('\n`, match.index) - 1;`)
+const lineIndex = content.substring(0, match.index).split('\n').length - 1; const _line = lines[lineIndex];
+const _column = match.index - content.lastIndexOf('\n`, match.index) - 1;`)
 nodes.push(
 id:this.generateNodeId(),
 name,
@@ -1401,7 +1383,7 @@ type:nodeType as any,
 filePath,
 location:
 line:lineIndex + 1,
-_column,
+column,
 endLine:lineIndex + 1,
 endColumn:column + name.length,,
 metadata:
@@ -1445,7 +1427,7 @@ const importPattern = /imports+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[
 let match;
 
 while ((match = importPattern.exec(content)) !== null) {
-const [, namedImports, defaultImport, _namespaceImport, _modulePath] = match;
+const [, namedImports, defaultImport, namespaceImport, modulePath] = match;
 
 // Handle different import types
 if (namedImports) {

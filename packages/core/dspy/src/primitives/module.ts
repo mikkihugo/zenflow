@@ -33,7 +33,7 @@ predictors(): any[] {
 const predictors: any[] = [];
 
 // Iterate through all properties to find predictors
-for (const [_key, value] of Object.entries(this)) {
+for (const [key, value] of Object.entries(this)) {
 if (value && typeof value === 'object' && 'signature' in value) {
 predictors.push(value);
 }
@@ -94,7 +94,7 @@ return copy;
 reset_copy(): DSPyModule {
 const copy = this.deepcopy();
 copy.reset();
-(copy as any)._compiled = false;
+(copy as any).compiled = false;
 return copy;
 }
 
@@ -162,7 +162,7 @@ lm: p.lm?.model || null,
 /**
 * Load module state
 */
-load(_state: Record<string, any>): void {
+load(state: Record<string, any>): void {
 // Implementation would restore module state
 // This is a placeholder for now
 }

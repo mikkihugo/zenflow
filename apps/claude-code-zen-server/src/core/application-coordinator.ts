@@ -55,7 +55,7 @@ export interface ApplicationCoordinatorConfig {
 }
 
 export interface SystemStatus {
-  status: 'initializing' | 'ready' | '_error' | 'shutdown';
+  status: 'initializing' | 'ready' | 'error' | 'shutdown';
   version: string;
   components: {
     interface: {
@@ -101,7 +101,7 @@ export interface SystemStatus {
 
 // Application Coordinator event map
 interface ApplicationCoordinatorEventMap extends EventMap {
-  '_error': [Error];
+  'error': [Error];
   'shutdown': [];
   'status-changed': [string];
   'initialized': [{ timestamp: string; config: ApplicationCoordinatorConfig; activeConnections: number }];
@@ -211,8 +211,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           };
           logger.info(' Memory management system initialized');
           this.emit('component:initialized', 'memory');
-        } catch (_error) {
-          logger.warn('Memory manager initialization failed, continuing...', _error);
+        } catch (error) {
+          logger.warn('Memory manager initialization failed, continuing...', error);
         }
       }
 
@@ -228,8 +228,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           };
           logger.info(' Workflow engine initialized with real-time support');
           this.emit('component:initialized', 'workflow');
-        } catch (_error) {
-          logger.warn('Workflow engine initialization failed, continuing...', _error);
+        } catch (error) {
+          logger.warn('Workflow engine initialization failed, continuing...', error);
         }
       }
 
@@ -245,8 +245,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           };
           logger.info(' Documentation system initialized');
           this.emit('component:initialized', 'documentation');
-        } catch (_error) {
-          logger.warn('Documentation system initialization failed, continuing...', _error);
+        } catch (error) {
+          logger.warn('Documentation system initialization failed, continuing...', error);
         }
       }
 
@@ -262,8 +262,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           };
           logger.info(' Export manager initialized with streaming support');
           this.emit('component:initialized', 'export');
-        } catch (_error) {
-          logger.warn('Export manager initialization failed, continuing...', _error);
+        } catch (error) {
+          logger.warn('Export manager initialization failed, continuing...', error);
         }
       }
 
@@ -282,8 +282,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             logger.info(` Workspace detected: ${  this.activeWorkspaceId}`);
           }
           this.emit('component:initialized', 'workspace');
-        } catch (_error) {
-          logger.warn('Workspace manager initialization failed, continuing...', _error);
+        } catch (error) {
+          logger.warn('Workspace manager initialization failed, continuing...', error);
         }
       }
 
@@ -296,8 +296,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           };
           logger.info(' Interface management system initialized with WebSocket support');
           this.emit('component:initialized', 'interface');
-        } catch (_error) {
-          logger.warn('Interface manager initialization failed, continuing...', _error);
+        } catch (error) {
+          logger.warn('Interface manager initialization failed, continuing...', error);
         }
       }
 
@@ -309,9 +309,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
 
       logger.info(' All application components initialized successfully');
 
-    } catch (_error) {
-      logger.error(' Failed to initialize application components:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error(' Failed to initialize application components:', error);
+      throw error;
     }
   }
 
@@ -321,11 +321,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   private setupEventHandlers(): void {
     try {
       // Handle system errors
-      this.on('_error', (_error) => {
-        logger.error('Application _error:', _error);
-        this.status = '_error';
+      this.on('error', (error) => {
+        logger.error('Application error:', error);
+        this.status = 'error';
         this.emit(STATUS_CHANGED_EVENT, this.status);
-        this.broadcastEvent('system:_error', { _error: (_error as Error).message });
+        this.broadcastEvent('system:error', { error: (error as Error).message });
       });
 
       // Handle graceful shutdown
@@ -372,9 +372,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
 
       logger.info(' Application event handlers configured with WebSocket support');
-    } catch (_error) {
-      logger.error(' Failed to setup event handlers:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error(' Failed to setup event handlers:', error);
+      throw error;
     }
   }
 
@@ -406,11 +406,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.emit(STATUS_CHANGED_EVENT, this.status);
 
       logger.info(' Application Coordinator ready with WebSocket support');
-    } catch (_error) {
-      this.status = '_error';
+    } catch (error) {
+      this.status = 'error';
       this.emit(STATUS_CHANGED_EVENT, this.status);
-      logger.error(' Failed to initialize Application Coordinator:', _error);
-      throw _error;
+      logger.error(' Failed to initialize Application Coordinator:', error);
+      throw error;
     }
   }
 
@@ -425,8 +425,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       try {
         await (this.interfaceManager as any).start();
         logger.info(' Interface launched with WebSocket support');
-      } catch (_error) {
-        logger.warn('Interface launch failed, continuing...', _error);
+      } catch (error) {
+        logger.warn('Interface launch failed, continuing...', error);
       }
     }
     
@@ -499,7 +499,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   async processDocument(documentPath: string): Promise<{
     success: boolean;
     workflowIds: string[];
-    _error?: string;
+    error?: string;
   }> {
     await this.ensureInitialized();
     
@@ -521,8 +521,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           if (docResult.workflowId) {
             workflowIds.push(docResult.workflowId);
           }
-        } catch (_error) {
-          logger.warn('Documentation processing failed:', _error);
+        } catch (error) {
+          logger.warn('Documentation processing failed:', error);
         }
       }
       
@@ -533,8 +533,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           if (workflowResult.workflowId) {
             workflowIds.push(workflowResult.workflowId);
           }
-        } catch (_error) {
-          logger.warn('Workflow creation failed:', _error);
+        } catch (error) {
+          logger.warn('Workflow creation failed:', error);
         }
       }
       
@@ -549,20 +549,20 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         success: true,
         workflowIds,
       };
-    } catch (_error) {
-      const errorMessage = (_error as Error).message;
-      logger.error(`Failed to process document ${documentPath}:`, _error);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      logger.error(`Failed to process document ${documentPath}:`, error);
       
-      this.broadcastEvent('document:processing:_error', {
+      this.broadcastEvent('document:processing:error', {
         path: documentPath,
-        _error: errorMessage,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       });
 
       return {
         success: false,
         workflowIds: [],
-        _error: errorMessage,
+        error: errorMessage,
       };
     }
   }
@@ -573,7 +573,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   async exportSystemData(format: string): Promise<{
     success: boolean;
     filename?: string;
-    _error?: string;
+    error?: string;
   }> {
     await this.ensureInitialized();
     
@@ -603,19 +603,19 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         success: true,
         filename: exportResult.filename,
       };
-    } catch (_error) {
-      const errorMessage = (_error as Error).message;
-      logger.error(`Failed to export system data to ${format}:`, _error);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      logger.error(`Failed to export system data to ${format}:`, error);
       
-      this.broadcastEvent('export:_error', {
+      this.broadcastEvent('export:error', {
         format,
-        _error: errorMessage,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       });
 
       return {
         success: false,
-        _error: errorMessage,
+        error: errorMessage,
       };
     }
   }
@@ -728,9 +728,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
 
       logger.info(' Application Coordinator shutdown complete');
-    } catch (_error) {
-      logger.error(' Error during shutdown:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error(' Error during shutdown:', error);
+      throw error;
     }
   }
 

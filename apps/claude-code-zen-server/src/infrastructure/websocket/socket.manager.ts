@@ -371,7 +371,7 @@ export class WebSocketManager {
       import('@claude-zen/foundation')
         .then(({ setLogBroadcaster }) => {
           if (setLogBroadcaster) {
-            setLogBroadcaster((_event: string, _data: unknown) => {
+            setLogBroadcaster((event: string, data: unknown) => {
               // Broadcast to the logs room specifically
               this.broadcastToRoom('logs', event, data);
             });

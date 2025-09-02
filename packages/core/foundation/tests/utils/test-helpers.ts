@@ -54,7 +54,7 @@ export const asyncUtils = {
   },
 
   timeout: (ms: number) =>
-    new Promise<never>((_resolve, reject) =>
+    new Promise<never>((resolve, reject) =>
       setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
     ),
 };

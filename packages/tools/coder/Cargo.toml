@@ -2,9 +2,7 @@
 resolver = "2"
 members = [
 	"crates/code-mesh-core",
-	# Optional UI/TUI and WASM crates (leave out for Rust-only minimal set)
-	# "crates/code-mesh-tui",
-	# "crates/code-mesh-wasm",
+	# Headless engine only; no CLI/TUI binaries included
 ]
 
 [workspace.package]

@@ -503,7 +503,7 @@ logger.info(
 );
 }
 
-const _results:SwarmTestResult[] = [];
+const results:SwarmTestResult[] = [];
 
 for (let i = 0; i < strategies.length; i++) {
 const strategy = strategies[i];

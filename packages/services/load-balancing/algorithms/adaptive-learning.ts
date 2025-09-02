@@ -339,11 +339,11 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   /**
    * Select strategy using epsilon-greedy or other methods.
    *
-   * @param _context
+   * @param context
    * @param detectedPattern
    */
   private async selectStrategy(
-    _context: PatternContext,
+    context: PatternContext,
     detectedPattern?: LearningPattern | undefined
   ): Promise<string> {
     // If pattern detected, use its optimal strategy with high probability
@@ -452,14 +452,14 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    * @param task
    * @param availableAgents
    * @param metrics
-   * @param _context
+   * @param context
    */
   private async applyStrategy(
     strategyName: string,
     task: Task,
     availableAgents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    _context: PatternContext
+    context: PatternContext
   ): Promise<RoutingResult> {
     // Apply the specific strategy logic
     let selectedAgent: Agent;
@@ -689,7 +689,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private selectByResourceAwareness(
     agents: Agent[],
     metrics: Map<string, LoadMetrics>,
-    _task: Task
+    task: Task
   ): Agent {
     let bestAgent = agents[0];
     let bestScore = Number.NEGATIVE_INFINITY;
@@ -803,7 +803,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return strategy.successRate * 0.7 + latencyScore * 0.3;
   }
 
-  private sampleBeta(_alpha: number, _beta: number): number {
+  private sampleBeta(alpha: number, beta: number): number {
     // Simplified beta distribution sampling
     // In practice, you'd use a proper statistical library
     return Math.random(); // Placeholder
@@ -900,7 +900,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
   private updatePatterns(
     decision: DecisionHistory,
     success: boolean,
-    _duration: number
+    duration: number
   ): void {
     const context = {
       timeOfDay: decision.features.timeOfDay,

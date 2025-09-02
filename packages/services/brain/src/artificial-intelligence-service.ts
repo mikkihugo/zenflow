@@ -179,7 +179,7 @@ timestamp: number;
 * Pure event-driven brain with zero package imports.
 * All functionality through events - no database, no logger, no external dependencies.
 */
-export class BrainCoordinator {
+export class ArtificialIntelligenceService {
 private config: BrainConfig;
 private initialized = false;
 private eventListeners: Map<string, Function[]> = new Map();

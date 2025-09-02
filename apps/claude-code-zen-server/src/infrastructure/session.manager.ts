@@ -34,7 +34,7 @@ export class WebSessionManager {
    * Session middleware for Express.
    */
   middleware() {
-    return (_req: Request, unusedRes: Response, next: NextFunction) => {
+    return (req: Request, unusedRes: Response, next: NextFunction) => {
       const sessionId =
         (req.headers['x-session-id'] as string) || this.generateSessionId();
       req.sessionId = sessionId;

@@ -180,7 +180,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * Excludes health checks and static assets from verbose logging.
  *
  * @param path Request path
- * @param _method HTTP method (unused but available for extension)
+ * @param method HTTP method (unused but available for extension)
  */
 const shouldLog = (path: string, method: string): boolean => {
   // Skip logging for health checks in production
@@ -488,7 +488,7 @@ export const log = (
   req?: Request,
   metadata?: Record<string, unknown>
 ): void => {
-  if (_req) {
+  if (req) {
     const logEntry = createLogEntry({ level, message, req, metadata });
     outputLog(logEntry);
   } else {

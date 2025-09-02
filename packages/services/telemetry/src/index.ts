@@ -59,7 +59,7 @@ export {
 } from './telemetry-event-driven.js';
 
 // Direct telemetry creation functions (no facade pattern)
-export function createTelemetryManager(_config?: unknown) {
+export function createTelemetryManager(config?: unknown) {
   return createEventDrivenTelemetryManager();
 }
 

@@ -1,403 +1,96 @@
-# Agent Development Guidelines for Claude Code Zen
+# Development Guidelines for Claude Code Zen
 
-## 🎯 Repository Overview
+This guide reflects the event-driven architecture and guardrails now enforced across the repo.
 
-Claude Code Zen is an **enterprise AI development platform** with sophisticated agent coordination, multi-database persistence, and comprehensive web-based management interfaces. This guide provides development practices for working effectively within this complex monorepo.
+## Repository overview
 
-## 🏗️ Core Architecture Principles
+Enterprise AI platform with agents, workflows, and a web-first interface. Packages are grouped under apps/, packages/{core,services,tools,integrations}, and src/ domain implementations.
 
-### Domain Separation
+## Core architecture principles
 
-The platform uses **domain-driven architecture** with clear separation:
+- Event-driven only: communicate across packages via the single EventBus from foundation (the old "TypedEventBus" name is deprecated)
+- Import boundary: only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml may be imported directly
+- Backend-agnostic data access: use database adapters; avoid binding to a specific backend
+- WASM-first heavy compute: route through Rust/WASM gateways
+
+### Domain separation
 
 ```
 src/
-├── coordination/    # Multi-agent orchestration and enterprise methodologies
-├── neural/         # WASM-accelerated neural networks and ML processing
-├── interfaces/     # Web-first interfaces with limited MCP integration
-└── database/       # Multi-adapter database systems and persistence
+├── coordination/    # Orchestration and enterprise methodologies
+├── neural/          # WASM-accelerated neural processing
+├── interfaces/      # Web/MCP interfaces (web is primary)
+└── database/        # Database adapters and persistence
 ```
 
-### Package Organization
+## Packages
 
-**31 packages** organized for project structure across strategic domains:
+- Core: foundation (EventBus, logging, utils), database (adapters)
+- Services: coordination, brain, knowledge, monitoring, telemetry
+- Tools: code-analyzer, git-operations, parsers, ai-linter, etc.
+- Integrations: llm-providers, exporters, otel-collector
 
-- **apps/**: Primary applications (server + web dashboard)
-- **packages/core/**: Foundation systems and core libraries 
-- **packages/services/**: Enterprise services and coordination systems
-- **packages/tools/**: Development and analysis utilities
-- **packages/integrations/**: External system connectors
+Legacy notes: NeuralBridge and similar legacy orchestrators are deprecated; "TypedEventBus" name is legacy—use EventBus; remove facades/shims.
 
-#### Complete Package List with Purposes
+## Agent coordination
 
-**📦 Core Packages (packages/core/):**
-- `@claude-zen/foundation` - Self-contained foundation with Node.js built-ins: logging, config, DI, error handling, utilities
-- `@claude-zen/database` - Multi-database abstraction layer (SQLite, LanceDB, Kuzu)
-- `@claude-zen/memory` - Advanced memory coordination and orchestration system
-- `@claude-zen/neural-ml` - High-performance neural ML library (private, used by brain)
-- `@claude-zen/dspy` - DSPy Stanford integration engine (private, used by brain)
-- `@claude-zen/fact-system` - FACT system with Rust engine (private, used by knowledge)
-- `@claude-zen/interfaces` - Interface abstractions and adapters
+- Agent types are flexible strings; select by capability
+- Coordination through SAFe, SPARC, XState workflows via events
+- TaskMaster provides SOC2-style approvals and audit trails
 
-**🔧 Services Packages (packages/services/):**
-- `@claude-zen/coordination` - Unified coordination: SPARC, SAFe, workflows, orchestration, teamwork
-- `@claude-zen/brain` - Comprehensive neural brain system with behavioral intelligence
-- `@claude-zen/knowledge` - Advanced knowledge management with distributed learning
-- `@claude-zen/agent-registry` - Dedicated agent registry with DI container integration
-- `@claude-zen/agent-monitoring` - Comprehensive agent health monitoring and performance tracking
-- `@claude-zen/document-intelligence` - Unified document intelligence with semantic analysis
-- `@claude-zen/load-balancing` - Advanced load balancing and resource optimization
-- `@claude-zen/system-monitoring` - System and infrastructure monitoring (CPU, memory, performance)
-- `@claude-zen/telemetry` - Core telemetry infrastructure with OpenTelemetry and metrics
-- `@claude-zen/ai-safety` - AI safety monitoring with deception detection
+## Interface guidelines
 
-**🛠️ Tools Packages (packages/tools/):**
-- `@claude-zen/code-analyzer` - Live code analysis with AI-powered insights
-- `@claude-zen/git-operations` - AI-powered Git operations with intelligent conflict resolution
-- `@claude-zen/language-parsers` - Multi-language parsers for code analysis
-- `@claude-zen/beam-analyzer` - BEAM ecosystem analysis for Erlang, Elixir, Gleam, LFE
-- `@claude-zen/codeql` - CodeQL integration for semantic analysis and vulnerability detection
-- `@claude-zen/ai-linter` - AI-powered TypeScript/JavaScript linter with GPT integration
-- `@claude-zen/coder` - Rust-based code analysis engine (library only, no CLI)
-
-**🔌 Integration Packages (packages/integrations/):**
-- `@claude-zen/llm-providers` - LLM provider integrations: CLI tools, Direct APIs, AI services
-- `@claude-zen/exporters` - Export utilities and systems
-- `@claude-zen/otel-collector` - Internal OpenTelemetry collector for observability
-
-#### Architecture Principles
-
-**Foundation Package:**
-- **Self-contained** - Minimal external dependencies, uses Node.js built-ins primarily
-- **Centralized utilities** - All common utilities (lodash, date-fns, commander, etc.) exported from foundation
-- **Core infrastructure** - Logging, configuration, dependency injection, error handling
-
-**Other Packages:**
-- **Organizational structure** - For managing complexity in large project, NOT self-contained libraries
-- **Depend on foundation** - Import utilities from foundation rather than direct dependencies
-- **Depend on each other** - Can import from other packages as needed for functionality
-- **Project coherence** - Work together as integrated system rather than independent libraries
-
-## 🤖 Agent Coordination System
-
-### Agent Type Flexibility
-
-**NO ARBITRARY RESTRICTIONS**: Agent types are **dynamic and configurable**:
-
-```typescript
-// ✅ Flexible agent type system
-interface AgentRegistrationConfig {
-  templateId: string;
-  name: string;
-  type: string;  // Any string - no predefined limitations
-  config: Record<string, unknown>;
-  capabilities?: string[];
-  metadata?: Record<string, unknown>;
-}
-```
-
-**Key Principles**:
-- **Agent types are strings** - create any type based on your needs
-- **Capability-driven selection** - agents chosen by what they can do, not arbitrary type limits
-- **Enterprise methodology guidance** - SAFe 6.0 and SPARC frameworks provide coordination structure
-- **Dynamic registration** - agents can be registered with any type designation
-
-### Enterprise Coordination Frameworks
-
-#### SAFe 6.0 Integration
-
-**Portfolio Management and Program Increments**:
-
-- Portfolio managers coordinate strategic themes and value streams
-- Program increment planning breaks features into manageable deliverables
-- Architecture runway management ensures technical foundation readiness
-- Value stream optimization coordinates delivery flow across teams
-
-#### SPARC Development Methodology
-
-**5-Phase Systematic Development**:
-
-1. **Specification**: Requirements analysis with acceptance criteria
-2. **Pseudocode**: Algorithm design and logical structure planning
-3. **Architecture**: System design with patterns and scalability considerations
-4. **Refinement**: Implementation optimization and performance tuning
-5. **Completion**: Test suite generation and comprehensive documentation
-
-#### Teamwork Multi-Agent Coordination
-
-**Collaborative Problem-Solving**:
-
-- **Shared Memory**: Context maintained across agent interactions
-- **Sequential Decision-Making**: Coordinated agent collaboration patterns
-- **Specialization**: Agents selected based on expertise and capabilities
-- **Consensus Building**: Multi-agent agreement protocols
-
-## 🌐 Interface Development Guidelines
-
-### Web-First Architecture
-
-**Primary Interface**: Comprehensive Svelte-based web dashboard
-
+- Primary: web dashboard
 ```bash
-# Start web dashboard (primary development interface)
 pnpm --filter @claude-zen/web-dashboard dev
-# Access at: http://localhost:3000
+# http://localhost:3000/
 ```
+- Secondary: limited MCP; Minimal terminal status only
 
-**Dashboard Features**:
-- Real-time system monitoring and agent coordination
-- SAFe 6.0 portfolio and program increment visualization
-- SPARC development progress tracking and phase management
-- Database monitoring across SQLite, LanceDB, and Kuzu backends
-- Workflow orchestration with XState process visualization
-- TaskMaster enterprise task flow and approval management
+## Database guidelines
 
-### Limited MCP Integration
+- Use adapters from @claude-zen/database (SQLite, LanceDB, Kuzu)
+- Keep code backend-agnostic; use pooling/caching utilities
 
-**Secondary Interface**: MCP servers for specific tool integration
+## Neural guidelines
 
-- **Scope**: Limited to essential tool integrations, not comprehensive interface layer
-- **Purpose**: External system connectivity for specialized automation
-- **Implementation**: Located in `src/interfaces/mcp/` with minimal scope
+- Use WASM gateway for heavy compute; avoid JS math
+- Keep access through the provided gateway APIs
 
-### Minimal Terminal Interface
-
-**Basic Status Only**: Simple terminal screens for status display
-
-- **Location**: `src/interfaces/terminal/screens/`
-- **Scope**: Basic status information only, not comprehensive CLI
-- **Implementation**: React-based status screens with limited functionality
-
-## 💾 Multi-Database Architecture
-
-### Database Domains
-
-**Clear separation between Memory and Database domains**:
-
-- **Memory Domain** (`src/memory/`): Caching, memory management, and short-term storage
-- **Database Domain** (`packages/core/database/`): Persistent storage and database adapters
-
-### Multi-Adapter System
-
-#### SQLite Adapter
-```typescript
-// Structured relational data and agent state
-import { SQLiteAdapter } from '@claude-zen/database/adapters/sqlite-adapter';
-
-const sqliteAdapter = new SQLiteAdapter(config);
-await sqliteAdapter.query('SELECT * FROM agents WHERE status = ?', ['active']);
-```
-
-#### LanceDB Adapter
-```typescript
-// Vector embeddings and similarity search
-import { LanceDBAdapter } from '@claude-zen/database/adapters/lancedb-adapter';
-
-const lancedbAdapter = new LanceDBAdapter(config);
-await lancedbAdapter.vectorSearch(queryVector, 10);
-```
-
-#### Kuzu Graph Adapter
-```typescript
-// Graph data and complex relationship modeling
-import { KuzuAdapter } from '@claude-zen/database/adapters/kuzu-adapter';
-
-const kuzuAdapter = new KuzuAdapter(config);
-await kuzuAdapter.query(`
-  MATCH (a:Agent)-[:COORDINATES_WITH]->(b:Agent)
-  WHERE a.type = 'coordinator'
-  RETURN a.name, b.name
-`);
-```
-
-## 🧠 Neural Domain Guidelines
-
-### WASM-First Computing
-
-**Performance-Critical Operations**:
-
-```typescript
-// ✅ Route heavy computation through WASM
-import { neural_forward_pass } from '../wasm/fact-core/pkg';
-
-export class PerformantNeuralNetwork {
-  forwardPass(inputs: number[]): number[] {
-    return neural_forward_pass(this.weights, inputs);
-  }
-}
-```
-
-**Key Principles**:
-- **Use WASM for all heavy computation** - avoid pure JavaScript for math operations
-- **Access through gateway facade** - use `src/neural/wasm/gateway.ts` for WASM integration
-- **Rust-powered acceleration** - leverage fact-core WASM module for performance
-
-## 📋 Development Workflow
-
-### Build System Commands
+## Dev workflow
 
 ```bash
-# Essential development commands
-pnpm install                                # Dependencies (2-20 seconds)
-pnpm type-check                            # TypeScript validation (1-2 seconds)
-pnpm --filter @claude-zen/web-dashboard dev # Web dashboard (5-10 seconds)
-pnpm build                                 # Full build with binaries (1-2 minutes)
-
-# Package-specific builds
-pnpm run build:packages                    # Individual packages (2-5 minutes)
-pnpm run build:rust                        # WASM modules (1-2 minutes)
+pnpm install
+pnpm type-check
+pnpm --filter @claude-zen/web-dashboard dev
+pnpm build
 ```
 
-### Performance Expectations
+Tests: run per-package only.
 
-| Operation | Time | Status | Notes |
-|-----------|------|---------|--------|
-| `pnpm install` | 2-20s | ✅ | Fast dependency resolution |
-| `pnpm type-check` | 1-2s | ✅ | Fastest validation method |
-| Web dashboard | 5-10s | ✅ | Primary development interface |
-| `pnpm build` | 1-2min | ✅ | Creates cross-platform binaries |
-| `pnpm test` | 15+min | ⚠️ | Memory constraints, use individual packages |
+## Quality and functionality
 
-## 🧪 Quality Assurance
+- Prefer surgical changes; preserve behavior
+- Validate type-check, build, and dashboard navigation
 
-## 🧪 Quality Assurance
+## Architecture enforcement
 
-**Always validate changes**:
+- Scripts: scripts/validate-imports.js and scripts/validate-dependencies.js
+- ESLint soft rules discourage cross-package imports beyond foundation/database
 
-1. **TypeScript Compilation**: `pnpm type-check` (must pass)
-2. **Web Dashboard**: Load `http://localhost:3000` and test navigation
-3. **Build Integrity**: `pnpm build` completes successfully
-4. **Domain Separation**: Follow architecture boundaries
-## 🛡️ Functionality Preservation Guidelines
+TaskMaster and event-driven flows
+- The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
+- Downstream packages should implement responders listening on these topics and emit typed responses
 
-### Critical Distinction: "Compiles" vs "Compiles AND Works"
+TaskMaster and event-driven flows
+- The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
+- Downstream packages should implement responders listening on these topics and emit typed responses
 
-**ENTERPRISE REQUIREMENT**: All code changes must prioritize **functionality preservation over compilation-only fixes**. The goal is **"compiles AND works"** - not just **"compiles"**.
+## Task approval example
 
-#### Core Principles
-
-**NEVER use bulk file replacements that lose functionality:**
-```typescript
-// ❌ WRONG - Bulk replacement loses critical error handling
-function processAgent(agentId: string) {
-  const agent = await agentRegistry.get(agentId);
-  return agent;
-}
-
-// ✅ CORRECT - Surgical fix preserves existing error handling
-async function processAgent(agentId: string): Promise<Result<AgentState, Error>> {
-  try {
-    const agent = await agentRegistry.get(agentId);
-    if (!agent) {
-      return err(new Error(`Agent ${agentId} not found`));
-    }
-    return ok(agent);
-  } catch (error) {
-    return err(error);
-  }
-}
-```
-
-**ALWAYS require manual verification of AI-generated changes:**
-- **Step 1**: AI generates proposed changes
-- **Step 2**: Human developer reviews each line for functionality impact
-- **Step 3**: Run existing unit tests to validate behavior preservation
-- **Step 4**: Perform integration testing with dependent systems
-- **Step 5**: Manual testing of critical user workflows
-
-**REQUIRE unit tests to validate intended behavior preservation:**
-```typescript
-// Example: Test that preserves existing functionality
-describe('Agent Processing', () => {
-  it('should return error for non-existent agent', async () => {
-    const result = await processAgent('non-existent-id');
-    expect(result.isErr()).toBe(true);
-    expect(result.error.message).toContain('not found');
-  });
-
-  it('should return agent data for valid agent', async () => {
-    const result = await processAgent('valid-id');
-    expect(result.isOk()).toBe(true);
-    expect(result.value.id).toBe('valid-id');
-  });
-});
-```
-
-### Enterprise-Level Functionality Preservation Requirements
-
-#### 1. Surgical Fix Guidelines
-
-**Line-by-line modifications only:**
-- Change one logical unit at a time
-- Preserve all existing error handling paths
-- Maintain backward compatibility
-- Keep existing performance characteristics
-
-**Forbidden practices:**
-- ❌ Bulk search-and-replace operations
-- ❌ Complete file rewrites without line-by-line review
-- ❌ Removing error handling without replacement
-- ❌ Changing return types without updating callers
-
-#### 2. AI-Assisted Change Verification Process
-
-**Mandatory verification steps:**
-1. **Pre-change baseline**: Run full test suite and capture metrics
-2. **Change application**: Apply AI suggestions surgically
-3. **Post-change validation**: Re-run tests and compare metrics
-4. **Integration testing**: Test with connected systems
-5. **Performance validation**: Ensure no degradation
-
-#### 3. TaskMaster Approval Workflow
-
-**Major AI-assisted changes require approval:**
-```typescript
-// Example TaskMaster integration for AI changes
-import { TaskMaster } from '@claude-zen/coordination/taskmaster';
-
-const taskMaster = new TaskMaster();
-const approvalRequest = {
-  type: 'ai-assisted-code-change',
-  scope: 'functionality-preservation',
-  changes: proposedChanges,
-  impact: 'enterprise-critical',
-  tests: validationTests
-};
-
-const approval = await taskMaster.requestApproval(approvalRequest);
-if (!approval.granted) {
-  throw new Error('AI-assisted changes require TaskMaster approval');
-}
-```
-
-#### 4. Quality Gates for AI-Generated Code
-
-**Enterprise quality requirements:**
-- **Unit test coverage**: ≥90% for modified code paths
-- **Integration tests**: All dependent systems validated
-- **Performance benchmarks**: No degradation >5%
-- **Security review**: AI safety monitor validation
-- **Documentation**: Updated API docs and inline comments
-
-#### 5. Error Handling Preservation
-
-**Never remove existing error handling:**
-```typescript
-// ❌ WRONG - Removes critical error handling
-function riskyOperation() {
-  return externalService.call();
-}
-
-// ✅ CORRECT - Preserves error handling
-async function riskyOperation(): Promise<Result<Data, Error>> {
-  try {
-    const result = await externalService.call();
-    return ok(result);
-  } catch (error) {
-    // Preserve existing error logging and recovery
-    await errorLogger.log(error);
-    await recoveryService.attemptRecovery();
-    return err(error);
+If a change is large or risky, route through TaskMaster and approvals in coordination packages.
   }
 }
 ```

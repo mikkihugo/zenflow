@@ -7,14 +7,6 @@ packages:
   # Temporarily excluded load-balancing package due to 300+ errors
   # To re-enable: uncomment the wildcard and remove explicit list
   # - 'packages/services/*'
-  - 'packages/services/agent-monitoring'
-  - 'packages/services/agent-registry'
-  - 'packages/services/ai-safety'
-  - 'packages/services/brain'
-  - 'packages/services/coordination'
-  - 'packages/services/document-intelligence'
-  - 'packages/services/knowledge'
-  - 'packages/services/system-monitoring'
-  - 'packages/services/telemetry'
   - 'packages/tools/*'
   - 'packages/integrations/*'
+  - 'packages/services/*'

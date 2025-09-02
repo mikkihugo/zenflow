@@ -72,7 +72,7 @@ export class NetworkLatencyOptimizer implements NetworkOptimizer {
     return bandwidthMap;
   }
 
-  public async adjustQoS(_requirements: QoSRequirement): Promise<void> {
+  public async adjustQoS(requirements: QoSRequirement): Promise<void> {
     // In practice, this would configure network QoS policies
     // based on the requirements (latency, throughput, etc.)
   }

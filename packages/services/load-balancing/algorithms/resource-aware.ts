@@ -853,20 +853,20 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
   }
 
   private updateResourceTrends(
-    _profile: ResourceProfile,
-    _requirements: TaskResourceRequirement,
-    _duration: number,
-    _success: boolean
+    profile: ResourceProfile,
+    requirements: TaskResourceRequirement,
+    duration: number,
+    success: boolean
   ): void {
     // Update prediction models based on actual vs estimated resource usage
     // This would involve comparing requirements with actual usage patterns
   }
 
   private updateResourcePredictionModels(
-    _profile: ResourceProfile,
-    _requirements: TaskResourceRequirement,
-    _actualDuration: number,
-    _success: boolean
+    profile: ResourceProfile,
+    requirements: TaskResourceRequirement,
+    actualDuration: number,
+    success: boolean
   ): void {
     // Learn from actual resource consumption to improve future predictions
     // This would update internal ML models or statistical models

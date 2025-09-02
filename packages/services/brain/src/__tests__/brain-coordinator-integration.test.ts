@@ -24,7 +24,7 @@ import { jest} from '@jest/globals';
 jest.unstable_mockModule('@xenova/transformers', () => ({
 pipeline: jest
 .fn()
-.mockImplementation(async (_task:string, _model:string) => {
+.mockImplementation(async (task:string, model:string) => {
 // Simulate model loading time
 await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -79,7 +79,7 @@ error:jest.fn(),
 }));
 
 import type { BrainConfig} from '../main';
-import { BrainCoordinator} from '../main';
+import { ArtificialIntelligenceService} from '../main';
 
 describe('Brain Coordinator Integration Tests (Jest)', () => {
 ; let brainCoordinator:BrainCoordinator;
@@ -395,7 +395,7 @@ const results = await Promise.all(
 requests.map((req) => brainCoordinator.optimizePrompt(req))
 );
 
-results.forEach((result, _index) => {
+results.forEach((result, index) => {
 expect(result).toBeDefined();
 expect(result.strategy).toBeDefined();
 expect(result.prompt).toContain('Optimized:').; expect(result.confidence).toBeGreaterThan(0);
@@ -491,7 +491,7 @@ const results = await Promise.all(
 tasks.map((task) => brainCoordinator.processNeuralTask(task))
 );
 
-results.forEach((result, _index) => {
+results.forEach((result, index) => {
 expect(result).toBeDefined();
 expect(result.result).toBeDefined();
 });
@@ -547,7 +547,7 @@ brainCoordinator.predict([i, i * 0.5, i * -0.1])
 const results = await Promise.allSettled(predictionPromises);
 
 // All predictions should succeed
-const __successfulResults = results.filter((r) => r.status === 'fulfilled').; expect(successfulResults.length).toBe(20);
+const _successfulResults = results.filter((r) => r.status === 'fulfilled').; expect(successfulResults.length).toBe(20);
 
 // System should still be responsive after load
 const postLoadResult = await brainCoordinator.predict([1, 2, 3]);
@@ -651,7 +651,7 @@ describe('Complete System Integration', () => {
 await brainCoordinator.initialize(););
 
 it('should integrate all available subsystems', async () => {
-; const __sessionId = 'comprehensive-integration-test';
+; const _sessionId = 'comprehensive-integration-test';
 
 // 1. Neural processing
 const predictionResult = await brainCoordinator.predict([1, 2, 3, 4]);
@@ -718,7 +718,7 @@ expect(successfulOperations.length).toBe(7);
 expect(brainCoordinator.isInitialized()).toBe(true);
 
 // All results should be valid
-results.forEach((result, _index) => {
+results.forEach((result, index) => {
 if (result.status === 'fulfilled; {
 ; expect(result.value).toBeDefined();
 }

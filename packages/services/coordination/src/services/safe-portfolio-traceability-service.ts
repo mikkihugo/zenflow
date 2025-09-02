@@ -79,7 +79,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Initialize the service
    */
-  async initialize(): Promise<void> {
+  initialize(): Promise<void> {
     try {
       this.logger.info('Initializing SAFe Portfolio Traceability Service...');
 
@@ -89,7 +89,7 @@ export class SafePortfolioTraceabilityService {
       this.logger.info('SAFe Portfolio Traceability Service initialized successfully');
     } catch (error) {
       this.logger.error(`Failed to initialize SAFe Portfolio Traceability Service:`, error);
-      throw error;
+  throw error;
     }
   }
 
@@ -101,9 +101,9 @@ export class SafePortfolioTraceabilityService {
   ): Promise<{
     epicId: string;
     traceabilityId: string;
-    businessCase: any;
-    wsjfScore: any;
-    recommendedState: any;
+    businessCase: Record<string, unknown>;
+    wsjfScore: { score: number; components: Record<string, number> };
+    recommendedState: string;
     confidence: number;
   }> {
     const epicId = `epic_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -145,7 +145,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Analyze epic context using AI
    */
-  private async analyzeEpicContext(context: EpicGenerationContext): Promise<any> {
+  private analyzeEpicContext(context: EpicGenerationContext): Promise<{ businessValue: number; complexity: string; urgency: string; }> {
     // TODO: Implement AI analysis of epic context
     return {
       businessValue: context.strategic.businessValue,
@@ -157,7 +157,11 @@ export class SafePortfolioTraceabilityService {
   /**
    * Generate business case for epic
    */
-  private async generateBusinessCase(epicId: string, context: EpicGenerationContext, analysis: any): Promise<any> {
+  private generateBusinessCase(
+    epicId: string,
+    context: EpicGenerationContext,
+    analysis: { businessValue: number; complexity: string; urgency: string }
+  ): Promise<Record<string, unknown>> {
     // TODO: Implement business case generation
     return {
       epicId,
@@ -172,7 +176,10 @@ export class SafePortfolioTraceabilityService {
   /**
    * Calculate WSJF (Weighted Shortest Job First) score
    */
-  private calculateWSJFScore(context: EpicGenerationContext, analysis: any): any {
+  private calculateWSJFScore(
+    context: EpicGenerationContext,
+    analysis: { businessValue: number; complexity: string; urgency: string }
+  ): { score: number; components: { businessValue: number; timeCriticality: number; riskReduction: number; jobSize: number } } {
     // TODO: Implement WSJF calculation
     const jobSize = this.estimateJobSize(analysis);
     const {businessValue} = context.strategic;
@@ -206,7 +213,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Estimate job size for WSJF calculation
    */
-  private estimateJobSize(analysis: any): number {
+  private estimateJobSize(analysis: { complexity: string }): number {
     // TODO: Implement job size estimation
     const complexityMultipliers = {
       simple: 1,
@@ -243,15 +250,16 @@ export class SafePortfolioTraceabilityService {
   /**
    * Get traceability record for epic
    */
-  async getEpicTraceability(_epicId: string): Promise<any | null> {
+  getEpicTraceability(epicId: string): Promise<Record<string, unknown> | null> {
     // TODO: Implement traceability retrieval
+    void epicId;
     return null;
   }
 
   /**
    * Update epic traceability
    */
-  async updateEpicTraceability(epicId: string, updates: any): Promise<void> {
+  updateEpicTraceability(epicId: string, updates: Record<string, unknown>): Promise<void> {
     // TODO: Implement traceability updates
     void epicId;
     void updates;
@@ -260,7 +268,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Generate learning insights from epic outcomes
    */
-  async learnFromEpicOutcome(epicId: string, outcome: any): Promise<any> {
+  learnFromEpicOutcome(epicId: string, outcome: Record<string, unknown>): Promise<{ patterns: unknown[]; improvements: unknown[] }> {
     // TODO: Implement learning from epic outcomes
     void epicId;
     void outcome;

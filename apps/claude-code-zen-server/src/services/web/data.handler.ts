@@ -5,21 +5,9 @@
  * Provides comprehensive system status, metrics, and data management.
  */
 
-// Direct package imports - no facades
+// Only allowed internal dependency imports: foundation + database
 import { DatabaseProvider } from '@claude-zen/database';
-import { BrainCoordinator } from '@claude-zen/brain';
-import { MemoryManager } from '@claude-zen/memory';
-import {
-  SafeFramework,
-  TaskMaster,
-  WorkflowEngine,
-} from '@claude-zen/coordination';
-import { SystemMonitor } from '@claude-zen/system-monitoring';
-import { TelemetryCollector } from '@claude-zen/telemetry';
-import { CodeAnalyzer } from '@claude-zen/code-analyzer';
-import { GitOperations } from '@claude-zen/git-operations';
-import { RepoAnalyzer } from '@claude-zen/repo-analyzer';
-import { getLogger, safeAsync, withRetry } from '@claude-zen/foundation';
+import { getLogger, safeAsync, withRetry, generateUUID } from '@claude-zen/foundation';
 
 const logger = getLogger('WebDataService');
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
@@ -109,18 +97,8 @@ interface AgentData {
  * Production Web Data Service with real business logic
  */
 export class WebDataService {
-  // ALL direct package systems for comprehensive functionality
+  // Allowed: database (direct). All others must be accessed via events or not at all here.
   private databaseSystem: DatabaseProvider | null = null;
-  private taskMasterSystem: TaskMaster | null = null;
-  private workflowEngine: WorkflowEngine | null = null;
-  private safetyFramework: SafeFramework | null = null;
-  private brainSystem: BrainCoordinator | null = null;
-  private memorySystem: MemoryManager | null = null;
-  private systemMonitor: SystemMonitor | null = null;
-  private telemetryCollector: TelemetryCollector | null = null;
-  private codeAnalyzer: CodeAnalyzer | null = null;
-  private repoAnalyzer: RepoAnalyzer | null = null;
-  private gitOperations: GitOperations | null = null;
 
   constructor() {
     this.initializeDirectSystems();
@@ -133,75 +111,17 @@ export class WebDataService {
     try {
       await withRetry(
         async () => {
-          const [
-            database,
-            taskMaster,
-            workflow,
-            safety,
-            brain,
-            memory,
-            monitor,
-            telemetry,
-            codeAnalyzer,
-            repoAnalyzer,
-            gitOps,
-          ] = await Promise.all([
-            // Direct core package imports
-            Promise.resolve(new DatabaseProvider()).catch(() => null),
+          // Initialize only allowed systems
+          const database = await Promise.resolve(new DatabaseProvider()).catch(
+            () => null
+          );
 
-            // Direct service package imports
-            Promise.resolve(new TaskMaster({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(new WorkflowEngine({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(
-              new SafeFramework({ enableMonitoring: true })
-            ).catch(() => null),
-
-            // Direct service package imports
-            Promise.resolve(
-              new BrainCoordinator({ enableMetrics: true })
-            ).catch(() => null),
-            Promise.resolve(new MemoryManager({ enableMetrics: true })).catch(
-              () => null
-            ),
-
-            // Direct integration package imports
-            Promise.resolve(new SystemMonitor({ realTimeMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(
-              new TelemetryCollector({ realTimeTracking: true })
-            ).catch(() => null),
-
-            // Direct tool package imports
-            Promise.resolve(new CodeAnalyzer({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(new RepoAnalyzer({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(new GitOperations({ enableMetrics: true })).catch(
-              () => null
-            ),
-          ]);
-
-          // Initialize ALL direct package systems
           this.databaseSystem = database;
-          this.taskMasterSystem = taskMaster;
-          this.workflowEngine = workflow;
-          this.safetyFramework = safety;
-          this.brainSystem = brain;
-          this.memorySystem = memory;
-          this.systemMonitor = monitor;
-          this.telemetryCollector = telemetry;
-          this.codeAnalyzer = codeAnalyzer;
-          this.repoAnalyzer = repoAnalyzer;
-          this.gitOperations = gitOps;
 
-          logger.info('Direct package systems initialized successfully');
+          logger.info('Initialized database system (event-driven for others)');
+
+          // Provision minimal tables we rely on (idempotent)
+          await this.ensureTasksTable();
         },
         { retries: 3, minTimeout: 1000 }
       );
@@ -210,32 +130,48 @@ export class WebDataService {
     }
   }
 
+  private async ensureTasksTable(): Promise<void> {
+    if (!this.databaseSystem) return;
+    try {
+      await this.databaseSystem.query(
+        `CREATE TABLE IF NOT EXISTS tasks (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          status TEXT NOT NULL,
+          priority TEXT NOT NULL,
+          estimated_effort REAL,
+          assigned_agent TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        )`
+      );
+    } catch (err) {
+      logger.warn('ensureTasksTable failed (continuing):', err);
+    }
+  }
+
   // Helper functions for system status data collection
   private async getTaskStatistics() {
-    let taskStats = {
-      pending: 0,
-      running: 0,
-      completed: 0,
-      failed: 0,
-      blocked: 0,
-    };
-
-    if (this.taskMasterSystem) {
-      try {
-        const metrics = await this.taskMasterSystem.getFlowMetrics();
-        taskStats = {
-          pending: Math.max(0, 50 - metrics.wipCount),
-          running: metrics.wipCount || 0,
-          completed: metrics.completedTasks || 0,
-          failed: 0,
-          blocked: metrics.blockedTasks || 0,
-        };
-      } catch (error) {
-        logger.warn('Failed to get task statistics from TaskMaster: ', error);
-      }
+    // Derive from DB tasks table when available; otherwise fallback to zeros
+    if (!this.databaseSystem) {
+      return { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 };
     }
-
-    return taskStats;
+    try {
+      const res = await this.databaseSystem.query(
+        `SELECT status, COUNT(*) as cnt FROM tasks GROUP BY status`
+      );
+      const counts = { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 } as Record<string, number>;
+      for (const row of res.rows ?? []) {
+        const s = String((row as any).status || '').toLowerCase();
+        const c = Number((row as any).cnt || 0);
+        if (s in counts) counts[s] = c;
+      }
+      return counts;
+    } catch (err) {
+      logger.warn('getTaskStatistics fallback due to DB error:', err);
+      return { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 };
+    }
   }
 
   private getPerformanceMetrics() {
@@ -260,7 +196,7 @@ export class WebDataService {
   }
 
   private async getSwarmStatistics() {
-    const swarmStats = {
+  const swarmStats = {
       active: 1,
       total: 4,
       queens: 1,
@@ -268,18 +204,7 @@ export class WebDataService {
       agents: 12,
     };
 
-    if (this.brainSystem) {
-      try {
-        const brainMetrics = await this.brainSystem.getCoordinationMetrics();
-        swarmStats.active = brainMetrics.activeAgents || 1;
-        swarmStats.total = brainMetrics.totalAgents || 4;
-      } catch (error) {
-        logger.warn(
-          'Brain system metrics unavailable, using estimates: ',
-          error
-        );
-      }
-    }
+  // Note: Real swarm stats should come from brain via events.
     return swarmStats;
   }
 
@@ -429,62 +354,22 @@ export class WebDataService {
    * Check brain system health
    */
   private async checkBrainHealth(): Promise<number> {
-    if (!this.brainSystem) return 0.7;
-
-    try {
-      const metrics = await this.brainSystem.getHealthMetrics();
-      return (metrics.neuralHealth + metrics.coordinationHealth) / 2;
-    } catch {
-      return 0.6;
-    }
+  // Event-driven brain health to be integrated; return stable baseline
+  return 0.7;
   }
 
   /**
    * Check safety framework health
    */
   private async checkSafetyHealth(): Promise<number> {
-    if (!this.safetyFramework) return 0.8;
-
-    try {
-      const safetyMetrics = await this.safetyFramework.getSafetyMetrics();
-      return safetyMetrics.overallSafety || 0.8;
-    } catch {
-      return 0.7;
-    }
+  // Event-driven safety health to be integrated; return stable baseline
+  return 0.8;
   }
 
   private async getBrainCoordinationData(): Promise<SwarmStatusData[]> {
     const swarms: SwarmStatusData[] = [];
 
-    if (!this.brainSystem) {
-      return swarms;
-    }
-
-    try {
-      const coordination = await this.brainSystem.getSwarmCoordination();
-
-      for (const [index, agent] of (
-        coordination.agents as {
-          id: string;
-          name: string;
-          type: string;
-          status: string;
-          metrics: {
-            efficiency: number;
-            responseTime: number;
-            successRate: number;
-          };
-          lastActive: string;
-        }[]
-      ).entries()) {
-        swarms.push(this.createSwarmDataFromAgent(agent, index));
-      }
-    } catch (error) {
-      logger.warn(
-        'Brain coordination data unavailable, using mock data: ',
-        error
-      );
-    }
+  // Event-driven brain coordination to be integrated
 
     return swarms;
   }
@@ -516,19 +401,12 @@ export class WebDataService {
   private async getPersistedSwarmData(): Promise<SwarmStatusData[]> {
     // Get swarm data from persistent storage instead of mock data
     try {
-      if (this.memorySystem) {
-        const storedSwarms = await this.memorySystem.retrieve('swarm:status:all');
-        if (storedSwarms && Array.isArray(storedSwarms)) {
-          return storedSwarms.map((swarm: any) => this.normalizeSwarmData(swarm));
-        }
-      }
-
       if (this.databaseSystem) {
         const swarmQuery = await this.databaseSystem.query(
           'SELECT * FROM swarm_status ORDER BY last_active DESC'
         );
         if (swarmQuery && swarmQuery.rows) {
-          return swarmQuery.rows.map((row: any) => this.normalizeSwarmData(row));
+          return swarmQuery.rows.map((row: unknown) => this.normalizeSwarmData(row));
         }
       }
 
@@ -539,23 +417,65 @@ export class WebDataService {
     }
   }
 
-  private normalizeSwarmData(data: any): SwarmStatusData {
+  private coerceString(val: unknown, fallback: string): string {
+    return typeof val === 'string' && val.length > 0 ? val : fallback;
+  }
+
+  private coerceNumber(val: unknown, fallback: number): number {
+    return typeof val === 'number' && Number.isFinite(val) ? val : fallback;
+  }
+
+  private normalizeSwarmData(data: unknown): SwarmStatusData {
+    const obj = (data as Record<string, unknown>) || {};
+    const tasksObj = (obj.tasks as Record<string, unknown>) || {};
+    const perfObj = (obj.performance as Record<string, unknown>) || {};
+
+    const typeRaw = this.coerceString(obj.type, 'agent');
+    const typeVal: SwarmStatusData['type'] =
+      typeRaw === 'queen' || typeRaw === ' commander' || typeRaw === ' agent'
+        ? (typeRaw as SwarmStatusData['type'])
+        : 'agent';
+
+    const statusRaw = this.coerceString(obj.status, 'unknown');
+    const statusVal: SwarmStatusData['status'] =
+      statusRaw === 'active' ||
+      statusRaw === ' idle' ||
+      statusRaw === ' busy' ||
+      statusRaw === ' error'
+        ? (statusRaw as SwarmStatusData['status'])
+        : 'active';
+
     return {
-      id: data.id || `swarm-${  Date.now()}`,
-      name: data.name || 'Unknown Swarm',
-      type: data.type || 'agent',
-      status: data.status || 'unknown',
+      id: this.coerceString(obj.id, `swarm-${Date.now()}`),
+      name: this.coerceString(obj.name, 'Unknown Swarm'),
+      type: typeVal,
+      status: statusVal,
       tasks: {
-        current: data.current_tasks || data.tasks?.current || 0,
-        completed: data.completed_tasks || data.tasks?.completed || 0,
-        failed: data.failed_tasks || data.tasks?.failed || 0,
+        current: this.coerceNumber(obj.current_tasks ?? tasksObj.current, 0),
+        completed: this.coerceNumber(
+          obj.completed_tasks ?? tasksObj.completed,
+          0
+        ),
+        failed: this.coerceNumber(obj.failed_tasks ?? tasksObj.failed, 0),
       },
       performance: {
-        efficiency: data.efficiency || data.performance?.efficiency || 0.85,
-        responseTime: data.response_time || data.performance?.responseTime || 150,
-        successRate: data.success_rate || data.performance?.successRate || 0.9,
+        efficiency: this.coerceNumber(
+          obj.efficiency ?? perfObj.efficiency,
+          0.85
+        ),
+        responseTime: this.coerceNumber(
+          obj.response_time ?? perfObj.responseTime,
+          150
+        ),
+        successRate: this.coerceNumber(
+          obj.success_rate ?? perfObj.successRate,
+          0.9
+        ),
       },
-      lastActive: data.last_active || data.lastActive || new Date().toISOString(),
+      lastActive: this.coerceString(
+        obj.last_active ?? obj.lastActive,
+        new Date().toISOString()
+      ),
     };
   }
 
@@ -583,17 +503,35 @@ export class WebDataService {
   }
 
   private async getTaskMasterFlowData(): Promise<TaskMetricsData | null> {
-    if (!this.taskMasterSystem) {
-      return null;
-    }
-
+    // Compute simple metrics from local DB as interim implementation
+    if (!this.databaseSystem) return null;
     try {
-      const flowMetrics = await this.taskMasterSystem.getFlowMetrics();
-      const health = await this.taskMasterSystem.getSystemHealth();
+      const total = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks`);
+      const completed = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'completed'`);
+      const failed = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'failed'`);
+      const running = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'running'`);
+      const pending = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'pending'`);
+      const totalTasks = Number(total.rows?.[0]?.n ?? 0);
+      const completedTasks = Number(completed.rows?.[0]?.n ?? 0);
+      const failedTasks = Number(failed.rows?.[0]?.n ?? 0);
+      const wipCount = Number(running.rows?.[0]?.n ?? 0) + Number(pending.rows?.[0]?.n ?? 0);
+      const successRate = totalTasks > 0 ? completedTasks / (completedTasks + failedTasks) : 1;
 
-      return this.calculateTaskMetrics(flowMetrics, health);
-    } catch (error) {
-      logger.warn('TaskMaster metrics unavailable, using estimates: ', error);
+      const metrics: TaskMetricsData = {
+        totalTasks,
+        completedTasks,
+        failedTasks,
+        averageDuration: 0,
+        successRate: Math.round(successRate * 1000) / 1000,
+        throughputPerHour: 0,
+        currentLoad: wipCount,
+        peakLoad: Math.max(wipCount, 5),
+        bottlenecks: [],
+        recommendations: [],
+      };
+      return metrics;
+    } catch (err) {
+      logger.warn('getTaskMasterFlowData failed, returning null:', err);
       return null;
     }
   }
@@ -654,6 +592,58 @@ export class WebDataService {
       const metrics = await this.getTaskMasterFlowData();
       return metrics || this.getFallbackTaskMetrics();
     }, this.getFallbackTaskMetrics());
+  }
+
+  /**
+   * Get tasks from TaskMaster or fallback to memory
+   */
+  async getTasks(): Promise<
+    { id: string; title: string; status: string; priority: string; createdAt?: string; updatedAt?: string }[]
+  > {
+    try {
+      if (!this.databaseSystem) return [];
+      const res = await this.databaseSystem.query(
+        `SELECT id, title, status, priority, created_at as createdAt, updated_at as updatedAt FROM tasks ORDER BY created_at DESC`
+      );
+      return (res.rows ?? []).map((r: any) => ({
+        id: String(r.id),
+        title: String(r.title),
+        status: String(r.status),
+        priority: String(r.priority),
+        createdAt: String(r.createdAt ?? ''),
+        updatedAt: String(r.updatedAt ?? ''),
+      }));
+    } catch (error) {
+      logger.error('Failed to get tasks:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Create a new task using TaskMaster or fallback to memory
+   */
+  async createTask(input: unknown): Promise<{ id: string; title: string; status: string; priority: string; createdAt?: string; updatedAt?: string }> {
+    try {
+      if (!this.databaseSystem) throw new Error('database not available');
+      const obj = (input as any) ?? {};
+      const id = String(obj.id ?? generateUUID());
+      const title = String(obj.title ?? 'New Task');
+      const status = String(obj.status ?? 'pending');
+      const priority = String(obj.priority ?? 'medium');
+      const description = obj.description ? String(obj.description) : null;
+      const estimatedEffort = obj.estimatedEffort != null ? Number(obj.estimatedEffort) : null;
+      const assignedAgent = obj.assignedAgent ? String(obj.assignedAgent) : null;
+      const now = new Date().toISOString();
+      await this.databaseSystem.query(
+        `INSERT INTO tasks (id, title, description, status, priority, estimated_effort, assigned_agent, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, title, description, status, priority, estimatedEffort, assignedAgent, now, now]
+      );
+      return { id, title, status, priority, createdAt: now, updatedAt: now };
+    } catch (error) {
+      logger.error('Failed to create task:', error);
+      return { id: 'error', title: 'New Task', status: 'error', priority: 'medium' };
+    }
   }
 
   /**

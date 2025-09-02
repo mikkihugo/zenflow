@@ -1,5 +1,4 @@
-import { z } from 'zod';
-import { getLogger } from '@claude-zen/foundation';
+import { z, getLogger } from '@claude-zen/foundation';
 import {
   WorkflowContext,
   WorkflowDefinition,
@@ -9,7 +8,7 @@ import {
 const logger = getLogger('workflow-schemas');
 
 // Zod schemas for workflow validation
-export const WorkflowStepSchema = z.object({
+export const WORKFLOW_STEP_SCHEMA = z.object({
   id: z.string().optional(),
   type: z.string(),
   name: z.string().optional(),
@@ -26,23 +25,23 @@ export const WorkflowStepSchema = z.object({
   }).optional(),
 });
 
-export const WorkflowDefinitionSchema = z.object({
+export const WORKFLOW_DEFINITION_SCHEMA = z.object({
   name: z.string(),
   description: z.string().optional(),
   version: z.string().optional(),
-  steps: z.array(WorkflowStepSchema),
+  steps: z.array(WORKFLOW_STEP_SCHEMA),
 });
 
-export const WorkflowContextSchema = z.record(z.string(), z.unknown());
+export const WORKFLOW_CONTEXT_SCHEMA = z.record(z.string(), z.unknown());
 
-export const WorkflowExecutionResultSchema = z.object({
+export const WORKFLOW_EXECUTION_RESULT_SCHEMA = z.object({
   success: z.boolean(),
   output: z.unknown().optional(),
   error: z.string().optional(),
   duration: z.number().optional(),
 });
 
-export const WorkflowStepResultSchema = z.object({
+export const WORKFLOW_STEP_RESULT_SCHEMA = z.object({
   success: z.boolean(),
   output: z.unknown().optional(),
   error: z.string().optional(),
@@ -50,10 +49,10 @@ export const WorkflowStepResultSchema = z.object({
 });
 
 // Type exports inferred from schemas
-export type WorkflowStepSchemaType = z.infer<typeof WorkflowStepSchema>;
-export type WorkflowDefinitionSchemaType = z.infer<typeof WorkflowDefinitionSchema>;
-export type WorkflowContextSchemaType = z.infer<typeof WorkflowContextSchema>;
-export type WorkflowExecutionResultSchemaType = z.infer<typeof WorkflowExecutionResultSchema>;
+export type WorkflowStepSchemaType = z.infer<typeof WORKFLOW_STEP_SCHEMA>;
+export type WorkflowDefinitionSchemaType = z.infer<typeof WORKFLOW_DEFINITION_SCHEMA>;
+export type WorkflowContextSchemaType = z.infer<typeof WORKFLOW_CONTEXT_SCHEMA>;
+export type WorkflowExecutionResultSchemaType = z.infer<typeof WORKFLOW_EXECUTION_RESULT_SCHEMA>;
 
 // Re-export types from base types for convenience
 export type {
@@ -75,14 +74,14 @@ export class WorkflowSchemas {
 
   // Validation methods
   validateWorkflowDefinition(data: unknown): WorkflowDefinition {
-    return WorkflowDefinitionSchema.parse(data);
+  return WORKFLOW_DEFINITION_SCHEMA.parse(data);
   }
 
   validateWorkflowContext(data: unknown): WorkflowContext {
-    return WorkflowContextSchema.parse(data);
+  return WORKFLOW_CONTEXT_SCHEMA.parse(data);
   }
 
   validateWorkflowStep(data: unknown): WorkflowStep {
-    return WorkflowStepSchema.parse(data);
+  return WORKFLOW_STEP_SCHEMA.parse(data);
   }
 }

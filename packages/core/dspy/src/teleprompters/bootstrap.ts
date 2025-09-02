@@ -62,7 +62,7 @@ export class LabeledFewShot extends Teleprompter {
 			predictor.updateDemos(demos);
 }
 
-		(compiled as any)._compiled = true;
+		(compiled as any).compiled = true;
 		return compiled;
 }
 }
@@ -169,12 +169,12 @@ export class BootstrapFewShot extends Teleprompter {
 
 		this.trainset = trainset;
 
-		await this._prepare_student_and_teacher(student, teacher);
-		this._prepare_predictor_mappings();
-		await this._bootstrap();
+		await this.prepare_student_and_teacher(student, teacher);
+		this.prepare_predictor_mappings();
+		await this.bootstrap();
 
-		this.student = this._train();
-		(this.student as any)._compiled = true;
+		this.student = this.train();
+		(this.student as any).compiled = true;
 
 		return this.student;
 }
@@ -182,7 +182,7 @@ export class BootstrapFewShot extends Teleprompter {
 	/**
 	 * Prepare student and teacher models exactly matching Stanford implementation
 	 */
-	private async _prepare_student_and_teacher(
+	private async prepare_student_and_teacher(
 		student:DSPyModule,
 		teacher?:DSPyModule | null,
 	):Promise<void> {
@@ -194,11 +194,11 @@ export class BootstrapFewShot extends Teleprompter {
 				? teacher.deepcopy()
 				:student.deepcopy();
 
-		if ((this.student as any)._compiled) {
+		if ((this.student as any).compiled) {
 			throw new Error("Student must be uncompiled.");
 }
 
-		if (this.max_labeled_demos && !(this.teacher as any)._compiled) {
+		if (this.max_labeled_demos && !(this.teacher as any).compiled) {
 			const teleprompter = new LabeledFewShot(this.max_labeled_demos);
 			this.teacher = await teleprompter.compile(this.teacher.reset_copy(), {
 				trainset:this.trainset,
@@ -209,7 +209,7 @@ export class BootstrapFewShot extends Teleprompter {
 	/**
 	 * Prepare predictor mappings exactly matching Stanford implementation
 	 */
-	private _prepare_predictor_mappings():void {
+	private prepare_predictor_mappings():void {
 		const name2predictor:Record<string, any> = {};
 		const predictor2name:Record<string, string> = {};
 		const student = this.student!;
@@ -262,7 +262,7 @@ export class BootstrapFewShot extends Teleprompter {
 	/**
 	 * Bootstrap demonstrations exactly matching Stanford implementation
 	 */
-	private async _bootstrap(max_bootstraps?:number): Promise<void> {
+	private async bootstrap(max_bootstraps?:number): Promise<void> {
 		max_bootstraps = max_bootstraps || this.max_bootstrapped_demos;
 		let bootstrap_attempts = 0;
 
@@ -288,7 +288,7 @@ export class BootstrapFewShot extends Teleprompter {
 			for (let round_idx = 0; round_idx < this.max_rounds; round_idx++) {
 				bootstrap_attempts++;
 
-				if (await this._bootstrap_one_example(example, round_idx)) {
+				if (await this.bootstrap_one_example(example, round_idx)) {
 					bootstrapped[example_idx] = true;
 					break;
 }
@@ -308,7 +308,7 @@ export class BootstrapFewShot extends Teleprompter {
 	/**
 	 * Bootstrap one example exactly matching Stanford implementation
 	 */
-	private async _bootstrap_one_example(
+	private async bootstrap_one_example(
 		example:Example,
 		round_idx:number = 0,
 	):Promise<boolean> {
@@ -322,7 +322,7 @@ export class BootstrapFewShot extends Teleprompter {
 
 			// Temperature adjustment for retries
 			const temperature = round_idx > 0 ? 0.7 + 0.001 * round_idx:0.0;
-			const _new_settings = round_idx > 0 ? { temperature} :{};
+			const new_settings = round_idx > 0 ? { temperature} :{};
 
 			// Cache and modify teacher demos
 			const namedPredictors = teacher.named_predictors();
@@ -337,7 +337,7 @@ export class BootstrapFewShot extends Teleprompter {
 			const prediction = await teacher.forward(example.inputs);
 
 			// Simulate trace collection
-			for (const [_name, predictor] of namedPredictors) {
+			for (const [name, predictor] of namedPredictors) {
 				trace.push([predictor, example.inputs, prediction]);
 }
 
@@ -418,7 +418,7 @@ export class BootstrapFewShot extends Teleprompter {
 	/**
 	 * Train student with collected demonstrations exactly matching Stanford implementation
 	 */
-	private _train():DSPyModule {
+	private train():DSPyModule {
 		const student = this.student!;
 
 		for (const [name, predictor] of student.named_predictors()) {
@@ -443,10 +443,10 @@ export class BootstrapFewShot extends Teleprompter {
 	 */
 	private getObjectId(obj:any): string {
 		// Simple object ID generation for TypeScript
-		if (!obj._dspy_id) {
-			obj._dspy_id = Math.random().toString(36);
+		if (!obj.dspy_id) {
+			obj.dspy_id = Math.random().toString(36);
 }
-		return obj._dspy_id;
+		return obj.dspy_id;
 }
 
 	private examplesEqual(a:Example, b:Example): boolean {
@@ -462,7 +462,7 @@ export class BootstrapFewShot extends Teleprompter {
 }
 
 	private sampleArray<T>(array:T[], size:number, seed:number): T[] {
-		const __rng = this.createSeededRNG(seed);
+		const _rng = this.createSeededRNG(seed);
 		const shuffled = [...array];
 		this.shuffleArray(shuffled, seed);
 		return shuffled.slice(0, size);

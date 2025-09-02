@@ -358,14 +358,14 @@ export const configManager = new ConfigManager();
 /**
  * Load default configuration
  */
-export function _loadDefaultConfig():CollectorConfig {
+export function loadDefaultConfig():CollectorConfig {
   return configManager.loadConfig();
 }
 
 /**
  * Create a minimal development configuration
  */
-export function _createDevelopmentConfig():CollectorConfig {
+export function createDevelopmentConfig():CollectorConfig {
   const config = new ConfigManager();
   const devConfig = config.getDefaultConfig();
 
@@ -394,7 +394,7 @@ export function _createDevelopmentConfig():CollectorConfig {
 /**
  * Create a production configuration
  */
-export function _createProductionConfig():CollectorConfig {
+export function createProductionConfig():CollectorConfig {
   const config = new ConfigManager();
   const prodConfig = config.getDefaultConfig();
 

@@ -8,7 +8,10 @@
 * ARCHITECTURAL PATTERN:Foundation EventBus with typed event coordination.
 */
 
-// 100% EVENT-BASED BRAIN - ZERO IMPORTS
+// 100% EVENT-BASED BRAIN - FOUNDATION ONLY
+// Foundation imports are always allowed
+import { EventBus, Result, ok, err } from '@claude-zen/foundation';
+
 // All functionality accessed through events only
 // Brain emits events for all operations, other systems handle via event listeners
 
@@ -78,155 +81,56 @@ parameters?:Record<string, unknown>;
 }
 
 /**
-* Intelligence event types for foundation EventBus with enhanced ML coordination
+* Simplified Brain Events - Pure Event-Driven Interface
 */
-export interface IntelligenceEvents {
+export interface BrainEvents extends Record<string, unknown> {
 // Core Brain Events
-'intelligence:initialized': {
-sessionId?:string;
-config:BrainConfig;
-timestamp:number;
+'brain:initialized': {
+sessionId?: string;
+config: BrainConfig;
+timestamp: number;
 };
-'intelligence:shutdown': {
-sessionId?:string;
-timestamp:number;
+'brain:shutdown': {
+sessionId?: string;
+timestamp: number;
 };
-'intelligence:prompt_optimized': {
-request:PromptOptimizationRequest;
-result:PromptOptimizationResult;
-duration:number;
-timestamp:number;
+'brain:log': {
+level: 'debug' | 'info' | 'warn' | 'error';
+message: string;
+context?: Record<string, unknown>;
+timestamp: number;
 };
-'intelligence:performance_tracked': {
-metrics:BrainMetrics;
-timestamp:number;
-};
-'intelligence:error': {
-error:string;
-context:Record<string, unknown>;
-timestamp:number;
+'brain:error': {
+error: string;
+context?: Record<string, unknown>;
+timestamp: number;
 };
 
-// Brain Analysis & Decision Events
-'brain:analyze_request': {
-requestId:string;
-task:string;
-complexity:number;
-context:Record<string, unknown>;
-timestamp:number;
+// Simplified Task Analysis Events
+'brain:task_submitted': {
+taskId: string;
+task: string;
+context?: Record<string, unknown>;
+timestamp: number;
 };
-'brain:strategy_decided': {
-requestId:string;
-strategy:'dspy_optimization' | ' direct_training' | ' hybrid_workflow' | ' inference_only';
-reasoning:string;
-confidence:number;
-timestamp:number;
-};
-'brain:mode_activated': {
-mode:'dspy' | ' training' | ' inference' | ' validation' | ' coordination';
-previousMode?:string;
-requestId:string;
-timestamp:number;
-};
-'brain:workflow_planned': {
-requestId:string;
-workflowSteps:string[];
-estimatedDuration:number;
-resourceRequirements:Record<string, unknown>;
-timestamp:number;
+'brain:task_analyzed': {
+taskId: string;
+taskType: 'prompt' | 'ml' | 'coordination' | 'computation';
+complexity: number;
+suggestedTools?: string[];
+estimatedDuration?: number;
+reasoning: string[];
+timestamp: number;
 };
 
-// Brain Coordination Events
-'brain:dspy_initiated': {
-requestId:string;
-optimizationType:string;
-promptComplexity:number;
-expectedIterations:number;
-timestamp:number;
-};
-'brain:training_initiated': {
-requestId:string;
-modelType:string;
-datasetSize:number;
-epochs:number;
-sparc_phase:string;
-timestamp:number;
-};
-'brain:validation_initiated': {
-requestId:string;
-validationType:string;
-modelId:string;
-testDataSize:number;
-timestamp:number;
-};
-'brain:hybrid_workflow_started': {
-requestId:string;
-workflowType:string;
-phases:string[];
-coordination:Record<string, unknown>;
-timestamp:number;
-};
-
-// Brain Progress & Intelligence Events
-'brain:progress_update': {
-requestId:string;
-phase:string;
-progress:number;
-currentStep:string;
-nextStep?:string;
-timestamp:number;
-};
-'brain:decision_refined': {
-requestId:string;
-originalStrategy:string;
-refinedStrategy:string;
-refinementReason:string;
-timestamp:number;
-};
-'brain:insights_discovered': {
-requestId:string;
-insights:string[];
-patterns:Record<string, unknown>;
-learningValue:number;
-timestamp:number;
-};
-'brain:workflow_completed': {
-requestId:string;
-finalStrategy:string;
-duration:number;
-success:boolean;
-results:Record<string, unknown>;
-timestamp:number;
-};
-'brain:bottleneck_detected': {
-requestId?:string;
-bottleneckType:string;
-severity:'low' | ' medium' | ' high' | ' critical';
-recommendations:string[];
-timestamp:number;
-};
-'brain:performance_analyzed': {
-analysisId:string;
-systemPerformance:Record<string, number>;
-mlPerformance:Record<string, number>;
-optimizationOpportunities:string[];
-timestamp:number;
-};
-
-// Brain-ML Integration Events
-'brain:ml_request_analyzed': {
-requestId:string;
-mlType:'training' | ' inference' | ' optimization' | ' validation';
-complexity:number;
-resourceEstimate:Record<string, number>;
-timestamp:number;
-};
-'brain:ml_coordination_active': {
-requestId:string;
-coordinationType:string;
-activeSystems:string[];
-eventFlow:string[];
-timestamp:number;
+// Task Completion Events
+'brain:task_completed': {
+taskId: string;
+result: any;
+toolsUsed?: string[];
+duration: number;
+success: boolean;
+timestamp: number;
 };
 }
 
@@ -236,7 +140,7 @@ timestamp:number;
 * Extends foundation EventBus to provide comprehensive AI coordination
 * with event broadcasting for all intelligence operations.
 */
-export class IntelligenceOrchestrator extends EventBus<IntelligenceEvents> {
+export class IntelligenceOrchestrator extends EventBus<BrainEvents> {
 private config:BrainConfig;
 private initialized = false;
 // 100% EVENT-BASED:No logger property, use event-based logging only
@@ -280,22 +184,25 @@ timestamp: Date.now(),
 /**
 * Initialize the Intelligence Orchestrator with EventBus
 */
-async initialize(): Promise<void> {
+async initialize(): Promise<Result<void, Error>> {
 if (this.initialized) {
 await this.emitSafe('brain:log', {
 level: 'debug',
 message: 'Intelligence Orchestrator already initialized',
 timestamp: Date.now(),
 });
-return;
+return ok(undefined);
 }
 
 const initStartTime = Date.now();
 
 try {
-this.logger.info(
-` Initializing Intelligence Orchestrator with foundation EventBus...`
-);
+// 100% EVENT-BASED: Emit log event instead of direct logging
+await this.emitSafe('brain:log', {
+level: 'info',
+message: 'Initializing Intelligence Orchestrator with foundation EventBus...',
+timestamp: Date.now(),
+});
 
 // Initialize EventBus first
 const eventBusResult = await super.initialize();
@@ -332,35 +239,50 @@ this.agentMonitor = true; // Event-based coordination, no object
 this.initialized = true;
 const duration = Date.now() - initStartTime;
 
-this.logger.info(` Intelligence Orchestrator initialized successfully`, {
+// 100% EVENT-BASED: Emit success event instead of direct logging
+await this.emitSafe('brain:log', {
+level: 'info',
+message: 'Intelligence Orchestrator initialized successfully',
+context: {
 duration: `${duration}ms`,
-monitoring: `operations-facade`,
+monitoring: 'operations-facade',
 performanceTracker: !!this.performanceTracker,
 agentMonitor: !!this.agentMonitor,
 sessionId: this.config.sessionId,
+},
+timestamp: Date.now(),
 });
 
 // Emit initialization event
-await this.emitSafe('intelligence:initialized', {
+await this.emitSafe('brain:initialized', {
 sessionId:this.config.sessionId,
 config:this.config,
 timestamp:Date.now(),
 });
+
+return ok(undefined);
 } catch (error) {
 const duration = Date.now() - initStartTime;
-this.logger.error(` Intelligence Orchestrator initialization failed`, {
+
+// 100% EVENT-BASED: Emit error event instead of direct logging
+await this.emitSafe('brain:log', {
+level: 'error',
+message: 'Intelligence Orchestrator initialization failed',
+context: {
 error: error instanceof Error ? error.message : String(error),
 duration: `${duration}ms`,
+},
+timestamp: Date.now(),
 });
 
 // Emit error event
-await this.emitSafe(`intelligence:error`, {
+await this.emitSafe('brain:error', {
 error:error instanceof Error ? error.message : String(error),
 context:{ phase: 'initialization', duration},
 timestamp:Date.now(),
 });
 
-throw error;
+return err(error instanceof Error ? error : new Error(String(error)));
 }
 }
 
@@ -370,10 +292,15 @@ throw error;
 async shutdown(): Promise<void> {
 if (!this.initialized) return;
 
-this.logger.info('Shutting down Intelligence Orchestrator...');
+// 100% EVENT-BASED: Emit log event instead of direct logging
+await this.emitSafe('brain:log', {
+level: 'info',
+message: 'Shutting down Intelligence Orchestrator...',
+timestamp: Date.now(),
+});
 
 // Emit shutdown event before cleanup
-await this.emitSafe('intelligence:shutdown', {
+await this.emitSafe('brain:shutdown', {
 sessionId: this.config.sessionId,
 timestamp: Date.now(),
 });
@@ -384,7 +311,13 @@ this.agentMonitor = null;
 // Allow event loop to process cleanup
 await new Promise(resolve => setTimeout(resolve, 0));
 
-this.logger.info('Intelligence Orchestrator shutdown complete');
+// 100% EVENT-BASED: Emit shutdown complete event
+await this.emitSafe('brain:log', {
+level: 'info',
+message: 'Intelligence Orchestrator shutdown complete',
+timestamp: Date.now(),
+});
+}
 
 /**
 * Optimize a prompt using AI coordination
@@ -393,15 +326,17 @@ async optimizePrompt(
 request: PromptOptimizationRequest
 ): Promise<PromptOptimizationResult> {
 if (!this.initialized) {
-throw new ContextError(
-'Intelligence Orchestrator not initialized. Call initialize() first.',
-{
-code: 'INTELLIGENCE_NOT_INITIALIZED',
-}
+throw new Error(
+'Intelligence Orchestrator not initialized. Call initialize() first.'
 );
 }
 
-this.logger.debug('Optimizing prompt for task: ' + request.task);
+// 100% EVENT-BASED: Emit debug log event
+await this.emitSafe('brain:log', {
+level: 'debug',
+message: 'Optimizing prompt for task: ' + request.task,
+timestamp: Date.now(),
+});
 
 // Allow event loop to process the optimization request
 await new Promise(resolve => setTimeout(resolve, 0));
@@ -429,9 +364,12 @@ agentMonitor:!!this.agentMonitor,
 
 // Emit performance tracking event
 if (this.initialized) {
-await this.emitSafe('intelligence:performance_tracked', {
-metrics:status,
-timestamp:Date.now(),
+await this.emitSafe('brain:task_completed', {
+taskId: 'status_check',
+result: status,
+duration: 0,
+success: true,
+timestamp: Date.now(),
 });
 }
 

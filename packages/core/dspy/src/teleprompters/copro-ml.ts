@@ -21,18 +21,17 @@
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type {
-BayesianOptimizer,
-ConceptDriftDetection,
-HypothesisTest,
-OnlineLearner,
-OnlineLearnerConfig,
-OptimizationBounds,
-OptimizationResult,
-Pattern,
-PatternLearner,
-StatisticalAnalyzer,
-} from '@claude-zen/neural-ml';
+// Event-driven boundary: local ML types and gateway instead of importing neural-ml directly
+type OptimizationBounds = { lower: number[]; upper: number[] };
+type OptimizationResult = { success: boolean; bestParams: number[]; bestValue: number };
+type HypothesisTest = { statistic: number; pValue: number; significant: boolean };
+type ConceptDriftDetection = { driftDetected: boolean; confidence: number };
+type OnlineLearnerConfig = { algorithm: string; learningRate: number; forgettingFactor: number };
+type Pattern = { pattern: unknown; frequency: number; confidence: number };
+interface BayesianOptimizer { configure(cfg: Record<string, unknown>): Promise<void>; suggestNext(): Promise<number[]>; observe(params: number[], value: number): Promise<void>; }
+interface OnlineLearner { configure(cfg: OnlineLearnerConfig): Promise<void>; update(features: number[], target: number): Promise<void>; detectDrift(pred: number[], targ: number[]): Promise<ConceptDriftDetection>; }
+interface PatternLearner { configure(cfg: Record<string, unknown>): Promise<void>; }
+interface StatisticalAnalyzer {}
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
 
@@ -291,7 +290,7 @@ export class COPROML extends Teleprompter {
 			);
 } catch (error) {
 			this.logger.error("Failed to initialize COPROML:", error);
-			throw new Error(`COPROML initialization failed:${error}`
+			throw new Error(`COPROML initialization failed:${error}`);
 }
 }
 
@@ -351,7 +350,7 @@ export class COPROML extends Teleprompter {
 			const patterns = await this.analyzeFeedbackPatterns();
 
 			// Step 4:Statistical validation of learning effectiveness
-			const __statisticalTests = await this.validateLearningEffectiveness();
+			const _statisticalTests = await this.validateLearningEffectiveness();
 
 			// Step 5:Generate final optimized module
 			const optimizedModule = await this.createOptimizedModule(student);
@@ -402,7 +401,7 @@ export class COPROML extends Teleprompter {
 };
 } catch (error) {
 			this.logger.error("COPROML compilation failed:", error);
-			throw new Error(`COPROML compilation error:${error}`
+			throw new Error(`COPROML compilation error:${error}`);
 }
 }
 
@@ -446,7 +445,7 @@ export class COPROML extends Teleprompter {
 };
 
 		// Run initial Bayesian optimization
-		const __initialPoints = this.generateInitialPoints(bounds);
+		const _initialPoints = this.generateInitialPoints(bounds);
 		await this.bayesianOptimizer?.optimize(objectiveFunction);
 
 		this.explorationBudget -= this.config.initialExplorationBudget;
@@ -579,7 +578,7 @@ export class COPROML extends Teleprompter {
 			? patternResult
 			:patternResult.patterns || [];
 
-		this.logger.info(`Detected ${patterns.length} feedback patterns`
+		this.logger.info(`Detected ${patterns.length} feedback patterns`);
 
 		return patterns;
 }
@@ -635,7 +634,7 @@ export class COPROML extends Teleprompter {
 			confidenceInterval:[correlation - 0.1, correlation + 0.1],
 });
 
-		this.logger.info(`Completed ${tests.length} statistical validation tests`
+		this.logger.info(`Completed ${tests.length} statistical validation tests`);
 
 		return tests;
 }
@@ -742,9 +741,9 @@ export class COPROML extends Teleprompter {
 }
 
 	private async evaluatePrefixConfiguration(
-		_student:DSPyModule,
+		student:DSPyModule,
 		config:Record<string, any>,
-		_options:any,
+		options:any,
 	):Promise<number> {
 		// Mock evaluation - replace with actual DSPy evaluation
 		const baseAccuracy = 0.6;
@@ -1038,8 +1037,8 @@ export class COPROML extends Teleprompter {
 }
 
 	private async evaluateFinalPerformance(
-		_module:DSPyModule,
-		_options:any,
+		module:DSPyModule,
+		options:any,
 	):Promise<{ accuracy: number}> {
 		// Final evaluation
 		return { accuracy:this.getBestAccuracy()};

@@ -284,12 +284,18 @@ export class AISafetyOrchestrator {
   /**
    * Perform automated detection using deception detector.
    */
-  private async performAutomatedDetection(_agentId: string,
+  private async performAutomatedDetection(agentId: string,
     interactionData: AIInteractionData,
-    _orchestrationId: string
+    orchestrationId: string
   ): Promise<{ success: boolean; value?: AutomatedDetectionResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
+
+      logger.debug('Starting automated detection', {
+        agentId,
+        orchestrationId,
+        sessionId: this.sessionId
+      });
       
       const alerts = this.deceptionDetector.analyzeAIResponse(interactionData);
       const immediateInterventions = alerts.filter(alert => 
@@ -319,12 +325,18 @@ export class AISafetyOrchestrator {
   /**
    * Perform behavioral analysis with pattern detection.
    */
-  private async performBehavioralAnalysis(_agentId: string,
+  private async performBehavioralAnalysis(agentId: string,
     interactionData: AIInteractionData,
-    _orchestrationId: string
+    orchestrationId: string
   ): Promise<{ success: boolean; value?: BehavioralAnalysisResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
+
+      logger.debug('Starting behavioral analysis', {
+        agentId,
+        orchestrationId,
+        sessionId: this.sessionId
+      });
       
       // Analyze behavioral patterns
       const patternsAnalyzed = this.analyzeBehavioralPatterns(interactionData);
@@ -415,12 +427,19 @@ export class AISafetyOrchestrator {
   /**
    * Escalate to human oversight.
    */
-  private async escalateToHuman(_agentId: string,
+  private async escalateToHuman(agentId: string,
     phase1: AutomatedDetectionResult,
     phase2: BehavioralAnalysisResult,
-    _orchestrationId: string
+    orchestrationId: string
   ): Promise<{ success: boolean; value?: HumanEscalationResult; error?: SafetyError}> {
     try {
+      logger.debug('Escalating to human oversight', {
+        agentId,
+        orchestrationId,
+        sessionId: this.sessionId,
+        phase1Alerts: phase1.alertsGenerated,
+        phase2Deviations: phase2.behavioralDeviations
+      });
       // Simulate human escalation process
       const escalationLevel = this.determineEscalationLevel(phase1, phase2);
       

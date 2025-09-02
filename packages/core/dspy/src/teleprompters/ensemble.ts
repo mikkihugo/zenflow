@@ -90,8 +90,8 @@ outputs.length,
 predictors(): any[] {
 const allPredictors: any[] = [];
 for (const program of this.programs) {
-if (typeof program.predictors === `function); {
-allPredictors.push(...program.predictors())();
+if (typeof program.predictors === 'function') {
+allPredictors.push(...program.predictors());
 }
 }
 return allPredictors;
@@ -104,10 +104,10 @@ namedPredictors(): [string, any][] {
 const allNamedPredictors: [string, any][] = [];
 for (let i = 0; i < this.programs.length; i++) {
 const program = this.programs[i];
-if (typeof program.namedPredictors === 'function{
+if (typeof program.namedPredictors === 'function') {
 const programPredictors = program.namedPredictors();
 for (const [name, predictor] of programPredictors) {
-allNamedPredictors.push([`program_${ + (i) + }_` + name, predictor]);
+allNamedPredictors.push([`program_${i}_${name}`, predictor]);
 }
 }
 }

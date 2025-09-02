@@ -462,7 +462,7 @@ timeout:options.timeout || this.config.timeout,
 };
 
 // Train the network
-const __stats = networkInstance.network.train(
+const _stats = networkInstance.network.train(
 trainingData as any[],
 trainingOptions
 );

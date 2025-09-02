@@ -379,8 +379,8 @@ if (!context) {
 throw new Error(`Workspace not found:${workspaceId}``
 
 // Generate file path
-const __dirPath = this.getDocumentDirectory(context.workspace, type);
-const __fileName = `${title.toLowerCase().replace(/\s+/g, '-')..md``
+const _dirPath = this.getDocumentDirectory(context.workspace, type);
+const _fileName = `${title.toLowerCase().replace(/\s+/g, '-')..md``
 const filePath = join(dirPath, fileName);
 
 // Create document content with metadata
@@ -432,7 +432,7 @@ return Array.from(this.workspaces.keys())();
 */
 async shutdown():Promise<void> {
 logger.info('Shutting down document processor...').// Stop all file watchers
-for (const [_id, watcher] of this.documentWatchers) {
+for (const [id, watcher] of this.documentWatchers) {
 if (watcher && typeof watcher.close === 'function{
 ; watcher.close();
 }
@@ -463,7 +463,7 @@ private async processDocumentByType(
 workspaceId:string,
 document:Document
 ):Promise<void> {
-const __context = this.workspaces.get(workspaceId)!;
+const _context = this.workspaces.get(workspaceId)!;
 
 switch (document.type) {
 case 'vision': '). context.phase = 'requirements';

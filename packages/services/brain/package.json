@@ -38,7 +38,7 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/database": "workspace:*",
-    "@claude-zen/llm-providers": "workspace:*",
+  "@claude-zen/neural-ml": "workspace:*",
     "brain.js": "2.0.0-beta.24",
     "consistent-hashing": "^0.3.0",
     "d3-array": "^3.2.4",
@@ -67,12 +67,10 @@
     "_onnx_replaced": "onnxruntime-node → claude-zen-neural-onnx (ort Rust bindings)"
   },
   "optionalDependencies": {
-    "@claude-zen/dspy": "workspace:*",
-    "@claude-zen/neural-ml": "workspace:*",
     "openai": "^5.13.1"
   },
-  "_comment_neural_ml": "neural-ml is a private implementation detail - only brain package should access it",
-  "_comment_dspy": "dspy is a private implementation detail - only brain package should access it",
+  "_comment_neural_ml": "removed to enforce event-driven boundaries",
+  "_comment_dspy": "removed to enforce event-driven boundaries",
   "_comment_agent_monitoring": "agent-monitoring is now integrated directly into brain package",
   "_comment_load_balancing_deprecated": "load-balancing is DEPRECATED - use brain event coordination for 1-2 user system",
   "devDependencies": {
@@ -113,10 +111,6 @@
     "./coordinator": {
       "types": "./dist/brain-coordinator.d.ts",
       "import": "./dist/brain-coordinator.js"
-    },
-    "./neural": {
-      "types": "./dist/neural-bridge.d.ts",
-      "import": "./dist/neural-bridge.js"
     },
     "./brain-js": {
       "types": "./dist/brain-js-bridge.d.ts",

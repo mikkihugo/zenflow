@@ -125,7 +125,7 @@ describe('Database Package Integration Tests - SQLite Adapter', () => {
  // Test concurrent operations
  const createConcurrentPromise = (i:number) =>
  adapter.execute(INSERT_TEST_SQL, [`concurrent_${i}`]);
- const promises = Array.from({ length:10}, (_unused, i) =>
+ const promises = Array.from({ length:10}, (unused, i) =>
  createConcurrentPromise(i)
  );
 
@@ -135,7 +135,7 @@ describe('Database Package Integration Tests - SQLite Adapter', () => {
  expect(result.rows[0].count).toBeGreaterThanOrEqual(10);
 
  // Test stats
- const __stats = await adapter.getStats();
+ const _stats = await adapter.getStats();
  expect(stats.total).toBeGreaterThan(0);
  expect(stats.currentLoad).toBeGreaterThanOrEqual(0);
 } finally {
@@ -312,7 +312,7 @@ describe('Database Package Integration Tests - Performance', () => {
  adapter:SQLiteAdapter,
  operations:number
  ):Promise<void> {
- const insertPromises = Array.from({ length:operations}, (_unused, i) =>
+ const insertPromises = Array.from({ length:operations}, (unused, i) =>
  adapter.execute('INSERT INTO perf_test (data) VALUES (?)', [
  `data_${i}`,
 ])

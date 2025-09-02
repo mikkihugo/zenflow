@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tool_usage>
+  <tool>
+    <name>context7 MCP</name>
+    <usage>Use for authoritative library/package documentation, code examples, and integration guides. Initiate all external research queries via context7.</usage>
+  </tool>
+  <tool>
+    <name>memory MCP</name>
+    <usage>Record all research findings, context, and delegation events for persistent storage and future agent access.</usage>
+  </tool>
+  <tool>
+    <name>Delegation Protocol</name>
+    <usage>Other modes must delegate external research tasks to Project Research mode, which then uses context7 and memory MCP for systematic, unbiased research.</usage>
+  </tool>
+  <tool>
+    <name>Audit Trail</name>
+    <usage>Log all tool usage, research requests, and responses for compliance and traceability.</usage>
+  </tool>
+</tool_usage>

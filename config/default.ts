@@ -74,7 +74,7 @@ const config = {
         (req.connection.socket
           ? req.connection.socket.remoteAddress
           : '127.0.0.1'),
-      handler: (_req: any, res: any) => {
+      handler: (req: any, res: any) => {
         res.status(429).json({
           error: 'Too Many Requests',
           message: 'Rate limit exceeded. Please try again later.',

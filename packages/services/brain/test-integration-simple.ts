@@ -57,22 +57,22 @@ async function runIntegrationTest() {
     await coordinator.initialize();
     logger.info(' Coordinator initialized successfully\n');')
     // Test 2:Get statistics
-    logger.info('Test 2:Get Statistics');')    const __stats = coordinator.getCoordinatorStats();
+    logger.info('Test 2:Get Statistics');')    const _stats = coordinator.getCoordinatorStats();
     logger.info(' Configuration:', stats.configuration);')    logger.info(' Models Status:', stats.models);')    logger.info(' Performance:', stats.performance);')    logger.info(' Cache:', stats.cache);')    logger.info(' Fallback Chain:', stats.fallbackChain);')    logger.info(' Statistics retrieved successfully\n');')
     // Test 3:Generate embedding
     logger.info('Test 3:Generate Embedding');')    const request:NeuralEmbeddingRequest = {
       text: 'This is a test sentence for neural embedding generation',      context: 'integration-test',      priority: 'medium',      qualityLevel: 'standard',};
 
-    const __result = await coordinator.generateEmbedding(request);
+    const _result = await coordinator.generateEmbedding(request);
     logger.info(' Embedding Result:');')    logger.info('  Success:', result.success);')    logger.info('  Embedding Length:', result.embedding?.length || 0);')    logger.info('  Model:', result.metadata?.model);')    logger.info('  From Cache:', result.metadata?.fromCache);')    logger.info('  Processing Time:', result.metadata?.processingTime + ' ms');')    logger.info(' Embedding generated successfully\n');')
     // Test 4:Test caching
-    logger.info('Test 4:Test Caching');')    const __result2 = await coordinator.generateEmbedding(request);
+    logger.info('Test 4:Test Caching');')    const _result2 = await coordinator.generateEmbedding(request);
     logger.info(' Second Request Result:');')    logger.info('  Success:', result2.success);')    logger.info('  From Cache:', result2.metadata?.fromCache);')    logger.info('  Processing Time:', result2.metadata?.processingTime + ' ms');')    logger.info(' Caching works correctly\n');')
     // Test 5:Input validation
     logger.info('Test 5:Input Validation');')    const emptyRequest:NeuralEmbeddingRequest = {
       text: ','      priority: 'medium',};
 
-    const __emptyResult = await coordinator.generateEmbedding(emptyRequest);
+    const _emptyResult = await coordinator.generateEmbedding(emptyRequest);
     logger.info(' Empty Text Result:');')    logger.info('  Success:', emptyResult.success);')    logger.info('  Error:', emptyResult.error);')    logger.info(' Input validation works correctly\n');')
     // Test 6:Performance statistics after operations
     logger.info('Test 6:Performance Statistics After Operations');')    const finalStats = coordinator.getCoordinatorStats();

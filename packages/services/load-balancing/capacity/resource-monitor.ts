@@ -45,7 +45,7 @@ export class ResourceMonitor implements ResourceMonitor {
 
   public getHistoricalMetrics(
     agentId: string,
-    _timeRange: { start: Date; end: Date }
+    timeRange: { start: Date; end: Date }
   ): LoadMetrics[] {
     // In a real implementation, this would query a time-series database
     const current = this.metricsCache.get(agentId);

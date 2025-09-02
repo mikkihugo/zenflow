@@ -129,15 +129,15 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * Handle task completion.
    *
    * @param agentId
-   * @param _task
+   * @param task
    * @param duration
-   * @param _success
+   * @param success
    */
   public async onTaskComplete(
     agentId: string,
-    _task: Task,
+    task: Task,
     duration: number,
-    _success: boolean
+    success: boolean
   ): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 

@@ -74,7 +74,7 @@ export class WebSocketClient extends EventEmitter {
           resolve();
         };
 
-        this.ws.onmessage = (_event) => {
+        this.ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
             this.emit('message', data);
@@ -83,7 +83,7 @@ export class WebSocketClient extends EventEmitter {
           }
         };
 
-        this.ws.onclose = (_event) => {
+        this.ws.onclose = (event) => {
           clearTimeout(timeout);
           this.isConnected = false;
           this.stopHeartbeat();

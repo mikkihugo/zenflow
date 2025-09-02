@@ -366,8 +366,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
  */
  private async optimizeMIPROML(
  config: DSPyOptimizationConfig,
- _training_data: any[],
- _validation_data: any[]
+ training_data: any[],
+ validation_data: any[]
  ): Promise<DSPyOptimizationResult> {
  // Multi-objective optimization for MIPRO (accuracy vs speed vs memory)
  const multiObjConfig: MultiObjectiveConfig = {
@@ -562,8 +562,8 @@ export class MLNeuralCoordinator extends TypedEventBase {
  */
  private async optimizeGRPOML(
  config: DSPyOptimizationConfig,
- _training_data: any[],
- _validation_data: any[]
+ training_data: any[],
+ validation_data: any[]
  ): Promise<DSPyOptimizationResult> {
  // Gradient-based optimization for GRPO
  const gradientConfig: GradientConfig = {
@@ -952,12 +952,12 @@ export class MLNeuralCoordinator extends TypedEventBase {
  return recommendations;
  }
 
- private extractFeaturesFromData(_data: any): number[] {
+ private extractFeaturesFromData(data: any): number[] {
  // Mock feature extraction - replace with actual implementation
  return Array.from({ length: 10 }, () => Math.random())();
  }
 
- private extractTargetFromData(_data: any): number {
+ private extractTargetFromData(data: any): number {
  // Mock target extraction - replace with actual implementation
  return Math.random();
  }

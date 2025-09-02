@@ -13,15 +13,9 @@ Code-Mesh Core is the foundational library that powers the Code-Mesh ecosystem -
 
 ### 🚀 **High-Performance Engine**
 
-- **WASM Compilation**: Rust-to-WASM compilation for near-native performance
-- **SIMD Acceleration**: Hardware-optimized neural operations at 661 ops/second
-- **Memory Efficiency**: 92.23% efficiency with shared memory pools
-- **Zero-Copy Operations**: Direct memory access for file I/O and data processing
-
+ **🔐 Secure Authentication**: OAuth and API key support with encrypted credential storage (provider-specific modules are feature-gated; Copilot is behind `copilot` and off by default)
 ### 🧠 **Neural Mesh Architecture**
 
-- **Distributed Neural Networks**: Each agent has dedicated neural network capabilities
-- **Cognitive Patterns**: 6 thinking patterns (convergent, divergent, lateral, systems, critical, adaptive)
 - **Pattern Recognition**: Real-time analysis with 0.14ms cognitive processing
 - **Meta-Learning**: Cross-domain knowledge transfer between agents
 

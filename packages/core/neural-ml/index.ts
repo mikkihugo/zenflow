@@ -66,7 +66,7 @@
 ' * logger.info('Execution Time: ', result.executionTime);
 ' *
  * // Get comprehensive performance statistics and optimization insights
- * const __stats = await engine.getStats();
+ * const _stats = await engine.getStats();
  * logger.info('Performance Statistics: ', {
 ' *   totalOperations:stats.totalOperations,
  *   averageLatency:stats.averageLatency,

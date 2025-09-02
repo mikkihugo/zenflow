@@ -204,7 +204,7 @@ function isServiceReady(serviceName: string, output: string): boolean {
 async function waitForServicesReady() {
   const { services } = globalThis.e2eConfig;
 
-  for (const [_name, config] of Object.entries(services)) {
+  for (const [name, config] of Object.entries(services)) {
     await waitForPort(
       (config as any).port,
       globalThis.e2eConfig.timeout.startup
@@ -366,7 +366,7 @@ async function cleanupE2EState() {
 }
 
 async function generateE2EReport() {
-  const __report = {
+  const _report = {
     duration: Date.now() - globalThis.testMetrics.startTime,
     operations: globalThis.testMetrics.operations,
     services: Object.keys(globalThis.e2eConfig.services),

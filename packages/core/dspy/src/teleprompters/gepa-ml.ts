@@ -20,7 +20,11 @@
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type { HypothesisTest, MLEngine, Pattern } from '@claude-zen/neural-ml';
+// Event-driven policy: avoid direct type imports from other internal packages
+// Define minimal local aliases; real interaction should occur via events
+type HypothesisTest = unknown;
+type MLEngine = unknown;
+type Pattern = unknown;
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
 
@@ -311,7 +315,7 @@ distanceMetric: this.config.diversityMeasure,
 this.logger.info('ML components initialized successfully');
 } catch (error) {
 this.logger.error(`Failed to initialize ML components:`, error);
-throw new Error(`GEPAML initialization failed:${error.message}`
+throw new Error(`GEPAML initialization failed:${error.message}`);
 }
 }
 
@@ -502,7 +506,7 @@ this.logger.info(
 */
 private async performEvolution(
 student: DSPyModule,
-_teacher?: DSPyModule,
+teacher?: DSPyModule,
 trainset?: any[],
 valset?: any[]
 ): Promise<void> {
@@ -533,7 +537,7 @@ await this.updateAdaptiveParameters();
 }
 
 // Record population statistics
-const __stats = await this.calculatePopulationStats();
+const _stats = await this.calculatePopulationStats();
 this.evolutionHistory.push(stats);
 
 // Check for improvement
@@ -661,7 +665,7 @@ trainset?: any[],
 valset?: any[]
 ): Promise<number> {
 // Create cache key for fitness caching
-const cacheKey = Array.from(individual.genes).join(`,`
+const cacheKey = Array.from(individual.genes).join(`,`);
 
 if (this.config.cacheResults && this.fitnessCache.has(cacheKey)) {
 return this.fitnessCache.get(cacheKey)!;
@@ -704,10 +708,10 @@ weightDecay: genes[9] * 0.01,
 }
 
 private async evaluateModulePerformance(
-_student: DSPyModule,
+student: DSPyModule,
 parameters: Record<string, any>,
-_trainset?: any[],
-_valset?: any[]
+trainset?: any[],
+valset?: any[]
 ): Promise<number> {
 // Mock evaluation - replace with actual DSPy module evaluation
 const basePerformance = 0.7;
@@ -942,7 +946,7 @@ this.currentCrossoverRate * 1.05
 
 this.crossoverRateHistory.push(this.currentCrossoverRate);
 this.mutationRateHistory.push(this.currentMutationRate);
-this.selectionPressureHistory.push(this.calculateSelectionPressure())();
+this.selectionPressureHistory.push(this.calculateSelectionPressure());
 }
 
 private calculateFitnessVariance(): number {

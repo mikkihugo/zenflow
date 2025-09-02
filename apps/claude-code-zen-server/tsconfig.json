@@ -10,14 +10,16 @@
     "downlevelIteration": true,
     "paths": {
       "@claude-zen/foundation": [
-        "../../packages/core/foundation/src",
         "../../packages/core/foundation/dist"
       ],
+      "@claude-zen/database": [
+        "../../packages/core/database/dist"
+      ],
       "@claude-zen/*": [
-        "../../packages/services/*/src",
+        "../../packages/core/*/dist",
         "../../packages/services/*/dist",
-        "../../packages/core/*/src",
-        "../../packages/core/*/dist"
+        "../../packages/integrations/*/dist",
+        "../../packages/tools/*/dist"
       ],
       "$lib/*": ["./src/lib/*"],
       "$components/*": ["./src/components/*"],

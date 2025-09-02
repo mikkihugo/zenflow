@@ -20,7 +20,7 @@ import { BrainCoordinator} from '../../brain-coordinator';
 vi.mock('@xenova/transformers', () => {
 const mockPipeline = vi
 .fn()
-.mockImplementation(async (_task:string, _model:string) => {
+.mockImplementation(async (task:string, model:string) => {
 // Simulate model loading time
 await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -138,7 +138,7 @@ context: 'code-analysis', priority: 'high', qualityLevel: 'premium',})
 )
 );
 
-codeResults.forEach((result, _index) => {
+codeResults.forEach((result, index) => {
 expect(result.success).toBe(true);
 expect(result.metadata.context).toBe('code-analysis').; expect(result.metadata.priority).toBe('high').; expect(result.metadata.qualityLevel).toBe('premium').').);
 });
@@ -209,7 +209,7 @@ expect(results.every((r) => r.success)).toBe(true);
 // Average processing time should be reasonable
 expect(averageTime).toBeLessThan(1000); // Under 1 second per embedding on average
 
-const __stats = brainCoordinator.getSmartNeuralStats();
+const _stats = brainCoordinator.getSmartNeuralStats();
 expect(stats.stats.performance.totalRequests).toBeGreaterThanOrEqual(
 batchSize
 );
@@ -302,7 +302,7 @@ texts.map((text) => brainCoordinator.generateEmbedding(text))
 expect(results.every((r) => r.success)).toBe(true);
 
 // Cache should have implemented eviction policy
-const __stats = brainCoordinator.getSmartNeuralStats();
+const _stats = brainCoordinator.getSmartNeuralStats();
 expect(stats.stats.cache.size).toBeLessThanOrEqual(maxCacheSize);
 expect(stats.stats.cache.evictions).toBeGreaterThan(0);
 });
@@ -310,7 +310,7 @@ expect(stats.stats.cache.evictions).toBeGreaterThan(0);
 
 describe(`Quality Assurance Scenarios`, () => {
 ; it('should maintain embedding quality across different text types', async () => {
-; const __testCases = [
+; const _testCases = [
 { text: 'Short text', type: ' short'},
 {
 text: 'This is a medium-length text that contains several words and should generate a meaningful embedding vector for semantic analysis purposes.', type: 'medium',},
@@ -329,7 +329,7 @@ qualityLevel: `standard`,})
 )
 );
 
-results.forEach((result, _index) => {
+results.forEach((result, index) => {
 expect(result.success).toBe(true);
 expect(result.embedding).toBeDefined();
 expect(result.embedding.length).toBe(384);
@@ -366,7 +366,7 @@ expect(result.metadata.fromCache).toBe(true);
 
 describe('Integration Health Checks', () => {
 ; it('should report healthy system status', async () => {
-; const __stats = brainCoordinator.getSmartNeuralStats();
+; const _stats = brainCoordinator.getSmartNeuralStats();
 
 expect(stats.available).toBe(true);
 expect(stats.stats).toBeDefined();
@@ -375,7 +375,7 @@ expect(stats.stats.cache).toBeDefined();
 });
 
 it('should validate configuration integrity', () => {
-; const __stats = brainCoordinator.getSmartNeuralStats();
+; const _stats = brainCoordinator.getSmartNeuralStats();
 const config = stats.stats.configuration;
 
 expect(config.primaryModel).toBe('all-mpnet-base-v2').; expect(config.enableFallbacks).toBe(true);

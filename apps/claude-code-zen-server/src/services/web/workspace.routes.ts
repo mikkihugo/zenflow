@@ -395,15 +395,15 @@ export class WorkspaceApiRoutes {
       let output = '';
       let error = '';
 
-      child.stdout?.on('data', (_data) => {
+      child.stdout?.on('data', (data) => {
         output += data.toString();
       });
 
-      child.stderr?.on('data', (_data) => {
+      child.stderr?.on('data', (data) => {
         error += data.toString();
       });
 
-      child.on('close', (_code) => {
+      child.on('close', (code) => {
         res.json({
           exitCode: code,
           stdout: output,
@@ -562,11 +562,11 @@ export class WorkspaceApiRoutes {
       });
 
       let output = '';
-      child.stdout?.on('data', (_data) => {
+      child.stdout?.on('data', (data) => {
         output += data.toString();
       });
 
-      child.on('close', (_code) => {
+      child.on('close', (code) => {
         if (code === 0) {
           const files = output
             .split('\n')
@@ -608,15 +608,15 @@ export class WorkspaceApiRoutes {
       let output = '';
       let error = '';
 
-      child.stdout?.on('data', (_data) => {
+      child.stdout?.on('data', (data) => {
         output += data.toString();
       });
 
-      child.stderr?.on('data', (_data) => {
+      child.stderr?.on('data', (data) => {
         error += data.toString();
       });
 
-      child.on('close', (_code) => {
+      child.on('close', (code) => {
         res.json({
           exitCode: code,
           stdout: output,

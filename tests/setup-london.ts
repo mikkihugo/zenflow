@@ -48,8 +48,8 @@ interface ProtocolResponse {
 // Dummy usage to satisfy noUnusedLocals in strict TS for documentation-only interfaces
 // Use a const with a generic identity to ensure usage
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const __protocolTypesIdentity = <T>(v: T) => v;
-__protocolTypesIdentity<
+const _protocolTypesIdentity = <T>(v: T) => v;
+_protocolTypesIdentity<
   ProtocolMessage | ProtocolResponse | ExpectedCall | undefined
 >(undefined);
 

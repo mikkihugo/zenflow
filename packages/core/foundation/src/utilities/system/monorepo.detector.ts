@@ -285,7 +285,7 @@ export class WorkspaceDetector {
  * Detect language from project directory
  */
  private detectLanguage(
- _projectDir: string,
+ projectDir: string,
  packageFile?: string
  ): string | undefined {
  if (!packageFile) {

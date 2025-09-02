@@ -182,8 +182,8 @@ inputs(): Example {
 const inputData: Record<string, any> = {};
 
 // If input fields are explicitly designated, use those
-if ((this as any)._input_fields) {
-const inputFields = (this as any)._input_fields as Set<string>;
+if ((this as any).input_fields) {
+const inputFields = (this as any).input_fields as Set<string>;
 for (const [key, value] of Object.entries(this.data)) {
 if (inputFields.has(key)) {
 inputData[key] = value;
@@ -218,8 +218,8 @@ labels(): Example {
 const outputData: Record<string, any> = {};
 
 // If input fields are explicitly designated, labels are everything else
-if ((this as any)._input_fields) {
-const inputFields = (this as any)._input_fields as Set<string>;
+if ((this as any).input_fields) {
+const inputFields = (this as any).input_fields as Set<string>;
 for (const [key, value] of Object.entries(this.data)) {
 if (!inputFields.has(key)) {
 outputData[key] = value;
@@ -279,7 +279,7 @@ return new Example(filteredData);
 with_inputs(...fields: string[]): Example {
 const newExample = new Example(this.data);
 // Store the input field designation
-(newExample as any)._input_fields = new Set(fields);
+(newExample as any).input_fields = new Set(fields);
 return newExample;
 }
 

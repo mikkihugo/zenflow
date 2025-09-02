@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<best_practices>
+  <practice>
+    <title>Unbiased Research</title>
+    <description>Always use Project Research mode for external research to ensure systematic, unbiased context gathering.</description>
+  </practice>
+  <practice>
+    <title>Context7 Usage</title>
+    <description>Leverage context7 MCP for authoritative documentation, code examples, and integration patterns. Validate findings before integration.</description>
+  </practice>
+  <practice>
+    <title>Memory MCP Recording</title>
+    <description>Persist all research findings and context in memory MCP for traceability and future agent collaboration.</description>
+  </practice>
+  <practice>
+    <title>Delegation Protocol</title>
+    <description>Other modes must delegate external research tasks to Project Research mode for persistent, systematic context.</description>
+  </practice>
+  <practice>
+    <title>Audit Trail</title>
+    <description>Maintain an audit trail of all research requests, findings, and delegations for compliance and review.</description>
+  </practice>
+</best_practices>
