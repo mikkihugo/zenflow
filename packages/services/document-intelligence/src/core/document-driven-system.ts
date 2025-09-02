@@ -10,9 +10,9 @@
 /**
 * @file Safe artifact intelligence implementation.
 */
-import { getLogger, TypedEventBase} from '@claude-zen/foundation';
+import { getLogger, EventBus } from '@claude-zen/foundation';
 
-const logger = getLogger('SafeArtifactIntelligence').
+const logger = getLogger('SafeArtifactIntelligence');
 
 // SAFe 6.0 Essential artifacts - ALL STORED IN DATABASE
 export interface SafeArtifact {
@@ -39,8 +39,8 @@ relatedArtifacts?: string[];
 export interface SafeWorkspace {
 workspaceId:string; // Database workspace identifier
 name:string;
-safeConfiguration: 'essential|large-solution|portfolio;
-' // NO file paths - everything stored in databases
+safeConfiguration: 'essential' | 'large-solution' | 'portfolio'; 
+// NO file paths - everything stored in databases
 databases:{
 artifacts:string; // Artifact database connection
 relationships:string; // Relationship graph database

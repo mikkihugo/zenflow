@@ -738,7 +738,7 @@ private createAIResolutionResult(conflictType: 'merge' | 'rebase' | 'cherry-pick
 		conflictFiles,
 		aiSuggestions,
 		strategy: 'ai-assisted',
-		result: remainingConflicts.length === 0 ? 'resolved' : ' requires-manual',
+		result: remainingConflicts.length === 0 ? 'resolved' : 'requires-manual',
 	};
 }
 

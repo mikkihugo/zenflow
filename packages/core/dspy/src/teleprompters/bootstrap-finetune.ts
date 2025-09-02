@@ -348,7 +348,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 				);
 }
 
-			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`
+			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`;
 
 			if (!keyToData.has(trainingKey)) {
 				const { trainData, dataFormat} = await this.prepareFinetuneData(

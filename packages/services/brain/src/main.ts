@@ -25,7 +25,7 @@
 // ARCHITECTURAL CLEANUP:Foundation only - core utilities
 // Foundation utility fallbacks until strategic facades provide them
 import {
-  ContextError,
+  ConfigurationError,
   err,
   getLogger,
   type Logger,
@@ -43,8 +43,21 @@ import {
   type GraphStore
 } from '@claude-zen/foundation';
 
-// OPERATIONS:Performance tracking via operations package
-import { getPerformanceTracker } from '@claude-zen/operations';
+// OPERATIONS: Performance tracking - using foundation utilities for now
+const createPerformanceTracker = () => ({
+  trackOperation: async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
+    const start = Date.now();
+    try {
+      const result = await fn();
+      console.log(`Operation ${name} completed in ${Date.now() - start}ms`);
+      return result;
+    } catch (error) {
+      console.error(`Operation ${name} failed after ${Date.now() - start}ms:`, error);
+      throw error;
+    }
+  }
+});
+const getPerformanceTracker = () => createPerformanceTracker();
 
 // DEVELOPMENT:SAFe 6.0 Development Manager integration via facades (optional)
 // import { getSafe6DevelopmentManager, createSafe6SolutionTrainManager} from '@claude-zen/development';
@@ -85,13 +98,13 @@ const logger = getLogger('brain');
 // BRAIN TYPES - Enterprise-grade with foundation types
 // =============================================================================
 
-export class BrainError extends ContextError {
+export class BrainError extends ConfigurationError {
   constructor(
     message: string,
     context?: Record<string, unknown>,
     code?: string
   ) {
-    super(message, { ...context, domain: 'brain' }, code);
+    super(message, { ...context, domain: 'brain' });
     this.name = 'BrainError';
   }
 }

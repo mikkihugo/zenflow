@@ -4,25 +4,18 @@
 */
 
 import {
-type Entity,
 err,
-getGlobalContainer,
 // Core logging and error handling
 getLogger,
-type InjectionToken,
-
-// Modern Awilix-based DI system - refactored!
-injectable,
 
 // Foundation types and utilities
-type LiteralUnion,
-type Merge,
 ok,
-type Priority,
 type Result,
 safeAsync,
 withRetry,
 } from '@claude-zen/foundation';
+
+import * as fs from 'node:fs/promises';
 
 // Enhanced strategic facade imports with fallbacks for comprehensive analysis
 let getBrainSystem:any;
@@ -353,7 +346,7 @@ throw new Error(`Unsupported file type: ${filePath}`);
 }
 
 // Read file content
-const content = await fs.readFile(absolutePath, 'utf-8').
+const content = await fs.readFile(absolutePath, 'utf-8');
 // Create analysis ID
 const analysisId = this.generateSessionId();
 

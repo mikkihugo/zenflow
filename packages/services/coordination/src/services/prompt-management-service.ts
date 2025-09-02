@@ -4,7 +4,7 @@
  * Enterprise-grade prompt versioning and management with SOC2 compliance
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, generateUUID } from '@claude-zen/foundation';
 
 export class PromptManagementService {
   private readonly logger = getLogger('PromptManagementService');
@@ -19,7 +19,7 @@ export class PromptManagementService {
    * Create a new prompt template with SOC2 audit trail
    */
   createPromptTemplate(data: unknown): unknown {
-    const versionId = this.generateUUID();
+    const versionId = generateUUID();
 
     // Create initial version
     const initialVersion: unknown = {
@@ -104,14 +104,4 @@ export class PromptManagementService {
 
   
 
-  /**
-   * Generate UUID
-   */
-  private generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
 }

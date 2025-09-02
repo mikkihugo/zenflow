@@ -8,7 +8,9 @@
 * ARCHITECTURAL PATTERN:Foundation EventBus with typed event coordination.
 */
 
-// 100% EVENT-BASED BRAIN - ZERO IMPORTS
+import { EventBus } from '@claude-zen/foundation';
+
+// 100% EVENT-BASED BRAIN - Foundation imports only
 // All functionality accessed through events only
 // Brain emits events for all operations, other systems handle via event listeners
 

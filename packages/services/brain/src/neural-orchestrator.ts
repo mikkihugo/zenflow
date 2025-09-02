@@ -275,7 +275,7 @@ export class NeuralOrchestrator {
  else if (inputSize > 100) complexityScore += 1;
 
  // Task type complexity
- const typeComplexity = {
+ const typeComplexity: Record<string, number> = {
  'prediction': 1,
  'classification': 1,
  'clustering': 2,

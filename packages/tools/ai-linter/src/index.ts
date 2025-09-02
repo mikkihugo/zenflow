@@ -1,32 +1,9 @@
 /**
-* @fileoverview AI Linter - Main implementation
+* @fileoverview AI Linter - Main implementation  
 * @module ai-linter
 */
 
-// Basic console-backed logger (replace with foundation when available)
-function createLogger(name: string) {
-return {
-info: (msg: string, data?: unknown) =>
-// eslint-disable-next-line no-console
-console.log(`[${name}] INFO:`, msg, data ?? ``),
-error: (msg: string, data?: unknown) =>
-// eslint-disable-next-line no-console
-console.error(`[${name}] ERROR:`, msg, data ?? ``),
-debug: (msg: string, data?: unknown) =>
-// eslint-disable-next-line no-console
-console.debug(`[${name}] DEBUG:`, msg, data ?? ``),
-warn: (msg: string, data?: unknown) =>
-// eslint-disable-next-line no-console
-console.warn(`[${name}] WARN:`, msg, data ?? ``),
-} as const;
-}
-
-export type Result<T, E> =
-| { success: true; data: T }
-| { success: false; error: E };
-
-const ok = <T>(data: T): Result<T, never> => ({ success: true, data });
-const err = <E>(error: E): Result<never, E> => ({ success: false, error });
+import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 
 import type {
 AILinterConfig,
@@ -40,7 +17,7 @@ import * as fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import { glob } from 'glob';
 
-const logger = createLogger('ai-linter');
+const logger = getLogger('ai-linter');
 
 /**
 * AI-powered TypeScript/JavaScript linter
