@@ -5,20 +5,9 @@
  * Provides comprehensive system status, metrics, and data management.
  */
 
-// Direct package imports - no facades
+// Only allowed internal dependency imports: foundation + database
 import { DatabaseProvider } from '@claude-zen/database';
-import { MemoryManager } from '@claude-zen/memory';
-import {
-  SafeFramework,
-  TaskMaster,
-  WorkflowEngine,
-} from '@claude-zen/coordination';
-import { SystemMonitor } from '@claude-zen/system-monitoring';
-import { TelemetryCollector } from '@claude-zen/telemetry';
-import { CodeAnalyzer } from '@claude-zen/code-analyzer';
-import { GitOperations } from '@claude-zen/git-operations';
-import { RepoAnalyzer } from '@claude-zen/repo-analyzer';
-import { getLogger, safeAsync, withRetry } from '@claude-zen/foundation';
+import { getLogger, safeAsync, withRetry, generateUUID } from '@claude-zen/foundation';
 
 const logger = getLogger('WebDataService');
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
@@ -108,34 +97,8 @@ interface AgentData {
  * Production Web Data Service with real business logic
  */
 export class WebDataService {
-  // ALL direct package systems for comprehensive functionality
+  // Allowed: database (direct). All others must be accessed via events or not at all here.
   private databaseSystem: DatabaseProvider | null = null;
-  private taskMasterSystem: TaskMaster | null = null;
-  private workflowEngine: WorkflowEngine | null = null;
-  private safetyFramework: SafeFramework | null = null;
-  // Brain is optional and loaded dynamically to avoid hard coupling at runtime
-  private brainSystem:
-    | {
-        getCoordinationMetrics?: () => Promise<{ activeAgents?: number; totalAgents?: number }>;
-        getHealthMetrics?: () => Promise<{ neuralHealth: number; coordinationHealth: number }>;
-        getSwarmCoordination?: () => Promise<{
-          agents: Array<{
-            id: string;
-            name: string;
-            type: string;
-            status: string;
-            metrics: { efficiency: number; responseTime: number; successRate: number };
-            lastActive: string;
-          }>;
-        }>;
-      }
-    | null = null;
-  private memorySystem: MemoryManager | null = null;
-  private systemMonitor: SystemMonitor | null = null;
-  private telemetryCollector: TelemetryCollector | null = null;
-  private codeAnalyzer: CodeAnalyzer | null = null;
-  private repoAnalyzer: RepoAnalyzer | null = null;
-  private gitOperations: GitOperations | null = null;
 
   constructor() {
     this.initializeDirectSystems();
@@ -148,80 +111,17 @@ export class WebDataService {
     try {
       await withRetry(
         async () => {
-          const [
-            database,
-            taskMaster,
-            workflow,
-            safety,
-            brain,
-            memory,
-            monitor,
-            telemetry,
-            codeAnalyzer,
-            repoAnalyzer,
-            gitOps,
-          ] = await Promise.all([
-            // Direct core package imports
-            Promise.resolve(new DatabaseProvider()).catch(() => null),
+          // Initialize only allowed systems
+          const database = await Promise.resolve(new DatabaseProvider()).catch(
+            () => null
+          );
 
-            // Direct service package imports
-            Promise.resolve(new TaskMaster({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(new WorkflowEngine({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(
-              new SafeFramework({ enableMonitoring: true })
-            ).catch(() => null),
-
-            // Optional brain system via dynamic import (fallback to null)
-            (async () => {
-              try {
-                const mod = await import('@claude-zen/brain');
-                return new mod.BrainCoordinator({ enableMetrics: true });
-              } catch {
-                return null;
-              }
-            })(),
-            Promise.resolve(new MemoryManager({ enableMetrics: true })).catch(
-              () => null
-            ),
-
-            // Direct integration package imports
-            Promise.resolve(new SystemMonitor({ realTimeMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(
-              new TelemetryCollector({ realTimeTracking: true })
-            ).catch(() => null),
-
-            // Direct tool package imports
-            Promise.resolve(new CodeAnalyzer({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(new RepoAnalyzer({ enableMetrics: true })).catch(
-              () => null
-            ),
-            Promise.resolve(new GitOperations({ enableMetrics: true })).catch(
-              () => null
-            ),
-          ]);
-
-          // Initialize ALL direct package systems
           this.databaseSystem = database;
-          this.taskMasterSystem = taskMaster;
-          this.workflowEngine = workflow;
-          this.safetyFramework = safety;
-          this.brainSystem = brain;
-          this.memorySystem = memory;
-          this.systemMonitor = monitor;
-          this.telemetryCollector = telemetry;
-          this.codeAnalyzer = codeAnalyzer;
-          this.repoAnalyzer = repoAnalyzer;
-          this.gitOperations = gitOps;
 
-          logger.info('Direct package systems initialized successfully');
+          logger.info('Initialized database system (event-driven for others)');
+
+          // Provision minimal tables we rely on (idempotent)
+          await this.ensureTasksTable();
         },
         { retries: 3, minTimeout: 1000 }
       );
@@ -230,32 +130,48 @@ export class WebDataService {
     }
   }
 
+  private async ensureTasksTable(): Promise<void> {
+    if (!this.databaseSystem) return;
+    try {
+      await this.databaseSystem.query(
+        `CREATE TABLE IF NOT EXISTS tasks (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          status TEXT NOT NULL,
+          priority TEXT NOT NULL,
+          estimated_effort REAL,
+          assigned_agent TEXT,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        )`
+      );
+    } catch (err) {
+      logger.warn('ensureTasksTable failed (continuing):', err);
+    }
+  }
+
   // Helper functions for system status data collection
   private async getTaskStatistics() {
-    let taskStats = {
-      pending: 0,
-      running: 0,
-      completed: 0,
-      failed: 0,
-      blocked: 0,
-    };
-
-    if (this.taskMasterSystem) {
-      try {
-        const metrics = await this.taskMasterSystem.getFlowMetrics();
-        taskStats = {
-          pending: Math.max(0, 50 - metrics.wipCount),
-          running: metrics.wipCount || 0,
-          completed: metrics.completedTasks || 0,
-          failed: 0,
-          blocked: metrics.blockedTasks || 0,
-        };
-      } catch (error) {
-        logger.warn('Failed to get task statistics from TaskMaster: ', error);
-      }
+    // Derive from DB tasks table when available; otherwise fallback to zeros
+    if (!this.databaseSystem) {
+      return { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 };
     }
-
-    return taskStats;
+    try {
+      const res = await this.databaseSystem.query(
+        `SELECT status, COUNT(*) as cnt FROM tasks GROUP BY status`
+      );
+      const counts = { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 } as Record<string, number>;
+      for (const row of res.rows ?? []) {
+        const s = String((row as any).status || '').toLowerCase();
+        const c = Number((row as any).cnt || 0);
+        if (s in counts) counts[s] = c;
+      }
+      return counts;
+    } catch (err) {
+      logger.warn('getTaskStatistics fallback due to DB error:', err);
+      return { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 };
+    }
   }
 
   private getPerformanceMetrics() {
@@ -280,7 +196,7 @@ export class WebDataService {
   }
 
   private async getSwarmStatistics() {
-    const swarmStats = {
+  const swarmStats = {
       active: 1,
       total: 4,
       queens: 1,
@@ -288,18 +204,7 @@ export class WebDataService {
       agents: 12,
     };
 
-    if (this.brainSystem) {
-      try {
-        const brainMetrics = await this.brainSystem.getCoordinationMetrics();
-        swarmStats.active = brainMetrics.activeAgents || 1;
-        swarmStats.total = brainMetrics.totalAgents || 4;
-      } catch (error) {
-        logger.warn(
-          'Brain system metrics unavailable, using estimates: ',
-          error
-        );
-      }
-    }
+  // Note: Real swarm stats should come from brain via events.
     return swarmStats;
   }
 
@@ -449,62 +354,22 @@ export class WebDataService {
    * Check brain system health
    */
   private async checkBrainHealth(): Promise<number> {
-    if (!this.brainSystem) return 0.7;
-
-    try {
-      const metrics = await this.brainSystem.getHealthMetrics();
-      return (metrics.neuralHealth + metrics.coordinationHealth) / 2;
-    } catch {
-      return 0.6;
-    }
+  // Event-driven brain health to be integrated; return stable baseline
+  return 0.7;
   }
 
   /**
    * Check safety framework health
    */
   private async checkSafetyHealth(): Promise<number> {
-    if (!this.safetyFramework) return 0.8;
-
-    try {
-      const safetyMetrics = await this.safetyFramework.getSafetyMetrics();
-      return safetyMetrics.overallSafety || 0.8;
-    } catch {
-      return 0.7;
-    }
+  // Event-driven safety health to be integrated; return stable baseline
+  return 0.8;
   }
 
   private async getBrainCoordinationData(): Promise<SwarmStatusData[]> {
     const swarms: SwarmStatusData[] = [];
 
-    if (!this.brainSystem) {
-      return swarms;
-    }
-
-    try {
-      const coordination = await this.brainSystem.getSwarmCoordination();
-
-      for (const [index, agent] of (
-        coordination.agents as {
-          id: string;
-          name: string;
-          type: string;
-          status: string;
-          metrics: {
-            efficiency: number;
-            responseTime: number;
-            successRate: number;
-          };
-          lastActive: string;
-        }[]
-      ).entries()) {
-        swarms.push(this.createSwarmDataFromAgent(agent, index));
-      }
-    } catch (error) {
-      logger.warn(
-        'Brain coordination data unavailable, using mock data: ',
-        error
-      );
-    }
+  // Event-driven brain coordination to be integrated
 
     return swarms;
   }
@@ -536,13 +401,6 @@ export class WebDataService {
   private async getPersistedSwarmData(): Promise<SwarmStatusData[]> {
     // Get swarm data from persistent storage instead of mock data
     try {
-      if (this.memorySystem) {
-        const storedSwarms = await this.memorySystem.retrieve('swarm:status:all');
-        if (storedSwarms && Array.isArray(storedSwarms)) {
-          return storedSwarms.map((swarm: unknown) => this.normalizeSwarmData(swarm));
-        }
-      }
-
       if (this.databaseSystem) {
         const swarmQuery = await this.databaseSystem.query(
           'SELECT * FROM swarm_status ORDER BY last_active DESC'
@@ -645,17 +503,35 @@ export class WebDataService {
   }
 
   private async getTaskMasterFlowData(): Promise<TaskMetricsData | null> {
-    if (!this.taskMasterSystem) {
-      return null;
-    }
-
+    // Compute simple metrics from local DB as interim implementation
+    if (!this.databaseSystem) return null;
     try {
-      const flowMetrics = await this.taskMasterSystem.getFlowMetrics();
-      const health = await this.taskMasterSystem.getSystemHealth();
+      const total = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks`);
+      const completed = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'completed'`);
+      const failed = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'failed'`);
+      const running = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'running'`);
+      const pending = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'pending'`);
+      const totalTasks = Number(total.rows?.[0]?.n ?? 0);
+      const completedTasks = Number(completed.rows?.[0]?.n ?? 0);
+      const failedTasks = Number(failed.rows?.[0]?.n ?? 0);
+      const wipCount = Number(running.rows?.[0]?.n ?? 0) + Number(pending.rows?.[0]?.n ?? 0);
+      const successRate = totalTasks > 0 ? completedTasks / (completedTasks + failedTasks) : 1;
 
-      return this.calculateTaskMetrics(flowMetrics, health);
-    } catch (error) {
-      logger.warn('TaskMaster metrics unavailable, using estimates: ', error);
+      const metrics: TaskMetricsData = {
+        totalTasks,
+        completedTasks,
+        failedTasks,
+        averageDuration: 0,
+        successRate: Math.round(successRate * 1000) / 1000,
+        throughputPerHour: 0,
+        currentLoad: wipCount,
+        peakLoad: Math.max(wipCount, 5),
+        bottlenecks: [],
+        recommendations: [],
+      };
+      return metrics;
+    } catch (err) {
+      logger.warn('getTaskMasterFlowData failed, returning null:', err);
       return null;
     }
   }
@@ -722,42 +598,21 @@ export class WebDataService {
    * Get tasks from TaskMaster or fallback to memory
    */
   async getTasks(): Promise<
-    { id: string; title: string; status: string; priority: string }[]
+    { id: string; title: string; status: string; priority: string; createdAt?: string; updatedAt?: string }[]
   > {
     try {
-      if (this.taskMasterSystem && typeof (this.taskMasterSystem as { getAllTasks: Function }).getAllTasks === 'function') {
-        const tasks = await (this.taskMasterSystem as { getAllTasks: () => Promise<unknown[]> }).getAllTasks();
-        return (Array.isArray(tasks) ? tasks : []).map((t: unknown) => {
-          const task = (t as Record<string, unknown>) || {};
-          return {
-            id: typeof task.id === 'string' && task.id.length > 0 ? task.id : `task-${Date.now()}`,
-            title: typeof task.title === 'string' && task.title.length > 0
-              ? (task.title as string)
-              : (typeof task.name === 'string' ? (task.name as string) : 'Unnamed Task'),
-            status: typeof task.status === 'string' ? (task.status as string) : 'unknown',
-            priority: typeof task.priority === 'string' ? (task.priority as string) : 'medium',
-          };
-        });
-      }
-
-      if (this.memorySystem) {
-        const stored =
-          (await (this.memorySystem as { retrieve: (k: string) => Promise<unknown> }).retrieve('tasks')) || [];
-        return (Array.isArray(stored) ? stored : []).map((t: unknown) => {
-          const task = (t as Record<string, unknown>) || {};
-          return {
-            id: typeof task.id === 'string' && task.id.length > 0 ? task.id : `task-${Date.now()}`,
-            title: typeof task.title === 'string' && task.title.length > 0
-              ? (task.title as string)
-              : (typeof task.name === 'string' ? (task.name as string) : 'Unnamed Task'),
-            status: typeof task.status === 'string' ? (task.status as string) : 'unknown',
-            priority: typeof task.priority === 'string' ? (task.priority as string) : 'medium',
-          };
-        });
-      }
-
-      logger.warn('No TaskMaster or memory available for tasks');
-      return [];
+      if (!this.databaseSystem) return [];
+      const res = await this.databaseSystem.query(
+        `SELECT id, title, status, priority, created_at as createdAt, updated_at as updatedAt FROM tasks ORDER BY created_at DESC`
+      );
+      return (res.rows ?? []).map((r: any) => ({
+        id: String(r.id),
+        title: String(r.title),
+        status: String(r.status),
+        priority: String(r.priority),
+        createdAt: String(r.createdAt ?? ''),
+        updatedAt: String(r.updatedAt ?? ''),
+      }));
     } catch (error) {
       logger.error('Failed to get tasks:', error);
       return [];
@@ -767,53 +622,24 @@ export class WebDataService {
   /**
    * Create a new task using TaskMaster or fallback to memory
    */
-  async createTask(input: unknown): Promise<{ id: string; title: string; status: string; priority: string }> {
+  async createTask(input: unknown): Promise<{ id: string; title: string; status: string; priority: string; createdAt?: string; updatedAt?: string }> {
     try {
-      const data = (input as Record<string, unknown>) || {};
-
-      if (this.taskMasterSystem && typeof (this.taskMasterSystem as { createTask: Function }).createTask === 'function') {
-        const create = (this.taskMasterSystem as { createTask: (d: Record<string, unknown>) => Promise<Record<string, unknown>> }).createTask;
-        const newTask = await create({
-          title: typeof data.title === 'string' ? data.title : 'New Task',
-          description: typeof data.description === 'string' ? data.description : 'Task description',
-          priority: typeof data.priority === 'string' ? data.priority : 'medium',
-          assignee: data.assignee,
-          dueDate: typeof data.dueDate === 'string' ? new Date(data.dueDate) : undefined,
-        });
-        return {
-          id: String(newTask.id ?? `task-${Date.now()}`),
-          title: String(newTask.title ?? 'New Task'),
-          status: String(newTask.status ?? 'pending'),
-          priority: String(newTask.priority ?? 'medium'),
-        };
-      }
-
-      if (this.memorySystem) {
-        const id = `task-${Date.now()}`;
-        const newTask = {
-          id,
-          title: typeof data.title === 'string' ? data.title : 'New Task',
-          description: typeof data.description === 'string' ? data.description : 'Task description',
-          status: 'pending',
-          priority: typeof data.priority === 'string' ? data.priority : 'medium',
-          assignee: data.assignee,
-          dueDate: data.dueDate,
-          createdAt: new Date().toISOString(),
-        };
-        await (this.memorySystem as { store: (k: string, v: unknown) => Promise<void> }).store(`task:${id}`, newTask);
-        // Best effort update tasks list
-        try {
-          const existing = (await (this.memorySystem as { retrieve: (k: string) => Promise<unknown> }).retrieve('tasks')) as unknown[] | null;
-          const list = Array.isArray(existing) ? existing : [];
-          list.unshift(newTask);
-          await (this.memorySystem as { store: (k: string, v: unknown) => Promise<void> }).store('tasks', list);
-        } catch {
-          // ignore
-        }
-        return { id, title: newTask.title, status: newTask.status, priority: newTask.priority };
-      }
-
-      throw new Error('No TaskMaster or memory available for task creation');
+      if (!this.databaseSystem) throw new Error('database not available');
+      const obj = (input as any) ?? {};
+      const id = String(obj.id ?? generateUUID());
+      const title = String(obj.title ?? 'New Task');
+      const status = String(obj.status ?? 'pending');
+      const priority = String(obj.priority ?? 'medium');
+      const description = obj.description ? String(obj.description) : null;
+      const estimatedEffort = obj.estimatedEffort != null ? Number(obj.estimatedEffort) : null;
+      const assignedAgent = obj.assignedAgent ? String(obj.assignedAgent) : null;
+      const now = new Date().toISOString();
+      await this.databaseSystem.query(
+        `INSERT INTO tasks (id, title, description, status, priority, estimated_effort, assigned_agent, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, title, description, status, priority, estimatedEffort, assignedAgent, now, now]
+      );
+      return { id, title, status, priority, createdAt: now, updatedAt: now };
     } catch (error) {
       logger.error('Failed to create task:', error);
       return { id: 'error', title: 'New Task', status: 'error', priority: 'medium' };

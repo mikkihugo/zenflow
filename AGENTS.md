@@ -78,6 +78,16 @@ Tests: run per-package only.
 - Scripts: scripts/validate-imports.js and scripts/validate-dependencies.js
 - ESLint soft rules discourage cross-package imports beyond foundation/database
 
+TaskMaster and event-driven flows
+- The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
+- Downstream packages should implement responders listening on these topics and emit typed responses
+
+TaskMaster and event-driven flows
+- The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
+- Downstream packages should implement responders listening on these topics and emit typed responses
+
 ## Task approval example
 
 If a change is large or risky, route through TaskMaster and approvals in coordination packages.

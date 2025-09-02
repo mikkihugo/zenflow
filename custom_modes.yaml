@@ -1,0 +1,42 @@
+project-research:
+  canonical: true
+  description: >
+    Project Research mode is the canonical agent for unbiased, systematic research.
+    All external research tasks from other modes are delegated here for context7 MCP research and memory MCP recording.
+  delegation:
+    enabled: true
+    accepted_from:
+      - architect
+      - code
+      - ask
+      - debug
+      - orchestrator
+      - mode-writer
+  integration:
+    context7_mcp: true
+    memory_mcp: true
+    audit_trail: true
+
+architect:
+  delegation:
+    external_research: project-research
+
+code:
+  delegation:
+    external_research: project-research
+
+ask:
+  delegation:
+    external_research: project-research
+
+debug:
+  delegation:
+    external_research: project-research
+
+orchestrator:
+  delegation:
+    external_research: project-research
+
+mode-writer:
+  delegation:
+    external_research: project-research

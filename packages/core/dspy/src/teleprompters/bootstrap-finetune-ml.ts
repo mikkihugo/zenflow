@@ -21,12 +21,17 @@ import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import type {
+// Event-driven boundary: define minimal local ML types and access via gateway
+type MLVector = number[] | Float32Array;
+interface MLDataset { features: MLVector[]; labels: Int32Array; featureNames: string[]; size: number }
+interface MLEngine { initialize(): Promise<void> }
+type OptimizationBounds = { lower: number[]; upper: number[] };
+type HypothesisTest = { statistic: number; pValue: number; significant: boolean };
+interface PatternLearner { configure(cfg: Record<string, unknown>): Promise<void> }
+interface StatisticalAnalyzer {}
 BayesianOptimizer,
 GradientOptimizer,
-HypothesisTest,
-MLEngine,
 MultiObjectiveOptimizer,
-OptimizationBounds,
 ParetoFront,
 StatisticalAnalyzer,
 } from '@claude-zen/neural-ml';

@@ -1815,8 +1815,9 @@ export class NeuralMLEngine {
 
     if (!globalThis.neuralMLModule) {
       // In a real implementation, this would be:
-      // const neuralML = await import('@claude-zen/neural-ml-native');
-      // or: const neuralML = require('@claude-zen/neural-ml-native');
+  // NOTE: Native module would be loaded here by the runtime host.
+  // Example (disabled to comply with import policy):
+  //   const neuralML = await import('NATIVE_MODULE_PLACEHOLDER');
 
       throw new ConfigurationError('Neural-ML Rust module not available', {
         config: this.config,

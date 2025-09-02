@@ -24,71 +24,52 @@ safeAsync,
 withRetry,
 } from '@claude-zen/foundation';
 
-// Enhanced strategic facade imports with fallbacks for comprehensive analysis
-let getBrainSystem:any;
-let getPerformanceTracker:any;
-let getDatabaseSystem:any;
-let getEventSystem:any;
+// Event-driven policy: avoid direct facade imports; provide local fallbacks and use EventBus for requests
+import { EventBus } from '@claude-zen/foundation';
+const eventBus = new EventBus();
+const getBrainSystem = async () => ({
+	createCoordinator: () => ({
+		optimizePrompt: async (params: any) => ({
+			result: params.basePrompt,
+			strategy: 'fallback',
+		}),
+	}),
+	storeEmbedding: async (collection: string, id: string, data: any) => {
+		logger.debug('Brain system fallback: storing embedding', {
+			collection,
+			id,
+			data,
+		});
+		eventBus.emit?.('brain:embedding:store' as any, { collection, id, data } as any);
+	},
+});
 
-// Try to import strategic facades, with enhanced fallbacks if not available
-try {
-const intelligence = require('@claude-zen/intelligence');
-getBrainSystem = intelligence.getBrainSystem;
-} catch {
-getBrainSystem = async () => ({
-createCoordinator:() => ({
-optimizePrompt:async (params: any) => ({
-result:params.basePrompt,
-strategy: 'fallback',}),
-}),
-storeEmbedding:async (collection: string, id:string, data:any) => {
-logger.debug('Brain system fallback: storing embedding', {
-collection,
-id,
-data,
+const getPerformanceTracker = async () => ({
+	startSession: async (id: string) => ({ sessionId: id, startTime: Date.now() }),
+	endSession: async (id: string) => ({ sessionId: id, endTime: Date.now() }),
 });
-},
-});
-}
 
-try {
-const operations = require('@claude-zen/operations');
-getPerformanceTracker = operations.getPerformanceTracker;
-} catch {
-getPerformanceTracker = async () => ({
-startSession:async (id: string) => ({
-sessionId:id,
-startTime:Date.now(),
-}),
-endSession:async (id: string) => ({ sessionId: id, endTime:Date.now()}),
+const getDatabaseSystem = async () => ({
+	store: async (collection: string, id: string, data: any) => {
+		logger.debug('Database fallback: storing', { collection, id, data });
+		eventBus.emit?.('database:store' as any, { collection, id, data } as any);
+	},
+	storeGraph: async (nodeType: string, id: string, data: any) => {
+		logger.debug('Graph fallback: storing node', { nodeType, id, data });
+		eventBus.emit?.('graph:store' as any, { nodeType, id, data } as any);
+	},
 });
-}
 
-try {
-const infrastructure = require('@claude-zen/infrastructure');
-getDatabaseSystem = infrastructure.getDatabaseSystem;
-getEventSystem = infrastructure.getEventSystem;
-} catch {
-getDatabaseSystem = async () => ({
-store:async (collection: string, id:string, data:any) => {
-logger.debug('Database fallback: storing', { collection, id, data });
-},
-storeGraph: async (nodeType: string, id: string, data: any) => {
-logger.debug('Graph fallback: storing node', { nodeType, id, data });
-},
+const getEventSystem = async () => ({
+	emit: async (event: string, data: any) => {
+		logger.debug('Event emit (via bus)', { event, data });
+		eventBus.emit?.(event as any, data as any);
+	},
+	on: (event: string, callback: Function) => {
+		logger.debug('Event listener (local stub)', { event });
+		eventBus.on?.(event as any, callback as any);
+	},
 });
-getEventSystem = async () => ({
-emit:async (event: string, data:any) => {
-logger.debug('Event fallback', { event, data });
-},
-on: (event: string, callback: Function) => {
-logger.debug('Event listener fallback', { event });
-if (callback) {
-callback();
-}
-},
-});
-}
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';

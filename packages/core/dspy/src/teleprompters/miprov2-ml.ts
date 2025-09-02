@@ -21,18 +21,18 @@
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type {
-BayesianOptimizer,
-HypothesisTest,
-MultiObjectiveOptimizer,
-OptimizationBounds,
-OptimizationResult,
-ParetoFront,
-Pattern,
-PatternLearner,
-StatisticalAnalyzer,
-StatisticalResult,
-} from '@claude-zen/neural-ml';
+// Event-driven policy: avoid direct imports from other internal packages.
+// Define minimal local ML types used by this teleprompter; real compute will be handled via events.
+type OptimizationBounds = { lower: number[]; upper: number[] };
+type OptimizationResult = { success: boolean; bestParams: number[]; bestValue: number; iterations: number; convergence: boolean };
+type ParetoFront = { solutions: Array<{ params: number[]; objectives: number[]; rank?: number }>; hypervolume?: number };
+type HypothesisTest = { statistic: number; pValue: number; significant: boolean };
+type StatisticalResult = { mean: number; std: number; median: number };
+type Pattern = { pattern: unknown; frequency: number; confidence: number };
+interface BayesianOptimizer { configure(cfg: Record<string, unknown>): Promise<void>; suggestNext(): Promise<number[]>; observe(params: number[], value: number): Promise<void>; }
+interface MultiObjectiveOptimizer { configure(cfg: Record<string, unknown>): Promise<void>; getParetoFront(): Promise<ParetoFront>; }
+interface PatternLearner { configure(cfg: Record<string, unknown>): Promise<void>; }
+interface StatisticalAnalyzer {}
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
 
@@ -186,38 +186,21 @@ this.logger.info(
 'Initializing MIPROv2ML with battle-tested ML libraries...'
 );
 
-// Dynamically import ML engine (lazy loading)
-const { createMLEngine } = await import('@claude-zen/neural-ml');
+// Use local gateway that will route requests over the EventBus
+const ml = await ML.get();
+this.mlEngine = ml.engine;
 
-this.mlEngine = createMLEngine(
-{
-enableTelemetry: true,
-optimizationLevel: 'aggressive',
-parallelExecution: true,
-},
-this.logger
-);
-
-// Create individual ML components
-const { createBayesianOptimizer } = await import('@claude-zen/neural-ml');
-const { createMultiObjectiveOptimizer } = await import(
-'@claude-zen/neural-ml'
-);
-const { createPatternLearner } = await import('@claude-zen/neural-ml');
-const { createStatisticalAnalyzer } = await import(
-'@claude-zen/neural-ml'
-);
-
-this.bayesianOptimizer = createBayesianOptimizer({
+// Create individual ML components via gateway
+this.bayesianOptimizer = ml.createBayesianOptimizer({
 lower: [0.001, 0.1, 0.5, 10, 0.1],
 upper: [0.1, 2.0, 0.99, 100, 1.0],
 });
-this.multiObjectiveOptimizer = createMultiObjectiveOptimizer({
+this.multiObjectiveOptimizer = ml.createMultiObjectiveOptimizer({
 lower: [0.001, 0.1, 0.5, 10, 0.1],
 upper: [0.1, 2.0, 0.99, 100, 1.0],
 });
-this.patternLearner = createPatternLearner({});
-this.statisticalAnalyzer = createStatisticalAnalyzer();
+this.patternLearner = ml.createPatternLearner({});
+this.statisticalAnalyzer = ml.createStatisticalAnalyzer();
 
 // Configure Bayesian optimizer with battle-tested settings
 await this.bayesianOptimizer.configure({
@@ -252,7 +235,7 @@ this.logger.info(
 );
 } catch (error) {
 this.logger.error(`Failed to initialize MIPROv2ML:`, error);
-throw new Error(`MIPROv2ML initialization failed:${error}`
+throw new Error(`MIPROv2ML initialization failed:${error}`);
 }
 }
 
@@ -364,7 +347,7 @@ convergenceAnalysis: await this.analyzeConvergence(),
 };
 } catch (error) {
 this.logger.error(`MIPROv2ML compilation failed:`, error);
-throw new Error(`MIPROv2ML compilation error:${error}`
+throw new Error(`MIPROv2ML compilation error:${error}`);
 }
 }
 
@@ -398,7 +381,7 @@ await this.evaluateMemoryUsage(student, params, options),
 const result = await this.multiObjectiveOptimizer?.optimize(objectives);
 
 if (!result || result.solutions.length === 0) {
-throw new Error(`Multi-objective optimization failed to find solutions`
+throw new Error(`Multi-objective optimization failed to find solutions`);
 }
 
 // Select best solution from Pareto front based on weighted objectives
@@ -573,7 +556,7 @@ return tests;
 private selectBestSolution(paretoFront: ParetoFront, weights: number[]): any {
 const { solutions } = paretoFront;
 if (solutions.length === 0) {
-throw new Error(`Empty Pareto front`
+throw new Error(`Empty Pareto front`);
 }
 
 // Weighted sum approach to select best solution

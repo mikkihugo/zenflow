@@ -599,7 +599,6 @@
 * @see {@link ./main} Main Implementation
 *
 * @requires @claude-zen/foundation - Core utilities and infrastructure
-* @requires @claude-zen/dspy - DSPy Stanford integration for neural programming
 * @requires fann-wasm - FANN neural network library with WebAssembly
 * @requires brain.js - Neural networks in JavaScript (fallback)
 *
@@ -1083,7 +1082,6 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 *
 * **Core Dependencies:**
 * - @claude-zen/foundation for utilities and telemetry
-* - @claude-zen/dspy for neural program optimization
 * - fann-wasm for high-performance neural networks
 * - brain.js for JavaScript neural network fallback
 *
@@ -1098,7 +1096,7 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 *
 * ```bash`
 * # Install core brain package
-* npm install @claude-zen/brain @claude-zen/foundation @claude-zen/dspy
+* npm install @claude-zen/brain @claude-zen/foundation
 *
 * # Install neural network dependencies
 * npm install fann-wasm brain.js

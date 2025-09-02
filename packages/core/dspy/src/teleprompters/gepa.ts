@@ -533,23 +533,23 @@ export class GEPA extends Teleprompter {
 			);
 		}
 
+		const metricCallsAmount = (
+			this.max_metric_calls /
+			(valset === null
+				? trainset.length
+				: trainset.length + valset.length)
+		).toFixed(2);
+		const setType = valset === null ? "train" : "train+val";
 		logger.info(
 			`Running GEPA for approx ${this.max_metric_calls} metric calls of the program. ` +
-				`This amounts to ${(
-					this.max_metric_calls /
-						(valset === null
-							? trainset.length
-							: trainset.length + valset.length)
-				).toFixed(
-					2,
-				)} full evals on the ${valset === null ? "train" : "train+val"} set.`,
+			`This amounts to ${metricCallsAmount} full evals on the ${setType} set.`
 		);
 
 		const actualValset = valset || trainset;
 		logger.info(
 			`Using ${actualValset.length} examples for tracking Pareto scores. ` +
-				`You can consider using a smaller sample of the valset to allow GEPA to explore ` +
-				`more diverse solutions within the same budget.`,
+			`You can consider using a smaller sample of the valset to allow GEPA to explore ` +
+			`more diverse solutions within the same budget.`
 		);
 
 		// Initialize random number generator
@@ -649,15 +649,15 @@ export class GEPA extends Teleprompter {
 
 			if (typeof result === "object" && "feedback" in result) {
 				if (!result.feedback) {
-					result.feedback = `This trajectory got a score of ${result.score}.`
-}
+					result.feedback = `This trajectory got a score of ${result.score}.`;
+				}
 				return result;
-} else {
+			} else {
 				return {
-					score:result,
-					feedback:`This trajectory got a score of ${result}.`,
-};
-}
+					score: result,
+					feedback: `This trajectory got a score of ${result}.`,
+				};
+			}
 };
 }
 

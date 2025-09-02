@@ -20,7 +20,11 @@
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type { HypothesisTest, MLEngine, Pattern } from '@claude-zen/neural-ml';
+// Event-driven policy: avoid direct type imports from other internal packages
+// Define minimal local aliases; real interaction should occur via events
+type HypothesisTest = unknown;
+type MLEngine = unknown;
+type Pattern = unknown;
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
 

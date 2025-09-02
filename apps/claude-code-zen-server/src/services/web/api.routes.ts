@@ -22,24 +22,12 @@
  * - **Layer 3**:API Types - REST API integration via translation layer 
  * - **Layer 4**:Service Types - This facade provides web service integration 
  *
- * **DELEGATION HIERARCHY:**
- * ''') * Express.js App  web-api-routes-optimized.ts  @claude-zen packages  API Logic'
- * (External) (This File) (Specialized) (Business Logic)' * `) *`
- * **Delegates to:**
- * - @claude-zen/enterprise:Advanced GUI and human-in-the-loop API endpoints
- * - @claude-zen/intelligence:Task and workflow management endpoints
- * - @claude-zen/monitoring:Health, metrics, and performance endpoints
- * - @claude-zen/foundation:Core utilities, validation, and middleware
- * - @claude-zen/intelligence:Collaboration and communication endpoints
- * - @claude-zen/intelligence:Documentation and knowledge management endpoints
+ * No facades. This server emits/consumes events and uses local data handlers only.
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 2.1.0
  *
- * @requires @claude-zen/enterprise - Advanced GUI and approval workflows
- * @requires @claude-zen/intelligence - Task and workflow orchestration
- * @requires @claude-zen/monitoring - Health and performance tracking
  * @requires @claude-zen/foundation - Core web utilities and middleware
  *
  * **REDUCTION ACHIEVED:1,854  420 lines (77.3% reduction) through strategic delegation**
@@ -52,12 +40,8 @@ import {
   getLogger,
 } from '@claude-zen/foundation';
 
-// Direct imports from packages (Brain is loaded lazily below)
+// Allowed internal package: database (avoid other cross-package imports)
 import { DatabaseProvider } from '@claude-zen/database';
-import {
-  PerformanceTracker,
-  SystemMonitor,
-} from '@claude-zen/system-monitoring';
 
 // Constants to avoid string duplication
 const ERROR_MESSAGES = {
@@ -66,6 +50,10 @@ const ERROR_MESSAGES = {
 
 // External dependencies
 import type { Express, Request, Response } from 'express';
+// Event-driven bus and local data service
+import { getEventBus } from '../events/event-bus';
+import { WebDataService } from './data.handler';
+import type { WebConfig } from './web-config';
 
 // TaskMaster interface type (without importing restricted package)
 interface TaskMasterGUIInterface {
@@ -75,14 +63,8 @@ interface TaskMasterGUIInterface {
   [key: string]: unknown;
 }
 
-// Add missing interface definitions
-interface WebConfig {
-  apiPrefix?: string;
-}
-
-type WebSessionManager = {};
-
-type WebDataService = {};
+// Minimal session manager shape
+type WebSessionManager = { middleware?: unknown };
 
 // Strategic imports from @claude-zen packages
 // Foundation utilities for web operations
@@ -128,11 +110,9 @@ export class WebApiRoutes {
   private dataService: WebDataService;
   private advancedGUI: TaskMasterGUIInterface | null = null;
   private initialized = false;
-  private brainSystem: {
-    initialize?: () => Promise<void>;
-    getWorkflowEngine?: (opts: { enableWebIntegration?: boolean; enableRESTAPI?: boolean }) => { initialize?: () => Promise<void> } | unknown;
-    getDocumentationManager?: (opts: { enableAPIDocumentation?: boolean; enableSwagger?: boolean }) => { initialize?: () => Promise<void> } | unknown;
-  } | null = null;
+  // Brain system removed here to comply with cross-package import policy; integrate via events instead
+  private brainSystem: null = null;
+  private bus = getEventBus();
 
   constructor(
     config: WebConfig,
@@ -154,38 +134,10 @@ export class WebApiRoutes {
       // Note:AGUI functionality delegated to TaskMaster service
       // Advanced GUI capabilities provided through TaskMaster API endpoints
 
-      // Optional brain system via dynamic import (fallback to null)
-      try {
-        const mod = await import('@claude-zen/brain');
-        this.brainSystem = new mod.BrainCoordinator();
-        await this.brainSystem.initialize?.();
-      } catch {
-        this.brainSystem = null;
-      }
-
-      this.workflowEngine = this.brainSystem?.getWorkflowEngine?.({
-        enableWebIntegration: true,
-        enableRESTAPI: true,
-      });
-      await this.workflowEngine?.initialize();
-
-      // Direct performance tracker instantiation
-      const performanceTracker = new PerformanceTracker();
-      await performanceTracker.initialize();
-      this.healthMonitor = new SystemMonitor({
-        enableWebEndpoints: true,
-        enableMetricsCollection: true,
-      });
-      await this.healthMonitor?.initialize();
-
-      // Direct database system instantiation
-      const databaseSystem = new DatabaseProvider();
-      await databaseSystem.initialize();
-      this.collaborationEngine = databaseSystem.getCollaborationEngine({
-        enableWebAPI: true,
-        enableRealTimeUpdates: true,
-      });
-      await this.collaborationEngine?.initialize();
+  // Event-driven integration only; avoid cross-package brain/system-monitoring here
+  this.workflowEngine = null;
+  this.healthMonitor = null;
+  this.collaborationEngine = null;
 
       // Initialize web middleware through foundation
       this.webMiddleware = {
@@ -195,12 +147,8 @@ export class WebApiRoutes {
         enableRateLimit: true,
       };
 
-      // Initialize documentation manager
-  this.documentationManager = this.brainSystem?.getDocumentationManager?.({
-        enableAPIDocumentation: true,
-        enableSwagger: true,
-  });
-      await this.documentationManager?.initialize();
+  // Documentation manager to be provided via event-driven responders when available
+  this.documentationManager = null;
 
       this.initialized = true;
       this.logger.info(
@@ -219,7 +167,7 @@ export class WebApiRoutes {
     if (!this.initialized) await this.initialize();
 
     const api = this.config.apiPrefix || '/api';
-    this.logger.info(' Setting up API routes with @claude-zen delegation...');
+  this.logger.info(' Setting up API routes (event-driven)...');
 
     // Apply middleware delegation first
     this.setupMiddleware();
@@ -304,14 +252,11 @@ export class WebApiRoutes {
       });
     });
 
-    // Health check - delegate to monitoring package
+  // Health check - event-driven
     app.get(`${api  }/health`, async (req: Request, res: Response) => {
       try {
-        assertDefined(
-          this.healthMonitor,
-          ERROR_MESSAGES.healthMonitorNotInitialized
-        );
-        const health = await this.healthMonitor?.getSystemHealth();
+    const response = await this.bus.request('api:system:status', { correlationId: 'health' });
+    const health = response?.data ?? { status: 'ok' };
         res.json(health);
       } catch (error) {
         res.status(500).json({
@@ -321,14 +266,11 @@ export class WebApiRoutes {
       }
     });
 
-    // System status - delegate to monitoring package
+  // System status - event-driven
     app.get(`${api  }/system/status`, async (req: Request, res: Response) => {
       try {
-        assertDefined(
-          this.healthMonitor,
-          ERROR_MESSAGES.healthMonitorNotInitialized
-        );
-        const status = await this.healthMonitor?.getSystemStatus();
+    const response = await this.bus.request('api:system:status', { correlationId: 'status' });
+    const status = response?.data ?? { status: 'ok' };
         res.json(status);
       } catch (error) {
         res.status(500).json({
@@ -341,88 +283,48 @@ export class WebApiRoutes {
     // Production endpoints that integrate with foundation services
     app.get(`${api  }/agents/status`, async (req: Request, res: Response) => {
       try {
-        assertDefined(this.workflowEngine, 'Workflow engine not initialized');
-        const agents = await this.workflowEngine?.getAgents();
-        res.json({
-          success: true,
-          data: agents || [],
-        });
+        const response = await this.bus.request('api:swarms:list', { correlationId: 'agents' });
+        res.json({ success: true, data: response?.data ?? [] });
       } catch (error) {
-        res.status(500).json({
-          error: 'Failed to get agent status',
-          message: getErrorMessage(error),
-        });
+        res.status(500).json({ error: 'Failed to get agent status', message: getErrorMessage(error) });
       }
     });
 
     app.get(`${api  }/tasks`, async (req: Request, res: Response) => {
       try {
-        assertDefined(this.workflowEngine, 'Workflow engine not initialized');
-        const tasks = await this.workflowEngine?.getTasks(req.query);
-        res.json({
-          success: true,
-          data: tasks || [],
-        });
+        const tasks = await this.dataService.getTasks({ limit: Number(req.query['limit'] || 100) });
+        res.json({ success: true, data: tasks || [] });
       } catch (error) {
-        res.status(500).json({
-          error: 'Failed to get tasks',
-          message: getErrorMessage(error),
-        });
+        res.status(500).json({ error: 'Failed to get tasks', message: getErrorMessage(error) });
       }
     });
 
     app.get(`${api  }/safe/metrics`, async (req: Request, res: Response) => {
       try {
-        assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
-        const safetyMetrics = await this.healthMonitor?.getSafetyMetrics();
-        res.json({
-          success: true,
-          data: {
-            metrics: safetyMetrics || {},
-            summary: safetyMetrics ? 'Safety metrics available' : 'No active metrics',
-          },
-        });
+        const response = await this.bus.request('api:system:metrics', { correlationId: 'safety' });
+        const safetyMetrics = response?.data ?? {};
+        res.json({ success: true, data: { metrics: safetyMetrics, summary: Object.keys(safetyMetrics).length ? 'Safety metrics available' : 'No active metrics' } });
       } catch (error) {
-        res.status(500).json({
-          error: 'Failed to get safety metrics',
-          message: getErrorMessage(error),
-        });
+        res.status(500).json({ error: 'Failed to get safety metrics', message: getErrorMessage(error) });
       }
     });
 
     app.get(`${api  }/events`, async (req: Request, res: Response) => {
       try {
-        assertDefined(this.collaborationEngine, 'Collaboration engine not initialized');
-        const events = await this.collaborationEngine?.getEvents(req.query);
-        res.json({
-          success: true,
-          data: events || [],
-        });
+        const response = await this.bus.request('api:events:list', { correlationId: 'events' });
+        res.json({ success: true, data: response?.data ?? [] });
       } catch (error) {
-        res.status(500).json({
-          error: 'Failed to get events',
-          message: getErrorMessage(error),
-        });
+        res.status(500).json({ error: 'Failed to get events', message: getErrorMessage(error) });
       }
     });
 
     app.get(`${api  }/memory/status`, async (req: Request, res: Response) => {
       try {
-        assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
-        const memoryStatus = await this.healthMonitor?.getMemoryStatus();
-        res.json({
-          success: true,
-          data: memoryStatus || {
-            total: 1024,
-            used: 512,
-            free: 512,
-          },
-        });
+        const mem = process.memoryUsage();
+        const memoryStatus = { total: mem.heapTotal, used: mem.heapUsed, free: mem.heapTotal - mem.heapUsed };
+        res.json({ success: true, data: memoryStatus });
       } catch (error) {
-        res.status(500).json({
-          error: 'Failed to get memory status',
-          message: getErrorMessage(error),
-        });
+        res.status(500).json({ error: 'Failed to get memory status', message: getErrorMessage(error) });
       }
     });
 
@@ -677,8 +579,7 @@ export function createWebApiRoutes(
   return new WebApiRoutes(config, sessionManager, dataService);
 }
 
-// Re-export types for compatibility
-export type { WebConfig, WebSessionManager, WebDataService };
+// Avoid re-exporting types from here to prevent duplicate symbol issues
 
 /**
  * SOPHISTICATED TYPE ARCHITECTURE DEMONSTRATION

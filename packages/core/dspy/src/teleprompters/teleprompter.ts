@@ -96,7 +96,7 @@ getParams(): Record<string, any> {
 // Return all enumerable properties (matches Python _dict__)
 const params: Record<string, any> = {};
 for (const key in this) {
-if (Object.hasOwn(this, key) && typeof this[key] !== 'function{
+if (Object.hasOwn(this, key) && typeof this[key] !== 'function') {
 params[key] = this[key];
 }
 }

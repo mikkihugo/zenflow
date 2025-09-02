@@ -61,7 +61,7 @@ readonly urgency: 'low' | 'medium' | 'high' | 'critical';
 * Makes intelligent decisions across all aspects of system operation
 * without requiring human intervention. Continuously learns and adapts.
 */
-export class AutonomousCoordinator {
+export class SystemOptimizationService {
 private optimizationEngine:AutonomousOptimizationEngine|null = null;
 private initialized = false;
 

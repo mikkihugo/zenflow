@@ -285,6 +285,12 @@ Linting and type-checking have pre-existing issues across the repo; fix only whe
 3) Dashboard starts and navigates without errors
 4) Changes respect domain boundaries and EventBus routing
 
+Event-driven enforcement and validators
+- Cross-package calls must go through the single typed EventBus from @claude-zen/foundation
+- Only direct internal imports allowed: @claude-zen/foundation and @claude-zen/database
+- Pre-commit runs scripts/validate-imports.js and scripts/validate-dependencies.js to enforce this
+- Server TaskMaster routes now proxy via the typed EventBus; no direct @claude-zen/coordination imports
+
 ## 🆘 Troubleshooting
 
 If build fails:

@@ -148,7 +148,7 @@ function checkPackageJson(packagePath) {
 			}
 		}
 
-				// Enforce internal boundary: only allow @claude-zen/foundation and @claude-zen/database
+				// Enforce internal boundary: only allow @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml
 						const internalDeps = Object.entries({
 					...(packageJson.dependencies || {}),
 					...(packageJson.devDependencies || {}),
@@ -159,11 +159,12 @@ function checkPackageJson(packagePath) {
 				for (const [depName, version] of internalDeps) {
 							if (
 								depName !== "@claude-zen/foundation" &&
-								depName !== "@claude-zen/database"
+								depName !== "@claude-zen/database" &&
+								depName !== "@claude-zen/neural-ml"
 							) {
 						logger.error(` ${relativePath}`);
 						logger.error(
-							`   Restricted internal dependency: ${depName}@${version} — Only @claude-zen/foundation and @claude-zen/database are allowed between packages`,
+							`   Restricted internal dependency: ${depName}@${version} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
 						);
 						logger.error("");
 						violations++;

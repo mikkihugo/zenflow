@@ -686,7 +686,7 @@ wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
 // Create embedding based on word hashes and frequencies
 for (const [word, freq] of wordFreq.entries()) {
 const hash1 = this.simpleHash(word) % dimension;
-const hash2 = this.simpleHash(`${word}alt`) % dimension;
+const hash2 = this.simpleHash(word + 'alt') % dimension;
 
 // Use multiple hash functions for better distribution
 embedding[hash1] += freq * 0.1;
@@ -730,7 +730,7 @@ return Math.abs(hash);
 private getBigrams(words: string[]): string[] {
 const bigrams: string[] = [];
 for (let i = 0; i < words.length - 1; i++) {
-bigrams.push(`${words[i]}_${words[i + 1]}`);
+bigrams.push(words[i] + '_' + words[i + 1]);
 }
 return bigrams;
 }

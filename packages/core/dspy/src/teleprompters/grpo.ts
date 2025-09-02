@@ -197,8 +197,8 @@ export class GRPO extends FinetuneTeleprompter {
 	 * Convert adapter to LM dictionary
 	 */
 	private convert_to_lm_dict(
-		adapter: 'Adapter' | 'Map'<LMInterface, Adapter> | null,
-	):Map<LMInterface, Adapter> {
+		adapter: Adapter | Map<LMInterface, Adapter> | null,
+	): Map<LMInterface, Adapter> {
 		if (adapter instanceof Map) {
 			return adapter;
 }
@@ -529,13 +529,13 @@ export class GRPO extends FinetuneTeleprompter {
 		const curr_epoch =
 			this.epoch === -1
 				? 0
-				:Math.floor(base_idx / this.shuffled_trainset_ids.length);
+				: Math.floor(base_idx / this.shuffled_trainset_ids.length);
 
 		if (curr_epoch > this.epoch) {
-			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`
+			logger.info(`Updating shuffled trainset for epoch ${curr_epoch}...`);
 			this.epoch = curr_epoch;
 			this.update_shuffled_trainset(original_trainset);
-}
+		}
 
 		if (
 			this.shuffled_trainset_ids.length < this.num_dspy_examples_per_grpo_step
@@ -574,17 +574,17 @@ export class GRPO extends FinetuneTeleprompter {
 	 * Compile method exactly matching Stanford DSPy API
 	 */
 	async compile(
-		student:DSPyModule,
-		config:{
-			trainset:Example[];
-			teacher?:DSPyModule | DSPyModule[] | null;
-			valset?:Example[] | null;
-			[key:string]: any;
-},
-	):Promise<DSPyModule> {
-		let { trainset, teacher = null, valset = null} = config;
+		student: DSPyModule,
+		config: {
+			trainset: Example[];
+			teacher?: DSPyModule | DSPyModule[] | null;
+			valset?: Example[] | null;
+			[key: string]: any;
+		},
+	): Promise<DSPyModule> {
+		let { trainset, teacher = null, valset = null } = config;
 // eslint-disable-next-line no-console
-		const logger = { info:console.log, warning:console.warn};
+		const logger = { info: console.log, warning: console.warn };
 
 		logger.info(
 			"Starting the GRPO compilation process... The LM(s) for the student program will be updated in place at the end of the training.",

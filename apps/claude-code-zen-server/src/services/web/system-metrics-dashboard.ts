@@ -5,76 +5,35 @@
  * Follows foundation principles for clean architecture.
  */
 
-import {
-  EventEmitter,
-  err,
-  getLogger,
-  ok,
-  type Result,
-} from '@claude-zen/foundation';
-
-// Follow foundation's actual pattern - direct foundation + selective strategic facades
+import { EventEmitter, err, getLogger, ok, type Result } from '@claude-zen/foundation';
 
 const logger = getLogger('system-metrics-dashboard');
 
-// Facade function for system coordination
-async function getSystemCoordinator(): Promise<SystemCoordinator> {
-  // Use strategic facade to get system coordinator
-  try {
-    const { getPerformanceTracker } = await import('@claude-zen/operations');
-    await getPerformanceTracker(); // Initialize performance tracker
-
-    return {
-      getSystemHealth(): SystemHealth {
-        const memUsage = process.memoryUsage();
-        return {
-          cpu: Math.random() * 100,
-          memory: (memUsage.heapUsed / memUsage.heapTotal) * 100,
-          disk: Math.random() * 100,
-          network: Math.random() * 100,
-          overall: 85,
-        };
-      },
-
-      getSystemMetrics(): SystemMetrics {
-        return {
-          uptime: process.uptime(),
-          requests: 1000,
-          errors: 5,
-          responseTime: 150,
-          throughput: 50,
-        };
-      },
-    };
-  } catch (error) {
-    logger.warn(
-      'Performance tracker unavailable, using fallback coordinator: ',
-      error
-    );
-    // Fallback coordinator implementation
-    return {
-      getSystemHealth(): SystemHealth {
-        const memUsage = process.memoryUsage();
-        return {
-          cpu: Math.random() * 100,
-          memory: (memUsage.heapUsed / memUsage.heapTotal) * 100,
-          disk: Math.random() * 100,
-          network: Math.random() * 100,
-          overall: 85,
-        };
-      },
-
-      getSystemMetrics(): SystemMetrics {
-        return {
-          uptime: process.uptime(),
-          requests: 1000,
-          errors: 5,
-          responseTime: 150,
-          throughput: 50,
-        };
-      },
-    };
-  }
+// Local-only coordinator without cross-package imports
+function getSystemCoordinator(): SystemCoordinator {
+  return {
+    getSystemHealth(): SystemHealth {
+      const memUsage = process.memoryUsage();
+      return {
+        cpu: Math.random() * 100,
+        memory: (memUsage.heapUsed / memUsage.heapTotal) * 100,
+        disk: Math.random() * 100,
+        network: Math.random() * 100,
+        overall: 85,
+      };
+    },
+    getSystemMetrics(): SystemMetrics {
+      return {
+        uptime: process.uptime(),
+        requests: 0,
+        errors: 0,
+        responseTime: 0,
+        throughput: 0,
+      };
+    },
+    initializeSystem: async () => ok(),
+    shutdownSystem: async () => ok(),
+  };
 }
 
 interface DashboardConfig {
@@ -108,6 +67,8 @@ interface SystemMetrics {
 interface SystemCoordinator {
   getSystemHealth(): SystemHealth;
   getSystemMetrics(): SystemMetrics;
+  initializeSystem?: () => Promise<Result<void, Error>>;
+  shutdownSystem?: () => Promise<Result<void, Error>>;
 }
 
 interface DashboardStatus {
@@ -154,14 +115,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     }
 
     try {
-      // Initialize single coordinating facade
-      this.systemCoordinator = await getSystemCoordinator();
-
-      // Initialize the system through coordinator
-      const initResult = await this.systemCoordinator.initializeSystem();
-      if (!initResult.success) {
-        throw initResult.error;
-      }
+  this.systemCoordinator = getSystemCoordinator();
 
       // Start real-time monitoring if enabled
       if (this.configuration.enableRealtime) {

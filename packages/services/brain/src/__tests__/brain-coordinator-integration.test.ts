@@ -79,7 +79,7 @@ error:jest.fn(),
 }));
 
 import type { BrainConfig} from '../main';
-import { BrainCoordinator} from '../main';
+import { ArtificialIntelligenceService} from '../main';
 
 describe('Brain Coordinator Integration Tests (Jest)', () => {
 ; let brainCoordinator:BrainCoordinator;

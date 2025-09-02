@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow>
+  <step>
+    <title>Receive Delegation</title>
+    <description>Accept external research tasks delegated from other modes. Ensure unbiased, systematic context gathering.</description>
+  </step>
+  <step>
+    <title>Context7 Research</title>
+    <description>Perform research using context7 MCP for up-to-date documentation, code examples, and best practices.</description>
+  </step>
+  <step>
+    <title>Memory MCP Recording</title>
+    <description>Persist research findings and context using memory MCP for future reference and agent collaboration.</description>
+  </step>
+  <step>
+    <title>Integrate Results</title>
+    <description>Integrate research results into the requesting mode's workflow, maintaining persistent and unbiased context.</description>
+  </step>
+  <step>
+    <title>Document Delegation</title>
+    <description>Log all delegated research requests and responses for audit and traceability.</description>
+  </step>
+</workflow>

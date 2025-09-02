@@ -706,7 +706,7 @@ INITIALIZING = 'initializing', READY = 'ready', BUSY = 'busy', LEARNING = 'learn
 * Health status for neural agents
 */
 export interface HealthStatus {
-status: 'healthy|degraded|critical|unknown;
+status: 'healthy' | 'degraded' | 'critical' | 'unknown';
 issues: HealthIssue[];
 lastCheck: Timestamp;
 nextCheck: Timestamp;
@@ -828,8 +828,9 @@ samples: number;
 */
 export function isNeuralAgent(obj: unknown): obj is NeuralAgent {
 return (
-typeof obj === 'object' &&; obj !== null &&
-'agentType' in obj &&; 'cognitiveModel' in obj &&; 'capabilities' in obj; );
+typeof obj === 'object' && obj !== null &&
+'agentType' in obj && 'cognitiveModel' in obj && 'capabilities' in obj
+);
 }
 
 /**
@@ -838,8 +839,9 @@ typeof obj === 'object' &&; obj !== null &&
 export function isNeuralNetworkConfig(obj: unknown
 ): obj is NeuralNetworkConfig {
 return (
-typeof obj === 'object' &&; obj !== null &&
-'modelType' in obj &&; 'architecture' in obj &&; 'training' in obj; );
+typeof obj === 'object' && obj !== null &&
+'modelType' in obj && 'architecture' in obj && 'training' in obj
+);
 }
 
 /**
@@ -847,8 +849,9 @@ typeof obj === 'object' &&; obj !== null &&
 */
 export function isAgentMessage(obj: unknown): obj is AgentMessage {
 return (
-typeof obj === 'object' &&; obj !== null &&
-'id' in obj &&; 'from' in obj &&; 'to' in obj &&; 'type' in obj &&; 'payload' in obj; );
+typeof obj === 'object' && obj !== null &&
+'id' in obj && 'from' in obj && 'to' in obj && 'type' in obj && 'payload' in obj
+);
 }
 
 // =============================================================================
@@ -888,7 +891,7 @@ readonly stack?:string;
 * Training-specific error types
 */
 export interface TrainingError extends NeuralError {
-readonly category: 'training;
+readonly category: 'training';
 readonly batchNumber?:number;
 readonly lossValue?:number;
 }
@@ -897,7 +900,7 @@ readonly lossValue?:number;
 * Coordination-specific error types
 */
 export interface CoordinationError extends NeuralError {
-readonly category: 'coordination;
+readonly category: 'coordination';
 readonly participantCount?:number;
 }
 

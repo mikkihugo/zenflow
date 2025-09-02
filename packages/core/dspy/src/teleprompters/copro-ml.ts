@@ -21,18 +21,17 @@
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type {
-BayesianOptimizer,
-ConceptDriftDetection,
-HypothesisTest,
-OnlineLearner,
-OnlineLearnerConfig,
-OptimizationBounds,
-OptimizationResult,
-Pattern,
-PatternLearner,
-StatisticalAnalyzer,
-} from '@claude-zen/neural-ml';
+// Event-driven boundary: local ML types and gateway instead of importing neural-ml directly
+type OptimizationBounds = { lower: number[]; upper: number[] };
+type OptimizationResult = { success: boolean; bestParams: number[]; bestValue: number };
+type HypothesisTest = { statistic: number; pValue: number; significant: boolean };
+type ConceptDriftDetection = { driftDetected: boolean; confidence: number };
+type OnlineLearnerConfig = { algorithm: string; learningRate: number; forgettingFactor: number };
+type Pattern = { pattern: unknown; frequency: number; confidence: number };
+interface BayesianOptimizer { configure(cfg: Record<string, unknown>): Promise<void>; suggestNext(): Promise<number[]>; observe(params: number[], value: number): Promise<void>; }
+interface OnlineLearner { configure(cfg: OnlineLearnerConfig): Promise<void>; update(features: number[], target: number): Promise<void>; detectDrift(pred: number[], targ: number[]): Promise<ConceptDriftDetection>; }
+interface PatternLearner { configure(cfg: Record<string, unknown>): Promise<void>; }
+interface StatisticalAnalyzer {}
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
 

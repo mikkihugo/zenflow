@@ -403,7 +403,7 @@ export interface ModelStatus {
  * logger.info(`Embedding: ${result.embedding.length}D, Quality: ${result.qualityScore}`);
  * ```
  */
-export class SmartNeuralCoordinator {
+export class VectorEmbeddingService {
   private logger: Logger;
   private config: NeuralBackendConfig;
   private initialized = false;

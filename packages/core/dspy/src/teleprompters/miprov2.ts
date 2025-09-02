@@ -292,12 +292,12 @@ this.config.num_candidates !== null &&
 num_trials === null
 ) {
 throw new Error(
-`If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we`d recommend setting num_trials to ~${this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates)}.`
+`If auto is None, num_trials must also be provided. Given num_candidates=${this.config.num_candidates}, we'd recommend setting num_trials to ~${this.setNumTrialsFromNumCandidates(student, zeroshot_opt, this.config.num_candidates)}.`
 );
 }
 
 if (this.config.auto === null && this.config.num_candidates === null) {
-throw new Error(`If auto is None, num_candidates must also be provided.');
+throw new Error('If auto is None, num_candidates must also be provided.');
 }
 
 if (

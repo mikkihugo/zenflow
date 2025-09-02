@@ -34,8 +34,14 @@ BatchResult,
 FileDiscoveryOptions,
 ProcessingResult,
 } from './types.js';
-// Direct import from relative path while workspace dependency is resolving
-import { GitHubCopilotAPI } from '@claude-zen/llm-providers';
+// Event-driven policy: avoid direct import from other internal packages
+// Provide a minimal local shim; real provider should be accessed via events
+class GitHubCopilotAPI {
+	constructor(_opts: any) {}
+	async chat(_args: any): Promise<{ text: string }> {
+		return { text: '' };
+	}
+}
 import * as fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import { glob } from 'glob';

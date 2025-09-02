@@ -1,11 +1,190 @@
 /**
+ * Neural Safety Bridge — Event-driven integration
+ *
+ * This bridge delegates deception detection, learning feedback, and statistics
+ * to an external safety service over the foundation EventBus. No direct
+ * internal package imports or local fallbacks are used.
+ */
+
+import { EventBus, getLogger } from '@claude-zen/foundation';
+
+export interface NeuralSafetyConfig {
+	enabled: boolean;
+	enhancedDetection: boolean;
+	behavioralLearning: boolean;
+	realTimeMonitoring: boolean;
+	interventionThreshold: number;
+	neuralModelPath?: string;
+}
+
+export interface EnhancedDeceptionResult {
+	standardDetection: any[];
+	neuralEnhancement: {
+		confidence: number;
+		patterns: string[];
+		behavioralSignals: number[];
+	};
+	behavioralAnalysis: {
+		anomalyScore: number;
+		riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+		recommendation: string;
+	};
+	combinedVerdict: {
+		isDeceptive: boolean;
+		confidence: number;
+		interventionRequired: boolean;
+		reasoning: string[];
+	};
+}
+
+export type SafetyStats = {
+	standard: any;
+	neural: any;
+	behavioral: any;
+	combined: {
+		totalAnalyses: number;
+		deceptionDetected: number;
+		interventionsTriggered: number;
+		accuracy: number;
+	};
+};
+
+type RequestEnvelope<T> = { correlationId: string; data: T };
+type ResponseEnvelope<T> = { correlationId: string; data: T };
+
+export class NeuralSafetyBridge {
+	private readonly logger = getLogger('neural-safety-bridge');
+	private readonly bus: EventBus;
+	private initialized = false;
+
+	constructor(private readonly config: NeuralSafetyConfig, bus?: EventBus) {
+		this.bus = bus ?? new EventBus();
+	}
+
+	async initialize(): Promise<void> {
+		if (this.initialized) return;
+		this.logger.info('Initializing Neural Safety Bridge (event-driven)');
+		if (!this.config.enabled) {
+			this.logger.warn('Neural safety disabled by configuration');
+		}
+		this.initialized = true;
+	}
+
+	async shutdown(): Promise<void> {
+		if (!this.initialized) return;
+		this.logger.info('Shutting down Neural Safety Bridge');
+		this.initialized = false;
+	}
+
+	/**
+	 * Run enhanced deception detection via external safety service.
+	 */
+	async detectEnhancedDeception(interactionData: any): Promise<EnhancedDeceptionResult> {
+		this.ensureInitialized();
+
+		const result = await this.requestReply<any, EnhancedDeceptionResult>(
+			'safety:detect:request',
+			'safety:detect:response',
+			{ interactionData, config: this.config },
+			5000
+		);
+
+		// Forward internal notifications on the bus for observers
+		try {
+			if (result?.combinedVerdict?.isDeceptive) {
+				this.bus.emit('neural-safety:deception-detected', { result });
+				if (result.combinedVerdict.interventionRequired) {
+					this.bus.emit('neural-safety:intervention-required', { result });
+				}
+			}
+		} catch { /* non-blocking */ }
+
+		return result;
+	}
+
+	/**
+	 * Provide learning feedback back to safety service.
+	 */
+	async learnFromFeedback(interactionData: any, actualDeception: boolean, feedback: string): Promise<void> {
+		this.ensureInitialized();
+
+		await this.requestReply(
+			'safety:feedback:request',
+			'safety:feedback:response',
+			{ interactionData, actualDeception, feedback },
+			5000
+		);
+	}
+
+	/** Get aggregated safety statistics from safety service. */
+	async getSafetyStatistics(): Promise<SafetyStats> {
+		this.ensureInitialized();
+
+		return this.requestReply<{}, SafetyStats>(
+			'safety:stats:request',
+			'safety:stats:response',
+			{},
+			5000
+		);
+	}
+
+	private ensureInitialized(): void {
+		if (!this.initialized) throw new Error('Neural Safety Bridge not initialized');
+	}
+
+	/** Generic request/response helper with correlation and timeout. */
+	private requestReply<TReq, TRes>(
+		requestTopic: string,
+		responseTopic: string,
+		data: TReq,
+		timeoutMs = 5000
+	): Promise<TRes> {
+		const correlationId = typeof crypto?.randomUUID === 'function' ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+
+		return new Promise<TRes>((resolve, reject) => {
+			let settled = false;
+
+			const onResponse = (envelope: ResponseEnvelope<TRes>) => {
+				try {
+					if (!envelope || envelope.correlationId !== correlationId) return;
+					settled = true;
+					this.bus.off(responseTopic, onResponse as any);
+					resolve(envelope.data);
+				} catch (err) {
+					settled = true;
+					this.bus.off(responseTopic, onResponse as any);
+					reject(err);
+				}
+			};
+
+			this.bus.on(responseTopic, onResponse as any);
+
+			// Emit request
+			const envelope: RequestEnvelope<TReq> = { correlationId, data };
+			this.bus.emit(requestTopic, envelope);
+
+			// Timeout
+			setTimeout(() => {
+				if (settled) return;
+				this.bus.off(responseTopic, onResponse as any);
+				reject(new Error(`Timeout waiting for ${responseTopic}`));
+			}, timeoutMs);
+		});
+	}
+}
+
+export function createNeuralSafetyBridge(config: NeuralSafetyConfig): NeuralSafetyBridge {
+	return new NeuralSafetyBridge(config);
+}
+
+/**
  * @file Neural Safety Bridge - Brain Package Integration with AI Safety
  *
  * Integrates the 25-pattern AI deception detection system with the brain package's; * neural networks, behavioral intelligence, and cognitive patterns for enhanced
  * safety monitoring and real-time intervention.
  */
 
-import { getLogger, TypedEventBase} from '@claude-zen/foundation';
+import { getLogger, EventBus } from '@claude-zen/foundation';
 
 // Operations facade provides performance tracking and telemetry
 // Operations facade would provide recordMetric, withTrace when needed
@@ -13,27 +192,62 @@ import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 import type { BehavioralIntelligence} from './behavioral-intelligence';
 import { NeuralBridge} from './neural-bridge';
 
-const logger = getLogger('neural-safety-bridge').
+ const logger = getLogger('neural-safety-bridge');
 
-// Optional import to avoid circular dependencies
-let NeuralDeceptionDetector:any;
-let AIDeceptionDetector:any;
-let AIInteractionData:any;
-let DeceptionAlert:any;
+ // Simple correlation helper
+ function generateCorrelationId(): string {
+	 return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+ }
 
-try {
- const aiSafety = require('@claude-zen/ai-safety').; NeuralDeceptionDetector = aiSafety.NeuralDeceptionDetector;
- AIDeceptionDetector = aiSafety.AIDeceptionDetector;
- _AIInteractionData = aiSafety.AIInteractionData;
- _DeceptionAlert = aiSafety.DeceptionAlert;
-} catch (error) {
- // Fallback implementations when ai-safety package is not available
- logger.debug('AI safety package not available, using fallbacks:', error); NeuralDeceptionDetector = class {
-};
- AIDeceptionDetector = class {
-};
- _AIInteractionData = {};
- _DeceptionAlert = {};
+ // Generic request/response over EventBus
+ async function requestReply<TReq extends object, TRes = any>(
+	 bus: EventBus,
+	 requestEvent: string,
+	 responseEvent: string,
+	 payload: TReq,
+	 timeoutMs = 3000
+ ): Promise<TRes> {
+	 return new Promise<TRes>((resolve, reject) => {
+		 const correlationId = generateCorrelationId();
+		 const timer = setTimeout(() => {
+			 bus.off?.(responseEvent as any, onResponse as any);
+			 reject(new Error(`Timeout waiting for ${responseEvent} (correlationId=${correlationId})`));
+		 }, timeoutMs);
+
+		 function onResponse(message: any) {
+			 if (message && message.correlationId === correlationId) {
+				 clearTimeout(timer);
+				 resolve(message.data as TRes);
+			 }
+		 }
+
+		 bus.on(responseEvent as any, onResponse as any);
+		 bus.emit(requestEvent as any, { correlationId, data: payload });
+	 });
+ }
+
+// Event-driven policy: no direct ai-safety imports; use EventBus proxies
+class AIDeceptionDetector {
+	constructor(private readonly bus: EventBus) {}
+	async detectDeception(data: any): Promise<any[]> {
+		return requestReply(this.bus, 'safety:detect:standard:req', 'safety:detect:standard:res', { data });
+	}
+	async getStatistics(): Promise<any> {
+		return requestReply(this.bus, 'safety:stats:req', 'safety:stats:res', {} as any);
+	}
+}
+
+class NeuralDeceptionDetector {
+	constructor(private readonly bus: EventBus) {}
+	async detectDeceptionWithML(text: string): Promise<any> {
+		return requestReply(this.bus, 'safety:detect:neural:req', 'safety:detect:neural:res', { text });
+	}
+	async learnFromFeedback(signals: any, text: string, actual: boolean, feedback: string): Promise<void> {
+		await requestReply(this.bus, 'safety:learn:req', 'safety:learn:res', { signals, text, actual, feedback });
+	}
+	async exportModel(): Promise<any> {
+		return requestReply(this.bus, 'safety:model:export:req', 'safety:model:export:res', {} as any);
+	}
 }
 
 export interface NeuralSafetyConfig {
@@ -73,7 +287,7 @@ export interface EnhancedDeceptionResult {
  * AI safety monitoring.
  */
 export class NeuralSafetyBridge extends TypedEventBase {
- private logger = getLogger('neural-safety-bridge').
+ private logger = getLogger('neural-safety-bridge');
  private aiDeceptionDetector:any; // AIDeceptionDetector
  private neuralDeceptionDetector:any; // NeuralDeceptionDetector
  private behavioralIntelligence!:BehavioralIntelligence; // Initialized in initialize()

@@ -44,12 +44,13 @@ import {
 } from '@claude-zen/foundation';
 
 // OPERATIONS:Performance tracking via operations package
-import { getPerformanceTracker } from '@claude-zen/operations';
+// Event-driven policy: do not import other @claude-zen/* packages directly
+// Performance tracking will be requested via EventBus (or skipped if unavailable)
 
 // DEVELOPMENT:SAFe 6.0 Development Manager integration via facades (optional)
 // import { getSafe6DevelopmentManager, createSafe6SolutionTrainManager} from '@claude-zen/development';
 
-import type { BrainConfig } from './brain-coordinator';
+import type { BrainConfig } from './artificial-intelligence-service';
 import type {
   NeuralData,
   NeuralResult,
@@ -96,7 +97,7 @@ export class BrainError extends ContextError {
   }
 }
 
-export type { BrainConfig } from './brain-coordinator';
+export type { BrainConfig } from './artificial-intelligence-service';
 
 // =============================================================================
 // FOUNDATION BRAIN COORDINATOR - Enterprise Implementation
@@ -169,8 +170,12 @@ export class FoundationBrainCoordinator {
       // Initialize telemetry
       await this.initializeTelemetry();
 
-      // Initialize performance tracking via operations facade
-      this.performanceTracker = await getPerformanceTracker();
+      // Initialize performance tracking via EventBus (optional, non-blocking)
+      try {
+        const eb = new EventBus();
+        eb.emit?.('operations:performance:requestTracker' as any, { source: 'brain' } as any);
+        // Listener would respond out-of-process; brain operates without a direct import
+      } catch {}
 
       // Initialize database storage - foundation redirects to database package
       await this.initializeDatabaseStorage();

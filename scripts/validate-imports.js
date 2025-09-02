@@ -49,6 +49,7 @@ const SKIP_PATTERNS = [
 	"build",
 	"packages/core/foundation", // Allow foundation to import underlying libs directly
 	"packages/core/database", // Allow database core to import underlying libs directly
+	"packages/core/neural-ml", // Allow neural-ml core to import underlying libs directly
 	"tests", // Skip top-level tests
 	"scripts/validate-imports.js", // Allow this script itself
 	"scripts/validate-dependencies.js", // Allow validation scripts
@@ -123,11 +124,12 @@ function checkFile(filePath) {
 						if (
 							importedModule.startsWith("@claude-zen/") &&
 							!importedModule.startsWith("@claude-zen/foundation") &&
-							!importedModule.startsWith("@claude-zen/database")
+							!importedModule.startsWith("@claude-zen/database") &&
+							!importedModule.startsWith("@claude-zen/neural-ml")
 						) {
 					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(
-						`   Restricted internal import: ${importedModule} — Only @claude-zen/foundation and @claude-zen/database are allowed between packages`,
+								`   Restricted internal import: ${importedModule} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
 					);
 					logger.error("");
 					violations++;
@@ -150,11 +152,40 @@ function checkFile(filePath) {
 						if (
 							requiredModule.startsWith("@claude-zen/") &&
 							!requiredModule.startsWith("@claude-zen/foundation") &&
-							!requiredModule.startsWith("@claude-zen/database")
+							!requiredModule.startsWith("@claude-zen/database") &&
+							!requiredModule.startsWith("@claude-zen/neural-ml")
 						) {
 					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(
-						`   Restricted internal require: ${requiredModule} — Only @claude-zen/foundation and @claude-zen/database are allowed between packages`,
+							`   Restricted internal require: ${requiredModule} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
+					);
+					logger.error("");
+					violations++;
+				}
+			}
+
+			// Also check dynamic import() statements
+			const dynamicImportMatch = line.match(/import\(\s*['"]([\w@][\w@\-\./]+)['"]\s*\)/);
+			if (dynamicImportMatch) {
+				const dynModule = dynamicImportMatch[1];
+
+				if (FORBIDDEN_IMPORTS[dynModule]) {
+					logger.error(` ${relativePath}:${i + 1}`);
+					logger.error(`   Dynamic import: ${dynModule}`);
+					logger.error(`   ${FORBIDDEN_IMPORTS[dynModule]}`);
+					logger.error("");
+					violations++;
+				}
+
+				if (
+					dynModule.startsWith("@claude-zen/") &&
+					!dynModule.startsWith("@claude-zen/foundation") &&
+					!dynModule.startsWith("@claude-zen/database") &&
+					!dynModule.startsWith("@claude-zen/neural-ml")
+				) {
+					logger.error(` ${relativePath}:${i + 1}`);
+					logger.error(
+						`   Restricted internal dynamic import: ${dynModule} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
 					);
 					logger.error("");
 					violations++;
