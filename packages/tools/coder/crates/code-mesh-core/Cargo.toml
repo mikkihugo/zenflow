@@ -115,6 +115,9 @@ anthropic = []
 mistral = []
 web = ["html5ever", "markup5ever_rcdom", "html2md", "scraper", "dep:cookie", "dep:http"]
 
+# Feature gate for GitHub Copilot support (disabled by default)
+copilot = []
+
 [dev-dependencies]
 mockall = { workspace = true }
 tempfile = { workspace = true }

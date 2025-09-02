@@ -8,8 +8,8 @@ Enterprise AI platform with agents, workflows, and a web-first interface. Packag
 
 ## Core architecture principles
 
-- Event-driven only: communicate across packages via the single typed EventBus from foundation
-- Import boundary: only @claude-zen/foundation and @claude-zen/database may be imported directly
+- Event-driven only: communicate across packages via the single EventBus from foundation (the old "TypedEventBus" name is deprecated)
+- Import boundary: only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml may be imported directly
 - Backend-agnostic data access: use database adapters; avoid binding to a specific backend
 - WASM-first heavy compute: route through Rust/WASM gateways
 
@@ -30,7 +30,7 @@ src/
 - Tools: code-analyzer, git-operations, parsers, ai-linter, etc.
 - Integrations: llm-providers, exporters, otel-collector
 
-Legacy notes: NeuralBridge and similar legacy orchestrators are deprecated; “swarm” terminology remains.
+Legacy notes: NeuralBridge and similar legacy orchestrators are deprecated; "TypedEventBus" name is legacy—use EventBus; remove facades/shims.
 
 ## Agent coordination
 

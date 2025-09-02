@@ -8,6 +8,7 @@ pub mod provider;
 pub mod model;
 pub mod anthropic;
 pub mod openai;
+#[cfg(feature = "copilot")]
 pub mod github_copilot;
 pub mod registry;
 
@@ -22,6 +23,7 @@ pub use provider::{
 };
 pub use anthropic::{AnthropicProvider, AnthropicModel, AnthropicModelWithProvider};
 pub use openai::{OpenAIProvider, OpenAIModel, OpenAIModelWithProvider, AzureOpenAIProvider, AzureOpenAIModelWithProvider};
+#[cfg(feature = "copilot")]
 pub use github_copilot::{GitHubCopilotProvider, GitHubCopilotModel, GitHubCopilotModelWithProvider};
 pub use registry::{LLMRegistry, create_default_registry, create_registry_with_models_dev};
 

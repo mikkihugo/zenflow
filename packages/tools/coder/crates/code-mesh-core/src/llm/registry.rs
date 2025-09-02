@@ -5,11 +5,13 @@ use anyhow;
 
 use super::{
     ProviderRegistry, ModelConfig, ProviderConfig, ProviderSource, 
-    AnthropicProvider, OpenAIProvider, GitHubCopilotProvider,
-    AnthropicModelWithProvider, OpenAIModelWithProvider, GitHubCopilotModelWithProvider,
+    AnthropicProvider, OpenAIProvider,
+    #[cfg(feature = "copilot")] GitHubCopilotProvider,
+    AnthropicModelWithProvider, OpenAIModelWithProvider,
+    #[cfg(feature = "copilot")] GitHubCopilotModelWithProvider,
     LanguageModel,
 };
-use crate::auth::{AuthStorage, AnthropicAuth, GitHubCopilotAuth};
+use crate::auth::{AuthStorage, AnthropicAuth, #[cfg(feature = "copilot")] GitHubCopilotAuth};
 
 /// Central registry for managing LLM providers and models
 pub struct LLMRegistry {
@@ -101,7 +103,12 @@ impl LLMRegistry {
         }
         
         // Priority order for providers
-        let provider_priority = ["anthropic", "openai", "github-copilot"];
+        let provider_priority = [
+            "anthropic",
+            "openai",
+            #[cfg(feature = "copilot")]
+            "github-copilot",
+        ];
         
         for provider_id in provider_priority {
             if available_providers.contains(&provider_id.to_string()) {

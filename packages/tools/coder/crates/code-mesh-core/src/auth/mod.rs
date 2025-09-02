@@ -7,10 +7,12 @@ use std::path::PathBuf;
 
 pub mod anthropic;
 pub mod storage;
+#[cfg(feature = "copilot")]
 pub mod github_copilot;
 pub mod manager;
 
 pub use anthropic::AnthropicAuth;
+#[cfg(feature = "copilot")]
 pub use github_copilot::{GitHubCopilotAuth, GitHubCopilotAuthResult};
 pub use manager::AuthManager;
 
