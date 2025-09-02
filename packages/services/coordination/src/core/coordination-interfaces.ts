@@ -15,8 +15,7 @@ import type {
   EventPayload, 
   Result, 
   UUID, 
-  Timestamp,
-  Logger
+  Timestamp
 } from '@claude-zen/foundation';
 
 // =============================================================================

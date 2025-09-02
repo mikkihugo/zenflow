@@ -186,7 +186,7 @@ export class ExportSystem extends EventEmitter {
 
  try {
  if (exporter.validate && !exporter.validate(data)) {
- throw new Error(`Data validation failed for ${format} format`
+ throw new Error(`Data validation failed for ${format} format`)
  }
 
  const exportedData = await exporter.export(data, options);

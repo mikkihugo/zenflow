@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](https://github.com/ruvnet/code-mesh)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 
-**High-performance, WASM-powered distributed swarm intelligence for concurrent code execution and neural mesh computing.**
+**High-performance, event-driven Rust library for AI-powered development tools with comprehensive tool system and platform integration.**
 
 Code-Mesh Core is the foundational library that powers the Code-Mesh ecosystem - a next-generation multi-agent system designed for blazing-fast, concurrent operations with neural network capabilities and SIMD optimization.
 
@@ -13,11 +13,16 @@ Code-Mesh Core is the foundational library that powers the Code-Mesh ecosystem -
 
 ### 🚀 **High-Performance Engine**
 
- **🔐 Secure Authentication**: OAuth and API key support with encrypted credential storage (provider-specific modules are feature-gated; Copilot is behind `copilot` and off by default)
-### 🧠 **Neural Mesh Architecture**
+- **🔐 Secure Authentication**: OAuth and API key support with encrypted credential storage
+- **🔄 Event-Driven Architecture**: Communicates with LLM providers via platform EventBus
+- **🌐 Cross-Platform**: Native performance with WebAssembly compatibility
 
-- **Pattern Recognition**: Real-time analysis with 0.14ms cognitive processing
-- **Meta-Learning**: Cross-domain knowledge transfer between agents
+### 🧠 **Event-Driven LLM Integration**
+
+- **Platform Integration**: Works with Claude Code Zen EventBus system
+- **Provider Agnostic**: No direct LLM dependencies - routes through platform providers
+- **Real-time Communication**: Event-based request/response handling
+- **Separation of Concerns**: LLM logic handled by dedicated provider packages
 
 ### ⚡ **Concurrent Swarm Operations**
 
@@ -31,6 +36,8 @@ Code-Mesh Core is the foundational library that powers the Code-Mesh ecosystem -
 - **File Operations**: Concurrent read/write/edit with Unicode support
 - **Search & Analysis**: Regex-powered grep, glob pattern matching
 - **Web Integration**: HTTP client, search APIs, content extraction
+- **Process Execution**: Secure bash command execution with validation
+- **Task Management**: Advanced todo system with dependencies and priorities
 - **Memory Management**: TTL-based storage with namespace isolation
 
 ## 🚀 Quick Start
@@ -45,236 +52,203 @@ code-mesh-core = "0.1"
 ### Basic Usage
 
 ```rust
-use code_mesh_core::{CodeMesh, AgentType, SwarmTopology};
+use code_mesh_core::{EventBus, EventDrivenLLMClient, Session, ToolRegistry};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Initialize the Code-Mesh engine
-    let mut mesh = CodeMesh::new().await?;
-
-    // Create a swarm with mesh topology
-    let swarm = mesh.create_swarm(SwarmTopology::Mesh, 5).await?;
-
-    // Spawn different types of agents
-    let researcher = swarm.spawn_agent(AgentType::Researcher).await?;
-    let coder = swarm.spawn_agent(AgentType::Coder).await?;
-    let analyst = swarm.spawn_agent(AgentType::Analyst).await?;
-
-    // Execute a task across the swarm
-    let result = swarm.execute_task("Analyze codebase and suggest optimizations").await?;
-
-    println!("Task result: {:?}", result);
+    // Initialize event bus for platform integration
+    let event_bus = EventBus::new();
+    
+    // Create event-driven LLM client
+    let llm_client = EventDrivenLLMClient::new("claude-3-opus".to_string(), event_bus.clone());
+    
+    // Set up tool registry
+    let tool_registry = ToolRegistry::with_defaults()?;
+    
+    // Create session and generate response via events
+    let mut session = Session::new();
+    session.add_user_message("Help me write a Rust function");
+    
+    let response = llm_client.generate(
+        session.to_llm_messages(),
+        GenerateOptions::default()
+    ).await?;
+    
+    println!("AI Response: {}", response.content);
     Ok(())
 }
 ```
 
-### Neural Network Integration
+## 🏗️ Architecture
 
-```rust
-use code_mesh_core::{NeuralMesh, CognitivePattern};
+### Event-Driven Design
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Create neural mesh with adaptive learning
-    let neural_mesh = NeuralMesh::new()
-        .with_cognitive_pattern(CognitivePattern::Adaptive)
-        .with_simd_optimization(true)
-        .build().await?;
+Code-Mesh Core follows the Claude Code Zen platform architecture:
 
-    // Train on data patterns
-    neural_mesh.train_on_patterns(training_data).await?;
-
-    // Make predictions
-    let prediction = neural_mesh.predict(input_data).await?;
-
-    Ok(())
-}
+```
+┌─────────────────┐    Events    ┌──────────────────┐
+│   Code-Mesh     │ ────────────→ │  LLM Providers  │
+│     Core        │               │  (TypeScript)   │
+│                 │ ←──────────── │                  │
+└─────────────────┘   Responses  └──────────────────┘
 ```
 
-### Performance Monitoring
+- **No Direct LLM Dependencies**: All LLM communication via EventBus
+- **Platform Integration**: Works seamlessly with Claude Code Zen
+- **Tool System**: Comprehensive development tools independent of LLM
+- **Event Types**: `llm:generate-request`, `llm:generate-response`, etc.
+
+### Core Components
+
+- **EventBus**: Platform event communication
+- **ToolRegistry**: File operations, search, web tools, process execution
+- **Session Management**: Conversation state and context
+- **EventDrivenLLMClient**: LLM communication interface
+
+## 🛠️ Tool System
+
+### Available Tools
 
 ```rust
-use code_mesh_core::{PerformanceMonitor, MetricType};
+use code_mesh_core::tool::*;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let monitor = PerformanceMonitor::new();
+let mut registry = ToolRegistry::with_defaults()?;
 
-    // Start monitoring
-    monitor.start_monitoring().await?;
+// File operations
+registry.register(Box::new(ReadTool));
+registry.register(Box::new(WriteTool));
+registry.register(Box::new(EditTool));
+registry.register(Box::new(MultiEditTool));
 
-    // Execute operations
-    let swarm = CodeMesh::new().await?.create_swarm(SwarmTopology::Mesh, 3).await?;
+// Search and analysis
+registry.register(Box::new(GrepTool));
+registry.register(Box::new(GlobTool));
+registry.register(Box::new(GlobAdvancedTool));
 
-    // Get performance metrics
-    let metrics = monitor.get_metrics(MetricType::All).await?;
-    println!("Performance: {:?}", metrics);
+// Process execution
+registry.register(Box::new(BashTool));
 
-    Ok(())
-}
+// Web tools
+registry.register(Box::new(WebFetchTool::new()?));
+registry.register(Box::new(WebSearchTool::new()?));
+
+// Task management
+registry.register(Box::new(TaskTool::new()));
+registry.register(Box::new(TodoTool::new()));
 ```
 
-## 📊 Performance Benchmarks
+### Tool Categories
 
-Based on comprehensive testing:
-
-- **Swarm Operations**: 84,688 ops/second
-- **Neural Operations**: 661 ops/second with SIMD
-- **Memory Efficiency**: 92.23% with 48MB total usage
-- **Task Success Rate**: 99.45% across 64+ executed tasks
-- **Cognitive Processing**: 0.14ms average latency
-
-## 🛠️ Advanced Features
-
-### Multi-Agent Coordination
-
-```rust
-use code_mesh_core::{SwarmCoordinator, TaskStrategy};
-
-let coordinator = SwarmCoordinator::new()
-    .with_strategy(TaskStrategy::Adaptive)
-    .with_fault_tolerance(true)
-    .build();
-
-let result = coordinator.orchestrate_multi_task(vec![
-    "analyze_codebase",
-    "optimize_performance",
-    "generate_documentation"
-]).await?;
-```
-
-### Memory Management
-
-```rust
-use code_mesh_core::{MemoryManager, MemoryNamespace};
-
-let memory = MemoryManager::new()
-    .with_namespace("project_cache")
-    .with_ttl(3600) // 1 hour
-    .build();
-
-memory.store("analysis_results", data).await?;
-let cached = memory.retrieve("analysis_results").await?;
-```
-
-### Web Integration
-
-```rust
-use code_mesh_core::{WebClient, SearchEngine};
-
-let client = WebClient::new();
-let search_results = client.search("Rust WASM optimization").await?;
-let webpage_content = client.fetch("https://example.com").await?;
-```
+- **File Operations**: Read, write, edit, multi-edit
+- **Search & Analysis**: Grep, glob patterns, advanced search
+- **Process Execution**: Secure bash execution with validation
+- **Web Integration**: HTTP client, search, content extraction
+- **Task Management**: Todo system with dependencies and priorities
+- **Monitoring**: File watching, audit logging, permissions
 
 ## 🔧 Configuration
 
-### Environment Variables
-
-```bash
-# Performance tuning
-CODE_MESH_MAX_AGENTS=10
-CODE_MESH_MEMORY_LIMIT=512MB
-CODE_MESH_SIMD_ENABLED=true
-
-# Neural network settings
-CODE_MESH_NEURAL_ENABLED=true
-CODE_MESH_LEARNING_RATE=0.01
-CODE_MESH_COGNITIVE_PATTERN=adaptive
-
-# Monitoring
-CODE_MESH_METRICS_ENABLED=true
-CODE_MESH_LOG_LEVEL=info
-```
-
-### Configuration File
+### Feature Flags
 
 ```toml
-# code-mesh.toml
-[swarm]
-max_agents = 10
-topology = "mesh"
-strategy = "adaptive"
-
-[neural]
-enabled = true
-simd_optimization = true
-cognitive_pattern = "adaptive"
-learning_rate = 0.01
-
-[performance]
-memory_limit = "512MB"
-enable_monitoring = true
-metrics_interval = 1000
+[features]
+default = ["std", "auto-optimization", "native", "web"]
+std = []
+auto-optimization = []
+native = ["rusqlite", "reqwest/native-tls", "tokio"]
+wasm = ["dep:web-sys", "dep:js-sys", "dep:wasm-bindgen"]
+web = ["html5ever", "markup5ever_rcdom", "html2md", "scraper"]
 ```
 
-## 🧪 Examples
+### Platform Support
 
-See the [`examples/`](examples/) directory for comprehensive usage examples:
+- **Native**: Full performance with file system access
+- **WASM**: Browser-compatible subset
+- **Cross-Platform**: Automatic feature detection and optimization
 
-- **Basic Swarm**: Simple multi-agent coordination
-- **Neural Processing**: AI-powered code analysis
-- **Performance Optimization**: High-throughput data processing
-- **Web Integration**: API interaction and content processing
-- **File Operations**: Concurrent file manipulation
+## 📚 Examples
 
-## 🔌 Integration
-
-### With Other Crates
+### Event-Driven LLM
 
 ```rust
-// CLI integration
-use code_mesh_cli::CliRunner;
-let cli = CliRunner::with_core(mesh);
+use code_mesh_core::{EventBus, EventDrivenLLMClient, GenerateOptions};
 
-// TUI integration
-use code_mesh_tui::TuiApp;
-let tui = TuiApp::with_core(mesh);
+let event_bus = EventBus::new();
+let llm_client = EventDrivenLLMClient::new("claude-3-opus".to_string(), event_bus);
 
-// WASM integration
-use code_mesh_wasm::WasmRunner;
-let wasm = WasmRunner::with_core(mesh);
+// Generate text via events
+let result = llm_client.generate(
+    vec![Message::new(MessageRole::User, "Hello, AI!")],
+    GenerateOptions::default()
+).await?;
 ```
 
-### With External Tools
+### Tool Usage
 
-- **Claude-Flow**: Universal orchestration layer
-- **Language Servers**: Enhanced code intelligence
-- **CI/CD Pipelines**: Automated testing and deployment
-- **Development Tools**: IDE plugins and extensions
+```rust
+use code_mesh_core::tool::{ReadTool, ToolContext};
 
-## 📚 Documentation
+let read_tool = ReadTool;
+let context = ToolContext {
+    session_id: "session_123".to_string(),
+    message_id: "msg_456".to_string(),
+    working_directory: std::env::current_dir()?,
+};
 
-- [API Documentation](https://docs.rs/code-mesh-core)
-- [User Guide](https://github.com/ruvnet/code-mesh/docs)
-- [Examples](https://github.com/ruvnet/code-mesh/tree/main/examples)
-- [Performance Guide](https://github.com/ruvnet/code-mesh/docs/performance.md)
+let result = read_tool.execute(
+    serde_json::json!({"file_path": "src/main.rs"}),
+    context
+).await?;
+```
+
+## 🔒 Security Features
+
+- **Command Validation**: Blocks dangerous system commands
+- **Permission System**: Risk-based access control
+- **Audit Logging**: Complete operation tracking
+- **SSRF Protection**: URL validation and sanitization
+- **Rate Limiting**: Configurable request throttling
+
+## 🚀 Performance
+
+- **Rust Native**: Zero-cost abstractions and memory safety
+- **Async/Await**: Non-blocking I/O operations
+- **SIMD Optimization**: Automatic CPU instruction optimization
+- **Memory Management**: Efficient usage with TTL-based storage
+- **Concurrent Operations**: Parallel task execution
+
+## 🔗 Platform Integration
+
+Code-Mesh Core is designed to integrate seamlessly with the Claude Code Zen platform:
+
+- **EventBus Integration**: Uses platform's event system
+- **LLM Provider Routing**: All AI requests go through platform providers
+- **Tool System**: Comprehensive development tools
+- **Session Management**: Persistent conversation state
+- **Security**: Platform-level authentication and permissions
+
+## 📖 Documentation
+
+- [API Reference](https://docs.rs/code-mesh-core)
+- [Examples](examples/)
+- [Architecture Guide](ARCHITECTURE.md)
+- [Tool Reference](TOOLS.md)
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](https://github.com/ruvnet/code-mesh/CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## 📜 License
+## 📄 License
 
 This project is licensed under either of
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-- MIT License ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
 
 at your option.
 
-## 👨‍💻 Creator
+## 🙏 Acknowledgments
 
-**Created by [ruv](https://github.com/ruvnet)** - Innovator in AI-driven development tools and distributed systems.
-
-**Repository**: [github.com/ruvnet/code-mesh](https://github.com/ruvnet/code-mesh)
-
----
-
-<div align="center">
-
-**Code-Mesh Core - Where Performance Meets Intelligence** 🦀⚡
-
-_Part of the Code-Mesh ecosystem for next-generation development tools_
-
-</div>
+- Built with [Rust](https://www.rust-lang.org/)
+- Integrates with [Claude Code Zen](https://github.com/mikkihugo/claude-code-zen)
+- Inspired by modern AI development workflows

@@ -75,13 +75,13 @@ export class TaskAnalyzer extends EventBus<TaskAnalysisEvents> {
    * Initialize the task analyzer
    */
   async initialize(): Promise<Result<void, Error>> {
-    if (this.initialized) return ok(undefined);
+    if (this.initialized) return ok();
 
     try {
       logger.info('Initializing TaskAnalyzer...');
       this.initialized = true;
       logger.info('TaskAnalyzer initialized successfully');
-      return ok(undefined);
+      return ok();
     } catch (error) {
       logger.error('Failed to initialize TaskAnalyzer:', error);
       return err(error instanceof Error ? error : new Error(String(error)));
@@ -228,7 +228,7 @@ export class TaskAnalyzer extends EventBus<TaskAnalysisEvents> {
     }
 
     // Multiple sentence complexity
-    const sentences = task.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentences = task.split(/[!.?]+/).filter(s => s.trim().length > 0);
     if (sentences.length > 3) complexity += 0.1;
 
     // Cap complexity at 1.0

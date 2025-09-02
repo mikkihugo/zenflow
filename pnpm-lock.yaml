@@ -41,9 +41,6 @@ importers:
       '@anthropic-ai/claude-code':
         specifier: ^1.0.94
         version: 1.0.95
-      '@anthropic-ai/sdk':
-        specifier: ^0.60.0
-        version: 0.60.0
       '@floating-ui/dom':
         specifier: ^1.7.4
         version: 1.7.4
@@ -822,6 +819,9 @@ importers:
       '@claude-zen/foundation':
         specifier: workspace:*
         version: link:../foundation
+      '@claude-zen/llm-providers':
+        specifier: workspace:*
+        version: link:../../integrations/llm-providers
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
@@ -1739,10 +1739,6 @@ packages:
 
   '@anthropic-ai/sdk@0.27.3':
     resolution: {integrity: sha512-IjLt0gd3L4jlOfilxVXTifn42FnVffMgDC04RJK1KDZpmkBWLv0XC92MVVmkxrFZNS/7l3xWgP/I3nqtX1sQHw==}
-
-  '@anthropic-ai/sdk@0.60.0':
-    resolution: {integrity: sha512-9zu/TXaUy8BZhXedDtt1wT3H4LOlpKDO1/ftiFpeR3N1PCr3KJFKkxxlQWWt1NNp08xSwUNJ3JNY8yhl8av6eQ==}
-    hasBin: true
 
   '@apidevtools/json-schema-ref-parser@14.0.1':
     resolution: {integrity: sha512-Oc96zvmxx1fqoSEdUmfmvvb59/KDOnUoJ7s2t7bISyAn0XEz57LCCw8k2Y4Pf3mwKaZLMciESALORLgfe2frCw==}
@@ -13445,8 +13441,6 @@ snapshots:
       node-fetch: 2.7.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
-
-  '@anthropic-ai/sdk@0.60.0': {}
 
   '@apidevtools/json-schema-ref-parser@14.0.1':
     dependencies:

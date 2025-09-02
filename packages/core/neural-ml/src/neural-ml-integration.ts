@@ -711,7 +711,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const prediction = await this.bayesianOptimizer.predict(paramVector);
 
  if (!prediction.success) {
- throw new Error(`Prediction failed:${prediction.error}`
+ throw new Error(`Prediction failed:${prediction.error}`)
  }
 
  const { mean, variance } = prediction.data!;
@@ -759,7 +759,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Adapt learning rate
  const adaptResult = await this.onlineLearner.adaptLearningRate();
  if (adaptResult.success) {
- adaptations.push(`Adapted learning rate to ${adaptResult.data}`
+ adaptations.push(`Adapted learning rate to ${adaptResult.data}`);
  }
 
  // Consider strategy change based on drift type

@@ -9,7 +9,7 @@ import { readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('EnhancedDocumentScanner').
+const logger = getLogger('EnhancedDocumentScanner');
 
 /**
 * Types of analysis patterns we can detect in code and documents

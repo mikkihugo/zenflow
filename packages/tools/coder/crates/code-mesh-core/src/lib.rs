@@ -6,7 +6,7 @@
 //! 
 //! ## Features
 //! 
-//! - **🤖 Multi-LLM Support**: Unified interface for Anthropic Claude, OpenAI GPT, Google Gemini, and more
+//! - **🤖 Event-Driven LLM Integration**: Communicates with LLM providers via EventBus
 //! - **🛠️ Extensible Tool System**: Built-in tools for file operations, code execution, web search, and custom extensions
 //! - **💾 Session Management**: Persistent conversation history with intelligent context management
 //! - **🔐 Secure Authentication**: OAuth and API key support with encrypted credential storage
@@ -16,26 +16,28 @@
 //! ## Quick Start
 //! 
 //! ```rust
-//! use code_mesh_core::{Session, LanguageModel, ProviderRegistry, ToolRegistry};
+//! use code_mesh_core::{Session, EventDrivenLLMClient, ToolRegistry};
 //! use tokio;
 //! 
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     // Initialize provider registry
-//!     let mut providers = ProviderRegistry::new();
-//!     providers.register_anthropic("your-api-key")?;
+//!     // Initialize event bus
+//!     let event_bus = EventBus::new();
+//!     
+//!     // Create event-driven LLM client
+//!     let llm_client = EventDrivenLLMClient::new("claude-3-opus".to_string(), event_bus.clone());
 //!     
 //!     // Create a new session
 //!     let mut session = Session::new();
 //!     session.add_user_message("Help me implement a binary search function");
 //!     
-//!     // Get a language model
-//!     let model = providers.get_model("anthropic/claude-3-opus")?;
+//!     // Generate response via events
+//!     let response = llm_client.generate(
+//!         session.to_llm_messages(),
+//!         GenerateOptions::default()
+//!     ).await?;
 //!     
-//!     // Generate response
-//!     let response = model.complete(&session.build_prompt()).await?;
-//!     session.add_assistant_message(response);
-//!     
+//!     session.add_assistant_message(response.content);
 //!     println!("Assistant: {}", session.last_message().content);
 //!     Ok(())
 //! }
@@ -47,12 +49,9 @@
 //! 
 //! ### Language Models ([`llm`] module)
 //! 
-//! The [`LanguageModel`] trait provides a unified interface for interacting with different
-//! AI providers. Implementations are available for major providers:
-//! 
-//! - [`AnthropicProvider`] - Claude models via Anthropic API
-//! - [`OpenAIProvider`] - GPT models via OpenAI API
-//! - [`MistralProvider`] - Mistral models via Mistral AI API
+//! The [`EventDrivenLLMClient`] provides event-driven communication with LLM providers
+//! through the platform's EventBus system. This ensures proper separation of concerns
+//! and integration with the Claude Code Zen architecture.
 //! 
 //! ### Tools ([`tool`] module)
 //! 
@@ -81,51 +80,17 @@
 //! 
 //! ## Examples
 //! 
-//! ### Multi-Provider Setup
+//! ### Event-Driven LLM Setup
 //! 
 //! ```rust
-//! use code_mesh_core::{ProviderRegistry, Provider};
+//! use code_mesh_core::{EventDrivenLLMClient, EventBus};
 //! 
-//! let mut registry = ProviderRegistry::new();
+//! let event_bus = EventBus::new();
 //! 
-//! // Add multiple providers
-//! registry.register_anthropic("anthropic-key")?;
-//! registry.register_openai("openai-key")?;
-//! registry.register_mistral("mistral-key")?;
+//! // Create LLM client that communicates via events
+//! let llm_client = EventDrivenLLMClient::new("claude-3-opus".to_string(), event_bus.clone());
 //! 
-//! // Use different models for different tasks
-//! let planning_model = registry.get_model("anthropic/claude-3-opus")?;
-//! let coding_model = registry.get_model("openai/gpt-4")?;
-//! let testing_model = registry.get_model("mistral/mistral-large")?;
-//! ```
-//! 
-//! ### Tool Integration
-//! 
-//! ```rust
-//! use code_mesh_core::{ToolRegistry, FileTools, BashTool};
-//! 
-//! let mut tools = ToolRegistry::new();
-//! tools.register(Box::new(FileTools::new()));
-//! tools.register(Box::new(BashTool::new()));
-//! 
-//! // Tools can be used by AI agents
-//! let context = ToolContext::new();
-//! let result = tools.execute("read_file", &["src/main.rs"], &context).await?;
-//! ```
-//! 
-//! ### Session Persistence
-//! 
-//! ```rust
-//! use code_mesh_core::{SessionManager, Storage};
-//! 
-//! let storage = Storage::new("./sessions")?;
-//! let mut manager = SessionManager::new(storage);
-//! 
-//! // Save session
-//! let session_id = manager.save_session(&session).await?;
-//! 
-//! // Load session later
-//! let restored_session = manager.load_session(&session_id).await?;
+//! // The client will emit events that are handled by the platform's LLM providers
 //! ```
 //! 
 //! ## Feature Flags
@@ -134,9 +99,7 @@
 //! 
 //! - `native` (default): Full native functionality including file system access
 //! - `wasm`: WebAssembly-compatible subset with browser APIs
-//! - `openai`: OpenAI provider support
-//! - `anthropic`: Anthropic provider support  
-//! - `mistral`: Mistral provider support
+//! - `web`: Web functionality for HTTP and content processing
 //! 
 //! ## Error Handling
 //! 
@@ -176,9 +139,10 @@ pub mod prompts;
 
 // Re-export commonly used types
 pub use llm::{
-    Provider, Model, LanguageModel, ProviderRegistry,
+    EventDrivenLLMClient, LanguageModel, EventDrivenLanguageModel,
     Message, MessageRole, MessageContent, GenerateOptions,
-    GenerateResult, StreamChunk, Usage, FinishReason
+    GenerateResult, StreamChunk, Usage, FinishReason,
+    LLMGenerateRequest, LLMGenerateResponse, LLMStreamRequest, LLMStreamChunk
 };
 pub use tool::{
     Tool, ToolContext, ToolResult, ToolRegistry, ToolError,

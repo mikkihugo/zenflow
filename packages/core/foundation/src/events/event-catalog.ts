@@ -37,15 +37,15 @@ export interface SPARCPhaseReviewEvent extends BaseEvent {
   projectId: string;
   phase:
     | 'specification'
-    | ' pseudocode'
-    | ' architecture'
-    | ' refinement'
-    | ' completion';
+    | 'pseudocode'
+    | 'architecture'
+    | 'refinement'
+    | 'completion';
   reviewType:
     | 'architecture'
-    | ' specification'
-    | ' implementation'
-    | ' quality';
+    | 'specification'
+    | 'implementation'
+    | 'quality';
   artifacts: unknown[];
   requirements: string[];
   suggestedReviewers: string[];
@@ -75,7 +75,7 @@ export interface SPARCPhaseCompleteEvent extends BaseEvent {
   projectId: string;
   phase: string;
   artifacts: unknown[];
-  completedBy: 'llm-inference' | ' claude-code' | ' teamwork';
+  completedBy: 'llm-inference' | 'claude-code' | 'teamwork';
   sparcValidated: boolean;
   filesModified?: string[];
 }
@@ -93,9 +93,9 @@ export interface LLMInferenceRequestEvent extends BaseEvent {
   requestId: string;
   type:
     | 'simple-inference'
-    | ' structured-generation'
-    | ' analysis'
-    | ' code-generation';
+    | 'structured-generation'
+    | 'analysis'
+    | 'code-generation';
   projectId: string;
   phase?: string;
   prompt: string;
@@ -456,6 +456,73 @@ export interface SystemErrorEvent extends BaseEvent {
   error: string;
   severity: 'low' | ' medium' | ' high' | ' critical';
   context?: Record<string, unknown>;
+}
+
+// ============================================================================
+// DSPy Events
+// ============================================================================
+
+/**
+ * DSPy optimization request
+ * @emitter Brain/Coordination
+ * @listener DSPy Engine
+ */
+export interface DspyOptimizationRequest extends BaseEvent {
+  requestId: string;
+  prompt: string;
+  examples?: unknown[];
+  optimizationConfig?: {
+    maxIterations?: number;
+    strategy?: 'few-shot' | 'bootstrap' | 'copro' | 'miprov2';
+    metrics?: string[];
+  };
+}
+
+/**
+ * DSPy optimization result
+ * @emitter DSPy Engine
+ * @listener Brain/Coordination
+ */
+export interface DspyOptimizationResult extends BaseEvent {
+  requestId: string;
+  optimizedPrompt: string;
+  metrics: {
+    accuracy?: number;
+    latency?: number;
+    cost?: number;
+    improvement?: number;
+  };
+  examples?: unknown[];
+  optimizationHistory?: unknown[];
+}
+
+/**
+ * DSPy LLM request
+ * @emitter DSPy Engine
+ * @listener LLM Provider
+ */
+export interface DspyLlmRequest extends BaseEvent {
+  requestId: string;
+  prompt: string;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
+
+/**
+ * DSPy LLM response
+ * @emitter LLM Provider
+ * @listener DSPy Engine
+ */
+export interface DspyLlmResponse extends BaseEvent {
+  requestId: string;
+  response: string;
+  usage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
+  metadata?: Record<string, unknown>;
 }
 
 // ============================================================================

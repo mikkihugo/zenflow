@@ -10,7 +10,7 @@
  * Environment Variables:
  * - RUN_INTEGRATION=true - Enable real API integration tests
  * - RUN_PERFORMANCE=true - Enable performance benchmarks
- * - ANTHROPIC_API_KEY - Required for Claude API tests
+ * - LLM_PROVIDER_API_KEY - Required for LLM provider tests
  */
 
 import { defineConfig } from 'vitest/config';

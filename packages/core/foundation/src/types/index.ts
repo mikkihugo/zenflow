@@ -59,7 +59,7 @@ export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
 // Query patterns
 export interface QueryCriteria {
   filters?: Record<string, unknown>;
-  sort?: { field: string; direction: 'asc|desc' }[];
+  sort?: { field: string; direction: 'asc' | 'desc' }[];
   pagination?: PaginationOptions;
 }
 
@@ -108,7 +108,7 @@ export type LogLevel = 'debug|info|warn|error|fatal';
  *}
  *
  * // Make specific properties optional
- * type UserInput = SetOptional<User, 'id|metadata'>;
+ * type UserInput = SetOptional<User, 'id' | 'metadata'>;
  *
  * // Merge interfaces intelligently
  * type ExtendedUser = Merge<User, { lastLogin:Date; permissions: string[]}>;

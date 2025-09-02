@@ -83,7 +83,7 @@ export interface ModelInfo {
 /** Model name/identifier */
 name: string;
 
-/** Model provider (OpenAI, Anthropic, etc.) */
+/** Model provider (OpenAI, etc.) */
 provider?: string;
 
 /** Model version */

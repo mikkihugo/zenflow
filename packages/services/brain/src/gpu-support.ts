@@ -49,6 +49,7 @@ capabilities.hasWebGPU = !!adapter;
 if (capabilities.hasWebGPU) {
 logger.info('WebGPU detected and available');
 }
+}
 } catch (error) {
 logger.debug('WebGPU not available:', error);
 

@@ -7,12 +7,12 @@
  * Node.js specific modules like syslog, system utilities, and file operations are excluded.
  *
  * @example Browser Usage
- * '''typescript'
- * import { getLogger, Result, ok, err} from '@claude-zen/foundation';
+ * ```typescript
+ * import { getLogger, Result, ok, err } from '@claude-zen/foundation';
  *
  * const logger = getLogger('browser-component');
- * logger.info('Browser component initialized`
- * `
+ * logger.info('Browser component initialized');
+ * ```
  */
 
 // =============================================================================
@@ -343,8 +343,8 @@ export const generateUUID = (): string => {
 };
 
 export const generateShortId = () => nanoid(8);
-export const generateTimestampId = () => `${Date.now()  }-${  String(nanoid(6))  }`;
-export const generateSessionId = () => `session-${  String(nanoid(16))  }`;
+export const generateTimestampId = () => `${Date.now()}-${String(nanoid(6))}`;
+export const generateSessionId = () => `session-${String(nanoid(16))}`;
 
 // Time utilities (browser compatible)
 export const now = () => Date.now();
@@ -365,7 +365,7 @@ export const z = {
     min: (minLength: number) => ({
       parse: (val: string) => {
         if (val.length < minLength) {
-          throw new Error(`String must be at least ${  String(minLength)  } characters`);
+          throw new Error(`String must be at least ${String(minLength)} characters`);
         }
         return val;
       },

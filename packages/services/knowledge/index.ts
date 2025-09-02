@@ -721,7 +721,7 @@ export function validateKnowledgeConfig(config:unknown): {
       !config?.integration?.factIntegration?.knowledgeSwarmIntegration
     ) {
       warnings.push(
-        'FACT integration enabled but knowledge swarm integration disabled')      );
+        'FACT integration enabled but knowledge swarm integration disabled'      );
 }
 
     if (

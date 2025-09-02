@@ -56,7 +56,7 @@ export class CoordinationOrchestrator {
    */
   public async initialize(): Promise<Result<void, Error>> {
     if (this.isInitialized) {
-      return ok(undefined);
+      return ok();
     }
 
     try {
@@ -64,7 +64,7 @@ export class CoordinationOrchestrator {
       this.isInitialized = true;
       
       this.logger.info('Coordination Orchestrator initialized - ready to coordinate existing packages');
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`Initialization failed: ${error}`));
     }
@@ -91,7 +91,7 @@ export class CoordinationOrchestrator {
       });
 
       this.logger.info('Agent registered for coordination', { agentId: agentState.agentId });
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`Agent registration failed: ${error}`));
     }
@@ -159,7 +159,7 @@ export class CoordinationOrchestrator {
       });
 
       this.logger.info('PI Planning coordination requested', { piId });
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`PI Planning coordination failed: ${error}`));
     }
@@ -182,7 +182,7 @@ export class CoordinationOrchestrator {
       });
 
       this.logger.info('TaskMaster approval coordination requested', { approvalId });
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`Approval coordination failed: ${error}`));
     }
@@ -205,7 +205,7 @@ export class CoordinationOrchestrator {
       });
 
       this.logger.info('Teamwork coordination requested', { sessionId });
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`Teamwork coordination failed: ${error}`));
     }
@@ -228,7 +228,7 @@ export class CoordinationOrchestrator {
       });
 
       this.logger.info('Kanban coordination requested', { boardId });
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`Kanban coordination failed: ${error}`));
     }
@@ -251,7 +251,7 @@ export class CoordinationOrchestrator {
       });
 
       this.logger.info('SPARC coordination requested', { projectId, phase });
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(new Error(`SPARC coordination failed: ${error}`));
     }

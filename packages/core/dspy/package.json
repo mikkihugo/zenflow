@@ -33,6 +33,7 @@
   "license": "MIT",
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/llm-providers": "workspace:*",
     "seedrandom": "^3.0.5",
     "zod": "^3.23.8"
   },

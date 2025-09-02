@@ -47,6 +47,7 @@ async predict(input: any): Promise<any> {
 logger.info('Graph Neural Network prediction for input:', input);
 return { prediction: 'graph_output' };
 }
+}
 
 export class TransformerModel {
 constructor(public config: any = {}) {}

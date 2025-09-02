@@ -6,7 +6,7 @@
 
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 
-const logger = getLogger('SemanticClassifier').
+const logger = getLogger('SemanticClassifier');
 
 /**
 * Semantic indicators with weighted importance levels
@@ -32,8 +32,8 @@ strategic:SemanticIndicators;
 * Document classification result with confidence scoring
 */
 export interface DocumentClassification {
-documentType: 'research|technical|algorithm|implementation|strategic;
-' confidence:number; // 0-1 confidence score
+documentType: 'research' | 'technical' | 'algorithm' | 'implementation' | 'strategic';
+confidence:number; // 0-1 confidence score
 algorithmDensity:number; // 0-1 algorithm content density
 conceptComplexity:number; // 0-1 concept complexity score
 technicalDepth:number; // 0-1 technical depth measure

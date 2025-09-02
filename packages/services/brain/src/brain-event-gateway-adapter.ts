@@ -7,9 +7,9 @@
  */
 
 import { getLogger, generateUUID } from '@claude-zen/foundation';
-import { IntelligenceOrchestrator, type BrainEvents } from './brain-coordinator';
-import { TaskAnalyzer, type TaskAnalysisEvents } from './autonomous-optimization-engine';
-import { TaskComplexityEstimator, type ComplexityEvents } from './task-complexity-estimator';
+import { IntelligenceOrchestrator } from './brain-coordinator';
+import { TaskAnalyzer } from './autonomous-optimization-engine';
+import { TaskComplexityEstimator } from './task-complexity-estimator';
 
 const logger = getLogger('BrainEventGatewayAdapter');
 

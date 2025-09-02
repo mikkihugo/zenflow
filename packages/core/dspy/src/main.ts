@@ -42,6 +42,17 @@ export { SeededRNG } from './primitives/seeded-rng';
 export { Ensemble } from './teleprompters/ensemble';
 
 // =============================================================================
+// PROMPT GENERATION - Intelligent prompt creation and optimization
+// =============================================================================
+export { IntelligentPromptGenerator } from './intelligent-prompt-generator';
+export type { 
+  IntelligentPrompt, 
+  CodingStandardsConfig, 
+  ProjectContext,
+  DevelopmentPhase 
+} from './intelligent-prompt-generator';
+
+// =============================================================================
 // TYPE DEFINITIONS
 // =============================================================================
 // Export core types if they exist

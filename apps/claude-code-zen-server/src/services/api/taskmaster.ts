@@ -177,8 +177,8 @@ class TaskMasterManager {
               blockedTasks,
               completedTasks,
             } as FlowMetrics;
-          } catch (err) {
-            logger.warn('Flow metrics via EventBus failed, returning baseline', { err });
+          } catch (error) {
+            logger.warn('Flow metrics via EventBus failed, returning baseline', { err: error });
             return {
               cycleTime: 0,
               leadTime: 0,
@@ -201,8 +201,8 @@ class TaskMasterManager {
               queueHealth: 0.85,
               lastUpdated: new Date().toISOString(),
             } as SystemHealth;
-          } catch (err) {
-            logger.warn('System health via EventBus failed, returning baseline', { err });
+          } catch (error) {
+            logger.warn('System health via EventBus failed, returning baseline', { err: error });
             return {
               overallHealth: 0.8,
               databaseHealth: 0.8,
@@ -228,8 +228,8 @@ class TaskMasterManager {
               createdAt: String(t.createdAt ?? new Date().toISOString()),
               updatedAt: String(t.updatedAt ?? new Date().toISOString()),
             } as TaskMasterTask;
-          } catch (err) {
-            logger.warn('Task creation via EventBus failed, returning placeholder', { err });
+          } catch (error) {
+            logger.warn('Task creation via EventBus failed, returning placeholder', { err: error });
             return {
               id: generateUUID(),
               title: data.title ?? 'New Task',

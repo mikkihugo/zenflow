@@ -219,7 +219,7 @@ dependencies:module.dependencies.length,
 
 return ok(module);
 } catch (error) {
-const errorMsg = `Failed to parse ` + filePath + `: ` + (error instanceof Error ? error.message : String(error));
+const errorMsg = `Failed to parse ${  filePath  }: ${  error instanceof Error ? error.message : String(error)}`;
 this.logger.error(errorMsg, { error });
 return err(new Error(errorMsg));
 }
@@ -239,8 +239,7 @@ filePaths.map((path) => this.parseFile(path))
 const modules: BeamModule[] = [];
 const errors: string[] = [];
 
-for (let i = 0; i < results.length; i++) {
-const result = results[i];
+for (const [i, result] of results.entries()) {
 if (result.status === `fulfilled` && result.value.isOk()) {
 modules.push(result.value._unsafeUnwrap());
 } else {
@@ -312,7 +311,7 @@ name:moduleName,
 path:filePath,
 language: 'elixir',
 exports:functions,
-types:types,
+types,
 documentation:docs,
 dependencies:deps,
 metadata:{
@@ -350,7 +349,7 @@ name:moduleName,
 path:filePath,
 language: 'erlang',
 exports:functions,
-types:types,
+types,
 documentation:docs,
 dependencies:deps,
 metadata:{
@@ -383,7 +382,7 @@ name:moduleName,
 path:filePath,
 language: 'gleam',
 exports:functions,
-types:types,
+types,
 documentation:docs,
 dependencies:deps,
 metadata:{
@@ -421,10 +420,10 @@ const isMacro = content
 .includes('defmacro');
 const func: BeamFunction = {
 name: functionName,
-arity: arity,
+arity,
 visibility: isPrivate ? 'private' : `public`,
-signature: functionName + '(' + params + ')',
-lineNumber: lineNumber,
+signature: `${functionName  }(${  params  })`,
+lineNumber,
 attributes: isMacro ? [`macro`] : [],
 };
 
@@ -452,7 +451,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name:match[1],
 definition:match[2].trim(),
-lineNumber:lineNumber,
+lineNumber,
 category: 'custom',
 });
 }
@@ -465,7 +464,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name:match[1],
 definition:match[2].trim(),
-lineNumber:lineNumber,
+lineNumber,
 category: 'custom',
 });
 }
@@ -477,7 +476,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name:match[1],
 definition:match[2].trim(),
-lineNumber:lineNumber,
+lineNumber,
 category: 'spec',
 });
 }
@@ -489,14 +488,14 @@ private extractElixirDocs(content: string): string[] {
 const docs: string[] = [];
 
 // @moduledoc
-const moduleDocRegex = /@moduledoc\s+"""([\s\S]*?)"""/g;
+const moduleDocRegex = /@moduledoc\s+"""([\S\s]*?)"""/g;
 let match;
 while ((match = moduleDocRegex.exec(content)) !== null) {
 docs.push(match[1].trim());
 }
 
 // @doc
-const docRegex = /@doc\s+"""([\s\S]*?)"""/g;
+const docRegex = /@doc\s+"""([\S\s]*?)"""/g;
 while ((match = docRegex.exec(content)) !== null) {
 docs.push(match[1].trim());
 }
@@ -564,10 +563,10 @@ const arity = params ? params.split(',').length : 0;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 const func: BeamFunction = {
 name: functionName,
-arity: arity,
+arity,
 visibility: 'public', // Determined by export list
 signature: `${functionName}(${params})`,
-lineNumber: lineNumber,
+lineNumber,
 };
 
 if (this.options.analyzeFunctionComplexity) {
@@ -594,7 +593,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
 definition: match[2].trim(),
-lineNumber: lineNumber,
+lineNumber,
 category: 'custom',
 });
 }
@@ -607,7 +606,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
 definition: match[2].trim(),
-lineNumber: lineNumber,
+lineNumber,
 category: 'opaque',
 });
 }
@@ -619,7 +618,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
 definition: match[2].trim(),
-lineNumber: lineNumber,
+lineNumber,
 category: 'spec',
 });
 }
@@ -713,7 +712,7 @@ const otpBehaviours = [
 'gen_server', 'gen_statem', 'supervisor', 'application'
 ];
 return otpBehaviours.some((behaviour) =>
-content.includes('-behaviour(' + behaviour + ')')
+content.includes(`-behaviour(${  behaviour  })`)
 );
 }
 
@@ -733,10 +732,10 @@ const isPublic = content
 .includes('pub');
 const func: BeamFunction = {
 name: functionName,
-arity: arity,
+arity,
 visibility: isPublic ? 'public' : 'private',
-signature: functionName + '(' + params + ')',
-lineNumber: lineNumber,
+signature: `${functionName  }(${  params  })`,
+lineNumber,
 };
 
 if (this.options.analyzeFunctionComplexity) {
@@ -764,7 +763,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
 definition: match[2].trim(),
-lineNumber: lineNumber,
+lineNumber,
 category: 'custom',
 });
 }
@@ -776,7 +775,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
 definition: match[2].trim(),
-lineNumber: lineNumber,
+lineNumber,
 category: 'alias',
 });
 }

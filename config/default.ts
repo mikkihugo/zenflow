@@ -279,13 +279,10 @@ const config = {
         maxRetries: 3,
         timeout: 30000,
       },
-      // Anthropic configuration
-      anthropic: {
-        apiKey: process.env.ANTHROPIC_API_KEY,
-        model: process.env.ANTHROPIC_MODEL ?? 'claude-3-sonnet-20240229',
-        maxTokens: parseInt(process.env.ANTHROPIC_MAX_TOKENS ?? '4096', 10),
-        temperature: parseFloat(process.env.ANTHROPIC_TEMPERATURE ?? '0.7'),
-      },
+        // LLM configuration (placeholder for future providers)
+  llm: {
+    // Configuration for future LLM providers
+  },
       // Local embeddings fallback
       local: {
         enabled: process.env.LOCAL_EMBEDDINGS === 'true',

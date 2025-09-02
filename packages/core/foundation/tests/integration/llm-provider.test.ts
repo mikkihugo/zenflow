@@ -26,13 +26,12 @@ vi.mock('@claude-zen/foundation/logging', () => ({
   }),
 }));
 
-// Mock Claude API for unit tests
-const mockClaudeAPI = vi.fn();
-vi.mock('@anthropic/claude', () => ({
-  default: vi.fn().mockImplementation(() => ({
-    messages: {
-      create: mockClaudeAPI,
-    },
+// Mock LLM provider for unit tests
+const mockLLMProvider = vi.fn();
+vi.mock('@claude-zen/llm-providers', () => ({
+  LLMProvider: vi.fn().mockImplementation(() => ({
+    complete: mockLLMProvider,
+    chat: mockLLMProvider,
   })),
 }));
 
@@ -56,6 +55,7 @@ describe('LLM Provider - Unit Tests (Vitest)', () => {
     // Reset global LLM to avoid test interference
     setGlobalLLM(new LLMProvider())();
     vi.clearAllMocks();
+    mockLLMProvider.mockClear();
   });
 
   describe('Role Management', () => {

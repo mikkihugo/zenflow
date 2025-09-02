@@ -50,8 +50,8 @@ const logger = {
  },
  debug: (msg: string, data?: unknown) => {
  if (
- process.env['NODE_ENV'] === ' development' ||
- process.env[' DEBUG'] === ' true'
+   process.env['NODE_ENV'] === 'development' ||
+   process.env['DEBUG'] === 'true'
  ) {
  process.stdout.write(
  `${JSON.stringify({

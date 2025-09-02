@@ -18,7 +18,7 @@ import { getLogger} from '@claude-zen/foundation';
 import { mean, standardDeviation, sum} from 'simple-statistics';
 import regression from 'regression';
 
-const logger = getLogger('AgentPerformancePredictor').
+const logger = getLogger('AgentPerformancePredictor');
 
 // Simple weighted moving average function
 function wma(data:number[], weights?:number[]): number[] {
@@ -83,7 +83,7 @@ private initialized = false;
 private readonly maxHistorySize = 1000;
 
 constructor() {
-logger.info('Agent Performance Predictor created').
+logger.info('Agent Performance Predictor created');
 }
 
 /**
@@ -93,7 +93,7 @@ async initialize():Promise<void> {
 if (this.initialized) return;
 
 try {
-logger.info('Initializing Agent Performance Prediction System...').
+logger.info('Initializing Agent Performance Prediction System...');
 
 // Initialize prediction models and historical data loading
 await this.loadHistoricalData();

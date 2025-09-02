@@ -5,30 +5,30 @@
  * Provides Result pattern, circuit breakers, retry logic, and error recovery mechanisms.
  *
  * @example Basic Error Handling
- * '''typescript'
- * import { Result, ok, err, safeAsync} from '@claude-zen/foundation/error-handling';
+ * ```typescript
+ * import { Result, ok, err, safeAsync } from '@claude-zen/foundation/error-handling';
  *
  * const result = await safeAsync(async () => {
  *   return await riskyOperation();
- *});
+ * });
  *
  * if (result.isOk()) {
  *   logger.info('Success: ', result.value);
-' *} else {
+ * } else {
  *   logger.error('Error: ', result.error);
-' *}
- * '
+ * }
+ * ```
  *
  * @example Circuit Breaker Pattern
- * '''typescript'
- * import { createCircuitBreaker} from '@claude-zen/foundation/error-handling';
+ * ```typescript
+ * import { createCircuitBreaker } from '@claude-zen/foundation/error-handling';
  *
  * const breaker = createCircuitBreaker({
- *   threshold:5,
- *   timeout:60000,
- *   monitor:true
- *});
- * '
+ *   threshold: 5,
+ *   timeout: 60000,
+ *   monitor: true
+ * });
+ * ```
  */
 
 // Export base errors (ValidationError and ConfigurationError defined here)

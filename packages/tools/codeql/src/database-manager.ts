@@ -35,8 +35,7 @@ this.logger = logger.child({ component: 'DatabaseManager' });
 
 /**
 * Create a new CodeQL database
-*/</search>
-</search_and_replace>
+*/
 async createDatabase(
 repositoryPath:string,
 options:DatabaseCreationOptions

@@ -780,7 +780,7 @@ private async getAIConflictSuggestion(
 			});
 
 			const content = response.content?.[0];
-			if (content && content.type === `text); {
+			if (content && content.type === 'text') {
 				const aiResponse = this.parseClaudeJsonBlock(content.text);
 				if (aiResponse) {
 					suggestions.push({

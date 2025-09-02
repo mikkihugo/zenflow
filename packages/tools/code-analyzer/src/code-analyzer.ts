@@ -211,7 +211,7 @@ this.performanceTracker = performance;
 this.databaseSystem = database;
 this.eventSystem = events;
 
-logger.info('All strategic facades initialized successfully').
+logger.info('All strategic facades initialized successfully');
 } catch (error) {
 logger.error('Failed to initialize strategic facades', { error });
 throw error;

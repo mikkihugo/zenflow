@@ -623,7 +623,7 @@ return selected;
 * Helper methods for ML operations
 */
 private extractTextFromExample(example: any): string {
-if (typeof example === `string); return example;
+if (typeof example === 'string') return example;
 if (example.question) return example.question;
 if (example.input) return example.input;
 if (example.text) return example.text;

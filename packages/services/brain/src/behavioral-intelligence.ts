@@ -34,7 +34,7 @@ import { ActivationFunction } from './types/index';
 
 // 🧠 Enhanced ML Imports - Using validated API patterns
 
-const brain = require('brain.js').
+const brain = require('brain.js');
 // Validate brain.js availability and capabilities
 const brainCapabilities = {
   neuralNetworks: typeof brain.NeuralNetwork === 'function',

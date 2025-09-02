@@ -24,7 +24,7 @@ type StrategicVisionAnalysis,
 StrategicVisionService,
 } from "./strategic-vision-service";
 
-const logger = getLogger('coordination-services-document-task-vision').
+const logger = getLogger('coordination-services-document-task-vision');
 
 export interface StrategicTask {
 id:string;
@@ -87,7 +87,7 @@ private visionService:StrategicVisionService;
 constructor(documentManager?: IDocumentManager) {
 this.documentManager = documentManager ?? new (class DocumentManagerStub {
 async getDocumentsByProject() {
-return { success: false, error: new Error('DocumentManager not available; } as const;
+return { success: false, error: new Error('DocumentManager not available') } as const;
 }
 async createDocument() {
 return { success: false, error: new Error('DocumentManager not available; } as const;

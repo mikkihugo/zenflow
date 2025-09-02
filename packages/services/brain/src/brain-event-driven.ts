@@ -1134,7 +1134,6 @@ if (this.config.neural?.gpuAcceleration) {
 this.neuralNetworks.set('gpu-accelerated', {
 name: 'GPU Accelerated Backend', type: 'gpu', acceleration: 'gpu', status:'ready'});
 }
-}
 
 // Fallback to JavaScript backend
 this.neuralNetworks.set('brain-js', {
@@ -1151,12 +1150,14 @@ this.logger.info('Initializing behavioral models');
 // Initialize performance prediction models
 this.behavioralModels.set('performance-predictor', {
 name: 'Performance Prediction Model', type: 'time-series-transformer', features:['timeSeriesAnalysis', 'behavioralClustering', 'performanceTrends'],
-status:'ready').);
+status:'ready'
+});
 
 // Initialize behavioral analysis models
 this.behavioralModels.set('behavioral-analyzer', {
 name: 'Behavioral Analysis Model', type: 'ensemble-classifier', features:['patternRecognition', 'anomalyDetection', 'clusterAnalysis'],
-status:'ready').);
+status:'ready'
+});
 
 this.logger.info('Behavioral models initialized', {
 models:Array.from(this.behavioralModels.keys())

@@ -52,7 +52,7 @@ class ExporterFactory {
       case 'file':
         return new FileExporter(config);
       default:
-        throw new Error(`Unsupported exporter type: ${  config.type}`
+        throw new Error(`Unsupported exporter type: ${config.type}`);
 }
 }
 }

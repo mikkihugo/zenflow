@@ -142,7 +142,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async get(id:string): Promise<FACTKnowledgeEntry|null> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+ }
 
  try {
  const _result = await this.dalAdapter.query(

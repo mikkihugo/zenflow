@@ -191,7 +191,7 @@ level: 'debug',
 message: 'Intelligence Orchestrator already initialized',
 timestamp: Date.now(),
 });
-return ok(undefined);
+return ok();
 }
 
 const initStartTime = Date.now();
@@ -260,7 +260,7 @@ config:this.config,
 timestamp:Date.now(),
 });
 
-return ok(undefined);
+return ok();
 } catch (error) {
 const duration = Date.now() - initStartTime;
 
@@ -334,7 +334,7 @@ throw new Error(
 // 100% EVENT-BASED: Emit debug log event
 await this.emitSafe('brain:log', {
 level: 'debug',
-message: 'Optimizing prompt for task: ' + request.task,
+message: `Optimizing prompt for task: ${  request.task}`,
 timestamp: Date.now(),
 });
 
@@ -345,7 +345,7 @@ await new Promise(resolve => setTimeout(resolve, 0));
 // In a real implementation, this would use DSPy coordination
 return {
 strategy: 'autonomous',
-prompt: 'Optimized: ' + request.basePrompt,
+prompt: `Optimized: ${  request.basePrompt}`,
 confidence: 0.85,
 };
 }

@@ -441,7 +441,8 @@ export class WebSocketManager {
       // Fallback to previous implementation if no real data service
       const packageInfo = await this.getPackageInformation();
       const serviceHealth = await this.getServiceHealth();
-      const systemMetrics = this.dataService.getServiceStats();
+      // Get service stats for potential future use
+      this.dataService.getServiceStats();
       
       // Build real facade status based on actual system state
       const facades = {

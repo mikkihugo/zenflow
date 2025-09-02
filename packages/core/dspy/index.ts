@@ -35,17 +35,20 @@
  * @example Basic DSPy Prompt Optimization
  * 'typescript'
  * import { DSPyEngine, createDSPyEngine} from '@claude-zen/dspy';
+ * 
+ * // Note: DSPy uses @claude-zen/llm-providers via events, not direct API calls
  *
  * // Create DSPy engine with foundation integration
  * const dspy = await createDSPyEngine({
- *   llmProvider: 'anthropic', *   model: 'claude-3-5-sonnet', *   optimization:{
+ *   optimization:{
  *     method: 'bootstrap-fewshot', *     iterations:50,
  *     metricThreshold:0.85
  *},
  *   foundation:{
  *     logging:true,
  *     telemetry:true,
- *     storage:'lancedb') *}
+ *     storage:'lancedb'
+ *}
  *});
  *
  * // Define your task with examples
@@ -67,7 +70,7 @@
  *   optimizedPrompt:optimizationResult.optimized.prompt
  *});
  *
- * // Use the optimized prompt for predictions
+ * // Use the optimized prompt for predictions via event-driven LLM provider
  * const prediction = await dspy.predict('The service was amazing!');
  * logger.info('Prediction: ', prediction.sentiment);
 ' * '

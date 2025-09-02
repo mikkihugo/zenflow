@@ -762,10 +762,17 @@ BrainJsTrainingData,
 BrainJsTrainingOptions,
 } from './brain-js-bridge';
 // =============================================================================
-// COORDINATION SYSTEMS - Advanced coordination components
+// NEURAL PROCESSING - Core brain functionality
 // =============================================================================
-export { DSPyLLMBridge} from './coordination/dspy-llm-bridge';
-export { RetrainingMonitor} from './coordination/retraining-monitor';
+// Note: Prompt generation moved to @claude-zen/dspy
+// Note: Coordination components moved to @claude-zen/coordination
+// Note: Knowledge components moved to @claude-zen/knowledge
+// 
+// Brain service now focuses purely on:
+// - Neural task routing and coordination
+// - Performance prediction and optimization
+// - Resource allocation and scaling
+// - Integration with DSPy via EventBus
 // ===== MEETING INTELLIGENCE - Neural-Powered Collaborative Decision Making =====
 export {
 createMeetingIntelligence,

@@ -566,7 +566,7 @@ export class GEPA extends Teleprompter {
 				pred_name,
 				predictor,
 			);
-}
+		}
 
 		// Build DSPy adapter for evaluation and coordination
 		const adapter = this.createDspyAdapter(student, feedback_map, rng);
@@ -575,39 +575,39 @@ export class GEPA extends Teleprompter {
 		const base_program:Record<string, string> = {};
 		for (const [name, pred] of student.namedPredictors()) {
 			base_program[name] = (pred as any).signature?.instruction || "";
-}
+		}
 
 		// Run GEPA optimization
 		const gepa_result = await this.optimize({
-			seed_candidate:base_program,
+			seed_candidate: base_program,
 			trainset,
-			valset:actualValset,
+			valset: actualValset,
 			adapter,
 
 			// Reflection configuration
-			reflection_lm:this.reflection_lm,
-			candidate_selection_strategy:this.candidate_selection_strategy,
-			skip_perfect_score:this.skip_perfect_score,
-			reflection_minibatch_size:this.reflection_minibatch_size,
-			perfect_score:this.perfect_score,
+			reflection_lm: this.reflection_lm,
+			candidate_selection_strategy: this.candidate_selection_strategy,
+			skip_perfect_score: this.skip_perfect_score,
+			reflection_minibatch_size: this.reflection_minibatch_size,
+			perfect_score: this.perfect_score,
 
 			// Merge configuration
-			use_merge:this.use_merge,
-			max_merge_invocations:this.max_merge_invocations,
+			use_merge: this.use_merge,
+			max_merge_invocations: this.max_merge_invocations,
 
 			// Budget
-			max_metric_calls:this.max_metric_calls!,
+			max_metric_calls: this.max_metric_calls!,
 
 			// Logging
-			run_dir:this.log_dir,
-			use_wandb:this.use_wandb,
-			wandb_api_key:this.wandb_api_key,
-			wandb_init_kwargs:this.wandb_init_kwargs,
-			track_best_outputs:this.track_best_outputs,
+			run_dir: this.log_dir,
+			use_wandb: this.use_wandb,
+			wandb_api_key: this.wandb_api_key,
+			wandb_init_kwargs: this.wandb_init_kwargs,
+			track_best_outputs: this.track_best_outputs,
 
 			// Reproducibility
-			seed:this.seed,
-});
+			seed: this.seed,
+		});
 
 		// Build final program from best candidate
 		const new_prog = adapter.build_program(gepa_result.best_candidate);
@@ -619,7 +619,7 @@ export class GEPA extends Teleprompter {
 				adapter,
 			);
 			(new_prog as any).detailed_results = dspy_gepa_result;
-}
+		}
 
 		return new_prog;
 }
@@ -637,7 +637,7 @@ export class GEPA extends Teleprompter {
 		):ScoreWithFeedback => {
 			const trace_for_pred:DSPyTrace = [
 				[predictor, predictor_inputs, predictor_output],
-];
+			];
 
 			const result = this.metric_fn(
 				module_inputs,
@@ -658,7 +658,7 @@ export class GEPA extends Teleprompter {
 					feedback: `This trajectory got a score of ${result}.`,
 				};
 			}
-};
+		};
 }
 
 	/**
@@ -850,7 +850,7 @@ export class GEPA extends Teleprompter {
 		);
 
 		logger.info(
-			` Optimization complete! Best candidate:${best_idx} (score:${val_aggregate_scores[best_idx].toFixed(3)})`,
+			`Optimization complete! Best candidate:${best_idx} (score:${val_aggregate_scores[best_idx].toFixed(3)})`
 		);
 
 		return {
@@ -866,7 +866,7 @@ export class GEPA extends Teleprompter {
 			run_dir:config.run_dir,
 			seed:config.seed,
 			best_outputs_valset:config.track_best_outputs ? [] : null,
-};
+		};
 }
 
 	/**
@@ -892,7 +892,7 @@ export class GEPA extends Teleprompter {
 			"specialize",
 			"generalize",
 			"debug",
-];
+		];
 
 		for (const strategy of mutation_strategies) {
 			const mutated = await this.mutateCandidate(
@@ -937,10 +937,10 @@ export class GEPA extends Teleprompter {
 				case "debug":
 					new_instruction = this.debugInstruction(instruction);
 					break;
-}
+			}
 
 			mutated[pred_name] = new_instruction;
-}
+		}
 
 		return mutated;
 }
@@ -969,7 +969,7 @@ export class GEPA extends Teleprompter {
 
 		const elaboration =
 			elaborations[Math.floor(Math.random() * elaborations.length)];
-		return `${instruction} ${elaboration}`
+		return `${instruction} ${elaboration}`;
 }
 
 	/**
@@ -985,7 +985,7 @@ export class GEPA extends Teleprompter {
 
 		const specialization =
 			specializations[Math.floor(Math.random() * specializations.length)];
-		return `${instruction} ${specialization}`
+		return `${instruction} ${specialization}`;
 }
 
 	/**
@@ -1013,7 +1013,7 @@ export class GEPA extends Teleprompter {
 			debugging_additions[
 				Math.floor(Math.random() * debugging_additions.length)
 ];
-		return `${instruction} ${addition}`
+		return `${instruction} ${addition}`;
 }
 
 	/**

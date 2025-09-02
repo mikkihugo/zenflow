@@ -121,7 +121,7 @@ export interface MLEnterpriseConfig {
 export class MachineLearningWorkflowManager {
 	private config:MLEnterpriseConfig;
 	private initialized:boolean = false;
-	private logger = getLogger('ml-enterprise-coordinator').
+	private logger = getLogger('ml-enterprise-coordinator');
 
 	// ML-specific dedicated databases - foundation redirects to database package
 	private mlModelStore: 'VectorStore' | 'null' = null; // For ML model embeddings/vectors

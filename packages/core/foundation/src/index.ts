@@ -9,16 +9,16 @@
  * @example Tree-Shakable Imports (Recommended)
  * '''typescript'
  * // Import only what you need for optimal bundle size:
- * import { getLogger} from '@claude-zen/foundation/core';
- * import { Result, ok, err} from '@claude-zen/foundation/resilience';
- * import { createContainer} from '@claude-zen/foundation/di';
- * import { _, nanoid} from '@claude-zen/foundation/utils';
+ * import { getLogger } from '@claude-zen/foundation/core';
+ * import { Result, ok, err } from '@claude-zen/foundation/resilience';
+ * import { createContainer } from '@claude-zen/foundation/di';
+ * import { _, nanoid } from '@claude-zen/foundation/utils';
  * '
  *
  * @example Full Import (Not Recommended for Production)
  * '''typescript'
  * // This imports everything (larger bundle):
- * import { getLogger, Result, createContainer} from '@claude-zen/foundation';
+ * import { getLogger, Result, createContainer } from '@claude-zen/foundation';
  * '
  */
 

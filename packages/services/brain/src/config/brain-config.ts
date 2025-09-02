@@ -17,7 +17,7 @@ getNeuralConfig,
 isDebugMode,
 } from '@claude-zen/foundation';
 
-const logger = getLogger('BrainConfig').
+const logger = getLogger('BrainConfig');
 
 export interface BrainSpecificConfig {
 wasmPath:string;
@@ -30,7 +30,7 @@ defaultPreset:string;
 customPresets?:Record<string, any>;
 };
 dspy:{
-teleprompter:|'MIPROv2|BootstrapFewShot|LabeledFewShot|Ensemble;
+teleprompter: 'MIPROv2' | 'BootstrapFewShot' | 'LabeledFewShot' | 'Ensemble';
 maxTokens:number;
 optimizationSteps:number;
 coordinationFeedback:boolean;

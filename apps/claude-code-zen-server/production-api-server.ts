@@ -93,7 +93,7 @@ interface ProjectManager {
 
 interface FoundationGlobal {
   getProjectManager?: () => ProjectManager;
-  getMemoryManager?: () => { get: (key: string) => Promise<Project[]> };
+  getMemoryManager?: () => { get: (_key: string) => Promise<Project[]> };
   // ...other foundation methods...
 }
 
@@ -221,7 +221,7 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
       if (getBrainCoordinator) {
         const coordinator = getBrainCoordinator();
         // @ts-expect-error: coordinator type is unknown
-        return await (coordinator as { createAgent: (config: { name: string; type: string; capabilities: string[] }) => Promise<Agent> }).createAgent({
+        return await (coordinator as { createAgent: (_config: { name: string; type: string; capabilities: string[] }) => Promise<Agent> }).createAgent({
           name: agentData.name || 'New Agent',
           type: agentData.type || 'general',
           capabilities: agentData.capabilities || ['coordination'],
@@ -257,7 +257,7 @@ app.get('/api/v1/coordination/tasks', async (req, res) => {
       const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
       if (getTaskMaster) {
-        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
+        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (_config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
         return await taskMaster.getAllTasks();
       }
       return [];
@@ -289,7 +289,7 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
       const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
       if (getTaskMaster) {
-        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
+        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (_config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
         return await taskMaster.createTask({
           title: taskData.title || 'New Task',
           description: taskData.description || 'Task description',

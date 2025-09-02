@@ -46,7 +46,7 @@ import { DatabaseProvider} from '@claude-zen/database';
 
 import type { ActivationFunction, ModelMetrics} from './types/index';
 
-const brain = require('brain.js').
+const brain = require('brain.js');
 
 // Constants to avoid duplicate string literals
 const NETWORK_NOT_FOUND_ERROR = 'Network not found';
@@ -239,7 +239,7 @@ if (this.initialized) return ok();
 
 return await safeAsync(async () => {
 this.foundationLogger.info(
-'Initializing Brain.js Bridge with Foundation integration...; );
+'Initializing Brain.js Bridge with Foundation integration...' );
 
 // Initialize database access for network persistence
 this.dbAccess = new DatabaseProvider();
@@ -256,7 +256,7 @@ config:JSON.parse(JSON.stringify(this.config)),
 }
 
 this.initialized = true;
-this.foundationLogger.info('Brain.js Bridge initialized successfully').
+this.foundationLogger.info('Brain.js Bridge initialized successfully');
 }).then((result) =>
 result.mapErr((error) =>
 withContext(error, {
@@ -277,7 +277,7 @@ component: 'BrainJsBridge', operation: 'initialize', config:JSON.parse(JSON.stri
 async createNeuralNet(
 id:string,
 type:BrainJsNetworkConfig['type'],
-config:Omit<BrainJsNetworkConfig, 'type'>; ):Promise<Result<string, ContextError>> {
+config:Omit<BrainJsNetworkConfig, 'type'> ):Promise<Result<string, ContextError>> {
 if (!this.initialized) {
 const initResult = await this.initialize();
 if (initResult.isErr()) return err(initResult.error);
@@ -285,7 +285,7 @@ if (initResult.isErr()) return err(initResult.error);
 
 return await safeAsync(async () => {
 // Validate input parameters
-if (!id || typeof id !== 'string; {
+if (!id || typeof id !== 'string') {
 throw new ValidationError('Network ID must be a non-empty string', {
 id,
 });

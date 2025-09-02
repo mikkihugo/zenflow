@@ -41,7 +41,6 @@ import {
 } from '@claude-zen/foundation';
 
 // Allowed internal package: database (avoid other cross-package imports)
-import { DatabaseProvider } from '@claude-zen/database';
 
 // Constants to avoid string duplication
 const ERROR_MESSAGES = {

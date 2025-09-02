@@ -20,7 +20,6 @@
 import type { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type {
 // Event-driven boundary: define minimal local ML types and access via gateway
 type MLVector = number[] | Float32Array;
 interface MLDataset { features: MLVector[]; labels: Int32Array; featureNames: string[]; size: number }
@@ -29,11 +28,13 @@ type OptimizationBounds = { lower: number[]; upper: number[] };
 type HypothesisTest = { statistic: number; pValue: number; significant: boolean };
 interface PatternLearner { configure(cfg: Record<string, unknown>): Promise<void> }
 interface StatisticalAnalyzer {}
-BayesianOptimizer,
-GradientOptimizer,
-MultiObjectiveOptimizer,
-ParetoFront,
-StatisticalAnalyzer,
+
+import type {
+  BayesianOptimizer,
+  GradientOptimizer,
+  MultiObjectiveOptimizer,
+  ParetoFront,
+  StatisticalAnalyzer,
 } from '@claude-zen/neural-ml';
 import type { DSPyModule } from '../primitives/module';
 import { Teleprompter } from './teleprompter';
@@ -56,8 +57,8 @@ useStatisticalValidation: boolean;
 
 // Bayesian optimization parameters
 bayesianConfig: {
-acquisitionFunction: 'expected_improvement|upper_confidence_bound|probability_improvement';
-kernelType: 'rbf|matern|linear';
+acquisitionFunction: 'expected_improvement' | 'upper_confidence_bound' | 'probability_improvement';
+kernelType: 'rbf' | 'matern' | 'linear';
 explorationRate: number;
 noiseLevel: number;
 maxIterations: number;
@@ -65,8 +66,8 @@ maxIterations: number;
 
 // Multi-objective optimization parameters
 multiObjectiveConfig: {
-objectives: Array<'accuracy|speed|memory|robustness'>;
-scalarizationMethod: 'weighted_sum|tchebycheff|augmented_tchebycheff';
+objectives: Array<'accuracy' | 'speed' | 'memory' | 'robustness'>;
+scalarizationMethod: 'weighted_sum' | 'tchebycheff' | 'augmented_tchebycheff';
 weights: number[];
 paretoFrontSize: number;
 };
@@ -74,7 +75,7 @@ paretoFrontSize: number;
 // Adaptive learning rate parameters
 adaptiveLearningConfig: {
 initialLearningRate: number;
-decayStrategy: 'exponential|polynomial|cosine|adaptive';
+decayStrategy: 'exponential' | 'polynomial' | 'cosine' | 'adaptive';
 decayRate: number;
 minLearningRate: number;
 patience: number;
@@ -89,7 +90,7 @@ activationFunctions: string[];
 dropoutRates: number[];
 optimizerTypes: string[];
 };
-searchStrategy: 'grid|random|bayesian|evolutionary';
+searchStrategy: 'grid' | 'random' | 'bayesian' | 'evolutionary';
 maxArchitectures: number;
 evaluationMetric: string;
 };

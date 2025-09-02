@@ -187,8 +187,8 @@ export class NeuralTaskManager {
  engine: ProcessingEngine.NEURAL_ML_HEAVY,
  maxComplexity: TaskComplexity.HEAVY,
  supportedTypes: ['forecasting', 'optimization', 'reinforcement_learning', 'classification', `prediction`],
- estimatedLatency: (task) => this.estimateNeuralMlHeavyLatency(task);
- memoryRequirements: (task) => this.estimateNeuralMlHeavyMemory(task);
+ estimatedLatency: (task) => this.estimateNeuralMlHeavyLatency(task),
+ memoryRequirements: (task) => this.estimateNeuralMlHeavyMemory(task),
  accuracyRating: 0.95,
  available: this.checkNeuralMlAvailability();
  });

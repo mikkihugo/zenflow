@@ -12,7 +12,7 @@
 */
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 
-const logger = getLogger('SafeArtifactIntelligence').
+const logger = getLogger('SafeArtifactIntelligence');
 
 // SAFe 6.0 Essential artifacts - ALL STORED IN DATABASE
 export interface SafeArtifact {

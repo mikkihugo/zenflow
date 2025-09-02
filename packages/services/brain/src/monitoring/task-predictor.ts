@@ -9,7 +9,7 @@ import { getLogger} from '@claude-zen/foundation';
 
 import type { AgentId} from './types';
 
-const logger = getLogger('agent-monitoring-task-predictor').
+const logger = getLogger('agent-monitoring-task-predictor');
 
 /**
 * Basic task prediction result

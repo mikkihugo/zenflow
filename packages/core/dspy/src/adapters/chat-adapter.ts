@@ -45,7 +45,7 @@ export interface ChatMessage {
 
 /**
 * Chat adapter for formatting data as conversation messages
-* Compatible with OpenAI Chat API, Anthropic Claude, and other chat-based models
+ * Compatible with OpenAI Chat API and other chat-based models
 */
 export class ChatAdapter extends BaseAdapter {
 	private chatConfig: Required<ChatAdapterConfig>;
@@ -237,32 +237,7 @@ export class ChatAdapter extends BaseAdapter {
 }));
 }
 
-	/**
-	 * Convert chat messages to Anthropic format
-	 */
-	toAnthropicFormat(messages: ChatMessage[]): {
-		system?: string;
-		messages: Array<{ role: "user" | "assistant"; content: string }>;
-	} {
-		const systemMessages = messages.filter((m) => m.role === "system");
-		const conversationMessages = messages.filter((m) => m.role !== "system");
 
-		const result:{
-			system?:string;
-			messages:Array<{ role: "user" | "assistant"; content: string}>;
-} = {
-			messages:conversationMessages.map((msg) => ({
-				role:msg.role as "user" | "assistant",
-				content:msg.content,
-})),
-};
-
-		if (systemMessages.length > 0) {
-			result.system = systemMessages.map((m) => m.content).join("\n\n");
-}
-
-		return result;
-}
 
 	/**
 	 * Convert chat messages to plain text format

@@ -432,7 +432,7 @@ export interface SortCriteria {
   /** Field to sort by */
   field: string;
   /** Sort direction */
-  direction: 'asc|desc';
+  direction: 'asc' | 'desc';
 }
 
 /**

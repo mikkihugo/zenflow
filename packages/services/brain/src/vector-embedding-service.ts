@@ -501,4 +501,4 @@ export class VectorEmbeddingService {
           // Load models based on configuration
           await (this.config.loading.lazyLoading
             ? this.initializeLazyLoading()
-            : this.initializeEagerLoading())();
+            : this.initializeEagerLoading());

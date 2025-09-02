@@ -12,7 +12,7 @@
  * logger.info(`Overall:${systemStatus.overall}, Health:${systemStatus.healthScore}%`
  *
  * const health = getHealthSummary();
- * // Returns:{ status: 'healthy|degraded|unhealthy', details:{...}}
+ * // Returns: { status: 'healthy' | 'degraded' | 'unhealthy', details: {...} }
  * ```
  *
  * @example Service Resolution with Fallbacks
@@ -49,7 +49,8 @@
  * app.get('/health', (req, res) => {
  * const health = getHealthSummary();
  * res.json({
- * status:health.status, // 'healthy|degraded|unhealthy') * timestamp:new Date().toISOString(),
+ * status: health.status, // 'healthy' | 'degraded' | 'unhealthy'
+* timestamp: new Date().toISOString(),
  * details:health.details
  *});
  *});
@@ -61,7 +62,8 @@
  * overall:systemStatus.overall,
  * services:Object.entries(systemStatus.services).map(([name, status]) => ({
  * name,
- * capability:status.capability, // 'full|partial|fallback') * healthScore:status.healthScore,
+ * capability: status.capability, // 'full' | 'partial' | 'fallback'
+* healthScore: status.healthScore,
  * missingPackages:status.missingPackages
  *}))
  *});
