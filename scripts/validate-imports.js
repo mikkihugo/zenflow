@@ -14,6 +14,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, "..");
 
+// Simple logger for validation script
+const logger = {
+	info: (message) => console.log(message),
+	error: (message) => console.error(message),
+	warn: (message) => console.warn(message),
+};
+
 // Define forbidden imports that should use foundation instead
 const FORBIDDEN_IMPORTS = {
 	lodash: 'Use: import { _, lodash } from "@claude-zen/foundation"',
@@ -40,7 +47,9 @@ const SKIP_PATTERNS = [
 	".git",
 	"coverage",
 	"build",
-	"packages/public-api/core/foundation", // Allow foundation to import these directly
+	"packages/core/foundation", // Allow foundation to import underlying libs directly
+	"packages/core/database", // Allow database core to import underlying libs directly
+	"tests", // Skip top-level tests
 	"scripts/validate-imports.js", // Allow this script itself
 	"scripts/validate-dependencies.js", // Allow validation scripts
 ];
@@ -97,7 +106,7 @@ function checkFile(filePath) {
 			const line = lines[i].trim();
 
 			// Check for import statements
-			const importMatch = line.match(/^import.*from\s+['"]([\w-/]+)['"];?/);
+			const importMatch = line.match(/^import.*from\s+['"]([\w@][\w@\-\./]+)['"];?/);
 			if (importMatch) {
 				const importedModule = importMatch[1];
 
@@ -109,10 +118,24 @@ function checkFile(filePath) {
 					logger.error("");
 					violations++;
 				}
+
+				// Enforce internal dependency boundary: only allow foundation/database
+						if (
+							importedModule.startsWith("@claude-zen/") &&
+							!importedModule.startsWith("@claude-zen/foundation") &&
+							!importedModule.startsWith("@claude-zen/database")
+						) {
+					logger.error(` ${relativePath}:${i + 1}`);
+					logger.error(
+						`   Restricted internal import: ${importedModule} — Only @claude-zen/foundation and @claude-zen/database are allowed between packages`,
+					);
+					logger.error("");
+					violations++;
+				}
 			}
 
 			// Also check require statements
-			const requireMatch = line.match(/require\(['"]([\w-/]+)['"]\)/);
+			const requireMatch = line.match(/require\(['"]([\w@][\w@\-\./]+)['"]\)/);
 			if (requireMatch) {
 				const requiredModule = requireMatch[1];
 
@@ -120,6 +143,19 @@ function checkFile(filePath) {
 					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(`   Direct require: ${requiredModule}`);
 					logger.error(`   ${FORBIDDEN_IMPORTS[requiredModule]}`);
+					logger.error("");
+					violations++;
+				}
+
+						if (
+							requiredModule.startsWith("@claude-zen/") &&
+							!requiredModule.startsWith("@claude-zen/foundation") &&
+							!requiredModule.startsWith("@claude-zen/database")
+						) {
+					logger.error(` ${relativePath}:${i + 1}`);
+					logger.error(
+						`   Restricted internal require: ${requiredModule} — Only @claude-zen/foundation and @claude-zen/database are allowed between packages`,
+					);
 					logger.error("");
 					violations++;
 				}

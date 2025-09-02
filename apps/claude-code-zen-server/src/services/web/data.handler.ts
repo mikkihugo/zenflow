@@ -719,6 +719,108 @@ export class WebDataService {
   }
 
   /**
+   * Get tasks from TaskMaster or fallback to memory
+   */
+  async getTasks(): Promise<
+    { id: string; title: string; status: string; priority: string }[]
+  > {
+    try {
+      if (this.taskMasterSystem && typeof (this.taskMasterSystem as { getAllTasks: Function }).getAllTasks === 'function') {
+        const tasks = await (this.taskMasterSystem as { getAllTasks: () => Promise<unknown[]> }).getAllTasks();
+        return (Array.isArray(tasks) ? tasks : []).map((t: unknown) => {
+          const task = (t as Record<string, unknown>) || {};
+          return {
+            id: typeof task.id === 'string' && task.id.length > 0 ? task.id : `task-${Date.now()}`,
+            title: typeof task.title === 'string' && task.title.length > 0
+              ? (task.title as string)
+              : (typeof task.name === 'string' ? (task.name as string) : 'Unnamed Task'),
+            status: typeof task.status === 'string' ? (task.status as string) : 'unknown',
+            priority: typeof task.priority === 'string' ? (task.priority as string) : 'medium',
+          };
+        });
+      }
+
+      if (this.memorySystem) {
+        const stored =
+          (await (this.memorySystem as { retrieve: (k: string) => Promise<unknown> }).retrieve('tasks')) || [];
+        return (Array.isArray(stored) ? stored : []).map((t: unknown) => {
+          const task = (t as Record<string, unknown>) || {};
+          return {
+            id: typeof task.id === 'string' && task.id.length > 0 ? task.id : `task-${Date.now()}`,
+            title: typeof task.title === 'string' && task.title.length > 0
+              ? (task.title as string)
+              : (typeof task.name === 'string' ? (task.name as string) : 'Unnamed Task'),
+            status: typeof task.status === 'string' ? (task.status as string) : 'unknown',
+            priority: typeof task.priority === 'string' ? (task.priority as string) : 'medium',
+          };
+        });
+      }
+
+      logger.warn('No TaskMaster or memory available for tasks');
+      return [];
+    } catch (error) {
+      logger.error('Failed to get tasks:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Create a new task using TaskMaster or fallback to memory
+   */
+  async createTask(input: unknown): Promise<{ id: string; title: string; status: string; priority: string }> {
+    try {
+      const data = (input as Record<string, unknown>) || {};
+
+      if (this.taskMasterSystem && typeof (this.taskMasterSystem as { createTask: Function }).createTask === 'function') {
+        const create = (this.taskMasterSystem as { createTask: (d: Record<string, unknown>) => Promise<Record<string, unknown>> }).createTask;
+        const newTask = await create({
+          title: typeof data.title === 'string' ? data.title : 'New Task',
+          description: typeof data.description === 'string' ? data.description : 'Task description',
+          priority: typeof data.priority === 'string' ? data.priority : 'medium',
+          assignee: data.assignee,
+          dueDate: typeof data.dueDate === 'string' ? new Date(data.dueDate) : undefined,
+        });
+        return {
+          id: String(newTask.id ?? `task-${Date.now()}`),
+          title: String(newTask.title ?? 'New Task'),
+          status: String(newTask.status ?? 'pending'),
+          priority: String(newTask.priority ?? 'medium'),
+        };
+      }
+
+      if (this.memorySystem) {
+        const id = `task-${Date.now()}`;
+        const newTask = {
+          id,
+          title: typeof data.title === 'string' ? data.title : 'New Task',
+          description: typeof data.description === 'string' ? data.description : 'Task description',
+          status: 'pending',
+          priority: typeof data.priority === 'string' ? data.priority : 'medium',
+          assignee: data.assignee,
+          dueDate: data.dueDate,
+          createdAt: new Date().toISOString(),
+        };
+        await (this.memorySystem as { store: (k: string, v: unknown) => Promise<void> }).store(`task:${id}`, newTask);
+        // Best effort update tasks list
+        try {
+          const existing = (await (this.memorySystem as { retrieve: (k: string) => Promise<unknown> }).retrieve('tasks')) as unknown[] | null;
+          const list = Array.isArray(existing) ? existing : [];
+          list.unshift(newTask);
+          await (this.memorySystem as { store: (k: string, v: unknown) => Promise<void> }).store('tasks', list);
+        } catch {
+          // ignore
+        }
+        return { id, title: newTask.title, status: newTask.status, priority: newTask.priority };
+      }
+
+      throw new Error('No TaskMaster or memory available for task creation');
+    } catch (error) {
+      logger.error('Failed to create task:', error);
+      return { id: 'error', title: 'New Task', status: 'error', priority: 'medium' };
+    }
+  }
+
+  /**
    * Identify bottlenecks from flow metrics
    */
   private identifyBottlenecks(flowMetrics: {

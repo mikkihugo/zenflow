@@ -228,7 +228,7 @@ return err(new Error(errorMsg));
 /**
 * Parse multiple BEAM files in parallel
 */
-async parseFiles(filePaths:string[]): Promise<Result<BeamModule[], Error>> {
+async parseFiles(filePaths: string[]): Promise<Result<BeamModule[], Error>> {
 try {
 this.logger.info(`Parsing ${filePaths.length} BEAM files in parallel`);
 
@@ -236,8 +236,8 @@ const results = await Promise.allSettled(
 filePaths.map((path) => this.parseFile(path))
 );
 
-const modules:BeamModule[] = [];
-const errors:string[] = [];
+const modules: BeamModule[] = [];
+const errors: string[] = [];
 
 for (let i = 0; i < results.length; i++) {
 const result = results[i];

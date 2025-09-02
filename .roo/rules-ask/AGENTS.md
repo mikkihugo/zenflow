@@ -69,8 +69,8 @@
 ### Architecture Documentation Sources
 
 **Critical documentation hierarchy:**
-1. **AGENTS.md**: General project guidance and patterns
-2. **CLAUDE.md**: Architecture-specific configuration and constraints
+1. **AGENTS.md**: General project guidance and patterns (primary reference)
+2. **CLAUDE.md**: Symlink to AGENTS.md for consistency
 3. **.github/copilot-instructions.md**: Build system and development workflows
 4. **Package READMEs**: Individual package documentation
 5. **Source code**: Implementation details and patterns

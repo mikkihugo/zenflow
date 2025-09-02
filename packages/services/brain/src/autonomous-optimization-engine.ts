@@ -1,636 +1,365 @@
 /**
- * @fileoverview Autonomous Optimization Engine
+ * @fileoverview Task Analyzer - Simplified Task Analysis System
  *
- * Intelligent system that automatically chooses the best optimization approach
- * (DSPy vs Smart ML vs Hybrid) based on context, performance history, and
- * continuous learning. Makes autonomous decisions to maximize effectiveness.
+ * Clean task analysis system that identifies task types and requirements
+ * without forcing artificial method selection. Emits events for other
+ * systems to handle appropriately.
  *
  * Features:
- * - Automatic method selection based on performance history
- * - Continuous learning from optimization results
- * - Dynamic switching between DSPy, ML, and hybrid approaches
- * - Performance-driven decision making
- * - Real-time adaptation to changing patterns
+ * - Task type identification (prompt, ml, coordination, computation)
+ * - Complexity estimation and analysis
+ * - Pure event-driven communication
+ * - No forced method selection
  *
  * @author Claude Code Zen Team
  * @since 2.1.0
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, EventBus, Result, ok, err } from '@claude-zen/foundation';
 
-import type {
-  DSPyLLMBridge,
-} from './coordination/dspy-llm-bridge';
-import { SmartPromptOptimizer } from './smart-prompt-optimizer';
-import {
-  TaskComplexityEstimator,
-} from './task-complexity-estimator';
+const logger = getLogger('TaskAnalyzer');
 
-const logger = getLogger('AutonomousOptimizationEngine').
-
-export interface OptimizationContext {
+export interface TaskAnalysisRequest {
+  readonly taskId: string;
   readonly task: string;
-  readonly basePrompt: string;
-  readonly agentRole?: string;
-  readonly priority?: 'low' | 'medium' | 'high';
+  readonly description?: string;
   readonly context?: Record<string, any>;
-  readonly expectedComplexity?: number; // 0-1 scale
-  readonly timeConstraint?: number; // milliseconds
+  readonly requirements?: {
+    needsFastResponse?: boolean;
+    needsHighAccuracy?: boolean;
+    involvesLLM?: boolean;
+    requiresMultipleAgents?: boolean;
+  };
 }
 
-export interface OptimizationResult {
-  readonly optimizedPrompt: string;
+export interface TaskAnalysisResult {
+  readonly taskId: string;
+  readonly taskType: 'prompt' | 'ml' | 'coordination' | 'computation';
+  readonly complexity: number; // 0-1 scale
   readonly confidence: number;
-  readonly method: 'dspy' | 'ml' | 'hybrid' | 'fallback';
-  readonly processingTime: number;
-  readonly improvementScore: number; // Estimated improvement over original
   readonly reasoning: string[];
+  readonly suggestedTools?: string[];
+  readonly estimatedDuration?: number;
+  readonly keyFactors: string[];
 }
 
-export interface OptimizationFeedback {
-  readonly actualSuccessRate: number;
-  readonly actualResponseTime: number;
-  readonly userSatisfaction: number; // 0-1 scale
-  readonly taskCompleted: boolean;
-  readonly errorOccurred: boolean;
-}
-
-interface MethodPerformance {
-  successRate: number;
-  averageTime: number;
-  improvementFactor: number;
-  confidence: number;
-  usageCount: number;
-  recentTrend: number;
+export interface TaskAnalysisEvents extends Record<string, unknown> {
+  'task:analysis_requested': { request: TaskAnalysisRequest };
+  'task:analysis_completed': { result: TaskAnalysisResult };
+  'task:analysis_error': { taskId: string; error: string };
+  'task:complexity_estimated': { taskId: string; complexity: number };
+  'task:type_identified': { taskId: string; taskType: 'prompt' | 'ml' | 'coordination' | 'computation' };
 }
 
 /**
- * Autonomous Optimization Engine
+ * Simple Task Analyzer - Clean Task Analysis System
  *
- * Intelligently decides which optimization method to use based on:
- * - Historical performance of each method
- * - Context of the current request
- * - Time constraints and priorities
- * - Continuous learning from results
+ * Focuses purely on analyzing task types and complexity without forcing
+ * method selection. Emits events for other systems to handle appropriately.
+ *
+ * Features:
+ * - Task type identification (prompt, ml, coordination, computation)
+ * - Complexity estimation (0-1 scale)
+ * - Event-driven communication
+ * - Clean, focused responsibility
  */
-export class AutonomousOptimizationEngine {
-  private smartOptimizer: SmartPromptOptimizer | null = null;
-  private complexityEstimator: TaskComplexityEstimator | null = null;
+export class TaskAnalyzer extends EventBus<TaskAnalysisEvents> {
   private initialized = false;
 
   constructor() {
-    logger.info('Autonomous Optimization Engine created').
+    super();
+    logger.info('TaskAnalyzer created');
   }
 
   /**
-   * Initialize the autonomous engine
+   * Initialize the task analyzer
    */
-  async initialize(dspyBridge?: DSPyLLMBridge): Promise<void> {
-    if (this.initialized) return;
+  async initialize(): Promise<Result<void, Error>> {
+    if (this.initialized) return ok(undefined);
 
     try {
-      logger.info('Initializing Autonomous Optimization Engine...').
-      this.dspyBridge = dspyBridge || null;
-
-      // Initialize Smart ML Optimizer
-      this.smartOptimizer = new SmartPromptOptimizer();
-      await this.smartOptimizer.initialize();
-
-      // Initialize Task Complexity Estimator
-      this.complexityEstimator = new TaskComplexityEstimator();
-      await this.complexityEstimator.initialize();
-
-      // Initialize method performance tracking
-      this.initializeMethodPerformance();
-
+      logger.info('Initializing TaskAnalyzer...');
       this.initialized = true;
-      logger.info('Autonomous Optimization Engine initialized successfully').
+      logger.info('TaskAnalyzer initialized successfully');
+      return ok(undefined);
     } catch (error) {
-      logger.error(
-        `Failed to initialize Autonomous Optimization Engine: `,
-        error
-      );
-      throw error;
+      logger.error('Failed to initialize TaskAnalyzer:', error);
+      return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
 
   /**
-   * Autonomously optimize prompt using the best method for the context
+   * Analyze a task to determine its type and complexity
    */
-  async autonomousOptimize(
-    context: OptimizationContext
-  ): Promise<OptimizationResult> {
+  async analyzeTask(request: TaskAnalysisRequest): Promise<TaskAnalysisResult> {
     if (!this.initialized) {
-      throw new Error('Autonomous Optimization Engine not initialized').
+      throw new Error('TaskAnalyzer not initialized');
     }
 
     const startTime = Date.now();
 
     try {
-      logger.info(`Autonomous optimization for: "${context.task}"`);
+      logger.info(`Analyzing task: "${request.task}"`);
 
-      // 1. Estimate task complexity automatically
-      let complexityEstimate: ComplexityEstimate | null = null;
-      if (this.complexityEstimator) {
-        try {
-          complexityEstimate =
-            await this.complexityEstimator.estimateComplexity(
-              context.task,
-              context.basePrompt,
-              context.context || {},
-              context.agentRole
-            );
+      // Emit analysis requested event
+      this.emit('task:analysis_requested', { request });
 
-          // Update context with complexity estimate
-          context = {
-            ...context,
-            expectedComplexity: complexityEstimate.estimatedComplexity,
-          };
+      // Identify task type
+      const taskType = this.identifyTaskType(request.task, request.context);
+      this.emit('task:type_identified', { taskId: request.taskId, taskType });
 
-          logger.info(
-            `Task complexity estimated: ${(complexityEstimate.estimatedComplexity * 100).toFixed(1)}% (${complexityEstimate.difficultyLevel})`
-          );
-        } catch (error) {
-          logger.debug('Complexity estimation failed:', error);
-        }
-      }
+      // Estimate complexity
+      const complexity = this.estimateComplexity(request.task, request.context);
+      this.emit('task:complexity_estimated', { taskId: request.taskId, complexity });
 
-      // 2. Analyze context and decide best approach (enhanced with complexity)
-      const selectedMethod = await this.selectOptimalMethod(
-        context,
-        complexityEstimate
-      );
-      logger.info(`Autonomous decision: Using ${  selectedMethod  } method`);
+      // Build analysis result
+      const result: TaskAnalysisResult = {
+        taskId: request.taskId,
+        taskType,
+        complexity,
+        confidence: this.calculateConfidence(request.task, taskType, complexity),
+        reasoning: this.generateReasoning(request.task, taskType, complexity, request.context),
+        suggestedTools: this.suggestTools(taskType, complexity),
+        estimatedDuration: this.estimateDuration(taskType, complexity),
+        keyFactors: this.identifyKeyFactors(request.task, request.context, request.requirements),
+      };
 
-      // 3. Execute optimization using selected method
-      const result = await this.executeOptimization(context, selectedMethod);
+      // Emit completion event
+      this.emit('task:analysis_completed', { result });
 
-      // 4. Record the optimization for learning
-      await this.recordOptimization(context, result);
-
-      // 5. Update method performance metrics
-      await this.updateMethodPerformance(selectedMethod, result, startTime);
-
-      // 6. Learn from complexity estimation if available
-      if (this.complexityEstimator && complexityEstimate) {
-        try {
-          // Provide feedback to complexity estimator for continuous learning
-          const actualComplexity = this.inferActualComplexity(result, context);
-          await this.complexityEstimator.learnFromOutcome(
-            context.task,
-            context.basePrompt,
-            context.context || {},
-            actualComplexity,
-            result.processingTime,
-            result.confidence > 0.7, // Success indicator
-            context.agentRole
-          );
-        } catch (error) {
-          logger.debug('Complexity learning failed:', error);
-        }
-      }
-
+      const processingTime = Date.now() - startTime;
       logger.info(
-        `Autonomous optimization complete: ${selectedMethod} method, confidence ${result.confidence.toFixed(2)}`
+        `Task analysis complete: type=${taskType}, complexity=${(complexity * 100).toFixed(1)}%, confidence=${result.confidence.toFixed(2)}, time=${processingTime}ms`
       );
 
       return result;
     } catch (error) {
-      logger.error('Autonomous optimization failed:', error);
-      // Fallback to simple optimization
-      return {
-        optimizedPrompt: context.basePrompt,
-        confidence: 0.3,
-        method: 'fallback',
-        processingTime: Date.now() - startTime,
-        improvementScore: 1.0,
-        reasoning: ['Autonomous optimization failed, using fallback'],
-      };
-    }
-  }
-
-  /**
-   * Learn from optimization results to improve future decisions
-   */
-  async learnFromFeedback(
-    context: OptimizationContext,
-    result: OptimizationResult,
-    feedback: OptimizationFeedback
-  ): Promise<void> {
-    try {
-      logger.debug(
-        `Learning from feedback: ${result.method} method, success rate ${feedback.actualSuccessRate.toFixed(2)}`
-      );
-
-      // Find the optimization record
-      const optimizationRecord = this.optimizationHistory.find(
-        (record) =>
-          record.context.task === context.task &&
-          record.result.method === result.method &&
-          Math.abs(record.timestamp - Date.now()) < 3600000 // Within last hour
-      );
-
-      if (optimizationRecord) {
-        optimizationRecord.feedback = feedback;
-      }
-
-      // Update method performance based on actual results
-      await this.updateMethodPerformanceFromFeedback(result.method, feedback);
-
-      // Analyze if we should adjust our method selection strategy
-      await this.adaptSelectionStrategy();
-
-      logger.debug(`Method performance updated for ${result.method}`);
-    } catch (error) {
-      logger.error('Failed to learn from feedback:', error);
-    }
-  }
-
-  /**
-   * Record optimization result for continuous learning
-   */
-  async recordOptimizationResult(result: {
-    context: OptimizationContext;
-    actualPerformance: number;
-    actualSuccessRate: number;
-    actualDuration: number;
-    feedback?: string;
-  }): Promise<void> {
-    try {
-      logger.debug('Recording optimization result for continuous learning').
-
-      // Convert to feedback format and learn from it
-      const feedback: OptimizationFeedback = {
-        actualSuccessRate: result.actualSuccessRate,
-        actualResponseTime: result.actualDuration,
-        userSatisfaction: result.actualPerformance,
-        taskCompleted: result.actualSuccessRate > 0.5,
-        errorOccurred: result.actualSuccessRate < 0.3,
-      };
-
-      // Find recent optimization to learn from
-      const recentOptimization = this.optimizationHistory.find(
-        (opt) =>
-          opt.context.task === result.context.task &&
-          Math.abs(opt.timestamp - Date.now()) < 3600000 // Within last hour
-      );
-
-      if (recentOptimization) {
-        await this.learnFromFeedback(
-          result.context,
-          recentOptimization.result,
-          feedback
-        );
-      }
-
-      logger.debug('Optimization result recorded and learned from').
-    } catch (error) {
-      logger.error('Failed to record optimization result:', error);
-    }
-  }
-
-  /**
-   * Enable continuous optimization learning
-   */
-  async enableContinuousOptimization(config: {
-    learningRate?: number;
-    adaptationThreshold?: number;
-    evaluationInterval?: number;
-    autoTuning?: boolean;
-  }): Promise<void> {
-    try {
-      logger.info('Enabling continuous optimization with config:', config);
-
-      // Async initialization of optimization subsystems
-      await this.initializeOptimizationInfrastructure(config);
-      const optimizationProfile = await this.createOptimizationProfile(config);
-
-      // Update learning parameters
-      if (config.learningRate) {
-        // Store in private field (we'll need to make learningRate mutable)
-        Object.defineProperty(this, 'learningRate', {
-          value: config.learningRate,
-          writable: true,
-        });
-        await this.validateLearningRate(config.learningRate);
-      }
-
-      if (config.adaptationThreshold) {
-        Object.defineProperty(this, 'adaptationThreshold', {
-          value: config.adaptationThreshold,
-          writable: true,
-        });
-        await this.calibrateAdaptationThreshold(config.adaptationThreshold);
-      }
-
-      // Async optimization strategy setup
-      await this.setupOptimizationStrategy(optimizationProfile);
-
-      // Set up evaluation interval if provided
-      if (config.evaluationInterval && config.autoTuning) {
-        setInterval(async () => {
-          try {
-            await this.adaptSelectionStrategy();
-            logger.debug('Continuous optimization evaluation completed').
-          } catch (error) {
-            logger.error(
-              'Continuous optimization evaluation failed: ',
-              error
-            );
-          }
-        }, config.evaluationInterval);
-      }
-
-      logger.info('Continuous optimization enabled successfully').
-    } catch (error) {
-      logger.error('Failed to enable continuous optimization:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      logger.error(`Task analysis failed for ${request.taskId}:`, error);
+      
+      // Emit error event
+      this.emit('task:analysis_error', { taskId: request.taskId, error: errorMessage });
+      
       throw error;
     }
   }
 
   /**
-   * Get autonomous optimization insights
+   * Identify the type of task based on its content and context
    */
-  getAutonomousInsights(): {
-    bestMethod: string;
-    methodRankings: Array<{ method: string; score: number; trend: string }>;
-    adaptationRate: number;
-    totalOptimizations: number;
-    learningEffectiveness: number;
-  } {
-    const methods = Array.from(this.methodPerformance.entries());
+  identifyTaskType(task: string, context?: any): 'prompt' | 'ml' | 'coordination' | 'computation' {
+    const taskLower = task.toLowerCase();
 
-    // Calculate overall score for each method
-    const methodScores = methods
-      .map(([method, perf]) => {
-        const score =
-          perf.successRate * 0.4 +
-          perf.improvementFactor * 0.3 +
-          perf.confidence * 0.2 +
-          perf.recentTrend * 0.1;
+    // ML-related keywords
+    const mlKeywords = [
+      'train', 'model', 'predict', 'classify', 'regression', 'neural', 'machine learning',
+      'dataset', 'features', 'optimize', 'dspy', 'teleprompter', 'bootstrap', 'ensemble'
+    ];
 
-        const trend =
-          perf.recentTrend > 0.05
-            ? 'improving'
-            : perf.recentTrend < -0.05
-            ? 'declining'
-            : 'stable';
+    // Coordination-related keywords
+    const coordinationKeywords = [
+      'coordinate', 'agents', 'workflow', 'orchestrate', 'manage', 'schedule',
+      'teamwork', 'collaborate', 'distribute', 'assign', 'delegate', 'safe', 'sparc'
+    ];
 
-        return { method, score, trend };
-      })
-      .sort((a, b) => b.score - a.score);
+    // Computation-related keywords
+    const computationKeywords = [
+      'calculate', 'compute', 'algorithm', 'process', 'analyze', 'transform',
+      'parse', 'execute', 'run', 'build', 'compile', 'test'
+    ];
 
-    const bestMethod =
-      methodScores.length > 0 ? methodScores[0].method : 'hybrid';
+    // Check context for additional hints
+    const hasMLContext = context?.involvesLLM || context?.needsOptimization || context?.requiresTraining;
+    const hasCoordinationContext = context?.requiresMultipleAgents || context?.isWorkflow;
+    const hasComputationContext = context?.isCodeExecution || context?.needsProcessing;
 
-    // Calculate adaptation rate (how often we switch methods)
-    const recentOptimizations = this.optimizationHistory.slice(-20);
-    const methodSwitches = recentOptimizations.reduce(
-      (switches, opt, index) => {
-        if (
-          index > 0 &&
-          opt.result.method !== recentOptimizations[index - 1].result.method
-        ) {
-          return switches + 1;
-        }
-        return switches;
-      },
-      0
-    );
-    const adaptationRate =
-      recentOptimizations.length > 1
-        ? methodSwitches / (recentOptimizations.length - 1)
-        : 0;
+    // Count keyword matches
+    const mlMatches = mlKeywords.filter(keyword => taskLower.includes(keyword)).length;
+    const coordinationMatches = coordinationKeywords.filter(keyword => taskLower.includes(keyword)).length;
+    const computationMatches = computationKeywords.filter(keyword => taskLower.includes(keyword)).length;
 
-    // Calculate learning effectiveness
-    const withFeedback = this.optimizationHistory.filter(
-      (opt) => opt.feedback
-    ).length;
-    const learningEffectiveness =
-      this.optimizationHistory.length > 0
-        ? withFeedback / this.optimizationHistory.length
-        : 0;
+    // Apply context bonuses
+    const mlScore = mlMatches + (hasMLContext ? 2 : 0);
+    const coordinationScore = coordinationMatches + (hasCoordinationContext ? 2 : 0);
+    const computationScore = computationMatches + (hasComputationContext ? 2 : 0);
 
-    return {
-      bestMethod,
-      methodRankings: methodScores,
-      adaptationRate,
-      totalOptimizations: this.optimizationHistory.length,
-      learningEffectiveness,
-    };
-  }
-
-  // Private methods for autonomous decision making
-
-  private async selectOptimalMethod(
-    context: OptimizationContext,
-    complexityEstimate?: ComplexityEstimate | null
-  ): Promise<'dspy' | 'ml' | 'hybrid'> {
-    // Async method selection analysis
-    const selectionStrategy = await this.analyzeSelectionStrategy(context, complexityEstimate);
-    const methodPerformanceHistory = await this.getMethodPerformanceHistory();
-
-    // If we don't have enough data, use complexity estimate guidance
-    if (this.optimizationHistory.length < this.minDataPoints) {
-      if (complexityEstimate?.suggestedMethod) {
-        logger.debug(
-          `Using complexity-based method suggestion: ${complexityEstimate.suggestedMethod}`
-        );
-        return complexityEstimate.suggestedMethod;
-      }
-      logger.debug(
-        'Insufficient data for autonomous decision, using hybrid approach'
-      );
-      return 'hybrid';
-    }
-
-    // Async ML-enhanced method scoring
-    const enhancedScores = await this.calculateEnhancedMethodScores(context, methodPerformanceHistory);
-
-    // Calculate method scores based on context
-    const dspyScore = this.calculateMethodScore('dspy', context) + enhancedScores.dspyBoost;
-    const mlScore = this.calculateMethodScore('ml', context) + enhancedScores.mlBoost;
-    const hybridScore = this.calculateMethodScore('hybrid', context) + enhancedScores.hybridBoost;
-    logger.debug(
-      `Enhanced method scores - DSPy: ${dspyScore.toFixed(2)}, ML: ${mlScore.toFixed(2)}, Hybrid: ${hybridScore.toFixed(2)}`
-    );
-
-    // Apply selection strategy insights
-    await this.applySelectionInsights(selectionStrategy);
-
-    // Select method with highest score
-    if (hybridScore >= dspyScore && hybridScore >= mlScore) {
-      return 'hybrid';
-    } else if (dspyScore >= mlScore) {
-      return 'dspy';
-    } else {
+    // Determine task type based on highest score
+    if (mlScore > coordinationScore && mlScore > computationScore && mlScore > 0) {
       return 'ml';
+    } else if (coordinationScore > computationScore && coordinationScore > 0) {
+      return 'coordination';
+    } else if (computationScore > 0) {
+      return 'computation';
+    } else {
+      // Default to prompt for natural language tasks
+      return 'prompt';
     }
   }
 
-  private calculateMethodScore(
-    method: 'dspy' | 'ml' | 'hybrid',
-    context: OptimizationContext
-  ): number {
-    const performance = this.methodPerformance.get(method);
-    if (!performance || performance.usageCount < 2) {
-      return 0.5; // Default score for insufficient data
+  /**
+   * Estimate the complexity of a task (0-1 scale)
+   */
+  estimateComplexity(task: string, context?: any): number {
+    let complexity = 0.3; // Base complexity
+
+    // Task length factor
+    const taskLength = task.length;
+    if (taskLength > 500) complexity += 0.2;
+    else if (taskLength > 200) complexity += 0.1;
+
+    // Keyword-based complexity indicators
+    const complexityIndicators = [
+      'complex', 'advanced', 'sophisticated', 'multi-step', 'comprehensive',
+      'optimize', 'analyze', 'coordinate', 'integrate', 'orchestrate'
+    ];
+
+    const taskLower = task.toLowerCase();
+    const indicatorMatches = complexityIndicators.filter(indicator => 
+      taskLower.includes(indicator)
+    ).length;
+    complexity += indicatorMatches * 0.1;
+
+    // Context-based complexity
+    if (context) {
+      if (context.needsHighAccuracy) complexity += 0.15;
+      if (context.requiresMultipleAgents) complexity += 0.2;
+      if (context.involvesLLM) complexity += 0.1;
+      if (context.needsOptimization) complexity += 0.15;
     }
 
-    let score = 0;
+    // Multiple sentence complexity
+    const sentences = task.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    if (sentences.length > 3) complexity += 0.1;
 
-    // Base performance score
-    score += performance.successRate * 0.4;
-    score += (performance.improvementFactor - 1) * 0.3; // Improvement over baseline
-    score += performance.confidence * 0.2;
-    score += Math.max(0, performance.recentTrend) * 0.1; // Bonus for improving trend
-
-    // Context-specific adjustments
-    if (context.priority === 'high' && performance.averageTime < 3000) {
-      score += 0.1; // Bonus for fast methods in high priority tasks
-    }
-
-    if (context.expectedComplexity && context.expectedComplexity > 0.7) {
-      // Complex tasks might benefit from DSPy
-      if (method === 'dspy; score += 0.15;
-      if (method === 'hybrid; score += 0.1;
-    }
-
-    if (context.timeConstraint && context.timeConstraint < 2000) {
-      // Time-constrained tasks favor ML
-      if (method === 'ml; score += 0.2;
-      if (method === 'hybrid; score += 0.1;
-    }
-
-    return Math.max(0, Math.min(1, score));
+    // Cap complexity at 1.0
+    return Math.min(1.0, complexity);
   }
 
-  private async executeOptimization(
-    context: OptimizationContext,
-    method: 'dspy' | 'ml' | 'hybrid'
-  ): Promise<OptimizationResult> {
-    const startTime = Date.now();
+  /**
+   * Calculate confidence in the analysis
+   */
+  private calculateConfidence(task: string, taskType: string, complexity: number): number {
+    let confidence = 0.7; // Base confidence
 
-    switch (method) {
-      case 'dspy':
-        // Implementation for DSPy optimization
-        break;
-      case 'ml':
-        // Implementation for ML optimization
-        break;
-      case 'hybrid':
-        // Implementation for hybrid optimization
-        break;
-    }
-
-    // Placeholder implementation - replace with actual optimization logic
-    return {
-      optimizedPrompt: `${context.basePrompt  } [optimized]`,
-      confidence: 0.8,
-      method,
-      processingTime: Date.now() - startTime,
-      improvementScore: 1.2,
-      reasoning: [`${method} optimization applied`],
+    // Higher confidence for clearer task types
+    const taskLower = task.toLowerCase();
+    const typeKeywords = {
+      'ml': ['model', 'train', 'predict', 'dspy', 'optimize'],
+      'coordination': ['coordinate', 'agents', 'workflow', 'manage'],
+      'computation': ['calculate', 'compute', 'process', 'execute'],
+      'prompt': ['write', 'generate', 'create', 'explain']
     };
-  }
 
-  // Placeholder methods - implement as needed
-  private initializeMethodPerformance(): void {
-    this.methodPerformance = new Map([
-      ['dspy', { successRate: 0.8, averageTime: 2000, improvementFactor: 1.3, confidence: 0.7, usageCount: 10, recentTrend: 0.05 }],
-      ['ml', { successRate: 0.75, averageTime: 1500, improvementFactor: 1.2, confidence: 0.8, usageCount: 15, recentTrend: 0.02 }],
-      ['hybrid', { successRate: 0.85, averageTime: 1800, improvementFactor: 1.4, confidence: 0.9, usageCount: 20, recentTrend: 0.08 }],
-    ]);
-  }
+    const relevantKeywords = typeKeywords[taskType as keyof typeof typeKeywords] || [];
+    const keywordMatches = relevantKeywords.filter(keyword => taskLower.includes(keyword)).length;
+    
+    confidence += keywordMatches * 0.1;
 
-  private inferActualComplexity(result: OptimizationResult, context: OptimizationContext): number {
-    // Simple heuristic for inferring actual complexity
-    return context.expectedComplexity || 0.5;
-  }
-
-  private async recordOptimization(context: OptimizationContext, result: OptimizationResult): Promise<void> {
-    if (!this.optimizationHistory) {
-      this.optimizationHistory = [];
+    // Complexity confidence adjustment
+    if (complexity > 0.8 || complexity < 0.2) {
+      confidence -= 0.1; // Less confident in extreme complexity estimates
     }
 
-    this.optimizationHistory.push({
-      context,
-      result,
-      timestamp: Date.now(),
-    });
+    return Math.min(0.95, Math.max(0.3, confidence));
+  }
 
-    // Keep only recent history
-    if (this.optimizationHistory.length > 100) {
-      this.optimizationHistory = this.optimizationHistory.slice(-100);
+  /**
+   * Generate reasoning for the analysis
+   */
+  private generateReasoning(task: string, taskType: string, complexity: number, context?: any): string[] {
+    const reasoning: string[] = [];
+
+    reasoning.push(`Identified as ${taskType} task based on content analysis`);
+    reasoning.push(`Estimated complexity: ${(complexity * 100).toFixed(1)}% (${this.getComplexityLabel(complexity)})`);
+
+    if (context?.needsHighAccuracy) {
+      reasoning.push('High accuracy requirement increases complexity');
     }
-  }
 
-  private async updateMethodPerformance(method: string, result: OptimizationResult, startTime: number): Promise<void> {
-    const performance = this.methodPerformance.get(method);
-    if (performance) {
-      // Update rolling averages and metrics
-      performance.usageCount++;
-      // Implementation for updating performance metrics
+    if (context?.requiresMultipleAgents) {
+      reasoning.push('Multiple agent coordination detected');
     }
-  }
 
-  private async updateMethodPerformanceFromFeedback(method: string, feedback: OptimizationFeedback): Promise<void> {
-    const performance = this.methodPerformance.get(method);
-    if (performance) {
-      // Update based on actual feedback
-      performance.successRate = (performance.successRate + feedback.actualSuccessRate) / 2;
-      // Additional feedback processing
+    if (task.length > 300) {
+      reasoning.push('Long task description suggests higher complexity');
     }
+
+    return reasoning;
   }
 
-  private async adaptSelectionStrategy(): Promise<void> {
-    // Implementation for adapting selection strategy based on performance
-    logger.debug('Adapting selection strategy based on recent performance').
+  /**
+   * Suggest appropriate tools for the task type
+   */
+  private suggestTools(taskType: string, complexity: number): string[] {
+    const tools: string[] = [];
+
+    switch (taskType) {
+      case 'ml':
+        tools.push('DSPy', 'Neural ML', 'Model Training');
+        if (complexity > 0.7) tools.push('Advanced Optimizers');
+        break;
+      case 'coordination':
+        tools.push('Workflow Engine', 'Agent Registry', 'Event System');
+        if (complexity > 0.6) tools.push('Multi-Agent Orchestrator');
+        break;
+      case 'computation':
+        tools.push('Code Analyzer', 'Execution Engine');
+        if (complexity > 0.5) tools.push('Advanced Processing');
+        break;
+      case 'prompt':
+        tools.push('LLM Provider', 'Prompt Optimizer');
+        if (complexity > 0.6) tools.push('Context Enhancement');
+        break;
+    }
+
+    return tools;
   }
 
-  private async initializeOptimizationInfrastructure(config: any): Promise<void> {
-    // Implementation for initializing optimization infrastructure
+  /**
+   * Estimate task duration in milliseconds
+   */
+  private estimateDuration(taskType: string, complexity: number): number {
+    const baseDurations = {
+      'prompt': 2000,
+      'ml': 5000,
+      'coordination': 3000,
+      'computation': 4000,
+    };
+
+    const baseDuration = baseDurations[taskType as keyof typeof baseDurations] || 3000;
+    const complexityMultiplier = 1 + complexity; // 1x to 2x based on complexity
+
+    return Math.round(baseDuration * complexityMultiplier);
   }
 
-  private async createOptimizationProfile(config: any): Promise<any> {
-    // Implementation for creating optimization profile
-    return {};
+  /**
+   * Identify key factors that influenced the analysis
+   */
+  private identifyKeyFactors(task: string, context?: any, requirements?: any): string[] {
+    const factors: string[] = [];
+
+    factors.push(`Task length: ${task.length} characters`);
+
+    if (context) {
+      if (context.involvesLLM) factors.push('Involves LLM processing');
+      if (context.requiresMultipleAgents) factors.push('Requires multi-agent coordination');
+    }
+
+    if (requirements) {
+      if (requirements.needsFastResponse) factors.push('Fast response required');
+      if (requirements.needsHighAccuracy) factors.push('High accuracy required');
+    }
+
+    return factors;
   }
 
-  private async validateLearningRate(rate: number): Promise<void> {
-    // Implementation for validating learning rate
+  /**
+   * Get human-readable complexity label
+   */
+  private getComplexityLabel(complexity: number): string {
+    if (complexity < 0.3) return 'Low';
+    if (complexity < 0.6) return 'Medium';
+    if (complexity < 0.8) return 'High';
+    return 'Very High';
   }
-
-  private async calibrateAdaptationThreshold(threshold: number): Promise<void> {
-    // Implementation for calibrating adaptation threshold
-  }
-
-  private async setupOptimizationStrategy(profile: any): Promise<void> {
-    // Implementation for setting up optimization strategy
-  }
-
-  private async analyzeSelectionStrategy(context: OptimizationContext, complexityEstimate?: ComplexityEstimate | null): Promise<any> {
-    // Implementation for analyzing selection strategy
-    return {};
-  }
-
-  private async getMethodPerformanceHistory(): Promise<any> {
-    // Implementation for getting method performance history
-    return {};
-  }
-
-  private async calculateEnhancedMethodScores(context: OptimizationContext, history: any): Promise<any> {
-    // Implementation for calculating enhanced method scores
-    return { dspyBoost: 0, mlBoost: 0, hybridBoost: 0 };
-  }
-
-  private async applySelectionInsights(strategy: any): Promise<void> {
-    // Implementation for applying selection insights
-  }
-
-  // Private properties
-  private methodPerformance: Map<string, MethodPerformance> = new Map();
-  private optimizationHistory: Array<{ context: OptimizationContext; result: OptimizationResult; timestamp: number; feedback?: OptimizationFeedback }> = [];
-  private minDataPoints = 5;
-  private dspyBridge?: DSPyLLMBridge;
 }

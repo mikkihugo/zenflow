@@ -1110,18 +1110,7 @@ rust: 'High-performance Rust backend with WASM bindings', gpu: 'CUDA, OpenCL, Me
 * See the comprehensive examples above for detailed usage patterns and enterprise features.
 */
 
-// Export neural orchestrator for brain-as-coordinator architecture
-export {
-NeuralOrchestrator,
-TaskComplexity,
-StorageStrategy,
-} from './neural-orchestrator';
-
-export type {
-NeuralData,
-NeuralResult,
-NeuralTask,
-} from './neural-orchestrator';
+// Legacy neural orchestrator exports removed — use @claude-zen/neural-ml via event-driven flows
 
 // =============================================================================
 // PROFESSIONAL NAMING PATTERNS - Enterprise Brain System Access
@@ -1162,13 +1151,7 @@ const mod = await import('./smart-neural-coordinator');
 return new mod.SmartNeuralCoordinator(config);
 }
 
-export async function getNeuralOrchestrator(config?: Record<string, unknown>): Promise<unknown> {
-const mod = await import('./neural-orchestrator');
- 
-void config;
- 
-return new mod.NeuralOrchestrator();
-}
+// getNeuralOrchestrator removed — ML orchestration now lives in @claude-zen/neural-ml
 
 export async function getTaskComplexityEstimator(config?: Record<string, unknown>): Promise<unknown> {
 const brainSystem = (await getBrainSystemAccess()) as { createTaskComplexityEstimator: (c?: Record<string, unknown>) => unknown };
@@ -1198,7 +1181,6 @@ export const brainSystem = {
 getAccess:getBrainSystemAccess,
 getCoordinator:getBrainCoordinator,
 getSmartCoordinator:getSmartNeuralCoordinator,
-getOrchestrator:getNeuralOrchestrator,
 getComplexityEstimator:getTaskComplexityEstimator,
 getAutonomousOptimizer,
 getBehavioralIntelligence,

@@ -16,7 +16,7 @@
 import { getLogger, TypedEventBase} from '@claude-zen/foundation';
 import type { DocumentClassification} from './semantic-classifier';
 
-const logger = getLogger('SegmentationEngine').
+const logger = getLogger('SegmentationEngine');
 
 /**
 * Document segment with metadata
@@ -27,7 +27,7 @@ content:string;
 startPosition:number;
 endPosition:number;
 segmentType: 'algorithm' | 'concept' | 'implementation' | 'context' | 'metadata';
-' importance:number; // 0-1 importance score
+importance:number; // 0-1 importance score
 preserveIntegrity:boolean; // Whether to keep segment intact
 relatedSegments:string[]; // IDs of related segments
 confidenceScore:number; // 0-1 confidence in segmentation
@@ -81,8 +81,8 @@ adaptiveCharacterLimits:boolean;
 interface AlgorithmBlock {
 startIndex:number;
 endIndex:number;
-type: 'pseudocode | procedure|mathematical | implementation|formula | complexity-analysis;
-' confidence:number;
+type: 'pseudocode' | 'procedure' | 'mathematical' | 'implementation' | 'formula' | 'complexity-analysis';
+confidence:number;
 complexity:{
 cyclomaticComplexity:number; // Control flow complexity
 algorithmicComplexity:string; // Big O notation if detected
