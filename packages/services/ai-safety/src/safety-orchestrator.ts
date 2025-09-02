@@ -290,6 +290,12 @@ export class AISafetyOrchestrator {
   ): Promise<{ success: boolean; value?: AutomatedDetectionResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
+
+      logger.debug('Starting automated detection', {
+        agentId,
+        orchestrationId,
+        sessionId: this.sessionId
+      });
       
       const alerts = this.deceptionDetector.analyzeAIResponse(interactionData);
       const immediateInterventions = alerts.filter(alert => 
@@ -325,6 +331,12 @@ export class AISafetyOrchestrator {
   ): Promise<{ success: boolean; value?: BehavioralAnalysisResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
+
+      logger.debug('Starting behavioral analysis', {
+        agentId,
+        orchestrationId,
+        sessionId: this.sessionId
+      });
       
       // Analyze behavioral patterns
       const patternsAnalyzed = this.analyzeBehavioralPatterns(interactionData);
@@ -421,6 +433,13 @@ export class AISafetyOrchestrator {
     orchestrationId: string
   ): Promise<{ success: boolean; value?: HumanEscalationResult; error?: SafetyError}> {
     try {
+      logger.debug('Escalating to human oversight', {
+        agentId,
+        orchestrationId,
+        sessionId: this.sessionId,
+        phase1Alerts: phase1.alertsGenerated,
+        phase2Deviations: phase2.behavioralDeviations
+      });
       // Simulate human escalation process
       const escalationLevel = this.determineEscalationLevel(phase1, phase2);
       
