@@ -52,8 +52,7 @@ import {
   getLogger,
 } from '@claude-zen/foundation';
 
-// Direct imports from packages
-import { BrainCoordinator } from '@claude-zen/brain';
+// Direct imports from packages (Brain is loaded lazily below)
 import { DatabaseProvider } from '@claude-zen/database';
 import {
   PerformanceTracker,
@@ -129,6 +128,11 @@ export class WebApiRoutes {
   private dataService: WebDataService;
   private advancedGUI: TaskMasterGUIInterface | null = null;
   private initialized = false;
+  private brainSystem: {
+    initialize?: () => Promise<void>;
+    getWorkflowEngine?: (opts: { enableWebIntegration?: boolean; enableRESTAPI?: boolean }) => { initialize?: () => Promise<void> } | unknown;
+    getDocumentationManager?: (opts: { enableAPIDocumentation?: boolean; enableSwagger?: boolean }) => { initialize?: () => Promise<void> } | unknown;
+  } | null = null;
 
   constructor(
     config: WebConfig,
@@ -150,10 +154,16 @@ export class WebApiRoutes {
       // Note:AGUI functionality delegated to TaskMaster service
       // Advanced GUI capabilities provided through TaskMaster API endpoints
 
-      // Direct brain system instantiation
-      const brainSystem = new BrainCoordinator();
-      await brainSystem.initialize();
-      this.workflowEngine = brainSystem.getWorkflowEngine({
+      // Optional brain system via dynamic import (fallback to null)
+      try {
+        const mod = await import('@claude-zen/brain');
+        this.brainSystem = new mod.BrainCoordinator();
+        await this.brainSystem.initialize?.();
+      } catch {
+        this.brainSystem = null;
+      }
+
+      this.workflowEngine = this.brainSystem?.getWorkflowEngine?.({
         enableWebIntegration: true,
         enableRESTAPI: true,
       });
@@ -186,10 +196,10 @@ export class WebApiRoutes {
       };
 
       // Initialize documentation manager
-      this.documentationManager = brainSystem.getDocumentationManager({
+  this.documentationManager = this.brainSystem?.getDocumentationManager?.({
         enableAPIDocumentation: true,
         enableSwagger: true,
-      });
+  });
       await this.documentationManager?.initialize();
 
       this.initialized = true;

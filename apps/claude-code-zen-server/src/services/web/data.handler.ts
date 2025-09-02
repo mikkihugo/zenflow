@@ -114,7 +114,22 @@ export class WebDataService {
   private workflowEngine: WorkflowEngine | null = null;
   private safetyFramework: SafeFramework | null = null;
   // Brain is optional and loaded dynamically to avoid hard coupling at runtime
-  private brainSystem: any | null = null;
+  private brainSystem:
+    | {
+        getCoordinationMetrics?: () => Promise<{ activeAgents?: number; totalAgents?: number }>;
+        getHealthMetrics?: () => Promise<{ neuralHealth: number; coordinationHealth: number }>;
+        getSwarmCoordination?: () => Promise<{
+          agents: Array<{
+            id: string;
+            name: string;
+            type: string;
+            status: string;
+            metrics: { efficiency: number; responseTime: number; successRate: number };
+            lastActive: string;
+          }>;
+        }>;
+      }
+    | null = null;
   private memorySystem: MemoryManager | null = null;
   private systemMonitor: SystemMonitor | null = null;
   private telemetryCollector: TelemetryCollector | null = null;
@@ -524,7 +539,7 @@ export class WebDataService {
       if (this.memorySystem) {
         const storedSwarms = await this.memorySystem.retrieve('swarm:status:all');
         if (storedSwarms && Array.isArray(storedSwarms)) {
-          return storedSwarms.map((swarm: any) => this.normalizeSwarmData(swarm));
+          return storedSwarms.map((swarm: unknown) => this.normalizeSwarmData(swarm));
         }
       }
 
@@ -533,7 +548,7 @@ export class WebDataService {
           'SELECT * FROM swarm_status ORDER BY last_active DESC'
         );
         if (swarmQuery && swarmQuery.rows) {
-          return swarmQuery.rows.map((row: any) => this.normalizeSwarmData(row));
+          return swarmQuery.rows.map((row: unknown) => this.normalizeSwarmData(row));
         }
       }
 
@@ -544,23 +559,65 @@ export class WebDataService {
     }
   }
 
-  private normalizeSwarmData(data: any): SwarmStatusData {
+  private coerceString(val: unknown, fallback: string): string {
+    return typeof val === 'string' && val.length > 0 ? val : fallback;
+  }
+
+  private coerceNumber(val: unknown, fallback: number): number {
+    return typeof val === 'number' && Number.isFinite(val) ? val : fallback;
+  }
+
+  private normalizeSwarmData(data: unknown): SwarmStatusData {
+    const obj = (data as Record<string, unknown>) || {};
+    const tasksObj = (obj.tasks as Record<string, unknown>) || {};
+    const perfObj = (obj.performance as Record<string, unknown>) || {};
+
+    const typeRaw = this.coerceString(obj.type, 'agent');
+    const typeVal: SwarmStatusData['type'] =
+      typeRaw === 'queen' || typeRaw === ' commander' || typeRaw === ' agent'
+        ? (typeRaw as SwarmStatusData['type'])
+        : 'agent';
+
+    const statusRaw = this.coerceString(obj.status, 'unknown');
+    const statusVal: SwarmStatusData['status'] =
+      statusRaw === 'active' ||
+      statusRaw === ' idle' ||
+      statusRaw === ' busy' ||
+      statusRaw === ' error'
+        ? (statusRaw as SwarmStatusData['status'])
+        : 'active';
+
     return {
-      id: data.id || `swarm-${  Date.now()}`,
-      name: data.name || 'Unknown Swarm',
-      type: data.type || 'agent',
-      status: data.status || 'unknown',
+      id: this.coerceString(obj.id, `swarm-${Date.now()}`),
+      name: this.coerceString(obj.name, 'Unknown Swarm'),
+      type: typeVal,
+      status: statusVal,
       tasks: {
-        current: data.current_tasks || data.tasks?.current || 0,
-        completed: data.completed_tasks || data.tasks?.completed || 0,
-        failed: data.failed_tasks || data.tasks?.failed || 0,
+        current: this.coerceNumber(obj.current_tasks ?? tasksObj.current, 0),
+        completed: this.coerceNumber(
+          obj.completed_tasks ?? tasksObj.completed,
+          0
+        ),
+        failed: this.coerceNumber(obj.failed_tasks ?? tasksObj.failed, 0),
       },
       performance: {
-        efficiency: data.efficiency || data.performance?.efficiency || 0.85,
-        responseTime: data.response_time || data.performance?.responseTime || 150,
-        successRate: data.success_rate || data.performance?.successRate || 0.9,
+        efficiency: this.coerceNumber(
+          obj.efficiency ?? perfObj.efficiency,
+          0.85
+        ),
+        responseTime: this.coerceNumber(
+          obj.response_time ?? perfObj.responseTime,
+          150
+        ),
+        successRate: this.coerceNumber(
+          obj.success_rate ?? perfObj.successRate,
+          0.9
+        ),
       },
-      lastActive: data.last_active || data.lastActive || new Date().toISOString(),
+      lastActive: this.coerceString(
+        obj.last_active ?? obj.lastActive,
+        new Date().toISOString()
+      ),
     };
   }
 

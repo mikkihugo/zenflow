@@ -796,6 +796,10 @@ TrainingData,
 // =============================================================================
 // LEGACY COMPATIBILITY - Backward compatibility exports
 // =============================================================================
+/**
+ * @deprecated Use @claude-zen/neural-ml for ML/acceleration. NeuralBridge remains for backward compatibility
+ * and coordination-internal use but is not the default ML path.
+ */
 export { NeuralBridge as IntelligenceBridge} from './neural-bridge';
 /**
 * SmartPromptOptimizer - ML-powered prompt enhancement
