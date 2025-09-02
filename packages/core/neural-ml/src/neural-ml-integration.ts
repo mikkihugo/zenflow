@@ -252,7 +252,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Initialize WASM module
  const wasmResult = await initializeWASM();
  if (!wasmResult.success) {
- throw new Error(`WASM initialization failed:${wasmResult.error}`
+ 			throw new Error(`WASM initialization failed: ${wasmResult.error}`);
  }
 
  // Initialize ML algorithms with default configurations
@@ -485,7 +485,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Initial suggestions from Bayesian optimizer
  const suggestions = await this.bayesianOptimizer.optimize([], bounds, 5);
  if (!suggestions.success) {
- throw new Error(`Bayesian optimization failed:${suggestions.error}`
+ 			throw new Error(`Bayesian optimization failed: ${suggestions.error}`);
  }
 
  let bestPoint = suggestions.data?.[0];
@@ -711,7 +711,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const prediction = await this.bayesianOptimizer.predict(paramVector);
 
  if (!prediction.success) {
- throw new Error(`Prediction failed:${prediction.error}`
+ 			throw new Error(`Prediction failed: ${prediction.error}`);
  }
 
  const { mean, variance } = prediction.data!;
@@ -759,7 +759,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Adapt learning rate
  const adaptResult = await this.onlineLearner.adaptLearningRate();
  if (adaptResult.success) {
- adaptations.push(`Adapted learning rate to ${adaptResult.data}`
+ 				adaptations.push(`Adapted learning rate to ${adaptResult.data}`);
  }
 
  // Consider strategy change based on drift type
@@ -1119,7 +1119,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  ): void {
  const existingJob = this.activeTrainingJobs.get(trainingId);
  if (!existingJob) {
- this.logger.warn(`Training job ${trainingId} not found`
+ 		this.logger.warn(`Training job ${trainingId} not found`);
  return;
  }
 
