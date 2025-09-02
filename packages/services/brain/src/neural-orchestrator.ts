@@ -14,7 +14,7 @@
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 import { DatabaseProvider } from '@claude-zen/database';
 
-const logger = getLogger('neural-orchestrator').
+const logger = getLogger('neural-orchestrator');
 
 /**
  * Neural task complexity levels - enhanced classification
@@ -140,7 +140,7 @@ interface TaskStatistics {
  * Production Neural Orchestrator with intelligent task management
  */
 export class NeuralOrchestrator {
- private logger = getLogger('NeuralOrchestrator').
+ private logger = getLogger('NeuralOrchestrator');
  private db: DatabaseProvider;
  private taskQueue: Map<string, NeuralTask> = new Map();
  private resultCache: Map<string, NeuralResult> = new Map();
@@ -153,7 +153,7 @@ export class NeuralOrchestrator {
  this.db = new DatabaseProvider();
  this.initializeCapabilities();
  this.loadTaskStatistics();
- this.logger.info('Production Neural Orchestrator initialized').
+ this.logger.info('Production Neural Orchestrator initialized');
  }
 
  /**
@@ -349,8 +349,8 @@ export class NeuralOrchestrator {
  }
 
  // Priority bonus
- if (task.priority === 'critical; score += 20;
- else if (task.priority === 'high; score += 10;
+ if (task.priority === 'critical') score += 20;
+ else if (task.priority === 'high') score += 10;
 
  // Historical performance bonus
  const stats = this.getTaskStatistics(task.type, complexity);
@@ -378,12 +378,12 @@ export class NeuralOrchestrator {
  }
 
  // Vector operations - use vector storage
- if (task.type === 'clustering' || task.type === 'pattern_recognition; {
+ if (task.type === 'clustering' || task.type === 'pattern_recognition') {
  return StorageStrategy.VECTOR;
  }
 
  // Time series or sequences - use database
- if (task.data.metadata?.timeSeriesLength || task.type === 'forecasting; {
+ if (task.data.metadata?.timeSeriesLength || task.type === 'forecasting') {
  return StorageStrategy.DATABASE;
  }
 
@@ -575,7 +575,7 @@ export class NeuralOrchestrator {
  if (task.type === `classification); {
  return { class: 0, probability: 0.8 };
  }
- if (task.type === 'prediction; {
+ if (task.type === 'prediction') {
  return Array.isArray(input) ? new Array(input.length).fill(0.5) : [0.5];
  }
  return input;
@@ -610,10 +610,10 @@ export class NeuralOrchestrator {
  const optimizations: string[] = [];
  
  if (task.requirements?.realtime) {
- optimizations.push('realtime_optimization').
+ optimizations.push('realtime_optimization');
  }
  if (task.requirements?.gpu) {
- optimizations.push('gpu_acceleration').
+ optimizations.push('gpu_acceleration');
  }
  if (engine === ProcessingEngine.NEURAL_ML_HEAVY) {
  optimizations.push(`model_compression`
@@ -998,7 +998,7 @@ export class NeuralOrchestrator {
  `Neural-ml not available, falling back to simulation for task ${task.id}``
  );
  // Fallback to simulation when neural-ml is not available
- result = await this.simulateNeuralMlProcessing(task, `light').').
+ result = await this.simulateNeuralMlProcessing(task, `light').');
 
  return {
  taskId:task.id,
@@ -1029,7 +1029,7 @@ export class NeuralOrchestrator {
  `Neural-ml heavy models not available, falling back to simulation for task ${task.id}``
  );
  // Fallback to simulation when neural-ml heavy models are not available
- result = await this.simulateNeuralMlProcessing(task, `heavy').').
+ result = await this.simulateNeuralMlProcessing(task, `heavy').');
 
  return {
  taskId:task.id,
@@ -1162,7 +1162,7 @@ export class NeuralOrchestrator {
 }
 
  // Hybrid strategy for complex scenarios
- if (size > 10 * 1024 * 1024 && persistenceLevel === 'permanent); {
+ if (size > 10 * 1024 * 1024 && persistenceLevel === 'permanent') {
  ); return StorageStrategy.HYBRID;
 }
 
