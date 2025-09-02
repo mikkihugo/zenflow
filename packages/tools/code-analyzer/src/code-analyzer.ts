@@ -32,7 +32,7 @@ let getEventSystem:any;
 
 // Try to import strategic facades, with enhanced fallbacks if not available
 try {
-const intelligence = require('@claude-zen/intelligence').
+const intelligence = require('@claude-zen/intelligence');
 getBrainSystem = intelligence.getBrainSystem;
 } catch {
 getBrainSystem = async () => ({
@@ -52,7 +52,7 @@ data,
 }
 
 try {
-const operations = require('@claude-zen/operations').
+const operations = require('@claude-zen/operations');
 getPerformanceTracker = operations.getPerformanceTracker;
 } catch {
 getPerformanceTracker = async () => ({
@@ -65,7 +65,7 @@ endSession:async (id: string) => ({ sessionId: id, endTime:Date.now()}),
 }
 
 try {
-const infrastructure = require('@claude-zen/infrastructure').
+const infrastructure = require('@claude-zen/infrastructure');
 getDatabaseSystem = infrastructure.getDatabaseSystem;
 getEventSystem = infrastructure.getEventSystem;
 } catch {
@@ -384,16 +384,17 @@ filePath:absolutePath,
 language,
 timestamp:new Date(),
 ast:
-ast.status ==='fulfilled; ? ast.value
-:this.createEmptyASTAnalysis(),
-syntaxErrors:[],
-parseSuccess:ast.status === 'fulfilled', semantics:
-semantics.status === 'fulfilled; ? semantics.value
-:this.createEmptySemanticAnalysis(),
-typeErrors:[],
+ast.status === 'fulfilled' ? ast.value
+: this.createEmptyASTAnalysis(),
+syntaxErrors: [],
+parseSuccess: ast.status === 'fulfilled',
+semantics:
+semantics.status === 'fulfilled' ? semantics.value
+: this.createEmptySemanticAnalysis(),
+typeErrors: [],
 quality:
-quality.status === 'fulfilled; ? quality.value
-:this.createEmptyQualityMetrics(),
+quality.status === 'fulfilled' ? quality.value
+: this.createEmptyQualityMetrics(),
 suggestions:[],
 ...(aiInsights && { aiInsights}),
 analysisTime:Date.now() - startTime,
@@ -411,7 +412,7 @@ this.updateSessionMetrics(result);
 // Store analysis result via infrastructure database system
 if (this.databaseSystem) {
 await this.databaseSystem.store('code_analysis_results', analysisId, {
-; filePath:absolutePath,
+filePath: absolutePath,
 language:language,
 timestamp:result.timestamp.toISOString(),
 complexity:result.ast.complexity,
@@ -423,7 +424,7 @@ sessionId:this.currentSession?.id,
 
 // Store file relationships in graph database
 await this.databaseSystem.storeGraph('CodeFile', analysisId, {
-; filePath:absolutePath,
+filePath: absolutePath,
 language:language,
 complexity:result.ast.complexity,
 imports:result.ast.imports,
@@ -433,7 +434,7 @@ exports:result.ast.exports,
 // Brain system handles embeddings automatically
 if (this.brainSystem) {
 await this.brainSystem.storeEmbedding('code_analysis', analysisId, {
-; content:content,
+content: content,
 metadata:{
 filePath:absolutePath,
 language:language,
@@ -445,7 +446,7 @@ suggestions:result.suggestions,
 }
 
 logger.debug('File analysis completed', {
-; filePath:absolutePath,
+filePath: absolutePath,
 language,
 analysisTime:result.analysisTime,
 });

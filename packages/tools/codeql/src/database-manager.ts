@@ -9,6 +9,9 @@ import * as path from 'node:path';
 import {
 type Logger,
 safeAsync,
+type Result,
+ok,
+err,
 } from '@claude-zen/foundation';
 
 import type {
@@ -23,14 +26,17 @@ DatabaseCreationOptions,
 */
 export class DatabaseManager {
 private readonly config:CodeQLConfig;
+private readonly databases = new Map<string, CodeQLDatabase>();
 
 constructor(config:CodeQLConfig, logger:Logger) {
 this.config = config;
-this.logger = logger.child({ component: `DatabaseManager});
+this.logger = logger.child({ component: 'DatabaseManager' });
+}
 
 /**
 * Create a new CodeQL database
-*/
+*/</search>
+</search_and_replace>
 async createDatabase(
 repositoryPath:string,
 options:DatabaseCreationOptions
@@ -50,13 +56,13 @@ this.logger.info(`Creating CodeQL database`, {
 await fs.mkdir(this.config.tempDir!, { recursive:true});
 
 // Remove existing database if overwrite is enabled
-if (options.overwrite && (await this.databaseExists(databasePath))) {
-await this.deleteDatabaseFiles(databasePath);
+if (options.overwrite && (await this.databaseExists(__databasePath))) {
+await this.deleteDatabaseFiles(__databasePath);
 }
 
 // Build command arguments
 const args = [
-'database', 'create', databasePath,
+'database', 'create', __databasePath,
 '--source-root', absolutePath,
 '--language', options.languages.join(', '),
 ];
@@ -82,11 +88,11 @@ await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));
 args.push('--exclude', excludeFile);
 }
 
-if (this._config._threads && this.config.threads > 1) {
+if (this.config.threads && this.config.threads > 1) {
 args.push('--threads', this.config.threads.toString());
 }
 
-if (this._config._verbose) {
+if (this.config.verbose) {
 args.push('--verbose');
 }
 
@@ -145,7 +151,7 @@ this.logger.error('Database creation failed', {
 
 // Clean up failed database
 try {
-await this.deleteDatabaseFiles(databasePath);
+await this.deleteDatabaseFiles(__databasePath);
 } catch (cleanupError) {
 this.logger.warn('Failed to clean up failed database', {
   cleanupError,
@@ -314,7 +320,7 @@ private async calculateDatabaseSize(databasePath: string): Promise<number> {
 private async executeCommand(
 args:string[],
 options:{ cwd?: string; env?: NodeJS.ProcessEnv} = {}
-):Promise<stdout: string; stderr: string; exitCode: number >
+): Promise<{ stdout: string; stderr: string; exitCode: number }> {
 return new Promise((resolve, reject) => {
 const child = spawn(this.config.codeqlPath!, args, {
 cwd:options.cwd||process.cwd(),
@@ -322,18 +328,19 @@ stdio:['pipe', 'pipe', 'pipe'],
 env:options.env||process.env,
 });
 
-const stdout = ';
-const stderr = ';
+let stdout = '';
+let stderr = '';
 
-child.stdout.on('data', (_data) => {
-') stdout += data.toString();
+child.stdout.on('data', (data) => {
+stdout += data.toString();
 });
 
-child.stderr.on('data', (_data) => {
-') stderr += data.toString();
+child.stderr.on('data', (data) => {
+stderr += data.toString();
 });
 
-const timeoutId = setTimeout(() => {
+const timeoutId = setTimeout(() => {</search>
+</search_and_replace>
   child.kill('SIGTERM');
   reject(
     this.createError('system', 'Database creation timeout', { timeout: this.config.timeout })
@@ -341,7 +348,7 @@ const timeoutId = setTimeout(() => {
 }, this.config.timeout);
 
 child.on('close', (exitCode) => {
-') clearTimeout(timeoutId);
+clearTimeout(timeoutId);
 
 if (exitCode === 0) {
 resolve({ stdout, stderr, exitCode });
@@ -357,7 +364,7 @@ this.createError('database', 'Database creation failed', {
 });
 
 child.on('error', (error) => {
-') clearTimeout(timeoutId);
+clearTimeout(timeoutId);
 reject(
 this.createError('system', 'Failed to spawn CodeQL process', {
   originalError: error.message,

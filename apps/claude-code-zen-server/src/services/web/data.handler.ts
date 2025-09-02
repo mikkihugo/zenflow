@@ -7,7 +7,6 @@
 
 // Direct package imports - no facades
 import { DatabaseProvider } from '@claude-zen/database';
-import { BrainCoordinator } from '@claude-zen/brain';
 import { MemoryManager } from '@claude-zen/memory';
 import {
   SafeFramework,
@@ -114,7 +113,8 @@ export class WebDataService {
   private taskMasterSystem: TaskMaster | null = null;
   private workflowEngine: WorkflowEngine | null = null;
   private safetyFramework: SafeFramework | null = null;
-  private brainSystem: BrainCoordinator | null = null;
+  // Brain is optional and loaded dynamically to avoid hard coupling at runtime
+  private brainSystem: any | null = null;
   private memorySystem: MemoryManager | null = null;
   private systemMonitor: SystemMonitor | null = null;
   private telemetryCollector: TelemetryCollector | null = null;
@@ -160,10 +160,15 @@ export class WebDataService {
               new SafeFramework({ enableMonitoring: true })
             ).catch(() => null),
 
-            // Direct service package imports
-            Promise.resolve(
-              new BrainCoordinator({ enableMetrics: true })
-            ).catch(() => null),
+            // Optional brain system via dynamic import (fallback to null)
+            (async () => {
+              try {
+                const mod = await import('@claude-zen/brain');
+                return new mod.BrainCoordinator({ enableMetrics: true });
+              } catch {
+                return null;
+              }
+            })(),
             Promise.resolve(new MemoryManager({ enableMetrics: true })).catch(
               () => null
             ),

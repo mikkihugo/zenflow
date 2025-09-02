@@ -291,7 +291,7 @@ export class COPROML extends Teleprompter {
 			);
 } catch (error) {
 			this.logger.error("Failed to initialize COPROML:", error);
-			throw new Error(`COPROML initialization failed:${error}`
+			throw new Error(`COPROML initialization failed:${error}`);
 }
 }
 
@@ -402,7 +402,7 @@ export class COPROML extends Teleprompter {
 };
 } catch (error) {
 			this.logger.error("COPROML compilation failed:", error);
-			throw new Error(`COPROML compilation error:${error}`
+			throw new Error(`COPROML compilation error:${error}`);
 }
 }
 
@@ -579,7 +579,7 @@ export class COPROML extends Teleprompter {
 			? patternResult
 			:patternResult.patterns || [];
 
-		this.logger.info(`Detected ${patterns.length} feedback patterns`
+		this.logger.info(`Detected ${patterns.length} feedback patterns`);
 
 		return patterns;
 }
@@ -635,7 +635,7 @@ export class COPROML extends Teleprompter {
 			confidenceInterval:[correlation - 0.1, correlation + 0.1],
 });
 
-		this.logger.info(`Completed ${tests.length} statistical validation tests`
+		this.logger.info(`Completed ${tests.length} statistical validation tests`);
 
 		return tests;
 }

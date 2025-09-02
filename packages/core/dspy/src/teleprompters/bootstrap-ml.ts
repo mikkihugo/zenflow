@@ -463,8 +463,9 @@ return embeddings;
 * Perform clustering on embeddings
 */
 private async performClustering(embeddings: MLVector[]): Promise<number[]> {
-if (!this.patternLearner)
-throw new Error(`Pattern learner not initialized`
+if (!this.patternLearner) {
+throw new Error(`Pattern learner not initialized`);
+}
 
 // Convert embeddings to dataset format
 const dataset: MLDataset = {

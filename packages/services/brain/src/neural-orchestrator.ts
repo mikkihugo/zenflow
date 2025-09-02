@@ -165,8 +165,8 @@ export class NeuralOrchestrator {
  engine: ProcessingEngine.BRAIN_JS,
  maxComplexity: TaskComplexity.MODERATE,
  supportedTypes: ['prediction', 'classification', 'pattern_recognition'],
- estimatedLatency: (task) => this.estimateBrainJsLatency(task),
- memoryRequirements: (task) => this.estimateBrainJsMemory(task),
+ estimatedLatency: (task) => this.estimateBrainJsLatency(task);
+ memoryRequirements: (task) => this.estimateBrainJsMemory(task);
  accuracyRating: 0.7,
  available: true,
  });
@@ -176,10 +176,10 @@ export class NeuralOrchestrator {
  engine: ProcessingEngine.NEURAL_ML_LIGHT,
  maxComplexity: TaskComplexity.COMPLEX,
  supportedTypes: ['prediction', 'classification', 'clustering', 'anomaly_detection'],
- estimatedLatency: (task) => this.estimateNeuralMlLightLatency(task),
- memoryRequirements: (task) => this.estimateNeuralMlLightMemory(task),
+ estimatedLatency: (task) => this.estimateNeuralMlLightLatency(task);
+ memoryRequirements: (task) => this.estimateNeuralMlLightMemory(task);
  accuracyRating: 0.85,
- available: this.checkNeuralMlAvailability(),
+ available: this.checkNeuralMlAvailability();
  });
 
  // Neural ML Heavy capability
@@ -187,13 +187,13 @@ export class NeuralOrchestrator {
  engine: ProcessingEngine.NEURAL_ML_HEAVY,
  maxComplexity: TaskComplexity.HEAVY,
  supportedTypes: ['forecasting', 'optimization', 'reinforcement_learning', 'classification', `prediction`],
- estimatedLatency: (task) => this.estimateNeuralMlHeavyLatency(task),
- memoryRequirements: (task) => this.estimateNeuralMlHeavyMemory(task),
+ estimatedLatency: (task) => this.estimateNeuralMlHeavyLatency(task);
+ memoryRequirements: (task) => this.estimateNeuralMlHeavyMemory(task);
  accuracyRating: 0.95,
- available: this.checkNeuralMlAvailability(),
+ available: this.checkNeuralMlAvailability();
  });
 
- this.logger.info(`Initialized ${this.processingCapabilities.size} processing capabilities`
+ this.logger.info(`Initialized ${this.processingCapabilities.size} processing capabilities`);
  }
 
  /**
@@ -202,12 +202,12 @@ export class NeuralOrchestrator {
  async processTask(task: NeuralTask): Promise<Result<NeuralResult, Error>> {
  try {
  const startTime = performance.now();
- this.logger.info(`Processing neural task: ${task.id} (type: ${task.type}, priority: ${task.priority})`
+ this.logger.info(`Processing neural task: ${task.id} (type: ${task.type}, priority: ${task.priority});
 
  // Check cache first
  const cachedResult = this.checkCache(task);
  if (cachedResult) {
- this.logger.info(`Cache hit for task ${task.id}`
+ this.logger.info(`Cache hit for task ${task.id}`);
  return ok(cachedResult);
  }
 
@@ -266,7 +266,7 @@ export class NeuralOrchestrator {
  let complexityScore = 0;
 
  // Data size factors
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length * (task.data.input as number[][])[0].length
  : (task.data.input as number[]).length;
  
@@ -383,12 +383,12 @@ export class NeuralOrchestrator {
  }
 
  // Time series or sequences - use database
- if (task.data.metadata?.timeSeriesLength || task.type === 'forecasting') {
+ if (task.data.metadata?.timeSeriesLength || task.type === 'forecasting') {);
  return StorageStrategy.DATABASE;
  }
 
  // Complex relationships - use graph
- if (task.type === `optimization` || task.data.context) {
+ if (task.type === 'optimization' || task.data.context) {
  return StorageStrategy.GRAPH;
  }
 
@@ -460,12 +460,12 @@ export class NeuralOrchestrator {
  complexity,
  processor: engine,
  duration: performance_metrics.totalTime,
- accuracy: this.calculateAccuracy(finalResult, task),
- confidence: this.calculateConfidence(finalResult, task),
- memoryUsed: this.estimateMemoryUsage(task, engine),
+ accuracy: this.calculateAccuracy(finalResult, task);
+ confidence: this.calculateConfidence(finalResult, task);
+ memoryUsed: this.estimateMemoryUsage(task, engine);
  cacheHit: false,
  storageStrategy,
- optimizations: this.getAppliedOptimizations(task, engine),
+ optimizations: this.getAppliedOptimizations(task, engine);
  performance: performance_metrics,
  },
  };
@@ -485,7 +485,7 @@ export class NeuralOrchestrator {
  this.logger.debug(`Processing task ${task.id} with Brain.js`
  
  // Simple prediction/classification logic
- if (task.type === `prediction` || task.type === `classification); {
+ if (task.type === `prediction` || task.type === `classification); {);
  return this.simulateBrainJsNetwork(input, task);
  }
  
@@ -514,42 +514,42 @@ export class NeuralOrchestrator {
 
  // Helper methods for estimation and simulation
  private estimateBrainJsLatency(task: NeuralTask): number {
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length 
  : (task.data.input as number[]).length;
  return Math.max(10, inputSize * 0.1);
  }
 
  private estimateBrainJsMemory(task: NeuralTask): number {
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length 
  : (task.data.input as number[]).length;
  return Math.max(1, inputSize * 0.001);
  }
 
  private estimateNeuralMlLightLatency(task: NeuralTask): number {
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length 
  : (task.data.input as number[]).length;
  return Math.max(50, inputSize * 0.5);
  }
 
  private estimateNeuralMlLightMemory(task: NeuralTask): number {
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length 
  : (task.data.input as number[]).length;
  return Math.max(10, inputSize * 0.01);
  }
 
  private estimateNeuralMlHeavyLatency(task: NeuralTask): number {
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length 
  : (task.data.input as number[]).length;
  return Math.max(200, inputSize * 2);
  }
 
  private estimateNeuralMlHeavyMemory(task: NeuralTask): number {
- const inputSize = Array.isArray(task.data.input[0]) 
+ const inputSize = Array.isArray(task.data.input[0]);
  ? (task.data.input as number[][]).length 
  : (task.data.input as number[]).length;
  return Math.max(50, inputSize * 0.1);
@@ -572,10 +572,10 @@ export class NeuralOrchestrator {
 
  private simulateBrainJsNetwork(input: any, task: NeuralTask): any {
  // Simulate Brain.js network output
- if (task.type === `classification); {
+ if (task.type === `classification); {);
  return { class: 0, probability: 0.8 };
  }
- if (task.type === 'prediction') {
+ if (task.type === 'prediction') {);
  return Array.isArray(input) ? new Array(input.length).fill(0.5) : [0.5];
  }
  return input;
@@ -615,7 +615,7 @@ export class NeuralOrchestrator {
  if (task.requirements?.gpu) {
  optimizations.push('gpu_acceleration');
  }
- if (engine === ProcessingEngine.NEURAL_ML_HEAVY) {
+ if (engine === ProcessingEngine.NEURAL_ML_HEAVY) {);
  optimizations.push(`model_compression`
  }
  
@@ -672,11 +672,11 @@ export class NeuralOrchestrator {
  } else {
  this.taskStatistics.set(key, {
  taskType: task.type,
- complexity: this.analyzeTaskComplexity(task),
+ complexity: this.analyzeTaskComplexity(task);
  averageDuration: duration,
  successRate: success ? 1 : 0,
  preferredEngine: engine,
- lastUpdated: new Date(),
+ lastUpdated: new Date();
  });
  }
  }
@@ -723,9 +723,9 @@ export class NeuralOrchestrator {
  return {
  activeTaskCount: this.activeTaskCount,
  queuedTaskCount: this.taskQueue.size,
- availableEngines: Array.from(this.processingCapabilities.entries())
+ availableEngines: Array.from(this.processingCapabilities.entries();
  .filter(([_, capability]) => capability.available)
- .map(([engine, _]) => engine),
+ .map(([engine, _]) => engine);
  cacheSize: this.resultCache.size,
  statistics: this.taskStatistics,
  };
@@ -772,7 +772,7 @@ export class NeuralOrchestrator {
 
  constructor() {
  logger.info(
- '🧠 Neural Orchestrator initialized - Brain as intelligent coordinator``)}
+ '🧠 Neural Orchestrator initialized - Brain as intelligent coordinator``);
 
  /**
  * Main orchestration method - analyzes and routes neural tasks
@@ -898,11 +898,11 @@ export class NeuralOrchestrator {
 }
 
  // Special cases for heavy ML
- if (type ===`forecasting` && timeSeriesLength > 5000) {
+ if (type ===`forecasting` && timeSeriesLength > 5000) {);
  ; return TaskComplexity.HEAVY;
 }
 
- if (type === 'optimization` && inputSize > 5000) {
+ if (type === 'optimization` && inputSize > 5000) {);
  ); return TaskComplexity.HEAVY;
 }
 
@@ -1066,9 +1066,9 @@ export class NeuralOrchestrator {
  // Return a mock object for development
  return {
  processLight:async (task: NeuralTask) =>
- this.processModerateTask(task),
+ this.processModerateTask(task);
  processHeavy:async (task: NeuralTask) =>
- this.processModerateTask(task),
+ this.processModerateTask(task);
 };
 }
 }
@@ -1082,7 +1082,7 @@ export class NeuralOrchestrator {
  // This is a simulation - actual implementation would call neural-ml APIs
  const input = task.data.input;
 
- if (mode ==='heavy); {
+ if (mode ==='heavy); {);
  ); // Simulate complex processing for heavy tasks
  await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate processing time
 }
@@ -1147,7 +1147,7 @@ export class NeuralOrchestrator {
 } = characteristics;
 
  // Memory strategy for small, frequently accessed data
- if (size < 1024 * 1024 && accessFrequency === `realtime); {
+ if (size < 1024 * 1024 && accessFrequency === `realtime); {);
  ; return StorageStrategy.MEMORY;
 }
 
@@ -1162,7 +1162,7 @@ export class NeuralOrchestrator {
 }
 
  // Hybrid strategy for complex scenarios
- if (size > 10 * 1024 * 1024 && persistenceLevel === 'permanent') {
+ if (size > 10 * 1024 * 1024 && persistenceLevel === 'permanent') {);
  ); return StorageStrategy.HYBRID;
 }
 
