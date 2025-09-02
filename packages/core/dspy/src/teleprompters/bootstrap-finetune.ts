@@ -402,7 +402,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 }
 
 		logger.info("BootstrapFinetune has finished compiling the student program");
-		(student as any)._compiled = true;
+		(student as any).compiled = true;
 		return student;
 }
 
@@ -532,7 +532,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		program:DSPyModule,
 		dataset:Example[],
 		metric?:MetricFunction | null,
-		_numThreads?:number | null,
+		numThreads?:number | null,
 	):Promise<TraceData[]> {
 		const data:TraceData[] = [];
 

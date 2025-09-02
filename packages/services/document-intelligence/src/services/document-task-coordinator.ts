@@ -415,7 +415,7 @@ const goalId = `goal_${i_}$goal?.toLowerCase.replace(/\s+/g, `_`)``
 
 // Create main implementation task for each goal
 tasks.push({
-id:`${goalId}_implementation`,
+id:`${goalId}implementation`,
 title:`Implement: ${goal}`,
 description:`Strategic implementation task for goal: ${goal}`,
 priority:i < 2 ? `high : i < 4 ? medium` : ' low', status: 'todo', strategicGoalId:goalId,
@@ -439,7 +439,7 @@ goal?.toLowerCase.includes(keyword?.toLowerCase)
 
 if (!hasDocumentation) {
 tasks.push({
-id:`${goalId}_documentation`,
+id:`${goalId}documentation`,
 title:`Document: ${goal}`,
 description:`Create documentation for strategic goal: ${goal}`,
 priority: `medium`, status: 'todo', strategicGoalId:goalId,

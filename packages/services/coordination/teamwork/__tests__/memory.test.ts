@@ -1,4 +1,4 @@
-import { TeamworkStorage as _TeamworkStorage } from '../src/storage';
+import { TeamworkStorage as TeamworkStorage } from '../src/storage';
 import type { AgentId, ConversationSession} from '../src/types';
 
 describe(): void {
@@ -22,7 +22,7 @@ describe(): void {
  id: 'msg-1', conversationId: 'conv-123', fromAgent:sampleAgents[0]!,
  timestamp:new Date(): void {
  priority: 'high', requiresResponse:true,
- _context:{
+ context:{
  goal: 'Test storage', domain: 'testing', constraints:[],
  resources:[],
  expertise:[],
@@ -33,7 +33,7 @@ describe(): void {
 ],
  outcomes:[
  {
- type: 'solution', content:{ _result: 'Storage working correctly'},
+ type: 'solution', content:{ result: 'Storage working correctly'},
  confidence:0.95,
  contributors:[sampleAgents[0]!],
  timestamp:new Date(): void {
@@ -102,5 +102,5 @@ describe(): void {
  // Store all conversations
  for (const conv of conversations) {
  await storage.storeSession(): void {
- ')completed', _context:{
+ ')completed', context:{
  goal:'Goal ' + i,

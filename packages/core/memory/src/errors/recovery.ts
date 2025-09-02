@@ -269,12 +269,12 @@ export class RecoveryStrategyManager extends EventEmitter {
 
           // Test connectivity with method compatibility
           if ('get' in backend && typeof backend.get === 'function') {
-            await backend.get('__health_check__');
+            await backend.get('_health_check__');
           } else if (
             'retrieve' in backend &&
             typeof backend.retrieve === 'function'
           ) {
-            await backend.retrieve('__health_check__');
+            await backend.retrieve('_health_check__');
           } else {
             throw new Error('Backend lacks required methods');
           }

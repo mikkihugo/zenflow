@@ -171,7 +171,7 @@ export class SimpleTaskPredictor implements TaskPredictor {
    */
   predictTaskDuration(agentId: AgentId,
     taskType: string,
-    _contextFactors?:Record<string, unknown>
+    contextFactors?:Record<string, unknown>
   ): TaskPrediction {
     const key = (agentId.id) + '-' + taskType;
     const history = this.taskHistory.get(key) || [];

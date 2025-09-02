@@ -636,7 +636,7 @@ export class InMemoryBackend implements MemoryBackend {
   health():Promise<boolean> {
     try {
       // Check if we can perform basic operations
-      const testKey = '__health_check__';
+      const testKey = '_health_check__';
       this.data.set(testKey, 'test');
       this.data.delete(testKey);
       return Promise.resolve(true);

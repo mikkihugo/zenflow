@@ -279,7 +279,7 @@ export class IntelligentPromptGenerator {
       { performanceRecommendations, securityRecommendations, testingRecommendations}
     );
 
-    let __standards = `
+    let _standards = `
 ## 🎯 Coding Standards & Best Practices (${language.toUpperCase()})
 ${enhancedStandards.contextualIntro}
 
@@ -294,7 +294,7 @@ ${enhancedStandards.contextualIntro}
 - **Max functions per file**: 5-7 focused functions maximum
 
 ### ⚡ Function Quality Guidelines:
-- **Single responsibility**: Each function _does ONE thing well
+- **Single responsibility**: Each function does ONE thing well
 - **Max ${maxLinesPerFunction} lines**: Keep functions focused and readable
 - **Max ${maxParameters} parameters**: Use objects for complex parameter sets
 - **Cyclomatic complexity**: Keep below ${maxComplexity}
@@ -302,7 +302,7 @@ ${enhancedStandards.contextualIntro}
 - **Clear naming**: Function names should describe what they do`
 
     if (language === 'typescript') {
-      __standards += `
+      _standards += `
 
 ### 🔷 TypeScript Quality Standards:
 - **Strict typing**: Always use explicit types, avoid 'any'
@@ -314,7 +314,7 @@ ${enhancedStandards.contextualIntro}
     }
 
     if (config.includePerformance) {
-      __standards += `
+      _standards += `
 
 ### ⚡ Performance Guidelines:
 - **Big O awareness**: Consider algorithmic complexity
@@ -325,7 +325,7 @@ ${enhancedStandards.contextualIntro}
     }
 
     if (config.includeSecurity) {
-      __standards += `
+      _standards += `
 
 ### 🔒 Security Best Practices:
 - **Input validation**: Validate all external inputs
@@ -335,7 +335,7 @@ ${enhancedStandards.contextualIntro}
 - **Dependency security**: Regularly update and audit dependencies`
     }
 
-    return __standards;
+    return _standards;
 }
 
   /**
@@ -554,7 +554,7 @@ Remember: Write code that tells a story - it should be self-documenting and easy
       await dspyBridge.initialize();
 
       // Create coordination task with DSPy examples for prompt generation
-      const __promptTask = {
+      const _promptTask = {
         id: `prompt-gen-${phase}-${Date.now()}`,
         type: 'generation' as const,
         input: `Generate a high-quality development prompt for ${phase} phase.
@@ -678,28 +678,29 @@ Generate a complete, ready-to-use development prompt.`,
       let contextualInsights = '';
 
       if (context.currentPhase) {
-        contextualInsights += `- Project phase: ${context.currentPhase} - applying phase-specific patterns\n`;`
+        contextualInsights += `- Project phase: ${context.currentPhase} - applying phase-specific patterns\n`;
 }
 
       if (context.domainSpecific) {
-        contextualInsights += `- Domain: ${context.domainSpecific} - leveraging domain expertise\n`;`
+        contextualInsights += `- Domain: ${context.domainSpecific} - leveraging domain expertise\n`;
 }
 
       if (complexityLevel > 0.7) {
-        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;
+        contextualInsights += `- High complexity detected (${(complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;
 }
 
       // Include agent performance insights relevant to project type
       if (enhancedStats.averagePerformance > 0.8) {
-        contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n`;
+        contextualInsights += `- High-performing agent patterns available (${(enhancedStats.averagePerformance * 100).toFixed(1)}%)\n`;
 }
 
-      return `${content}`
+      return `${content}
 
 ## 🧠 AI-Enhanced Recommendations:
 Based on ${agentProfiles.size} agent profiles and project context analysis:
 ${contextualInsights}
-- Focus on areas where similar ${projectTags.join(',    '). projects typically encounter issues'). Leverage patterns that have proven successful in comparable domains
+- Focus on areas where similar ${projectTags.join(', ')} projects typically encounter issues
+- Leverage patterns that have proven successful in comparable domains
 - Pay special attention to complexity hotspots identified by behavioral analysis
 - Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;
 } catch (error) {
@@ -884,7 +885,7 @@ ${principles}.template
 ## 📝 CRITICAL INSTRUCTIONS:
 1. **Follow research-based guidelines** above - these improve over time
 2. **Use descriptive, purpose-driven filenames** 
-3. **Maintain function _complexity** within researched thresholds
+3. **Maintain function complexity** within researched thresholds
 4. **Consider domain-specific patterns** for ${context.domain || 'general'} applications').. **Plan for validation** - another AI may review your work for accuracy
 
 Remember:This prompt learns from your execution. The better you follow and provide feedback on these guidelines, the more effective future prompts become.`;

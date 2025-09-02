@@ -25,7 +25,7 @@ import {
 // Note:Missing GRPO-specific exports from bootstrap-finetune
 // These would need to be implemented for full GRPO functionality
 type GRPOGroup = any;
-const __GRPOGroupInstance = {} as any;
+const _GRPOGroupInstance = {} as any;
 const Evaluate = {} as any;
 const bootstrap_trace_data = {} as any;
 const all_predictors_have_lms = {} as any;
@@ -1028,7 +1028,7 @@ export class GRPO extends FinetuneTeleprompter {
 		}
 
 		logger.info("GRPO compiler has finished compiling the student program");
-		(student as any)._compiled = true;
+		(student as any).compiled = true;
 		return student;
 	}
 

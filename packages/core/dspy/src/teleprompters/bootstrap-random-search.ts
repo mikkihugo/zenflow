@@ -74,7 +74,7 @@ for (const predictor of compiled.predictors()) {
 predictor.updateDemos(demos);
 }
 
-(compiled as any)._compiled = true;
+(compiled as any).compiled = true;
 return compiled;
 }
 }
@@ -401,7 +401,7 @@ throw new Error(`No candidate programs were successfully generated`);
 
 logger.info(`${score_data.length} candidate programs found.`);
 
-(best_program as any)._compiled = true;
+(best_program as any).compiled = true;
 return best_program;
 }
 

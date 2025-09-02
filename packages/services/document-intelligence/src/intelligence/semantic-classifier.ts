@@ -134,7 +134,7 @@ const technicalDepth = this.calculateTechnicalDepth(content);
 const patterns = this.detectPatterns(content);
 
 // Calculate overall confidence
-const __confidence = this.calculateOverallConfidence(categoryScores, patterns);
+const _confidence = this.calculateOverallConfidence(categoryScores, patterns);
 
 // Recommend segmentation strategy
 const recommendedStrategy = this.recommendSegmentationStrategy(

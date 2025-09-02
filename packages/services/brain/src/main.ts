@@ -61,9 +61,9 @@ import {
 } from './neural-orchestrator';
 
 // Utility functions - strategic facades would provide these eventually
-const __generateUUID = () => crypto.randomUUID();
-const __createTimestamp = () => Date.now();
-const __validateObject = (obj: any) => !!obj && typeof obj === 'object';
+const _generateUUID = () => crypto.randomUUID();
+const _createTimestamp = () => Date.now();
+const _validateObject = (obj: any) => !!obj && typeof obj === 'object';
 const createErrorAggregator = () => ({
   addError: (error: Error) => {
     // Stub implementation - would store errors in strategic facade

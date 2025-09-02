@@ -351,7 +351,7 @@ export class COPROML extends Teleprompter {
 			const patterns = await this.analyzeFeedbackPatterns();
 
 			// Step 4:Statistical validation of learning effectiveness
-			const __statisticalTests = await this.validateLearningEffectiveness();
+			const _statisticalTests = await this.validateLearningEffectiveness();
 
 			// Step 5:Generate final optimized module
 			const optimizedModule = await this.createOptimizedModule(student);
@@ -446,7 +446,7 @@ export class COPROML extends Teleprompter {
 };
 
 		// Run initial Bayesian optimization
-		const __initialPoints = this.generateInitialPoints(bounds);
+		const _initialPoints = this.generateInitialPoints(bounds);
 		await this.bayesianOptimizer?.optimize(objectiveFunction);
 
 		this.explorationBudget -= this.config.initialExplorationBudget;
@@ -742,9 +742,9 @@ export class COPROML extends Teleprompter {
 }
 
 	private async evaluatePrefixConfiguration(
-		_student:DSPyModule,
+		student:DSPyModule,
 		config:Record<string, any>,
-		_options:any,
+		options:any,
 	):Promise<number> {
 		// Mock evaluation - replace with actual DSPy evaluation
 		const baseAccuracy = 0.6;
@@ -1038,8 +1038,8 @@ export class COPROML extends Teleprompter {
 }
 
 	private async evaluateFinalPerformance(
-		_module:DSPyModule,
-		_options:any,
+		module:DSPyModule,
+		options:any,
 	):Promise<{ accuracy: number}> {
 		// Final evaluation
 		return { accuracy:this.getBestAccuracy()};

@@ -165,8 +165,8 @@ export class NeuralOrchestrator {
  engine: ProcessingEngine.BRAIN_JS,
  maxComplexity: TaskComplexity.MODERATE,
  supportedTypes: ['prediction', 'classification', 'pattern_recognition'],
- estimatedLatency: (task) => this.estimateBrainJsLatency(task);
- memoryRequirements: (task) => this.estimateBrainJsMemory(task);
+ estimatedLatency: (task) => this.estimateBrainJsLatency(task),
+ memoryRequirements: (task) => this.estimateBrainJsMemory(task),
  accuracyRating: 0.7,
  available: true,
  });
@@ -176,10 +176,10 @@ export class NeuralOrchestrator {
  engine: ProcessingEngine.NEURAL_ML_LIGHT,
  maxComplexity: TaskComplexity.COMPLEX,
  supportedTypes: ['prediction', 'classification', 'clustering', 'anomaly_detection'],
- estimatedLatency: (task) => this.estimateNeuralMlLightLatency(task);
- memoryRequirements: (task) => this.estimateNeuralMlLightMemory(task);
+ estimatedLatency: (task) => this.estimateNeuralMlLightLatency(task),
+ memoryRequirements: (task) => this.estimateNeuralMlLightMemory(task),
  accuracyRating: 0.85,
- available: this.checkNeuralMlAvailability();
+ available: this.checkNeuralMlAvailability(),
  });
 
  // Neural ML Heavy capability
@@ -778,7 +778,7 @@ export class NeuralOrchestrator {
  * Main orchestration method - analyzes and routes neural tasks
  */
  async processNeuralTask(task:NeuralTask): Promise<NeuralResult> {
- const __startTime = Date.now();
+ const _startTime = Date.now();
  logger.debug(
  `🎯 Orchestrating neural task:${task.id} (type:${task.type})``
  );

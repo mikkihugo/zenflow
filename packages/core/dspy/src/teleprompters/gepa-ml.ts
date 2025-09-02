@@ -502,7 +502,7 @@ this.logger.info(
 */
 private async performEvolution(
 student: DSPyModule,
-_teacher?: DSPyModule,
+teacher?: DSPyModule,
 trainset?: any[],
 valset?: any[]
 ): Promise<void> {
@@ -533,7 +533,7 @@ await this.updateAdaptiveParameters();
 }
 
 // Record population statistics
-const __stats = await this.calculatePopulationStats();
+const _stats = await this.calculatePopulationStats();
 this.evolutionHistory.push(stats);
 
 // Check for improvement
@@ -704,10 +704,10 @@ weightDecay: genes[9] * 0.01,
 }
 
 private async evaluateModulePerformance(
-_student: DSPyModule,
+student: DSPyModule,
 parameters: Record<string, any>,
-_trainset?: any[],
-_valset?: any[]
+trainset?: any[],
+valset?: any[]
 ): Promise<number> {
 // Mock evaluation - replace with actual DSPy module evaluation
 const basePerformance = 0.7;

@@ -102,11 +102,11 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     return recommendations.sort(() => 0.5 - Math.random()).slice(0, count);
 }
 
-  getAgentHealth(_agentId: AgentId): AgentHealth | null {
+  getAgentHealth(agentId: AgentId): AgentHealth | null {
     return null;
 }
 
-  async updateAgentHealth(_agentId: AgentId, _health: any): Promise<void> {
+  async updateAgentHealth(agentId: AgentId, health: any): Promise<void> {
     // Placeholder
 }
 
@@ -146,7 +146,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   async predictTaskDuration(agentId: AgentId,
     taskType: string,
-    _context?:Record<string, unknown>
+    context?:Record<string, unknown>
   ): Promise<TaskPrediction> {
     return {
       agentId: agentId.id,
@@ -160,7 +160,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   async predictTaskDurationMultiHorizon(agentId: AgentId,
     taskType: string,
-    _context?:Record<string, unknown>
+    context?:Record<string, unknown>
   ): Promise<MultiHorizonTaskPrediction> {
     return {
       agentId: agentId.id,
@@ -174,20 +174,20 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 };
 }
 
-  getAgentLearningState(_agentId: AgentId): AgentLearningState | null {
+  getAgentLearningState(agentId: AgentId): AgentLearningState | null {
     return null;
 }
 
   updateAgentPerformance(
     agentId: AgentId,
     success: boolean,
-    _metadata?:Record<string, unknown>
+    metadata?:Record<string, unknown>
   ):void {
     logger.debug('Agent performance updated', { agentId: agentId.id, success});
 }
 
   async forecastPerformanceOptimization(swarmId: SwarmId,
-    _horizon?:ForecastHorizon
+    horizon?:ForecastHorizon
   ): Promise<PerformanceOptimizationForecast> {
     return {
       agentId:{ id: 'agent-1', swarmId, type: ' coordinator', instance:1},
@@ -200,7 +200,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
 
   async predictKnowledgeTransferSuccess(sourceSwarm: SwarmId,
     targetSwarm: SwarmId,
-    _patterns: unknown[]
+    patterns: unknown[]
   ): Promise<KnowledgeTransferPrediction> {
     return {
       sourceAgent:{

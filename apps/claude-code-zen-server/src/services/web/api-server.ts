@@ -603,7 +603,7 @@ export class ApiServer {
     this.logger.info(' Setting up Svelte web dashboard integration...');
     // Serve static assets from Svelte build client directory
     const svelteClientPath = resolve(
-      __dirname,
+      _dirname,
       '../../../../../web-dashboard/build/client'
     );
     this.logger.info(
@@ -611,8 +611,8 @@ export class ApiServer {
     );
     // Serve static files from Svelte build/client (JS, CSS, assets)
     this.app.use(
-      '/_app',
-      express.static(join(svelteClientPath, '_app'), {
+      '/app',
+      express.static(join(svelteClientPath, 'app'), {
         maxAge: '1d', // Cache for 1 day in production
         etag: true,
         lastModified: true,
@@ -634,7 +634,7 @@ export class ApiServer {
       try {
         // Import the SvelteKit handler dynamically
         const svelteHandlerPath = resolve(
-          __dirname,
+          _dirname,
           '../../../../../web-dashboard/build/handler.js'
         );
         const { handler } = await import(svelteHandlerPath);

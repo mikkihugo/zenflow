@@ -53,7 +53,7 @@ describe('Process Lifecycle Management - Simplified', () => {
         '../../src/core/lifecycle'
       );
 
-      const __manager = new ProcessLifecycleManager({
+      const _manager = new ProcessLifecycleManager({
         onShutdown: async () => {},
       });
 
@@ -218,7 +218,7 @@ describe('Process Lifecycle Management - Simplified', () => {
           onShutdown: async () => {},
           onError: async (error: Error) => {},
           onUncaughtException: (error: Error) => {},
-          onUnhandledRejection: (_reason: unknown) => {},
+          onUnhandledRejection: (reason: unknown) => {},
         });
       }).not.toThrow();
     });

@@ -1,18 +1,19 @@
-import { type CorrelatedPayload } from './event-bus';
+import { getLogger } from '@claude-zen/foundation';
+import { getEventBus, type CorrelatedPayload } from './event-bus';
 import { WebDataService } from '../web/data.handler';
 
-// logger is unused
+const logger = getLogger('EventGateway');
 
 export class EventGateway {
   constructor(private readonly data: WebDataService) {}
 
   initialize(): void {
-    // bus is unused
+    const bus = getEventBus();
 
     // Health/status
     bus.on('api:system:status:request', async (payload: CorrelatedPayload) => {
       try {
-        // result is unused
+        const result = await this.data.getSystemStatus();
         bus.emit('api:system:status:response', { ...result, correlationId: payload?.correlationId });
       } catch (error) {
         logger.warn('status handler failed', { error });
@@ -20,10 +21,10 @@ export class EventGateway {
       }
     });
 
-    // Swarms
+    // Swarms list
     bus.on('api:swarms:list:request', async (payload: CorrelatedPayload) => {
       try {
-        // result is unused
+        const result = await this.data.getSwarmStatus();
         bus.emit('api:swarms:list:response', { swarms: result, correlationId: payload?.correlationId });
       } catch (error) {
         logger.warn('swarms handler failed', { error });
@@ -31,10 +32,10 @@ export class EventGateway {
       }
     });
 
-    // Tasks/metrics
+    // Task metrics
     bus.on('api:tasks:metrics:request', async (payload: CorrelatedPayload) => {
       try {
-        // result is unused
+        const result = await this.data.getTaskMetrics();
         bus.emit('api:tasks:metrics:response', { metrics: result, correlationId: payload?.correlationId });
       } catch (error) {
         logger.warn('tasks handler failed', { error });

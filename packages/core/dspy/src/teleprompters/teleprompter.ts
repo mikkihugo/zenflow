@@ -93,7 +93,7 @@ valset?: Example[] | null;
 * Returns all instance attributes as a dictionary
 */
 getParams(): Record<string, any> {
-// Return all enumerable properties (matches Python __dict__)
+// Return all enumerable properties (matches Python _dict__)
 const params: Record<string, any> = {};
 for (const key in this) {
 if (Object.hasOwn(this, key) && typeof this[key] !== 'function{

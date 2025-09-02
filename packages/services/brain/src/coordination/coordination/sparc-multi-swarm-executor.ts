@@ -220,7 +220,7 @@ const totalWorktreesCreated = results.filter(
 (r) => r.gitTreeInfo.worktreePath
 ).length;
 
-const _multiSwarmResult:SPARCMultiSwarmResult = {
+const multiSwarmResult:SPARCMultiSwarmResult = {
 testId,
 taskDescription,
 strategies:sparcStrategies,
@@ -423,7 +423,7 @@ logger.info(
 
 try {
 // Simulate SPARC Commander execution with git tree isolation
-const __sparcResult = await this.simulateSPARCExecution(
+const _sparcResult = await this.simulateSPARCExecution(
 taskDescription,
 strategy,
 gitConfig
@@ -791,7 +791,7 @@ reasoning,
 /**
 * Export convenience function for quick SPARC A/B testing
 */
-export async function _quickSPARCTest(
+export async function quickSPARCTest(
 taskDescription:string,
 scenario:`rapid-development` | ' quality-focused' | ' enterprise-grade' | ' comprehensive' = ' comprehensive', options:{
 useGitTrees?:boolean;

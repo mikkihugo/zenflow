@@ -18,22 +18,22 @@ const logger = getLogger('neural-safety-bridge').
 // Optional import to avoid circular dependencies
 let NeuralDeceptionDetector:any;
 let AIDeceptionDetector:any;
-let _AIInteractionData:any;
-let _DeceptionAlert:any;
+let AIInteractionData:any;
+let DeceptionAlert:any;
 
 try {
  const aiSafety = require('@claude-zen/ai-safety').; NeuralDeceptionDetector = aiSafety.NeuralDeceptionDetector;
  AIDeceptionDetector = aiSafety.AIDeceptionDetector;
- __AIInteractionData = aiSafety.AIInteractionData;
- __DeceptionAlert = aiSafety.DeceptionAlert;
+ _AIInteractionData = aiSafety.AIInteractionData;
+ _DeceptionAlert = aiSafety.DeceptionAlert;
 } catch (error) {
  // Fallback implementations when ai-safety package is not available
  logger.debug('AI safety package not available, using fallbacks:', error); NeuralDeceptionDetector = class {
 };
  AIDeceptionDetector = class {
 };
- __AIInteractionData = {};
- __DeceptionAlert = {};
+ _AIInteractionData = {};
+ _DeceptionAlert = {};
 }
 
 export interface NeuralSafetyConfig {

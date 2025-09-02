@@ -831,7 +831,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 	describe(" Cleanup and Resource Management", () => {
 		it("should clean up resources properly", () => {
-			const __initialTaskCount = taskManager.getCompletedTasks().length;
+			const _initialTaskCount = taskManager.getCompletedTasks().length;
 
 			// Clear completed tasks
 			taskManager.clearCompletedTasks();

@@ -65,7 +65,7 @@ logger.info('Document Workflow System ready``)}
 * @param docPath
 */
 async processVisionaryDocument(
-_workspaceId:string,
+workspaceId:string,
 docPath:string
 ):Promise<void> {
 logger.info(` Processing visionary document:${docPath}``

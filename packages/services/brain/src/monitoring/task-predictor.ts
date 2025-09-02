@@ -117,9 +117,9 @@ logger.info('SimpleTaskPredictor initialized`, { config:this.config});`)}
 recordTaskCompletion(
 agentId:AgentId,
 taskType:string,
-_duration:number,
-_success:boolean,
-_metadata?:Record<string, unknown>
+duration:number,
+success:boolean,
+metadata?:Record<string, unknown>
 ):void {
 const key = `${agentId.id}-${taskType}``
 

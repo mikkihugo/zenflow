@@ -124,7 +124,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Insert into FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `INSERT OR REPLACE INTO ${this.config.tableName}_fts (id, query, response, domains, type)
+ `INSERT OR REPLACE INTO ${this.config.tableName}fts (id, query, response, domains, type)
  VALUES (?, ?, ?, ?, ?)`,
  [
  entry.id,
@@ -145,7 +145,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  throw new Error('SQLite backend not initialized');')}
 
  try {
- const __result = await this.dalAdapter.query(
+ const _result = await this.dalAdapter.query(
  `SELECT * FROM ${this.config.tableName} WHERE id = ?`,
  [id]
  );
@@ -188,8 +188,8 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Use full-text search
  sql = `
    SELECT f.* FROM ${this.config.tableName} f
-   JOIN ${this.config.tableName}_fts fts ON f.id = fts.id
-   WHERE fts.${this.config.tableName}_fts MATCH ?
+   JOIN ${this.config.tableName}fts fts ON f.id = fts.id
+   WHERE fts.${this.config.tableName}fts MATCH ?
    AND f.expires_at > ?
  `;
  params = [query.query, Date.now()];
@@ -267,7 +267,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Delete from FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `DELETE FROM ${this.config.tableName}_fts WHERE id = ?`,
+ `DELETE FROM ${this.config.tableName}fts WHERE id = ?`,
  [id]
  );
 }
@@ -292,7 +292,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Clean up FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `DELETE FROM ${this.config.tableName}_fts `;
+ `DELETE FROM ${this.config.tableName}fts `;
  WHERE id NOT N (SELECT id FROM ${this.config.tableName})``
  );
 }
@@ -314,7 +314,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  MAX(timestamp) as newest_timestamp
  FROM ${this.config.tableName}``
  );
- const __stats = result?.rows?.[0];
+ const _stats = result?.rows?.[0];
 
  return {
  persistentEntries:stats.total_count,
@@ -369,7 +369,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Clean up FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `DELETE FROM ${this.config.tableName}_fts `;
+ `DELETE FROM ${this.config.tableName}fts `;
  WHERE id NOT N (SELECT id FROM ${this.config.tableName})``
  );
 }
@@ -383,8 +383,8 @@ export class SQLiteBackend implements FACTStorageBackend {
  throw new Error('SQLite backend not initialized');')}
 
  try {
- const __cutoffTime = Date.now() - maxAgeMs;
- const __result = await this.dalAdapter.execute(
+ const _cutoffTime = Date.now() - maxAgeMs;
+ const _result = await this.dalAdapter.execute(
  `DELETE FROM ${this.config.tableName} WHERE timestamp < ?`,
  [cutoffTime]
  );
@@ -392,7 +392,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Clean up FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `DELETE FROM ${this.config.tableName}_fts `;
+ `DELETE FROM ${this.config.tableName}fts `;
  WHERE id NOT N (SELECT id FROM ${this.config.tableName})``
  );
 }
@@ -475,10 +475,10 @@ export class SQLiteBackend implements FACTStorageBackend {
  AVG(access_count) as avg_access_count
  FROM ${this.config.tableName}``
  );
- const __basicStats = basicStatsResult?.rows?.[0];
+ const _basicStats = basicStatsResult?.rows?.[0];
 
  // Get top domains
- const __domainsResult = await this.dalAdapter.query(
+ const _domainsResult = await this.dalAdapter.query(
  `SELECT JSON_EXTRACT(metadata, '$.domains') as domains, COUNT(*) as count') FROM ${this.config.tableName}`;
  GROUP BY JSON_EXTRACT(metadata, '$.domains')') ORDER BY count DESC
  LIMIT 10``
@@ -549,7 +549,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  // Full-text search table
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(``
- CREATE VIRTUAL TABLE F NOT EXISTS ${this.config.tableName}_fts USING fts5(
+ CREATE VIRTUAL TABLE F NOT EXISTS ${this.config.tableName}fts USING fts5(
  id UNINDEXED,
  query,
  response,
@@ -566,9 +566,9 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  const indexes = [
  `CREATE NDEX F NOT EXISTS idx_${this}.config.tableName_timestamp ON ${this}.config.tableName(timestamp)`,
- `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_expires_at ON ${this.config.tableName}(expires_at)`,
+ `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}expires_at ON ${this.config.tableName}(expires_at)`,
  `CREATE NDEX F NOT EXISTS idx_${this}.config.tableName_type ON ${this}.config.tableName(JSON_EXTRACT(metadata, '$.type'))`,
- `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,
+ `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,
  `CREATE NDEX F NOT EXISTS idx_${this}.config.tableName_access_count ON ${this}.config.tableName(access_count)`,
 ];
 

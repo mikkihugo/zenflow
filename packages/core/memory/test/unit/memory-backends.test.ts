@@ -99,7 +99,7 @@ describe('Memory Backends', () => {
     });
 
     it('should provide accurate statistics', async () => {
-      const __stats = {
+      const _stats = {
         size: 42,
         maxSize: 1000,
         memoryUsage: 2048,
@@ -460,7 +460,7 @@ describe('Memory Backends', () => {
         const health = await backend.health();
         expect(health).toBe(true);
 
-        const __stats = await backend.getStats();
+        const _stats = await backend.getStats();
         expect(stats.status).toBe('healthy');
       }
     });
@@ -477,7 +477,7 @@ describe('Memory Backends', () => {
       const health = await unhealthyBackend.health();
       expect(health).toBe(false);
 
-      const __stats = await unhealthyBackend.getStats();
+      const _stats = await unhealthyBackend.getStats();
       expect(stats.status).toBe('unhealthy');
       expect(stats.error).toBeDefined();
     });

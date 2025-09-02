@@ -381,7 +381,7 @@ describe('AgentHealthMonitor', () => {
 });
 
       let alerts = healthMonitor.getActiveAlerts(agentId);
-      const __criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');')      expect(criticalAlert!.severity).toBe('critical');')
+      const _criticalAlert = alerts.find((a) => a.type === 'high_cpu_usage');')      expect(criticalAlert!.severity).toBe('critical');')
       // Warning level CPU usage
       healthMonitor.updateAgentHealth(agentId, 
         cpuUsage:0.82,);
@@ -414,7 +414,7 @@ describe('AgentHealthMonitor', () => {
       expect(alerts.length).toBeGreaterThan(0);
 
       const alertId = alerts[0].id;
-      const __resolved = healthMonitor.resolveAlert(alertId, 'Test resolution');')
+      const _resolved = healthMonitor.resolveAlert(alertId, 'Test resolution');')
       expect(resolved).toBe(true);
 
       const resolvedAlert = healthMonitor

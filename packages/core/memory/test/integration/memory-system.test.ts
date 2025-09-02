@@ -136,7 +136,7 @@ describe('Memory System Integration', () => {
       mockBackends.semantic.size = vi.fn().mockResolvedValue(25);
 
       memorySystem.getStats.mockImplementation(async () => {
-        const __stats = {
+        const _stats = {
           totalEntries:0,
           backends:{},
           memoryUsage:0,
@@ -156,7 +156,7 @@ describe('Memory System Integration', () => {
         return stats;
 });
 
-      const __stats = await memorySystem.getStats();
+      const _stats = await memorySystem.getStats();
 
       expect(stats.totalEntries).toBe(250); // 150 + 75 + 25
       expect(stats.backends.cache.size).toBe(150);

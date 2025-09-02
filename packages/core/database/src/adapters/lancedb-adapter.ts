@@ -100,15 +100,15 @@ interface WriteOptions {
 }
 
 type EmbeddingFunction<T = unknown> = {
- readonly __type?: T;
+ readonly _type?: T;
 };
 
 type Schema<T = unknown> = {
- readonly __type?: T;
+ readonly _type?: T;
 };
 
 interface Table<T = unknown> {
- readonly __type?: T;
+ readonly _type?: T;
  name: string;
  add(data: Record<string, unknown>[]): Promise<AddResult>;
  search(query: number[]): Query;
@@ -595,7 +595,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 
  async getCurrentMigrationVersion(): Promise<string | null> {
  try {
- const table = await this.database?.openTable('_migrations');
+ const table = await this.database?.openTable('migrations');
  const results = await table?.search([]).limit(1).toArray();
  return (results?.[0] as unknown as { version?: string })?.version || null;
  } catch {
@@ -816,7 +816,7 @@ export class LanceDBAdapter implements DatabaseConnection {
  let filteredResults = results;
  if (options.threshold !== undefined) {
  filteredResults = results.filter((row: unknown) => {
- const distance = (row as { _distance?: number })._distance;
+ const distance = (row as { distance?: number }).distance;
  return distance !== undefined && distance <= options.threshold!;
  });
  }
@@ -965,9 +965,9 @@ export class LanceDBAdapter implements DatabaseConnection {
 
  // Normalize vector scores
  for (const result of vectorResults) {
- const row = result as { _distance?: number; _score?: number };
- if (row._distance !== undefined) {
- row._score = (1 - row._distance) * vectorWeight;
+ const row = result as { distance?: number; score?: number };
+ if (row.distance !== undefined) {
+ row.score = (1 - row.distance) * vectorWeight;
  }
  }
 
@@ -1001,9 +1001,9 @@ export class LanceDBAdapter implements DatabaseConnection {
 
  // Normalize text search scores
  textResults.forEach((result: unknown) => {
- const row = result as { score?: number; _score?: number };
+ const row = result as { score?: number; score?: number };
  if (row.score !== undefined) {
- row._score = (row._score || 0) + row.score * textWeight;
+ row.score = (row.score || 0) + row.score * textWeight;
  }
  });
 
@@ -1020,13 +1020,13 @@ export class LanceDBAdapter implements DatabaseConnection {
  }
 
  for (const result of textResults) {
- const row = result as { id?: string; _score?: number };
+ const row = result as { id?: string; score?: number };
  if (row.id) {
  const existing = combinedResults.get(row.id);
  if (existing) {
- (existing as { _score?: number })._score =
- ((existing as { _score?: number })._score || 0) +
- (row._score || 0);
+ (existing as { score?: number }).score =
+ ((existing as { score?: number }).score || 0) +
+ (row.score || 0);
  } else {
  combinedResults.set(row.id, result);
  }
@@ -1051,8 +1051,8 @@ export class LanceDBAdapter implements DatabaseConnection {
 
  // Sort by combined score and limit
  results.sort((a, b) => {
- const scoreA = (a as { _score?: number })._score || 0;
- const scoreB = (b as { _score?: number })._score || 0;
+ const scoreA = (a as { score?: number }).score || 0;
+ const scoreB = (b as { score?: number }).score || 0;
  return scoreB - scoreA;
  });
 
@@ -1432,7 +1432,7 @@ export class LanceDBAdapter implements DatabaseConnection {
  private async createMigrationsTable(): Promise<void> {
  try {
  await this.database?.createTable({
- name: '_migrations',
+ name: 'migrations',
  data: [
  {
  version: 'placeholder',
@@ -1450,7 +1450,7 @@ export class LanceDBAdapter implements DatabaseConnection {
 
  private async recordMigration(version: string, name: string): Promise<void> {
  try {
- const table = await this.database?.openTable('_migrations');
+ const table = await this.database?.openTable('migrations');
  await table?.add([
  {
  version,

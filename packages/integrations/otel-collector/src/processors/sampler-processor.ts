@@ -87,9 +87,9 @@ export class SamplerProcessor implements BaseProcessor {
       if (!sampledData.attributes) {
         sampledData.attributes = {};
 }
-      sampledData.attributes._sampled = true;
-      sampledData.attributes._sampledBy = this.config.name;
-      sampledData.attributes._sampleRate = this.getCurrentSampleRate(data);
+      sampledData.attributes.sampled = true;
+      sampledData.attributes.sampledBy = this.config.name;
+      sampledData.attributes.sampleRate = this.getCurrentSampleRate(data);
 
       return sampledData;
 } catch (error) {
@@ -112,9 +112,9 @@ export class SamplerProcessor implements BaseProcessor {
           if (!data.attributes) {
             data.attributes = {};
 }
-          data.attributes._sampled = true;
-          data.attributes._sampledBy = this.config.name;
-          data.attributes._sampleRate = this.getCurrentSampleRate(data);
+          data.attributes.sampled = true;
+          data.attributes.sampledBy = this.config.name;
+          data.attributes.sampleRate = this.getCurrentSampleRate(data);
 }
         return shouldSample;
 });
@@ -294,7 +294,7 @@ export class SamplerProcessor implements BaseProcessor {
     data:TelemetryData,
     rule:SamplingRule
   ):boolean | null {
-    const __priority = this.inferPriority(data);
+    const _priority = this.inferPriority(data);
 
     if (!rule.priority) return null;
 
@@ -379,8 +379,8 @@ export class SamplerProcessor implements BaseProcessor {
    * Adjust adaptive sampling rate based on recent activity
    */
   private adjustAdaptiveSampling():void {
-    const __now = Date.now();
-    const __windowDuration = 60000; // 1 minute window
+    const _now = Date.now();
+    const _windowDuration = 60000; // 1 minute window
 
     // Add current sample to history
     this.recentSamples.push(this.processedCount);
@@ -393,7 +393,7 @@ export class SamplerProcessor implements BaseProcessor {
       const recentTotal =
         this.recentSamples[this.recentSamples.length - 1] -
         this.recentSamples[0];
-      const __timeSpan = this.recentSamples.length * 30; // 30 second intervals
+      const _timeSpan = this.recentSamples.length * 30; // 30 second intervals
 
       // Adjust rate based on volume
       if (recentTotal > 1000) {

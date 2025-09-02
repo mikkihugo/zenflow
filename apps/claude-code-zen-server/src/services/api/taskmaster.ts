@@ -20,7 +20,7 @@ const logger = getLogger('TaskMasterRoutes');
 const asyncHandler =
   (fn: (req: Request, res: Response) => Promise<void>) =>
   (req: Request, res: Response) =>
-    Promise.resolve(fn(req, _res)).catch((error) => {
+    Promise.resolve(fn(req, res)).catch((error) => {
       logger.error('AsyncHandler error: ', error);
       if (!res.headersSent) {
         res.status(500).json({
@@ -316,7 +316,7 @@ function setupFlowMetricsRoutes(
 ): void {
   router.get(
     '/metrics',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       log(LogLevel.DEBUG, 'Getting SAFe flow metrics', req);
 
       try {
@@ -448,7 +448,7 @@ function setupTaskManagementRoutes(
   // Create task
   router.post(
     '/tasks',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       await handleCreateTask(req, res, manager);
     })
   );
@@ -456,7 +456,7 @@ function setupTaskManagementRoutes(
   // Get task by ID
   router.get(
     '/tasks/:taskId',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       await handleGetTask(req, res, manager);
     })
   );
@@ -464,7 +464,7 @@ function setupTaskManagementRoutes(
   // Move task
   router.put(
     '/tasks/:taskId/move',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       await handleMoveTask(req, res, manager);
     })
   );
@@ -472,7 +472,7 @@ function setupTaskManagementRoutes(
   // Get tasks by state
   router.get(
     '/tasks/state/:state',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       await handleGetTasksByState(req, res, manager);
     })
   );
@@ -846,7 +846,7 @@ async function handleMoveTask(
 
     // Move the task
     const result = await taskMaster.moveTask(taskId, toState);
-    if (!_result) {
+    if (!result) {
       return res.status(422).json({
         success: false,
         error: TASK_ERROR_MESSAGES.moveTaskFailed,
@@ -1010,7 +1010,7 @@ function setupSystemHealthRoutes(
 ): void {
   router.get(
     '/health',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       log(LogLevel.DEBUG, 'Getting TaskMaster health status', req);
 
       try {
@@ -1196,7 +1196,7 @@ function setupDashboardRoutes(
 ): void {
   router.get(
     '/dashboard',
-    asyncHandler(async (_req: Request, _res: Response) => {
+    asyncHandler(async (req: Request, res: Response) => {
       await createDashboardDataHandler(req, res, manager);
     })
   );

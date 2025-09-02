@@ -380,7 +380,7 @@ this.logger.info(
 );
 
 // Define parameter bounds for MIPROv2
-const _bounds: OptimizationBounds = {
+const bounds: OptimizationBounds = {
 lower: [0.001, 0.1, 0.5, 10, 0.1], // learning_rate, temperature, confidence, candidates, regularization
 upper: [0.1, 2.0, 0.99, 100, 1.0],
 };
@@ -426,7 +426,7 @@ this.logger.info(
 `Performing Bayesian optimization with Gaussian Process...`
 );
 
-const _bounds: OptimizationBounds = {
+const bounds: OptimizationBounds = {
 lower: initialSolution.parameters.map((p: number) => p * 0.8), // 20% below initial
 upper: initialSolution.parameters.map((p: number) => p * 1.2), // 20% above initial
 };
@@ -595,9 +595,9 @@ return bestSolution;
 }
 
 private async evaluateAccuracy(
-_student: DSPyModule,
+student: DSPyModule,
 params: number[],
-_options: any
+options: any
 ): Promise<number> {
 // Mock accuracy evaluation - replace with actual DSPy evaluation
 const baseAccuracy = 0.7;
@@ -611,9 +611,9 @@ return Math.max(0, Math.min(1, baseAccuracy + paramInfluence + noise));
 }
 
 private async evaluateSpeed(
-_student: DSPyModule,
+student: DSPyModule,
 params: number[],
-_options: any
+options: any
 ): Promise<number> {
 // Mock speed evaluation (inversely related to some parameters)
 const baseSpeed = 0.8;
@@ -626,14 +626,14 @@ return Math.max(0.1, Math.min(1, baseSpeed - paramPenalty));
 }
 
 private async evaluateMemoryUsage(
-_student: DSPyModule,
+student: DSPyModule,
 params: number[],
-_options: any
+options: any
 ): Promise<number> {
 // Mock memory efficiency (higher is better, less memory usage)
 const baseMemoryEff = 0.6;
 const paramImpact = params.reduce(
-(sum, p, _i) => sum + (p > 0.5 ? -0.05 : 0.03),
+(sum, p, i) => sum + (p > 0.5 ? -0.05 : 0.03),
 0
 );
 
@@ -667,8 +667,8 @@ return optimizedModule;
 }
 
 private async evaluateFinalPerformance(
-_module: DSPyModule,
-_options: any
+module: DSPyModule,
+options: any
 ): Promise<{ accuracy: number; speed: number; memory: number }> {
 // Final comprehensive evaluation
 return {

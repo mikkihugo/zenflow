@@ -106,22 +106,22 @@ const startTrace = (name: string) => ({
 });
 const withTrace = <T>(fn: () => T) => fn();
 const withAsyncTrace = <T>(fn: () => Promise<T>) => fn();
-const __getKVStore = (namespace: string) => ({
+const _getKVStore = (namespace: string) => ({
   set: async (key: string, value: string) => {},
   get: async (key: string) => null,
   delete: async (key: string) => {},
 });
 
 // Simple decorator stubs
-const __traced =
+const _traced =
   (name: string) =>
   (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;
-const __tracedAsync =
+const _tracedAsync =
   (name: string) =>
   (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;
-const __metered =
+const _metered =
   (name: string) =>
   (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;

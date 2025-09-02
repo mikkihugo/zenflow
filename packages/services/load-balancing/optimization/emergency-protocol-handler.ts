@@ -94,7 +94,7 @@ export class EmergencyProtocolHandler
   }
 
   public async sendAlert(
-    _message: string,
+    message: string,
     recipients: string[]
   ): Promise<void> {
     // In practice, this would:

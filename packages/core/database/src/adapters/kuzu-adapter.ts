@@ -557,7 +557,7 @@ export class KuzuAdapter implements DatabaseConnection {
  async getCurrentMigrationVersion(): Promise<string | null> {
  try {
  const result = await this.query<{ version: string }>(
- 'MATCH (m:_Migration) RETURN m.version as version ORDER BY m.version DESC LIMIT 1'
+ 'MATCH (m:Migration) RETURN m.version as version ORDER BY m.version DESC LIMIT 1'
  );
  return result.rows[0]?.version || null;
  } catch {
@@ -1014,7 +1014,7 @@ export class KuzuAdapter implements DatabaseConnection {
  private async createMigrationsTable(): Promise<void> {
    try {
      await this.query(`
- CREATE NODE TABLE IF NOT EXISTS _Migration (
+ CREATE NODE TABLE IF NOT EXISTS Migration (
  version STRING,
  name STRING,
  applied_at TIMESTAMP,
@@ -1028,7 +1028,7 @@ export class KuzuAdapter implements DatabaseConnection {
 
  private async recordMigration(version: string, name: string): Promise<void> {
  await this.query(
- 'CREATE (:_Migration {version:${version}, name:${name}, applied_at:timestamp()})',
+ 'CREATE (:Migration {version:${version}, name:${name}, applied_at:timestamp()})',
  { version, name }
  );
  }

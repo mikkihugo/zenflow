@@ -145,7 +145,7 @@ describe('MemoryManager', () => {
       const result = await manager.listBackends();
       expect(result.isOk()).toBe(true);
 
-      const backendList = result._unsafeUnwrap();
+      const backendList = result.unsafeUnwrap();
       expect(backendList).toHaveLength(backends.length);
       expect(backendList).toEqual(expect.arrayContaining(backends));
 });
@@ -173,7 +173,7 @@ describe('MemoryManager', () => {
       const result = await manager.retrieve(key);
 
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap()).toEqual(value);
+      expect(result.unsafeUnwrap()).toEqual(value);
 });
 
     it('should delete data from backends', async () => {
@@ -185,7 +185,7 @@ describe('MemoryManager', () => {
       expect(deleteResult.isOk()).toBe(true);
 
       const retrieveResult = await manager.retrieve(key);
-      expect(retrieveResult._unsafeUnwrap()).toBe(null);
+      expect(retrieveResult.unsafeUnwrap()).toBe(null);
 });
 
     it('should handle operations with specific backend', async () => {
@@ -226,7 +226,7 @@ describe('MemoryManager', () => {
       const results = await manager.batchStore(operations);
       expect(results.isOk()).toBe(true);
 
-      const batchResults = results._unsafeUnwrap();
+      const batchResults = results.unsafeUnwrap();
       expect(batchResults).toHaveLength(operations.length);
       for (const result of batchResults) {
         expect(result.success).toBe(true);
@@ -247,7 +247,7 @@ describe('MemoryManager', () => {
 
       expect(results.isOk()).toBe(true);
 
-      const retrieveResults = results._unsafeUnwrap();
+      const retrieveResults = results.unsafeUnwrap();
       expect(retrieveResults).toHaveLength(keys.length);
 });
 
@@ -261,7 +261,7 @@ describe('MemoryManager', () => {
       const results = await manager.batchStore(operations);
       expect(results.isOk()).toBe(true);
 
-      const batchResults = results._unsafeUnwrap();
+      const batchResults = results.unsafeUnwrap();
       expect(batchResults).toHaveLength(operations.length);
 
       // Should have some successes and some failures
@@ -288,7 +288,7 @@ describe('MemoryManager', () => {
       const result = await manager.getStats();
       expect(result.isOk()).toBe(true);
 
-      const __stats = result._unsafeUnwrap();
+      const _stats = result.unsafeUnwrap();
       expect(stats.totalBackends).toBeGreaterThan(0);
       expect(stats.totalEntries).toBeGreaterThanOrEqual(0);
       expect(stats.memoryUsage).toBeDefined();
@@ -304,7 +304,7 @@ describe('MemoryManager', () => {
       const result = await manager.getBackendStats();
       expect(result.isOk()).toBe(true);
 
-      const backendStats = result._unsafeUnwrap();
+      const backendStats = result.unsafeUnwrap();
       expect(Object.keys(backendStats)).toContain(backend1);
       expect(Object.keys(backendStats)).toContain(backend2);
 });
@@ -313,7 +313,7 @@ describe('MemoryManager', () => {
       const result = await manager.health();
       expect(result.isOk()).toBe(true);
 
-      const health = result._unsafeUnwrap();
+      const health = result.unsafeUnwrap();
       expect(health.status).toBeDefined();
       expect(health.backends).toBeDefined();
       expect(health.uptime).toBeGreaterThanOrEqual(0);

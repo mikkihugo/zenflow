@@ -3,7 +3,7 @@
  * Tests that the teamwork system works with hybrid brain integration
  */
 
-import { ConversationOrchestratorImpl as _ConversationOrchestratorImpl } from '../src/main';
+import { ConversationOrchestratorImpl as ConversationOrchestratorImpl } from '../src/main';
 import type { AgentId, ConversationConfig} from '../src/types';
 
 describe(): void {
@@ -14,7 +14,7 @@ describe(): void {
   beforeEach(): void {
     orchestrator = new ConversationOrchestratorImpl(): void {
     ')should create orchestrator with brain coordination', () => ')function'))      expect(): void {
-    ')Test Conversation',        pattern: 'problem-solving',        _context:{
+    ')Test Conversation',        pattern: 'problem-solving',        context:{
           goal: 'Test hybrid brain integration',          domain: 'testing',          constraints:[],
           resources:[],
           expertise:['testing'],
@@ -25,7 +25,7 @@ describe(): void {
       const session = await orchestrator.createConversation(): void {
     ')t break the orchestrator') Hybrid Brain Integration', () => {
     ')should maintain hybrid brain functionality during conversation lifecycle', async () => {
-    ')Brain Test Conversation',        pattern: 'code-review',        _context:{
+    ')Brain Test Conversation',        pattern: 'code-review',        context:{
           goal: 'Test neural coordination',          domain: 'neural-testing',          constraints:[],
           resources:[],
           expertise:['neural-networks'],

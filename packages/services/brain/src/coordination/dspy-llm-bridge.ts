@@ -10,10 +10,10 @@ import { getLogger, type Logger} from '@claude-zen/foundation';
 // Database access via infrastructure facade
 
 // Simple fallback implementations
-const __logger = getLogger('dspy-llm-bridge-fallback').
+const _logger = getLogger('dspy-llm-bridge-fallback').
 
 // Use logger for initialization tracking
-_logger.info('DSPy LLM Bridge fallback implementation loaded', {
+logger.info('DSPy LLM Bridge fallback implementation loaded', {
 mode: 'fallback', timestamp:new Date().toISOString(),
 });
 
@@ -154,7 +154,7 @@ return this.executeCoordinationTask(task, config);
 */
 async learnFromCoordination(
 task:DSPyCoordinationTask,
-_result:any,
+result:any,
 feedback:{ success: boolean; improvements?: string[]}
 ):Promise<void> {
 this.logger.info('Learning from coordination feedback (fallback mode)', {

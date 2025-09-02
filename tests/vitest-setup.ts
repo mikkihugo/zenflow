@@ -171,5 +171,5 @@ process.env.ZEN_TEST_MODE = 'true';
 vi.setConfig({ testTimeout: 30000 });
 
 // Add custom domain matchers - commented out since file doesn't exist
-// import { domainMatchers} from "../src/__tests__/helpers/test-utils.js";
+// import { domainMatchers} from "../src/_tests__/helpers/test-utils.js";
 // expect.extend(domainMatchers);

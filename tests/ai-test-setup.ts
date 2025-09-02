@@ -39,7 +39,7 @@ interface MockAgentConfig {
 }
 
 // Use the interface to prevent unused type error
-const _unusedAgentConfig: MockAgentConfig = { id: 'example' };
+const unusedAgentConfig: MockAgentConfig = { id: 'example' };
 
 // Constants
 const DEFAULT_AGENT_ID = 'mock-agent';
@@ -414,11 +414,11 @@ const DEFAULT_AGENT_ID = 'mock-agent';
               workflow.timeout || 30000
             );
             // Store timeout for cleanup
-            (globalThis as Record<string, unknown>)['__testTimeouts'] =
-              (globalThis as Record<string, unknown>)['__testTimeouts'] || [];
+            (globalThis as Record<string, unknown>)['_testTimeouts'] =
+              (globalThis as Record<string, unknown>)['_testTimeouts'] || [];
             (
               (globalThis as Record<string, unknown>)[
-                '__testTimeouts'
+                '_testTimeouts'
               ] as unknown[]
             ).push(timeoutId);
           }),
@@ -458,13 +458,13 @@ process.env.LLM_PROVIDER = 'mock';
 
 // Cleanup function for test timeouts
 (globalThis as Record<string, unknown>).cleanupTestTimeouts = () => {
-  if ((globalThis as Record<string, unknown>)['__testTimeouts']) {
+  if ((globalThis as Record<string, unknown>)['_testTimeouts']) {
     (
-      (globalThis as Record<string, unknown>)['__testTimeouts'] as unknown[]
+      (globalThis as Record<string, unknown>)['_testTimeouts'] as unknown[]
     ).forEach((timeoutId: unknown) =>
       clearTimeout(timeoutId as NodeJS.Timeout)
     );
-    (globalThis as Record<string, unknown>)['__testTimeouts'] = [];
+    (globalThis as Record<string, unknown>)['_testTimeouts'] = [];
   }
 };
 

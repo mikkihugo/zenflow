@@ -165,7 +165,7 @@ signature: PredictorSignature
 const inputs: Record<string, any> = {};
 
 if (signature.inputs) {
-for (const [key, _spec] of Object.entries(signature.inputs)) {
+for (const [key, spec] of Object.entries(signature.inputs)) {
 if (example.has(key)) {
 inputs[key] = example.get(key);
 }
@@ -193,7 +193,7 @@ signature: PredictorSignature
 const outputs: Record<string, any> = {};
 
 if (signature.outputs) {
-for (const [key, _spec] of Object.entries(signature.outputs)) {
+for (const [key, spec] of Object.entries(signature.outputs)) {
 if (example.has(key)) {
 outputs[key] = example.get(key);
 }
@@ -249,8 +249,8 @@ message += '\n\nFields:';
 
 if (signature.inputs) {
 message += `\nInputs:`
-for (const [key, _spec] of Object.entries(signature.inputs)) {
-message += `\n- ${key}:${_spec.description || 'No description'}`
+for (const [key, spec] of Object.entries(signature.inputs)) {
+message += `\n- ${key}:${spec.description || 'No description'}`
 }
 }
 

@@ -624,7 +624,7 @@ export class InfrastructureMetrics {
   trackSystemOperation(
     operation: string,
     duration: number,
-    _success: boolean
+    success: boolean
   ): void {
   recordHistogram(`infrastructure.${operation}.duration`, duration);
   recordMetric(`infrastructure.${operation}.calls`, 1);
@@ -640,7 +640,7 @@ export class InfrastructureMetrics {
   /**
    * Track infrastructure event
    */
-  trackEvent(event: string, _attributes: Record<string, any> = {}): void {
+  trackEvent(event: string, attributes: Record<string, any> = {}): void {
     recordMetric(`infrastructure.event.${  event}`, 1);
   }
 }
@@ -708,7 +708,7 @@ export async function getSystemMonitoring(
     // Infrastructure metrics
     trackSystem:(metrics: { cpu: number; memory: number }) =>
       recordMetric('system.health', metrics.cpu + metrics.memory),
-    trackPerformance: (_operation: string, duration: number) =>
+    trackPerformance: (operation: string, duration: number) =>
       recordHistogram('operation.duration', duration),
 
     // Lifecycle

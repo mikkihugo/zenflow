@@ -378,7 +378,7 @@ rewards.map((r, i) => r - (values[i] || 0)),
 },
 rewardShaper: {
 configure: async () => {},
-shapeReward: async (reward, _context) => reward * 1.1,
+shapeReward: async (reward, context) => reward * 1.1,
 updateRewardModel: async () => {},
 },
 experienceBuffer: {
@@ -395,14 +395,14 @@ updateReward: async () => {},
 getExplorationRate: () => 0.1,
 },
 statisticalAnalyzer: {
-tTest: async (_s1, _s2) => ({
+tTest: async (s1, s2) => ({
 statistic: 2.5,
 pValue: 0.01,
 critical: 1.96,
 significant: true,
 effectSize: 0.8,
 }),
-mannWhitneyU: async (_s1, _s2) => ({
+mannWhitneyU: async (s1, s2) => ({
 statistic: 100,
 pValue: 0.02,
 critical: 85,
@@ -612,16 +612,16 @@ let state = this.initializeEpisodeState(student);
 for (let step = 0; step < this.config.maxStepsPerEpisode; step++) {
 // Select action using policy or bandit optimizer
 let action: number;
-let _actionProbability: number;
+let actionProbability: number;
 
 if (this.config.useMultiArmedBandit && step % 10 === 0) {
 const banditAction = await this.banditOptimizer?.selectAction(state);
 action = banditAction.action;
-__actionProbability = banditAction.confidence;
+_actionProbability = banditAction.confidence;
 } else {
 const policyAction = await this.currentPolicy?.selectAction(state);
 action = policyAction.action;
-__actionProbability = policyAction.probability;
+_actionProbability = policyAction.probability;
 }
 
 // Execute action and observe reward
@@ -755,17 +755,17 @@ this.rewardShapingHistory = [];
 this.bestPolicyReward = -Infinity;
 }
 
-private initializeEpisodeState(_student: DSPyModule): Float32Array {
+private initializeEpisodeState(student: DSPyModule): Float32Array {
 // Initialize state representation for the DSPy module
 // This would extract relevant features from the module and context
 return new Float32Array([0.5, 0.3, 0.7, 0.1]); // Mock state
 }
 
 private async executeAction(
-_student: DSPyModule,
+student: DSPyModule,
 state: Float32Array,
 action: number,
-_options: any
+options: any
 ): Promise<{ nextState: Float32Array; reward: number; done: boolean }> {
 // Mock action execution - replace with actual DSPy evaluation
 const baseReward = 0.5 + action * 0.1;
@@ -1091,8 +1091,8 @@ return optimizedModule;
 }
 
 private async evaluateFinalPerformance(
-_module: DSPyModule,
-_options: any
+module: DSPyModule,
+options: any
 ): Promise<{ finalReward: number }> {
 // Final evaluation using best policy
 return { finalReward: this.bestPolicyReward };

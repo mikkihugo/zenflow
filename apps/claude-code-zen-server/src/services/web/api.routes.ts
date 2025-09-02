@@ -632,7 +632,7 @@ export class WebApiRoutes {
       this.webMiddleware.setupErrorHandling(app);
     } else {
       // Fallback error handler
-      app.use((err: Error, _req: Request, _res: Response) => {
+      app.use((err: Error, req: Request, res: Response) => {
         this.logger.error('Unhandled error: ', err);
         res.status(500).json({
           error: 'Internal server error',

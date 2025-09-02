@@ -284,9 +284,9 @@ export class AISafetyOrchestrator {
   /**
    * Perform automated detection using deception detector.
    */
-  private async performAutomatedDetection(_agentId: string,
+  private async performAutomatedDetection(agentId: string,
     interactionData: AIInteractionData,
-    _orchestrationId: string
+    orchestrationId: string
   ): Promise<{ success: boolean; value?: AutomatedDetectionResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
@@ -319,9 +319,9 @@ export class AISafetyOrchestrator {
   /**
    * Perform behavioral analysis with pattern detection.
    */
-  private async performBehavioralAnalysis(_agentId: string,
+  private async performBehavioralAnalysis(agentId: string,
     interactionData: AIInteractionData,
-    _orchestrationId: string
+    orchestrationId: string
   ): Promise<{ success: boolean; value?: BehavioralAnalysisResult; error?: SafetyError}> {
     try {
       const startTime = Date.now();
@@ -415,10 +415,10 @@ export class AISafetyOrchestrator {
   /**
    * Escalate to human oversight.
    */
-  private async escalateToHuman(_agentId: string,
+  private async escalateToHuman(agentId: string,
     phase1: AutomatedDetectionResult,
     phase2: BehavioralAnalysisResult,
-    _orchestrationId: string
+    orchestrationId: string
   ): Promise<{ success: boolean; value?: HumanEscalationResult; error?: SafetyError}> {
     try {
       // Simulate human escalation process

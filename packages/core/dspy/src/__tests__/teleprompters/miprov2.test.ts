@@ -18,7 +18,7 @@ import { MIPROv2, type MIPROv2Config } from '../../teleprompters/miprov2.js';
 class MockModule extends DSPyModule {
 private name: string;
 private mockResponse: Prediction;
-public _compiled: boolean = false;
+public compiled: boolean = false;
 
 constructor(name: string, mockResponse: Prediction) {
 super();
@@ -40,7 +40,7 @@ input: example.data,
 predictors() {
 return [
 {
-name: this.name + '_predictor',
+name: this.name + 'predictor',
 signature: { instructions: 'Follow the instructions carefully.' },
 lm: { model: 'mock-model', generate: async () => 'mock response' },
 demos: [],
@@ -49,12 +49,12 @@ demos: [],
 }
 
 namedPredictors() {
-return [[this.name + '_predictor', this.predictors()[0]]];
+return [[this.name + 'predictor', this.predictors()[0]]];
 }
 
 deepcopy(): MockModule {
 const copy = new MockModule(this.name, { ...this.mockResponse });
-copy._compiled = this._compiled;
+copy.compiled = this.compiled;
 return copy;
 }
 }
@@ -62,7 +62,7 @@ return copy;
 // Mock LM for testing
 const mockLM = {
 model: 'mock-gpt-4',
-generate: async (_prompt: string) => 'mock response',
+generate: async (prompt: string) => 'mock response',
 kill: () => {},
 launch: () => {},
 };

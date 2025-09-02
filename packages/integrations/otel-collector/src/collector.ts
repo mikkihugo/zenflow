@@ -208,7 +208,7 @@ export class InternalOTELCollector {
    */
   async getHealthStatus(): Promise<HealthStatus> {
     const exporterHealth = await this.exporterManager.getHealthStatus();
-    const __stats = this.getStats();
+    const _stats = this.getStats();
 
     // Determine overall status
     const hasUnhealthyExporter = Object.values(exporterHealth).some(
@@ -226,8 +226,8 @@ export class InternalOTELCollector {
     }
 
     // Check resource usage
-    const memUsedMB = __stats.memoryUsage.heapUsed / (1024 * 1024);
-    const memTotalMB = __stats.memoryUsage.heapTotal / (1024 * 1024);
+    const memUsedMB = _stats.memoryUsage.heapUsed / (1024 * 1024);
+    const memTotalMB = _stats.memoryUsage.heapTotal / (1024 * 1024);
     const memUsagePercent = (memUsedMB / memTotalMB) * 100;
 
     return {
@@ -260,7 +260,7 @@ export class InternalOTELCollector {
     app.use(express.json({ limit: '10mb'}));
 
     // Health endpoint
-    app.get('/health', async (_req, res) => {
+    app.get('/health', async (req, res) => {
       try {
         const health = await this.getHealthStatus();
         res.status(health.status === 'healthy' ? 200:503).json(health);
@@ -270,10 +270,10 @@ export class InternalOTELCollector {
 });
 
     // Stats endpoint
-    app.get('/stats', (_req, res) => {
+    app.get('/stats', (req, res) => {
       try {
-        const __stats = this.getStats();
-        res.json(_stats);
+        const _stats = this.getStats();
+        res.json(stats);
 } catch (error) {
         res.status(500).json({ error:String(error)});
 }

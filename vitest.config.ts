@@ -85,8 +85,8 @@ export default defineConfig({
       // Package-level tests
       'packages/**/tests/**/*.test.ts',
       'packages/**/tests/**/*.test.tsx',
-      'packages/**/__tests__/**/*.test.ts',
-      'packages/**/__tests__/**/*.test.tsx',
+      'packages/**/_tests__/**/*.test.ts',
+      'packages/**/_tests__/**/*.test.tsx',
       'packages/**/src/**/*.test.ts',
       'packages/**/src/**/*.test.tsx',
       // App-level tests
@@ -111,11 +111,11 @@ export default defineConfig({
       'coverage/**',
       'target/**',
       // Legacy and disabled code
-      'src/__tests__/swarm-zen/**/*.js',
+      'src/_tests__/swarm-zen/**/*.js',
       'src/interfaces/cli.disabled/**/*',
-      'src/__tests__/e2e/complete-workflow.test.ts',
-      'src/__tests__/coordination/shared-fact-system.test.ts',
-      'src/__tests__/coordination/collective-knowledge-*.test.ts',
+      'src/_tests__/e2e/complete-workflow.test.ts',
+      'src/_tests__/coordination/shared-fact-system.test.ts',
+      'src/_tests__/coordination/collective-knowledge-*.test.ts',
       // Configuration files
       '**/*.config.ts',
       '**/*.config.js',
@@ -247,7 +247,7 @@ export default defineConfig({
       exclude: [
         // Test files
         '**/tests/**',
-        '**/__tests__/**',
+        '**/_tests__/**',
         '**/*.test.{ts,tsx}',
         '**/*.spec.{ts,tsx}',
         // Type definitions
@@ -397,49 +397,49 @@ export default defineConfig({
      */
     alias: {
       /** @description Core system components and engines */
-      '@core': resolve(__dirname, 'src/core'),
+      '@core': resolve(_dirname, 'src/core'),
 
       /** @description Coordination and orchestration modules */
-      '@coordination': resolve(__dirname, 'src/coordination'),
+      '@coordination': resolve(_dirname, 'src/coordination'),
 
       /** @description Neural network and AI components */
-      '@neural': resolve(__dirname, 'src/neural'),
+      '@neural': resolve(_dirname, 'src/neural'),
 
       /** @description Memory management and storage systems */
-      '@memory': resolve(__dirname, 'src/memory'),
+      '@memory': resolve(_dirname, 'src/memory'),
 
       /** @description Utility functions and helpers */
-      '@utils': resolve(__dirname, 'src/utils'),
+      '@utils': resolve(_dirname, 'src/utils'),
 
       /** @description TypeScript type definitions */
-      '@types': resolve(__dirname, 'src/types'),
+      '@types': resolve(_dirname, 'src/types'),
 
       /** @description User interface and interaction components */
-      '@interfaces': resolve(__dirname, 'src/interfaces'),
+      '@interfaces': resolve(_dirname, 'src/interfaces'),
 
       /** @description Swarm intelligence and multi-agent systems */
-      '@swarm-zen': resolve(__dirname, 'src/swarm-zen'),
+      '@swarm-zen': resolve(_dirname, 'src/swarm-zen'),
 
       /** @description API endpoints and HTTP handling */
-      '@api': resolve(__dirname, 'src/api'),
+      '@api': resolve(_dirname, 'src/api'),
 
       /** @description Model Context Protocol (MCP) integrations */
-      '@mcp': resolve(__dirname, 'src/mcp'),
+      '@mcp': resolve(_dirname, 'src/mcp'),
 
       /** @description Configuration management */
-      '@config': resolve(__dirname, 'src/config'),
+      '@config': resolve(_dirname, 'src/config'),
 
       /** @description Terminal and CLI interfaces */
-      '@terminal': resolve(__dirname, 'src/terminal'),
+      '@terminal': resolve(_dirname, 'src/terminal'),
 
       /** @description Development and debugging tools */
-      '@tools': resolve(__dirname, 'src/tools'),
+      '@tools': resolve(_dirname, 'src/tools'),
 
       /** @description Knowledge management and RAG systems */
-      '@knowledge': resolve(__dirname, 'src/knowledge'),
+      '@knowledge': resolve(_dirname, 'src/knowledge'),
 
       /** @description Database connections and ORM */
-      '@database': resolve(__dirname, 'src/database'),
+      '@database': resolve(_dirname, 'src/database'),
     },
   },
 });

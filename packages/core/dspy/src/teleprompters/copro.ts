@@ -128,7 +128,7 @@ export interface CoproStats {
 *});
 *
 * // Access optimization statistics
-* const __stats = advancedCopro.getStats();
+* const _stats = advancedCopro.getStats();
 * logger.info(`Total LM calls:${stats.total_calls}`);
 * ```
 */
@@ -184,7 +184,7 @@ export class COPRO extends Teleprompter {
 		this.depth = config.depth ?? 3;
 		this.init_temperature = config.init_temperature ?? 1.4;
 		this.prompt_model = config.prompt_model;
-		this._track_stats = config.track_stats ?? false;
+		this.track_stats = config.track_stats ?? false;
 }
 
 	/**
@@ -203,11 +203,11 @@ export class COPRO extends Teleprompter {
 		const { trainset, eval_kwargs = {}} = config;
 
 		const module = student.deepcopy();
-		const evaluate = this._createEvaluate(trainset, eval_kwargs);
+		const evaluate = this.createEvaluate(trainset, eval_kwargs);
 		this.total_calls = 0;
 
 		// Initialize tracking structures matching Stanford implementation
-		this._initializeTracking(module);
+		this.initializeTracking(module);
 
 		const candidates:Record<string, InstructionCompletions> = {};
 		const evaluated_candidates:Record<
@@ -217,14 +217,14 @@ export class COPRO extends Teleprompter {
 
 		// Seed the prompt optimizer zero shot with just the instruction, generate BREADTH new prompts
 		for (const predictor of module.predictors()) {
-			const predictorId = this._getPredictorId(predictor);
-			const signature = this._getSignature(predictor);
+			const predictorId = this.getPredictorId(predictor);
+			const signature = this.getSignature(predictor);
 
 			const basic_instruction = signature.instructions || "";
-			const basic_prefix = this._getOutputPrefix(signature);
+			const basic_prefix = this.getOutputPrefix(signature);
 
 			// Generate instruction variations
-			const instruct = await this._generateBasicInstructions(basic_instruction);
+			const instruct = await this.generateBasicInstructions(basic_instruction);
 
 			// Add original instruction as candidate
 			instruct.proposed_instruction.push(basic_instruction);
@@ -253,7 +253,7 @@ export class COPRO extends Teleprompter {
 			for (let p_i = 0; p_i < modulePredictors.length; p_i++) {
 				const p_old = modulePredictors[p_i];
 				const p_new = moduleClonePredictors[p_i];
-				const predictorId = this._getPredictorId(p_old);
+				const predictorId = this.getPredictorId(p_old);
 
 				// Use the most recently generated candidates for evaluation
 				let candidates_ = latest_candidates[predictorId];
@@ -276,7 +276,7 @@ export class COPRO extends Teleprompter {
 						.replace(/"/g, "");
 
 					// Set this new module with our instruction / prefix
-					this._updateSignature(p_new, instruction, prefix);
+					this.updateSignature(p_new, instruction, prefix);
 
 					logger.info(
 						`At Depth ${d + 1}/${this.depth}, Evaluating Prompt Candidate #${c_i + 1}/${candidates_.proposed_instruction.length} for ` +
@@ -313,14 +313,14 @@ export class COPRO extends Teleprompter {
 }
 
 				if (this.track_stats) {
-					this._updateLatestStats(predictorId, d, latest_scores);
+					this.updateLatestStats(predictorId, d, latest_scores);
 }
 
 				// Now that we`ve evaluated the candidates, set this predictor to the best performing version
-				const best_candidate = this._getBestCandidate(
+				const best_candidate = this.getBestCandidate(
 					evaluated_candidates[predictorId],
 				);
-				this._updateSignature(
+				this.updateSignature(
 					p_new,
 					best_candidate.instruction,
 					best_candidate.prefix,
@@ -334,17 +334,17 @@ export class COPRO extends Teleprompter {
 			// Generate next batch of candidates
 			const new_candidates:Record<string, InstructionCompletions> = {};
 			for (const p_base of modulePredictors) {
-				const predictorId = this._getPredictorId(p_base);
+				const predictorId = this.getPredictorId(p_base);
 
 				// Build Few-Shot Example of Optimized Prompts
-				const attempts = this._buildAttemptHistory(
+				const attempts = this.buildAttemptHistory(
 					evaluated_candidates[predictorId],
 				);
 
 				if (attempts.length === 0) continue;
 
 				// Generate next batch of potential prompts to optimize
-				const instr = await this._generateInstructionsFromAttempts(attempts);
+				const instr = await this.generateInstructionsFromAttempts(attempts);
 
 				// Get candidates for each predictor
 				new_candidates[predictorId] = instr;
@@ -362,18 +362,18 @@ export class COPRO extends Teleprompter {
 		// Collect all candidates and select best
 		const all_final_candidates:CoproCandidate[] = [];
 		for (const predictor of modulePredictors) {
-			const predictorId = this._getPredictorId(predictor);
+			const predictorId = this.getPredictorId(predictor);
 			all_final_candidates.push(
 				...Object.values(evaluated_candidates[predictorId]),
 			);
 
 			if (this.track_stats) {
-				this._updateBestStats(predictorId, evaluated_candidates[predictorId]);
+				this.updateBestStats(predictorId, evaluated_candidates[predictorId]);
 }
 }
 
 		all_final_candidates.sort((a, b) => b.score - a.score);
-		const deduplicated_candidates = this._dropDuplicates(all_final_candidates);
+		const deduplicated_candidates = this.dropDuplicates(all_final_candidates);
 
 		const best_program = deduplicated_candidates[0].program;
 		(best_program as any).candidate_programs = deduplicated_candidates;
@@ -384,16 +384,16 @@ export class COPRO extends Teleprompter {
 			(best_program as any).results_latest = this.results_latest;
 }
 
-		(best_program as any)._compiled = true;
+		(best_program as any).compiled = true;
 		return best_program;
 }
 
 	/**
 	 * Initialize tracking structures exactly matching Stanford implementation
 	 */
-	private _initializeTracking(module:DSPyModule): void {
+	private initializeTracking(module:DSPyModule): void {
 		for (const predictor of module.predictors()) {
-			const predictorId = this._getPredictorId(predictor);
+			const predictorId = this.getPredictorId(predictor);
 			this.results_best[predictorId] = {
 				depth:[],
 				max:[],
@@ -415,9 +415,9 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Create evaluate function matching Stanford implementation
 	 */
-	private _createEvaluate(
-		_trainset:Example[],
-		_eval_kwargs:Record<string, any>,
+	private createEvaluate(
+		trainset:Example[],
+		eval_kwargs:Record<string, any>,
 	) {
 		return async (module:DSPyModule, dataset:Example[]): Promise<number> => {
 			if (!this.metric) return Math.random() * 0.3 + 0.7; // Mock evaluation
@@ -446,7 +446,7 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Generate basic instruction variations matching Stanford implementation
 	 */
-	private async _generateBasicInstructions(
+	private async generateBasicInstructions(
 		basic_instruction:string,
 	):Promise<InstructionCompletions> {
 		// Simulate LLM instruction generation (in production would use actual LLM)
@@ -467,8 +467,8 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Generate instructions from attempt history matching Stanford implementation
 	 */
-	private async _generateInstructionsFromAttempts(
-		_attempts:string[],
+	private async generateInstructionsFromAttempts(
+		attempts:string[],
 	):Promise<InstructionCompletions> {
 		// Simulate LLM instruction generation with history (in production would use actual LLM)
 		const instructions:string[] = [];
@@ -488,7 +488,7 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Build attempt history exactly matching Stanford implementation
 	 */
-	private _buildAttemptHistory(
+	private buildAttemptHistory(
 		evaluated_candidates:Record<string, CoproCandidate>,
 	):string[] {
 		const attempts:string[] = [];
@@ -515,7 +515,7 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Get best candidate exactly matching Stanford implementation
 	 */
-	private _getBestCandidate(
+	private getBestCandidate(
 		candidates:Record<string, CoproCandidate>,
 	):CoproCandidate {
 		return Object.values(candidates).reduce((best, candidate) =>
@@ -526,7 +526,7 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Drop duplicates exactly matching Stanford implementation
 	 */
-	private _dropDuplicates(candidates:CoproCandidate[]): CoproCandidate[] {
+	private dropDuplicates(candidates:CoproCandidate[]): CoproCandidate[] {
 		const final_candidates:CoproCandidate[] = [];
 		const last_batch:CoproCandidate[] = [];
 		let last_batch_score = -1;
@@ -536,7 +536,7 @@ export class COPRO extends Teleprompter {
 
 			if (c.score === last_batch_score) {
 				for (const c2 of last_batch) {
-					if (this._checkCandidatesEqual(c, c2)) {
+					if (this.checkCandidatesEqual(c, c2)) {
 						repeat = true;
 						break;
 }
@@ -561,7 +561,7 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Check if candidates are equal exactly matching Stanford implementation
 	 */
-	private _checkCandidatesEqual(
+	private checkCandidatesEqual(
 		candidate1:CoproCandidate,
 		candidate2:CoproCandidate,
 	):boolean {
@@ -572,14 +572,14 @@ export class COPRO extends Teleprompter {
 			const p2 = p2_predictors[i];
 
 			if (
-				this._getSignature(p1).instructions !==
-				this._getSignature(p2).instructions
+				this.getSignature(p1).instructions !==
+				this.getSignature(p2).instructions
 			) {
 				return false;
 }
 
-			const p1_prefix = this._getOutputPrefix(this._getSignature(p1));
-			const p2_prefix = this._getOutputPrefix(this._getSignature(p2));
+			const p1_prefix = this.getOutputPrefix(this.getSignature(p1));
+			const p2_prefix = this.getOutputPrefix(this.getSignature(p2));
 
 			if (p1_prefix !== p2_prefix) {
 				return false;
@@ -592,7 +592,7 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Update latest statistics exactly matching Stanford implementation
 	 */
-	private _updateLatestStats(
+	private updateLatestStats(
 		predictorId:string,
 		depth:number,
 		latest_scores:number[],
@@ -606,14 +606,14 @@ export class COPRO extends Teleprompter {
 		);
 		this.results_latest[predictorId].min.push(Math.min(...latest_scores));
 		this.results_latest[predictorId].std.push(
-			this._calculateStd(latest_scores),
+			this.calculateStd(latest_scores),
 		);
 }
 
 	/**
 	 * Update best statistics exactly matching Stanford implementation
 	 */
-	private _updateBestStats(
+	private updateBestStats(
 		predictorId:string,
 		evaluated_candidates:Record<string, CoproCandidate>,
 	):void {
@@ -629,13 +629,13 @@ export class COPRO extends Teleprompter {
 			scores.reduce((a, b) => a + b, 0) / scores.length,
 		);
 		this.results_best[predictorId].min.push(Math.min(...scores));
-		this.results_best[predictorId].std.push(this._calculateStd(scores));
+		this.results_best[predictorId].std.push(this.calculateStd(scores));
 }
 
 	/**
 	 * Calculate standard deviation exactly matching Stanford implementation
 	 */
-	private _calculateStd(values:number[]): number {
+	private calculateStd(values:number[]): number {
 		const mean = values.reduce((a, b) => a + b, 0) / values.length;
 		const variance =
 			values.reduce((acc, val) => acc + (val - mean) ** 2, 0) / values.length;
@@ -645,15 +645,15 @@ export class COPRO extends Teleprompter {
 	/**
 	 * Helper methods matching Stanford implementation exactly
 	 */
-	private _getPredictorId(predictor:any): string {
-		return (predictor as any)._dspy_id || this._generateId(predictor);
+	private getPredictorId(predictor:any): string {
+		return (predictor as any).dspy_id || this.generateId(predictor);
 }
 
-	private _getSignature(predictor:any): any {
+	private getSignature(predictor:any): any {
 		return predictor.signature;
 }
 
-	private _getOutputPrefix(signature:any): string {
+	private getOutputPrefix(signature:any): string {
 		const fields = signature.fields || {};
 		const fieldKeys = Object.keys(fields);
 		if (fieldKeys.length === 0) return "";
@@ -663,12 +663,12 @@ export class COPRO extends Teleprompter {
 		return lastField?.json_schema_extra?.prefix || "";
 }
 
-	private _updateSignature(
+	private updateSignature(
 		predictor:any,
 		instruction:string,
 		prefix:string,
 	):void {
-		const signature = this._getSignature(predictor);
+		const signature = this.getSignature(predictor);
 		const fields = signature.fields || {};
 		const fieldKeys = Object.keys(fields);
 
@@ -685,11 +685,11 @@ export class COPRO extends Teleprompter {
 }
 }
 
-	private _generateId(obj:any): string {
-		if (!obj._dspy_id) {
-			obj._dspy_id = Math.random().toString(36);
+	private generateId(obj:any): string {
+		if (!obj.dspy_id) {
+			obj.dspy_id = Math.random().toString(36);
 }
-		return obj._dspy_id;
+		return obj.dspy_id;
 }
 }
 

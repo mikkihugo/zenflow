@@ -174,7 +174,7 @@ diContainer.registerSingleton(ANALYSIS_TOKENS.AnalysisMetrics, AnalysisMetrics);
 @injectable
 export class CodeAnalyzer {
 private readonly repositoryPath:string;
-private readonly _project:Project; // Used for TypeScript analysis
+private readonly project:Project; // Used for TypeScript analysis
 
 // Strategic facade systems - real implementations
 private brainSystem?:any;
@@ -190,7 +190,7 @@ this.repositoryPath = path.resolve(repositoryPath);
 
 // Initialize TypeScript project for advanced analysis
 const tsConfigPath = this.findTsConfig();
-this._project = new Project({
+this.project = new Project({
 ...(tsConfigPath ? { tsConfigFilePath:tsConfigPath} :{}),
 useInMemoryFileSystem:false,
 });
@@ -205,7 +205,7 @@ logger.warn('Failed to initialize repository analyzer', { error });
 
 logger.info('CodeAnalyzer initialized', {
 repositoryPath: this.repositoryPath,
-hasProject: !!this._project,
+hasProject: !!this.project,
 hasRepoAnalyzer: !!this.repoAnalyzer
 });
 
@@ -334,9 +334,9 @@ return session;
 */
 async analyzeFile(
 filePath:string,
-_options:Partial<EnhancedAnalysisOptions> = {},
+options:Partial<EnhancedAnalysisOptions> = {},
 ):Promise<Result<CodeAnalysisResult, Error>> {
-const __startTime = Date.now();
+const _startTime = Date.now();
 
 return await safeAsync(async ():Promise<CodeAnalysisResult> => {
 // Get metrics service from DI container
@@ -366,7 +366,7 @@ this.performQualityAnalysis(content, language, absolutePath),
 
 // Generate AI insights if enabled
 let aiInsights: AICodeInsights | undefined;
-if (_options.enableAIRecommendations && this.brainSystem) {
+if (options.enableAIRecommendations && this.brainSystem) {
 const insightsResult = await this.generateAIInsights(
 content,
 language,
@@ -1206,7 +1206,7 @@ const files = await this.discoverFiles(options);
 this.logger.debug(`Discovered ${files}.lengthfiles for analysis``
 
 // Phase 2:Node Extraction - Extract all dependency nodes
-const __nodes = await this.extractNodes(files);
+const _nodes = await this.extractNodes(files);
 this.logger.debug(`Extracted ${nodes.length} dependency nodes``
 
 // Phase 3:Edge Analysis - Analyze relationships between nodes
@@ -1333,7 +1333,7 @@ return violations;
 private async discoverFiles(options:any): Promise<string[]> {
 const files:string[] = [];
 const extensions = ['.ts', '.tsx', '.js', '.jsx'];')
-const __walkDir = async (dir:string): Promise<void> => {
+const _walkDir = async (dir:string): Promise<void> => {
 try {
 const entries = await fs.readdir(dir, { withFileTypes:true});
 
@@ -1343,7 +1343,7 @@ const fullPath = path.join(dir, entry.name);
 if (entry.isDirectory()) {
 // Skip node_modules unless explicitly included
 if (entry.name === 'node_modules' && !options.includeNodeModules) continue;// Skip test directories unless explicitly included
-if ((entry.name === '__tests__' || entry.name === ' test' || entry.name === ' tests); && !options.includeTests) continue;`)
+if ((entry.name === '_tests__' || entry.name === ' test' || entry.name === ' tests); && !options.includeTests) continue;`)
 await walkDir(fullPath);
 } else if (entry.isFile()) {
 const ext = path.extname(entry.name);
@@ -1388,13 +1388,13 @@ variable:/(?:const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)/g,
 export:/export\s+(?:(?:default\s+)?(?:class|function|interface|type|const|let|var)\s+([A-Za-z_$][A-Za-z0-9_$]*)|{([^}]+)})/g,
 };
 
-for (const [_nodeType, pattern] of Object.entries(patterns)) {
+for (const [nodeType, pattern] of Object.entries(patterns)) {
 let match;
 while ((match = pattern.exec(content)) !== null) {
 const name = match[1] || match[2];
 if (name) {
-const lineIndex = content.substring(0, match.index).split('\n').length - 1; const __line = lines[lineIndex];
-const __column = match.index - content.lastIndexOf('\n`, match.index) - 1;`)
+const lineIndex = content.substring(0, match.index).split('\n').length - 1; const _line = lines[lineIndex];
+const _column = match.index - content.lastIndexOf('\n`, match.index) - 1;`)
 nodes.push(
 id:this.generateNodeId(),
 name,
@@ -1402,7 +1402,7 @@ type:nodeType as any,
 filePath,
 location:
 line:lineIndex + 1,
-_column,
+column,
 endLine:lineIndex + 1,
 endColumn:column + name.length,,
 metadata:
@@ -1446,7 +1446,7 @@ const importPattern = /imports+(?:({[^}]+})|([A-Za-z_$][A-Za-z0-9_$]*)|(*s+ass+[
 let match;
 
 while ((match = importPattern.exec(content)) !== null) {
-const [, namedImports, defaultImport, _namespaceImport, _modulePath] = match;
+const [, namedImports, defaultImport, namespaceImport, modulePath] = match;
 
 // Handle different import types
 if (namedImports) {

@@ -43,12 +43,12 @@ options:DatabaseCreationOptions
 ):Promise<CodeQLDatabase> {
 const absolutePath = path.resolve(repositoryPath);
 const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-const __databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);
+const _databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);
 
 this.logger.info(`Creating CodeQL database`, {
   databaseId,
   repositoryPath: absolutePath,
-  databasePath: __databasePath,
+  databasePath: _databasePath,
   languages: options.languages,
 });
 
@@ -56,13 +56,13 @@ this.logger.info(`Creating CodeQL database`, {
 await fs.mkdir(this.config.tempDir!, { recursive:true});
 
 // Remove existing database if overwrite is enabled
-if (options.overwrite && (await this.databaseExists(_databasePath))) {
-await this.deleteDatabaseFiles(_databasePath);
+if (options.overwrite && (await this.databaseExists(databasePath))) {
+await this.deleteDatabaseFiles(databasePath);
 }
 
 // Build command arguments
 const args = [
-'database', 'create', __databasePath,
+'database', 'create', _databasePath,
 '--source-root', absolutePath,
 '--language', options.languages.join(', '),
 ];
@@ -151,7 +151,7 @@ this.logger.error('Database creation failed', {
 
 // Clean up failed database
 try {
-await this.deleteDatabaseFiles(_databasePath);
+await this.deleteDatabaseFiles(databasePath);
 } catch (cleanupError) {
 this.logger.warn('Failed to clean up failed database', {
   cleanupError,

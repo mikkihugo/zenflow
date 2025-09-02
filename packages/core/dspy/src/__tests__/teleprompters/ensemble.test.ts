@@ -33,13 +33,13 @@ input: example.data,
 
 predictors() {
 return [
-{ name: this.name + '_predictor', signature: { instructions: 'Test' } },
+{ name: this.name + 'predictor', signature: { instructions: 'Test' } },
 ];
 }
 
 namedPredictors() {
 return [
-[this.name + '_predictor', { signature: { instructions: 'Test' } }],
+[this.name + 'predictor', { signature: { instructions: 'Test' } }],
 ];
 }
 

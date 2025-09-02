@@ -94,7 +94,7 @@ export class SmartPromptOptimizer {
  */
  async optimizePrompt(
  originalPrompt: string,
- _context: {
+ context: {
  taskComplexity?: number;
  agentType?: string;
  expectedResponseTime?: number;
@@ -419,14 +419,14 @@ export class SmartPromptOptimizer {
  originalPrompt:string,
  patterns:OptimizationPattern[]
  ): string {
- const __optimizedPrompt = originalPrompt;
+ const _optimizedPrompt = originalPrompt;
 
  for (const pattern of patterns) {
  switch (pattern.patternType) {
  case 'clarity_improvement': '). optimizedPrompt +=
  '\n\nPlease be specific and provide detailed explanations.;
  break;
- case 'structure_enhancement': '). optimizedPrompt = `Please approach this systematically:\n\n${_optimizedPrompt}\n\nProvide your response in a well-structured format.``
+ case 'structure_enhancement': '). optimizedPrompt = `Please approach this systematically:\n\n${optimizedPrompt}\n\nProvide your response in a well-structured format.``
  break;
  case `context_addition': '). optimizedPrompt +=
  '\n\nConsider the specific context and requirements when responding.;

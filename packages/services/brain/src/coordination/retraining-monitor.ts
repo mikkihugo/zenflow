@@ -63,7 +63,7 @@ export class RetrainingMonitor {
 private isMonitoring = false;
 private logger:Logger;
 
-constructor(_config: RetrainingConfig) {
+constructor(config: RetrainingConfig) {
 this.logger = getLogger('retraining-monitor');
 this.logger.info(
 'RetrainingMonitor initialized with foundation infrastructure'
@@ -196,7 +196,7 @@ const coordinationSuccessRate =
 currentMetrics.coordinationSuccessRate||0;
 
 this.logger.debug(
-`Current coordination success rate:${coordinationSuccessRate}(_threshold: ${config.minCoordinationSuccessRateThreshold})``
+`Current coordination success rate:${coordinationSuccessRate}(threshold: ${config.minCoordinationSuccessRateThreshold})``
 );
 
 if (
@@ -244,7 +244,7 @@ JSON.stringify(trigger)
 );
 
 // Use LLMProvider for retraining strategy generation (no file tools needed)
-const __retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
+const _retrainingPrompt = `Generate a neural network retraining plan based on the following performance metrics:`
 
 Trigger Reason:${trigger}.reason
 Current Metrics:${JSON}.stringify(trigger.metrics, null, 2)
@@ -326,7 +326,7 @@ error:errorMessage,
 
 this.logger.error('Retraining workflow failed:', error);// Store failed result
 if (this.dbAccess) {
-const __kv = await this.dbAccess.getKV('brain').; await kv.set(
+const _kv = await this.dbAccess.getKV('brain').; await kv.set(
 `retraining:result:${trigger}.timestamp.getTime()`,
 JSON.stringify(result)
 );
@@ -385,7 +385,7 @@ private async hasExceededDailyLimit(maxAttempts:number): Promise<boolean> {
 if (!this.dbAccess) return false;
 
 try {
-const today = new Date().toISOString().split('T').0]; const kv = await this.dbAccess.getKV('brain').); const __attemptsData = await kv.get(`retraining:attempts:${today}``
+const today = new Date().toISOString().split('T').0]; const kv = await this.dbAccess.getKV('brain').); const _attemptsData = await kv.get(`retraining:attempts:${today}``
 
 if (!attemptsData) return false;
 

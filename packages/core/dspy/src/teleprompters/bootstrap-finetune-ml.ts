@@ -753,7 +753,7 @@ hiddenSize: Math.floor(Math.random() * 512) + 64,
 
 private async configureModule(
 module: DSPyModule,
-_hyperparameters: Record<string, any>
+hyperparameters: Record<string, any>
 ): Promise<DSPyModule> {
 // Apply hyperparameters to module configuration
 // This would depend on the specific module implementation
@@ -762,8 +762,8 @@ return module;
 
 private async trainModule(
 module: DSPyModule,
-_trainset?: any[],
-_teacher?: DSPyModule
+trainset?: any[],
+teacher?: DSPyModule
 ): Promise<DSPyModule> {
 // Train the module with the given configuration
 // Implementation would depend on the specific training procedure
@@ -771,8 +771,8 @@ return module;
 }
 
 private async evaluateModule(
-_module: DSPyModule,
-_valset?: any[]
+module: DSPyModule,
+valset?: any[]
 ): Promise<number> {
 // Evaluate module performance on validation set
 // Implementation would depend on the specific evaluation metric
@@ -780,8 +780,8 @@ return Math.random(); // Placeholder
 }
 
 private async calculateObjectives(
-_module: DSPyModule,
-_valset?: any[]
+module: DSPyModule,
+valset?: any[]
 ): Promise<Record<string, number>> {
 return {
 accuracy: Math.random(),
@@ -800,7 +800,7 @@ return this.config.multiObjectiveConfig.objectives.map(
 );
 }
 
-private async shouldStopEarly(_iteration: number): Promise<boolean> {
+private async shouldStopEarly(iteration: number): Promise<boolean> {
 if (this.optimizationHistory.length < 10) return false;
 
 // Check if performance has plateaued
@@ -861,7 +861,7 @@ return this.currentLearningRate;
 
 private async selectBestFromParetoFront(
 paretoFront: ParetoFront,
-_candidates: Array<{
+candidates: Array<{
 module: DSPyModule;
 objectives: number[];
 hyperparameters: Record<string, any>;
@@ -892,18 +892,18 @@ return bestIndex;
 
 private async performFinetuneStep(
 module: DSPyModule,
-_trainset?: any[],
-_config?: any,
-_teacher?: DSPyModule
+trainset?: any[],
+config?: any,
+teacher?: DSPyModule
 ): Promise<DSPyModule> {
 // Perform one fine-tuning step
 return module;
 }
 
 private async performArchitectureSearch(
-_student: DSPyModule,
-_trainset?: any[],
-_valset?: any[]
+student: DSPyModule,
+trainset?: any[],
+valset?: any[]
 ): Promise<void> {
 // Architecture search implementation
 this.logger.info('Architecture search completed');
@@ -932,7 +932,7 @@ correctedPValues: {},
 }
 
 private async saveCheckpoint(
-_module: DSPyModule,
+module: DSPyModule,
 step: number
 ): Promise<void> {
 // Save model checkpoint

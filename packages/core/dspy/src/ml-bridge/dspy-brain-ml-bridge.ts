@@ -217,7 +217,7 @@ try {
 this.logger.info(' Initializing DSPy-Brain ML Bridge');
 
 // Import Brain coordinator - fallback if not available
-let _BrainCoordinator;
+let BrainCoordinator;
 try {
 // const brainModule = await import('@claude-zen/brain');\n // BrainCoordinator = brainModule.BrainCoordinator;\n throw new Error(' Brain package not available'); // Force fallback
 } catch (error) {
@@ -225,7 +225,7 @@ this.logger.warn(
 'Brain package not available, using fallback implementation'
 );
 // Create a simple fallback BrainCoordinator that matches the expected interface
-__BrainCoordinator = class implements BrainCoordinator {
+_BrainCoordinator = class implements BrainCoordinator {
 async initialize() {}
 async destroy() {}
 async optimizePrompt(request: any) {
@@ -362,7 +362,7 @@ this.logger.info(' Analyzing task for teleprompter recommendation');
 
 try {
 // Use Brain's pattern recognition for intelligent selection (fallback if MLEngine not available)
-const __mlEngine = this.brainCoordinator.getMLEngine?.() || null;
+const _mlEngine = this.brainCoordinator.getMLEngine?.() || null;
 
 // Analyze task characteristics
 const taskAnalysis =
@@ -526,7 +526,7 @@ return history;
 */
 private async generateMLRecommendation(
 taskAnalysis: any,
-_historicalData: any[]
+historicalData: any[]
 ): Promise<any> {
 // Simple heuristic-based recommendation (would use ML in production)
 let recommendedTeleprompter = 'miprov2';

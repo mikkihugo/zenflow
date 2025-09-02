@@ -489,7 +489,7 @@ export class SQLiteAdapter implements DatabaseConnection {
  async getCurrentMigrationVersion(): Promise<string | null> {
  try {
  const result = await this.query<{ version: string }>(
- 'SELECT version FROM _migrations ORDER BY version DESC LIMIT 1'
+ 'SELECT version FROM migrations ORDER BY version DESC LIMIT 1'
  );
  return result.rows[0]?.version || null;
  } catch {
@@ -842,7 +842,7 @@ export class SQLiteAdapter implements DatabaseConnection {
 
  private async createMigrationsTable(): Promise<void> {
    await this.query(`
- CREATE TABLE IF NOT EXISTS _migrations (
+ CREATE TABLE IF NOT EXISTS migrations (
  version TEXT PRIMARY KEY,
  name TEXT NOT NULL,
  applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -851,7 +851,7 @@ export class SQLiteAdapter implements DatabaseConnection {
  }
 
  private async recordMigration(version: string, name: string): Promise<void> {
-   await this.query('INSERT INTO _migrations (version, name) VALUES (?, ?)', [
+   await this.query('INSERT INTO migrations (version, name) VALUES (?, ?)', [
      version,
      name,
    ]);

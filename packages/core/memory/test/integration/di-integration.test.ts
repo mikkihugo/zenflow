@@ -16,23 +16,23 @@ vi.mock('@claude-zen/foundation', () => ({
     ok:(value: any) => ({
       isOk:() => true,
       isErr:() => false,
-      _unsafeUnwrap:() => value,
+      unsafeUnwrap:() => value,
 }),
     err:(error: any) => ({
       isOk:() => false,
       isErr:() => true,
-      _unsafeUnwrapErr:() => error,
+      unsafeUnwrapErr:() => error,
 }),
 },
   ok:(value: any) => ({
     isOk:() => true,
     isErr:() => false,
-    _unsafeUnwrap:() => value,
+    unsafeUnwrap:() => value,
 }),
   err:(error: any) => ({
     isOk:() => false,
     isErr:() => true,
-    _unsafeUnwrapErr:() => error,
+    unsafeUnwrapErr:() => error,
 }),
   safeAsync:vi.fn((fn) => fn()),
   withRetry:vi.fn((fn) => fn()),

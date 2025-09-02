@@ -202,10 +202,10 @@ return [
 * Segment document using intelligent strategies
 */
 async segmentDocument(
-_content:string,
+content:string,
 classification:DocumentClassification
 ):Promise<SegmentationResult> {
-const __startTime = performance.now();
+const _startTime = performance.now();
 logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}``
 
 try {
@@ -717,7 +717,7 @@ startPosition:number,
 segmentType:DocumentSegment[`segmentType`],
 algorithmBlocks:AlgorithmBlock[]
 ):DocumentSegment {
-const __id = `segment_${startPosition}_${Date.now()}``
+const _id = `segment_${startPosition}_${Date.now()}``
 const endPosition = startPosition + content.length;
 
 // Check if this segment overlaps with algorithm blocks

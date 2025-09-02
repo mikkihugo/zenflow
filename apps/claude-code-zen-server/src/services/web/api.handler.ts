@@ -7,6 +7,7 @@
 
 // Foundation imports
 import { getLogger } from '@claude-zen/foundation';
+import { getEventBus, type CorrelatedPayload } from '../events/event-bus';
 
 import type { Express, Request, Response } from 'express';
 
@@ -124,26 +125,47 @@ export class ApiRouteHandler {
    * System status handler.
    */
   private handleSystemStatus(req: Request, res: Response): void {
-    try {
-      const status = this.getSystemStatus();
-      res.json(status);
-    } catch (error) {
-      this.logger.error('Failed to get system status: ', error);
-      res.status(500).json({ error: 'Failed to get system status' });
-    }
+    // Event-driven: request status via EventBus and reply with correlated response
+    const bus = getEventBus();
+    const correlationId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const timeout = setTimeout(() => {
+      this.logger.warn('System status request timed out');
+      res.status(504).json({ error: 'Status request timed out' });
+    }, 2000);
+
+    const handler = (...args: unknown[]) => {
+      const payload = (args[0] ?? {}) as CorrelatedPayload;
+      if (payload?.correlationId !== correlationId) return;
+      clearTimeout(timeout);
+      bus.off('api:system:status:response', handler);
+      res.json(payload);
+    };
+
+    bus.on('api:system:status:response', handler);
+    bus.emit('api:system:status:request', { correlationId });
   }
 
   /**
    * Get swarms handler.
    */
-  private async handleGetSwarms(req: Request, res: Response): Promise<void> {
-    try {
-      const swarms = await this.getSwarms();
-      res.json(swarms);
-    } catch (error) {
-      this.logger.error('Failed to get swarms: ', error);
-      res.status(500).json({ error: 'Failed to get swarms' });
-    }
+  private handleGetSwarms(req: Request, res: Response): void {
+    const bus = getEventBus();
+    const correlationId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const timeout = setTimeout(() => {
+      this.logger.warn('Swarms list request timed out');
+      res.status(504).json({ error: 'Swarms request timed out' });
+    }, 3000);
+
+    const handler = (...args: unknown[]) => {
+      const payload = (args[0] ?? {}) as CorrelatedPayload<{ swarms: unknown }>;
+      if (payload?.correlationId !== correlationId) return;
+      clearTimeout(timeout);
+      bus.off('api:swarms:list:response', handler);
+      res.json(payload.swarms ?? []);
+    };
+
+    bus.on('api:swarms:list:response', handler);
+    bus.emit('api:swarms:list:request', { correlationId });
   }
 
   /**

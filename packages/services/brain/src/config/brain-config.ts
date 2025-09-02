@@ -68,7 +68,7 @@ autoOptimize:false,
 export function getBrainConfig():BrainSpecificConfig & Partial<Config> {
 try {
 // Get shared configuration (handles environment, validation, etc.)
-const __sharedConfig = getConfig();
+const _sharedConfig = getConfig();
 
 // Get neural-specific config from shared system
 const neuralConfig = getNeuralConfig ? getNeuralConfig()||{} :{};
@@ -83,9 +83,9 @@ getNeuralConfigAvailable:Boolean(getNeuralConfig),
 // Get environment-specific settings
 const debugMode = isDebugMode();
 // Use NODE_ENV or fallback to debug mode inference
-const __environment =
+const _environment =
 process.env.NODE_ENV || (debugMode ? 'development' : `production`
-logger.info(`Loading brain config for environment: ${__environment}`, {
+logger.info(`Loading brain config for environment: ${_environment}`, {
 debugMode,
 });
 

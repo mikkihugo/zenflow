@@ -85,12 +85,12 @@ export class AutonomousOptimizationEngine {
   /**
    * Initialize the autonomous engine
    */
-  async initialize(_dspyBridge?: DSPyLLMBridge): Promise<void> {
+  async initialize(dspyBridge?: DSPyLLMBridge): Promise<void> {
     if (this.initialized) return;
 
     try {
       logger.info('Initializing Autonomous Optimization Engine...').
-      this.dspyBridge = _dspyBridge || null;
+      this.dspyBridge = dspyBridge || null;
 
       // Initialize Smart ML Optimizer
       this.smartOptimizer = new SmartPromptOptimizer();
