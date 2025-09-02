@@ -31,7 +31,7 @@ class SafeManager {
 ### **Core Dependencies (Always Required)**
 
 - `@claude-zen/foundation` - DI, logging, error handling, telemetry infrastructure
-- `@claude-zen/event-system` - Type-safe event-driven coordination
+- `@claude-zen/foundation` - Type-safe event-driven coordination
 - `@claude-zen/workflows` - Process orchestration and workflow automation
 - `@claude-zen/teamwork` - Cross-stakeholder collaboration
 - `@claude-zen/ai-safety` - Safety protocols and deception detection
@@ -82,7 +82,7 @@ import {
   PerformanceTracker,
   TelemetryManager,
 } from '@claude-zen/foundation/telemetry';
-import { EventBus } from '@claude-zen/event-system';
+import { EventBus } from '@claude-zen/foundation';
 
 const epicManager = new EpicOwnerManager(
   config,

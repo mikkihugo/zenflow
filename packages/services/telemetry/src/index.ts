@@ -48,6 +48,12 @@ import {
   shutdownEventDrivenTelemetry,
 } from './telemetry-event-driven.js';
 
+import {
+  TelemetryEventBridge,
+  createTelemetryEventBridge,
+  getDefaultTelemetryBridgeConfig,
+} from './telemetry-event-bridge.js';
+
 // PRIMARY EVENT-DRIVEN EXPORTS (ZERO IMPORTS)
 export {
   createEventDrivenTelemetryManager,
@@ -71,3 +77,10 @@ export function createTelemetryAccess(config?:unknown) {
     shutdownEventDrivenTelemetry
   };
 }
+
+// Event bridge exports for foundation integration
+export {
+  TelemetryEventBridge,
+  createTelemetryEventBridge,
+  getDefaultTelemetryBridgeConfig,
+};

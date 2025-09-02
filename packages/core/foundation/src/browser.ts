@@ -223,10 +223,10 @@ export const createCircuitBreaker = () => ({
   fire: <T>(fn: () => Promise<T>): Promise<T> => fn(),
 });
 
-// EVENT SYSTEM - Import from @claude-zen/event-system directly
+// EVENT SYSTEM - Import from @claude-zen/foundation directly
 // =============================================================================
 // Foundation does not export EventEmitter to avoid circular dependencies
-// Import EventEmitter directly from:@claude-zen/event-system
+// Import EventEmitter directly from @claude-zen/foundation
 
 // TYPE SYSTEM - All types and type utilities (no runtime code)
 // =============================================================================

@@ -509,7 +509,7 @@
  *
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  * @requires @claude-zen/brain - Neural intelligence integration
- * @requires @claude-zen/event-system - Knowledge event coordination
+ * @requires @claude-zen/foundation - Knowledge event coordination
  *
  * @packageDocumentation
  */

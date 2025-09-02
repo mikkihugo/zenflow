@@ -80,7 +80,7 @@ Built on the **neuro-divergent** Rust library, providing:
 Part of the **@zen-ai** ecosystem:
 
 - Integrates with `@zen-ai/shared` for configuration
-- Uses `@zen-ai/event-system` for coordination
+- Uses `@claude-zen/foundation` for coordination
 - Compatible with `@claude-zen/brain` neural coordination
 
 ---

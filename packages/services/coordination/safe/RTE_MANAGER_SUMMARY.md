@@ -72,7 +72,7 @@ A comprehensive Release Train Engineer Management system has been successfully i
 
 ### **Event-Driven Architecture**
 
-- **Event Integration**: Full integration with @claude-zen/event-system
+- **Event Integration**: Full integration with @claude-zen/foundation
 - **EventEmitter Pattern**: Real-time coordination and communication
 - **Type-Safe Events**: Comprehensive event handling for ART coordination
 
@@ -139,7 +139,7 @@ A comprehensive Release Train Engineer Management system has been successfully i
 ### **Dependencies**
 
 - ✅ **EventEmitter3**: Event-driven coordination
-- ✅ **@claude-zen/event-system**: Type-safe event handling
+- ✅ **@claude-zen/foundation**: Type-safe event handling
 - ✅ **SAFe Framework Types**: Full integration with existing SAFe types
 
 ## 📈 Business Value

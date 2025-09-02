@@ -594,7 +594,7 @@ import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 // ✅ Direct package imports (current architecture)
 import { BrainCoordinator } from '@claude-zen/brain';
 import { DatabaseProvider } from '@claude-zen/database';
-import { EventManager } from '@claude-zen/event-system';
+import { EventBus } from '@claude-zen/foundation';
 
 // ✅ Coordination package (unified)
 import { SafeFramework } from '@claude-zen/coordination/safe';

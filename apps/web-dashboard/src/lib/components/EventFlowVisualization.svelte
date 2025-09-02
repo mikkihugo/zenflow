@@ -1,41 +1,23 @@
 <script lang="ts">
 import { clearInterval } from 'timers';
-  import { onMount, onDestroy } from 'svelte';
-  import { toast } from '@zerodevx/svelte-toast';
-  
-  interface EventFlow {
-    id: string;
-    eventName: string;
-    source: string;
-    target: string;
-    timestamp: Date;
-    latency: number;
-    success: boolean;
-  }
-  
-  interface EventMetrics {
-    totalEvents: number;
-    eventsPerSecond: number;
-    averageLatency: number;
-    errorRate: number;
-    activeModules: number;
-    systemHealth: 'healthy' | 'degraded' | 'critical';
-  }
-  
-  // Component state
-  let eventFlows: EventFlow[] = [];
-  let eventMetrics: EventMetrics = {
-    totalEvents: 0,
-    eventsPerSecond: 0,
-    averageLatency: 0,
-    errorRate: 0,
-    activeModules: 0,
-    systemHealth: 'healthy'
-  };
-  
-  let updateInterval: NodeJS.Timeout;
-  let isConnected = false;
-  let websocket: WebSocket | null = null;
+import { onMount, onDestroy } from 'svelte';
+import { toast } from '@zerodevx/svelte-toast';
+import { eventSystemService, type EventFlow, type EventMetrics, type ActiveModule } from '../services/event-system.service.js';
+
+// Component state
+let eventFlows: EventFlow[] = [];
+let eventMetrics: EventMetrics = {
+  totalEvents: 0,
+  eventsPerSecond: 0,
+  averageLatency: 0,
+  errorRate: 0,
+  activeModules: 0,
+  systemHealth: 'healthy'
+};
+
+let activeModules: ActiveModule[] = [];
+let updateInterval: NodeJS.Timeout;
+let isConnected = false;
   
   onMount(async () => {
     try {

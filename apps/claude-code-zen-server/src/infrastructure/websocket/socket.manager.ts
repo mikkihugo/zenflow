@@ -495,7 +495,7 @@ export class WebSocketManager {
       return {
         '@claude-zen/foundation': { available: true, version: '1.1.1' },
         '@claude-zen/database': { available: false, version: null },
-        '@claude-zen/event-system': { available: false, version: null },
+        // Event system is now part of foundation
         '@claude-zen/brain': { available: false, version: null },
         '@claude-zen/coordination': { available: true, version: '1.0.0' },
         // Add other packages as they're implemented
@@ -562,10 +562,7 @@ export class WebSocketManager {
         status: packageInfo['@claude-zen/database']?.available ? 'registered' : 'fallback',
         version: packageInfo['@claude-zen/database']?.version
       },
-      '@claude-zen/event-system': {
-        status: packageInfo['@claude-zen/event-system']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/event-system']?.version
-      }
+      // Event system is now part of foundation
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 

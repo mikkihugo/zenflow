@@ -11,7 +11,7 @@
 
 import { EventEmitter } from './event-emitter.js';
 
-// Simple logger for event-system to avoid circular dependency
+// Simple logger for event system to avoid circular dependency
 // Production-ready:Use structured logging instead of direct console
 const logger = {
  info: (msg: string, data?: unknown) => {
