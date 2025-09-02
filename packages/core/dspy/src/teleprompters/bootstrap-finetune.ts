@@ -343,7 +343,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			if (!pred.lm) {
 				throw new Error(
 					`Predictor ${predInd} does not have an LM assigned. ` +
-						`Please ensure the module`s predictors have their LM set before fine-tuning. ` +
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
 						`You can set it using: your_module.set_lm(your_lm)`,
 				);
 }
@@ -379,18 +379,18 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			);
 }
 
-		logger.info(`${keyToData.size} fine-tuning job(s) to start`
+		logger.info(`${keyToData.size} fine-tuning job(s) to start`);
 		const keyToLM = await this.finetuneLMs(keyToData);
 
 		logger.info("Updating the student program with the fine-tuned LMs...");
 		for (let predInd = 0; predInd < student.predictors().length; predInd++) {
 			const pred = student.predictors()[predInd];
 			const dataPredInd = this.config.multitask ? null:predInd;
-			const trainingKey = `${pred.lm?.model || "default"}_${dataPredInd}`
+			const trainingKey = `${pred.lm?.model || "default"}_${dataPredInd}`;
 			const finetunedLM = keyToLM.get(trainingKey);
 
 			if (finetunedLM instanceof Error) {
-				throw new Error(`Finetuned LM for predictor ${predInd} failed.`
+				throw new Error(`Finetuned LM for predictor ${predInd} failed.`);
 }
 
 			if (finetunedLM) {
@@ -472,7 +472,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		predInd: 'number' | 'null' = null,
 	):Promise<{ trainData: any[]; dataFormat: DataFormat}> {
 		if (this.config.metric) {
-			logger.info(`Collected data for ${traceData.length} examples`
+			logger.info(`Collected data for ${traceData.length} examples`);
 			traceData = traceData.filter((d) => d.score);
 			logger.info(
 				`After filtering with the metric, ${traceData.length} examples remain`,
@@ -572,7 +572,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			if (!predictor.lm) {
 				throw new Error(
 					`Predictor ${i} does not have an LM assigned. ` +
-						`Please ensure the module`s predictors have their LM set before fine-tuning. ` +
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
 						`You can set it using: your_module.set_lm(your_lm)`,
 				);
 }
