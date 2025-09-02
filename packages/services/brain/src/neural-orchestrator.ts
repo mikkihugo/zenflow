@@ -14,7 +14,7 @@
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 import { DatabaseProvider } from '@claude-zen/database';
 
-const logger = getLogger('neural-orchestrator').
+const logger = getLogger('neural-orchestrator');
 
 /**
  * Neural task complexity levels - enhanced classification

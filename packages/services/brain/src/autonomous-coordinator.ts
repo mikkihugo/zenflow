@@ -24,7 +24,7 @@ import * as ss from 'simple-statistics';
 import type { AutonomousOptimizationEngine} from './autonomous-optimization-engine';
 import type { BehavioralIntelligence} from './behavioral-intelligence';
 
-const logger = getLogger('AutonomousCoordinator').
+const logger = getLogger('AutonomousCoordinator');
 
 export interface SystemMetrics {
 readonly cpuUsage:number;
@@ -97,7 +97,7 @@ slow:0.03, // For stable baselines
 };
 
 constructor() {
-logger.info(' Autonomous Coordinator created - self-governing brain system').
+		logger.info('Autonomous Coordinator created - self-governing brain system');
 }
 
 /**
@@ -222,7 +222,7 @@ responseTime
 
 // Make autonomous resource decisions
 if (
-cpuPressure === 'critical' || memoryPressure === 'critical' || timePressure === 'poor; {
+			cpuPressure === 'critical' || memoryPressure === 'critical' || timePressure === 'poor') {
 return {
 type: 'resource_allocation',
 action: 'emergency_resource_reallocation',

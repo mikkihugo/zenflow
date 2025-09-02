@@ -703,7 +703,7 @@ export class MemorySystemManager extends EventEmitter {
 
  for (const [name, component] of this.components) {
  if (!component.healthy) {
- issues.push(`Component '${name}' is unhealthy`
+				issues.push(`Component '${name}' is unhealthy`);
  }
  }
 
