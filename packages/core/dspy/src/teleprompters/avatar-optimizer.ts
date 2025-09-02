@@ -344,8 +344,8 @@ export class AvatarOptimizer extends Teleprompter {
 			// Simulate LLM-based feedback generation
 			const feedback =
 				'Based on the analysis of positive vs negative examples, ' +
-				}the tool usage needs improvement. Focus on better action selection and ` +
-				`more effective instruction following for the problematic cases.`
+				'the tool usage needs improvement. Focus on better action selection and ' +
+				'more effective instruction following for the problematic cases.';
 
 			return { feedback };
 		};

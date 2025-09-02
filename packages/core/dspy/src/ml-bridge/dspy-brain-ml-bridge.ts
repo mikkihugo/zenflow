@@ -297,37 +297,37 @@ task: DSPyOptimizationTask
 ): Promise<DSPyOptimizationResult> {
 await this.initialize();
 
-if (!this.brainCoordinator) {
-throw new Error(`Brain coordinator not initialized`
-}
+		if (!this.brainCoordinator) {
+			throw new Error(`Brain coordinator not initialized`);
+		}
 
-const startTime = Date.now();
-this.logger.info(` Starting DSPy ${task.teleprompterType} optimization`
+		const startTime = Date.now();
+		this.logger.info(`Starting DSPy ${task.teleprompterType} optimization`);
 
-try {
-// Convert DSPy task to Brain optimization format
-const brainRequest = this.translateDSPyToBrainRequest(task);
+		try {
+			// Convert DSPy task to Brain optimization format
+			const brainRequest = this.translateDSPyToBrainRequest(task);
 
-// Execute optimization using Brain`s prompt optimization
-const brainResult =
-await this.brainCoordinator.optimizePrompt(brainRequest);
+			// Execute optimization using Brain's prompt optimization
+			const brainResult =
+				await this.brainCoordinator.optimizePrompt(brainRequest);
 
-// Translate Brain result back to DSPy format
-const dspyResult = this.translateBrainToDSPyResult(brainResult, task);
+			// Translate Brain result back to DSPy format
+			const dspyResult = this.translateBrainToDSPyResult(brainResult, task);
 
-// Store optimization history
-this.optimizationHistory.set(task.teleprompterType, dspyResult);
+			// Store optimization history
+			this.optimizationHistory.set(task.teleprompterType, dspyResult);
 
-const duration = Date.now() - startTime;
-this.logger.info(` DSPy optimization completed in ${duration}ms`
+			const duration = Date.now() - startTime;
+			this.logger.info(`DSPy optimization completed in ${duration}ms`);
 
-this.emit(`optimization:completed`, {
-teleprompterType: task.teleprompterType,
-result: dspyResult,
-duration,
-});
+			this.emit(`optimization:completed`, {
+				teleprompterType: task.teleprompterType,
+				result: dspyResult,
+				duration,
+			});
 
-return dspyResult;
+			return dspyResult;
 } catch (error) {
 this.logger.error(
 `Failed to optimize DSPy ${task.teleprompterType}:`,
@@ -354,9 +354,9 @@ mlEnhanced: boolean;
 }> {
 await this.initialize();
 
-if (!this.brainCoordinator) {
-throw new Error(`Brain coordinator not initialized`
-}
+		if (!this.brainCoordinator) {
+			throw new Error(`Brain coordinator not initialized`);
+		}
 
 this.logger.info(' Analyzing task for teleprompter recommendation');
 

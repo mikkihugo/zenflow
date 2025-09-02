@@ -247,19 +247,19 @@ let message = instructions;
 if (signature.inputs || signature.outputs) {
 message += '\n\nFields:';
 
-if (signature.inputs) {
-message += `\nInputs:`
-for (const [key, _spec] of Object.entries(signature.inputs)) {
-message += `\n- ${key}:${_spec.description || 'No description'}`
-}
-}
+		if (signature.inputs) {
+			message += `\nInputs:`;
+			for (const [key, _spec] of Object.entries(signature.inputs)) {
+				message += `\n- ${key}: ${_spec.description || 'No description'}`;
+			}
+		}
 
-if (signature.outputs) {
-message += `\nOutputs:`
-for (const [key, spec] of Object.entries(signature.outputs)) {
-message += `\n- ${key}:${spec.description || `No description}`
-}
-}
+		if (signature.outputs) {
+			message += `\nOutputs:`;
+			for (const [key, spec] of Object.entries(signature.outputs)) {
+				message += `\n- ${key}: ${spec.description || 'No description'}`;
+			}
+		}
 }
 
 return message;
@@ -269,11 +269,11 @@ return message;
 * Validate adapter input data
 */
 protected validateInput(data: any, requiredFields: string[]): void {
-for (const field of requiredFields) {
-if (!(field in data) || data[field] === undefined) {
-throw new Error(`Missing required field:${field}`
-}
-}
+		for (const field of requiredFields) {
+			if (!(field in data) || data[field] === undefined) {
+				throw new Error(`Missing required field: ${field}`);
+			}
+		}
 }
 }
 
