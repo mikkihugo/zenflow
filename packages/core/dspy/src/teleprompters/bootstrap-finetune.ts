@@ -343,12 +343,12 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			if (!pred.lm) {
 				throw new Error(
 					`Predictor ${predInd} does not have an LM assigned. ` +
-						`Please ensure the module`s predictors have their LM set before fine-tuning. ` +
-						`You can set it using: your_module.set_lm(your_lm)`,
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`You can set it using: your_module.set_lm(your_lm)`
 				);
 }
 
-			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`
+			const trainingKey = `${pred.lm.model || "default"}_${dataPredInd}`;
 
 			if (!keyToData.has(trainingKey)) {
 				const { trainData, dataFormat} = await this.prepareFinetuneData(
@@ -472,7 +472,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 		predInd: 'number' | 'null' = null,
 	):Promise<{ trainData: any[]; dataFormat: DataFormat}> {
 		if (this.config.metric) {
-			logger.info(`Collected data for ${traceData.length} examples`
+			logger.info(`Collected data for ${traceData.length} examples`);
 			traceData = traceData.filter((d) => d.score);
 			logger.info(
 				`After filtering with the metric, ${traceData.length} examples remain`,
@@ -572,8 +572,8 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 			if (!predictor.lm) {
 				throw new Error(
 					`Predictor ${i} does not have an LM assigned. ` +
-						`Please ensure the module`s predictors have their LM set before fine-tuning. ` +
-						`You can set it using: your_module.set_lm(your_lm)`,
+						`Please ensure the module's predictors have their LM set before fine-tuning. ` +
+						`You can set it using: your_module.set_lm(your_lm)`
 				);
 }
 }
