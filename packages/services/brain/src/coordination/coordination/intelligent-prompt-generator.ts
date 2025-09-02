@@ -674,40 +674,42 @@ Generate a complete, ready-to-use development prompt.`,
       const agentProfiles = this.behavioralIntelligence.getAllAgentProfiles();
       const enhancedStats = this.behavioralIntelligence.getEnhancedStats();
 
-      // Build context-specific recommendations
-      let contextualInsights = ';
+      		// Build context-specific recommendations
+		let contextualInsights = '';
 
-      if (context.currentPhase) {
-        contextualInsights += `- Project phase:${context}.currentPhase- applying phase-specific patterns\n``
-}
+		if (context.currentPhase) {
+			contextualInsights += `- Project phase: ${context.currentPhase} - applying phase-specific patterns\n`;
+		}
 
-      if (context.domainSpecific) {
-        contextualInsights += `- Domain:${context}.domainSpecific- leveraging domain expertise\n``
-}
+		if (context.domainSpecific) {
+			contextualInsights += `- Domain: ${context.domainSpecific} - leveraging domain expertise\n`;
+		}
 
-      if (complexityLevel > 0.7) {
-        contextualInsights += `- High complexity detected (${(_complexityLevel * 100).toFixed(1)}%) - extra attention needed\n``
-}
+		if (complexityLevel > 0.7) {
+			contextualInsights += `- High complexity detected (${(complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;
+		}
 
       // Include agent performance insights relevant to project type
       if (enhancedStats.averagePerformance > 0.8) {
         contextualInsights += `- High-performing agent patterns available (${(_enhancedStats._averagePerformance * 100).toFixed(1)}%)\n``
-}
+		}
 
-      return `${content}`
+		return `${content}
 
 ## 🧠 AI-Enhanced Recommendations:
 Based on ${agentProfiles.size} agent profiles and project context analysis:
 ${contextualInsights}
-- Focus on areas where similar ${projectTags.join(',    '). projects typically encounter issues'). Leverage patterns that have proven successful in comparable domains
+- Focus on areas where similar ${projectTags.join(', ')} projects typically encounter issues
+- Leverage patterns that have proven successful in comparable domains
 - Pay special attention to complexity hotspots identified by behavioral analysis
-- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience``
-} catch (error) {
-      this.logger.warn(
-        'Error enhancing prompt with behavioral intelligence: ','        error
-      );
-      return content;
-}
+- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;
+	} catch (error) {
+		this.logger.warn(
+			'Error enhancing prompt with behavioral intelligence:',
+			error
+		);
+		return content;
+	}
 }
 
   /**
