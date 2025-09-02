@@ -56,7 +56,7 @@ num_candidates?: number | null;
 /** Number of threads for evaluation */
 num_threads?: number | null;
 /** Maximum errors allowed */
-max_errors?: number | null;
+maxerrors?: number | null;
 /** Random seed */
 seed?: number;
 /** Initial temperature for instruction generation */
@@ -157,7 +157,7 @@ mb_program?: DSPyModule;
 * // Production configuration with error handling
 * const productionOptimizer = new MIPROv2({
 * metric:productionMetric,
-* auto: 'medium', * max_errors:5, // Allow some failures
+* auto: 'medium', * maxerrors:5, // Allow some failures
 * metric_threshold:0.8, // Quality threshold
 * seed:42 // Reproducible results
 *});
@@ -203,7 +203,7 @@ max_labeled_demos: config.max_labeled_demos ?? 4,
 auto: `auto` in config ? config.auto : 'light', // Respect explicit null, default to `light` only if not specified
 num_candidates: config.num_candidates || null,
 num_threads: config.num_threads || null,
-max_errors: config.max_errors || null,
+maxerrors: config.maxerrors || null,
 seed: config.seed ?? 9,
 init_temperature: config.init_temperature ?? 0.5,
 verbose: config.verbose ?? false,

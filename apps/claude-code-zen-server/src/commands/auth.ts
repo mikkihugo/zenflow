@@ -244,24 +244,24 @@ async function pollForToken(
       return data;
     }
 
-    if (data._error === 'authorization_pending') {
+    if (data.error === 'authorization_pending') {
       continue; // Keep polling
     }
 
-    if (data._error === 'slow_down') {
+    if (data.error === 'slow_down') {
       interval += 5; // Increase interval
       continue;
     }
 
-    if (data._error === 'expired_token') {
+    if (data.error === 'expired_token') {
       throw new Error('Device code expired. Please try again.');
     }
 
-    if (data._error === 'access_denied') {
+    if (data.error === 'access_denied') {
       throw new Error('Access denied by user.');
     }
 
-    throw new Error(`OAuth error: ${data.error_description || data._error}`);
+    throw new Error(`OAuth error: ${data.error_description || data.error}`);
   }
 
   throw new Error('Authentication timeout. Please try again.');
@@ -325,8 +325,8 @@ async function copyToClipboard(text: string): Promise<void> {
 
         logger.debug('Successfully copied to clipboard using', cmd?.[0]);
         return;
-      } catch (_error) {
-        logger.debug(`Failed to use ${  cmd?.[0]  }:`, _error);
+      } catch (error) {
+        logger.debug(`Failed to use ${  cmd?.[0]  }:`, error);
       }
     }
 
@@ -334,8 +334,8 @@ async function copyToClipboard(text: string): Promise<void> {
     logger.warn(
       'Could not copy to clipboard automatically. Please copy the code manually.'
     );
-  } catch (_error) {
-    logger.error('Clipboard operation failed: ', _error);
+  } catch (error) {
+    logger.error('Clipboard operation failed: ', error);
   }
 }
 
@@ -375,8 +375,8 @@ export async function authLogin(): Promise<void> {
 
     logger.info('\n Authentication successful!');
     logger.info('You can now use GitHub Copilot with Claude Code Zen.');
-  } catch (_error) {
-    logger.error('Authentication failed: ', _error);
+  } catch (error) {
+    logger.error('Authentication failed: ', error);
     process.exit(1);
   }
 }
@@ -400,8 +400,8 @@ export async function authStatus(): Promise<void> {
       logger.info(' Authenticated: No');
       logger.info(' Run "claude-zen auth login" to authenticate');
     }
-  } catch (_error) {
-    logger.error('Failed to check authentication status: ', _error);
+  } catch (error) {
+    logger.error('Failed to check authentication status: ', error);
     process.exit(1);
   }
 }
@@ -419,8 +419,8 @@ export async function authLogout(): Promise<void> {
       logger.info('\n No authentication token found');
       logger.info('You are already logged out.');
     }
-  } catch (_error) {
-    logger.error('Failed to logout: ', _error);
+  } catch (error) {
+    logger.error('Failed to logout: ', error);
     process.exit(1);
   }
 }
@@ -459,8 +459,8 @@ async function main() {
 
 // Only run main if this file is executed directly
 if (import.meta.url === `file://${  process.argv[1]}`) {
-  main().catch((_error) => {
-    logger.error('Command failed: ', _error);
+  main().catch((error) => {
+    logger.error('Command failed: ', error);
     process.exit(1);
   });
 }

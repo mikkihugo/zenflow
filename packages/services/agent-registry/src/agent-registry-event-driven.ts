@@ -578,7 +578,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
       if (this.options.enableMetrics) {
         recordMetric('agent_health_updates', 1);
         recordHistogram('agent_response_time', health.responseTime);
-        recordHistogram('agent_error_rate', health.errorRate);
+        recordHistogram('agenterror_rate', health.errorRate);
 }
 
       this.logger.debug('Agent health updated', { agentId, health:health.status});

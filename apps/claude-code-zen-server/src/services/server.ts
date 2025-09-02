@@ -396,7 +396,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
           status: httpHealth.healthy ? 'ok' : ' error',
           message: httpHealth.message,
         });
-      } catch (_error) {
+      } catch (error) {
         healthChecks.push({
           name: 'http',
           status: 'error',
@@ -413,7 +413,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
           status: dbHealth.healthy ? 'ok' : ' error',
           message: dbHealth.message,
         });
-      } catch (_error) {
+      } catch (error) {
         healthChecks.push({
           name: 'database',
           status: 'error',
@@ -478,7 +478,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       });
 
       return result;
-    }).catch(async (_error) => {
+    }).catch(async (error) => {
       // Update error metrics
       this.serverMetrics.errors++;
       this.serverStatus.lastError = (error as Error).message;
@@ -515,7 +515,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.http = adapter;
       logger.info('HTTP adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (_error) {
+    } catch (error) {
       return { success: false, error: error as Error };
     }
   }
@@ -525,7 +525,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.websocket = adapter;
       logger.info('WebSocket adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (_error) {
+    } catch (error) {
       return { success: false, error: error as Error };
     }
   }
@@ -535,7 +535,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.database = adapter;
       logger.info('Database adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (_error) {
+    } catch (error) {
       return { success: false, error: error as Error };
     }
   }
@@ -545,7 +545,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       this.adapters.event = adapter;
       logger.info('Event adapter registered', { serverId: this.id });
       return { success: true, data: undefined };
-    } catch (_error) {
+    } catch (error) {
       return { success: false, error: error as Error };
     }
   }
@@ -575,7 +575,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       logger.debug('Strategic facades skipped (none available)', {
         serverId: this.id,
       });
-    } catch (_error) {
+    } catch (error) {
       logger.warn('Strategic facades initialization skipped', {
         serverId: this.id,
         error: error instanceof Error ? (error as Error).message : String(error),
@@ -597,7 +597,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         logger.debug('Default database adapter initialized', {
           serverId: this.id,
         });
-      } catch (_error) {
+      } catch (error) {
         logger.warn('Database adapter initialization failed', {
           serverId: this.id,
           error: error instanceof Error ? (error as Error).message : String(error),
@@ -613,7 +613,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         logger.debug('Default event adapter initialized', {
           serverId: this.id,
         });
-      } catch (_error) {
+      } catch (error) {
         logger.warn('Event adapter initialization failed', {
           serverId: this.id,
           error: error instanceof Error ? (error as Error).message : String(error),
@@ -630,7 +630,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
       for (const hook of hooks) {
         try {
           await hook(this);
-        } catch (_error) {
+        } catch (error) {
           logger.error('Lifecycle hook execution failed', {
             serverId: this.id,
             phase,
@@ -678,7 +678,7 @@ export class ClaudeZenServerFactory implements ServerFactory {
       await server.registerWebSocketAdapter(
         await createWebSocketAdapter(webApiConfig)
       );
-    } catch (_error) {
+    } catch (error) {
       logger.warn('Some web adapters not available', {
         error: error instanceof Error ? (error as Error).message : String(error),
       });
@@ -710,7 +710,7 @@ export class ClaudeZenServerFactory implements ServerFactory {
       await server.registerEventAdapter(
         await createEventAdapter(coordinationConfig)
       );
-    } catch (_error) {
+    } catch (error) {
       logger.warn('Event adapter not available for coordination server', {
         error: error instanceof Error ? (error as Error).message : String(error),
       });
@@ -769,7 +769,7 @@ export class ClaudeZenServerFactory implements ServerFactory {
         ),
         server.registerEventAdapter(await createEventAdapter(prodConfig)),
       ]);
-    } catch (_error) {
+    } catch (error) {
       logger.warn('Some production adapters not available', {
         error: error instanceof Error ? (error as Error).message : String(error),
       });

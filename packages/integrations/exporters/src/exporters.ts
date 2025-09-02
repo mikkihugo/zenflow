@@ -86,7 +86,7 @@ export class ExportSystem {
  try {
  const exporter = this.exporters.get(config?.format);
  if (!exporter) {
- throw new Error(`Unsupported export format:${config?.format}`
+ throw new Error(`Unsupported export format: ${config?.format}`);
  }
 
  const exportedData = exporter.export(data);

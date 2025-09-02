@@ -355,9 +355,9 @@ export class AutonomousTeleprompterSelector extends EventEmitter {
 	):Promise<void> {
 		const task = this.findTaskById(taskId);
 		if (!task) {
-			this.logger.warn(`Task ${taskId} not found for performance recording`
+			this.logger.warn(`Task ${taskId} not found for performance recording`);
 			return;
-}
+		}
 
 		const record:TeleprompterPerformanceRecord = {
 			teleprompterName,

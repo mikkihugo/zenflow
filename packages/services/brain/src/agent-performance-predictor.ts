@@ -223,7 +223,7 @@ logger.info(
 );
 
 return prediction;
-} catch (_error) {
+} catch (error) {
 logger.error(
 `Performance prediction failed for agent ${agentId}:`,
 error

@@ -195,9 +195,9 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
    * Handle agent failure.
    *
    * @param agentId
-   * @param _error
+   * @param error
    */
-  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
     const weight = this.getOrCreateWeight(agentId);
     weight.failureCount++;
 

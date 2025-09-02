@@ -54,7 +54,7 @@ samplingStrategy: 'uniform|weighted|adaptive';
 
 // Active learning parameters
 uncertaintySampling: boolean;
-queryStrategy: 'uncertainty|diversity|expected_error_reduction';
+queryStrategy: 'uncertainty|diversity|expectederror_reduction';
 acquisitionFunction: 'entropy|margin|confidence';
 
 // Statistical validation parameters

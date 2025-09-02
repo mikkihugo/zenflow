@@ -555,7 +555,7 @@ export class BootstrapFinetune extends FinetuneTeleprompter {
 };
 
 				data.push(dataDict);
-} catch (_error) {
+} catch (error) {
 				logger.warn("Failed to process example during bootstrapping");
 }
 }

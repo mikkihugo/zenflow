@@ -142,7 +142,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
         { originalError: storageError }
       );
       this.errorAggregator.add(error);
-      recordMetric('memory_initialization_errors', 1);
+      recordMetric('memory_initializationerrors', 1);
       throw error;
     }
   }
@@ -380,7 +380,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     if (result.isErr()) {
       const error = ensureError(result.error);
       this.errorAggregator.add(error);
-      recordMetric('memory_store_errors', 1);
+      recordMetric('memory_storeerrors', 1);
       logger.error('Memory store operation failed', {
         sessionId,
         key:storeKey,
@@ -481,7 +481,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     if (result.isErr()) {
       const error = ensureError(result.error);
       this.errorAggregator.add(error);
-      recordMetric('memory_retrieve_errors', 1);
+      recordMetric('memory_retrieveerrors', 1);
       logger.error('Memory retrieve operation failed', {
         key:retrieveKey,
         error:error.message,
@@ -600,7 +600,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     if (result.isErr()) {
       const error = ensureError(result.error);
       this.errorAggregator.add(error);
-      recordMetric('memory_delete_errors', 1);
+      recordMetric('memory_deleteerrors', 1);
       logger.error('Memory delete operation failed', {
         key:deleteKey,
         error:error.message,
@@ -784,7 +784,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
         { initialized: this.initialized, hasStorage: !!this.storage }
       );
       this.errorAggregator.add(error);
-      recordMetric('memory_initialization_errors', 1);
+      recordMetric('memory_initializationerrors', 1);
       throw error;
     }
   }
@@ -834,7 +834,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
                 `Failed to parse session data for ${  sessionId}`,
                 { sessionId, parseError: ensureError(parseError).message }
               );
-              recordMetric('memory_circuit_breaker_parse_errors', 1);
+              recordMetric('memory_circuit_breaker_parseerrors', 1);
               throw error;
             }
           }
@@ -852,7 +852,7 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
       
     if (result.isErr()) {
       const error = ensureError(result.error);
-      recordMetric('memory_circuit_breaker_errors', 1);
+      recordMetric('memory_circuit_breakererrors', 1);
       logger.error('Circuit breaker operation failed', {
         operation: params.operation,
         sessionId: params.sessionId,
@@ -1028,7 +1028,7 @@ export class MemoryManager {
           { key, originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_store_errors', 1);
+        recordMetric('memory_manager_storeerrors', 1);
         return err(error);
       }
       return ok();
@@ -1094,7 +1094,7 @@ export class MemoryManager {
           { key, originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_retrieve_errors', 1);
+        recordMetric('memory_manager_retrieveerrors', 1);
         return err(error);
       }
       return ok(result.value);
@@ -1131,7 +1131,7 @@ export class MemoryManager {
           originalError: result.error.message,
         });
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_shutdown_errors', 1);
+        recordMetric('memory_manager_shutdownerrors', 1);
         return err(error);
       }
       return ok();
@@ -1162,7 +1162,7 @@ export class MemoryManager {
           { originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_clear_errors', 1);
+        recordMetric('memory_manager_clearerrors', 1);
         return err(error);
       }
       return ok();
@@ -1248,7 +1248,7 @@ export class MemoryManager {
           { key, originalError: result.error.message }
         );
         this.errorAggregator.add(error);
-        recordMetric('memory_manager_delete_errors', 1);
+        recordMetric('memory_manager_deleteerrors', 1);
         return err(error);
       }
       return ok(result.value);

@@ -327,7 +327,7 @@ export class GRPO extends FinetuneTeleprompter {
 					num_threads:this.num_threads,
 					display_progress:true,
 					provide_traceback:false,
-					max_errors:valset.length * 10,
+					maxerrors:valset.length * 10,
 					failure_score:this.failure_score,
 });
 
@@ -385,7 +385,7 @@ export class GRPO extends FinetuneTeleprompter {
 					num_threads:this.num_threads,
 					display_progress:true,
 					provide_traceback:false,
-					max_errors:valset.length * 10,
+					maxerrors:valset.length * 10,
 					failure_score:this.failure_score,
 });
 
@@ -440,7 +440,7 @@ export class GRPO extends FinetuneTeleprompter {
 					num_threads:this.num_threads,
 					display_progress:true,
 					provide_traceback:false,
-					max_errors:trainset.length * 10,
+					maxerrors:trainset.length * 10,
 					failure_score:this.failure_score,
 });
 
@@ -744,7 +744,7 @@ export class GRPO extends FinetuneTeleprompter {
 					dataset:subsample_training_dataset_repeated,
 					metric:this.metric,
 					num_threads:this.num_threads,
-					raise_on_error:false,
+					raise_onerror:false,
 					capture_failed_parses:true,
 					failure_score:this.failure_score,
 					format_failure_score:this.format_failure_score,

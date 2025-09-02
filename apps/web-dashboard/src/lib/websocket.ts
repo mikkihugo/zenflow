@@ -110,9 +110,9 @@ export class WebSocketManager {
     // Connection events
     this.socket.on('connect', () => this.handleConnect());
     this.socket.on('disconnect', (reason) => this.handleDisconnect(reason));
-    this.socket.on('connect_error', (error) => this.handleConnectError(error));
+    this.socket.on('connecterror', (error) => this.handleConnectError(error));
     this.socket.on('reconnect', () => this.handleReconnect());
-    this.socket.on('reconnect_error', () => this.handleReconnectError());
+    this.socket.on('reconnecterror', () => this.handleReconnectError());
     this.socket.on('reconnect_failed', () => this.handleReconnectFailed());
 
     // Data events

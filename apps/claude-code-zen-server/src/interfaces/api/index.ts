@@ -70,7 +70,7 @@ export const apiUtils = {
   ): { success: boolean; data?: unknown; error?: string } => {
     if (response && typeof response === 'object') {
       const resp = response as { error?: string; data?: unknown };
-      if (resp._error) {
+      if (resp.error) {
         return {
           success: false,
           error: resp.error,

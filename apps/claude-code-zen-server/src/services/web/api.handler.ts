@@ -10,7 +10,7 @@ import { getLogger } from '@claude-zen/foundation';
 
 import type { Express, Request, Response } from 'express';
 
-import type { WebSocketCoordinator } from '../../infrastructure/websocket/socket.coordinator';
+import type { WebSocketCoordinator } from './websocket';
 
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
   .foundation || { getVersion: () => '1.0.0' };
@@ -127,7 +127,7 @@ export class ApiRouteHandler {
     try {
       const status = this.getSystemStatus();
       res.json(status);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get system status: ', error);
       res.status(500).json({ error: 'Failed to get system status' });
     }
@@ -140,7 +140,7 @@ export class ApiRouteHandler {
     try {
       const swarms = await this.getSwarms();
       res.json(swarms);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get swarms: ', error);
       res.status(500).json({ error: 'Failed to get swarms' });
     }
@@ -154,7 +154,7 @@ export class ApiRouteHandler {
       const swarm = await this.createSwarm(req.body);
       this.webSocket.broadcast('swarm:created', swarm);
       res.json(swarm);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to create swarm: ', error);
       res.status(500).json({ error: 'Failed to create swarm' });
     }
@@ -167,7 +167,7 @@ export class ApiRouteHandler {
     try {
       const tasks = await this.getTasks();
       res.json(tasks);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get tasks: ', error);
       res.status(500).json({ error: 'Failed to get tasks' });
     }
@@ -181,7 +181,7 @@ export class ApiRouteHandler {
       const task = await this.createTask(req.body);
       this.webSocket.broadcast('task:created', task);
       res.json(task);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to create task: ', error);
       res.status(500).json({ error: 'Failed to create task' });
     }
@@ -194,7 +194,7 @@ export class ApiRouteHandler {
     try {
       const documents = await this.getDocuments();
       res.json(documents);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get documents: ', error);
       res.status(500).json({ error: 'Failed to get documents' });
     }
@@ -210,7 +210,7 @@ export class ApiRouteHandler {
     try {
       const result = await this.executeCommand(req.body);
       res.json(result);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to execute command: ', error);
       res.status(500).json({ error: 'Failed to execute command' });
     }
@@ -223,7 +223,7 @@ export class ApiRouteHandler {
     try {
       const settings = await this.getSettings();
       res.json(settings);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get settings: ', error);
       res.status(500).json({ error: 'Failed to get settings' });
     }
@@ -240,7 +240,7 @@ export class ApiRouteHandler {
       const settings = await this.updateSettings(req.body);
       this.webSocket.broadcast('settings:updated', settings);
       res.json(settings);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to update settings: ', error);
       res.status(500).json({ error: 'Failed to update settings' });
     }
@@ -254,7 +254,7 @@ export class ApiRouteHandler {
       const { limit = 100, offset = 0 } = req.query;
       const logs = await this.getLogs(Number(limit), Number(offset));
       res.json(logs);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get logs: ', error);
       res.status(500).json({ error: 'Failed to get logs' });
     }
@@ -344,7 +344,7 @@ export class ApiRouteHandler {
       // If no foundation services available, return empty array instead of mock data
       this.logger.warn('No foundation services available for swarm data');
       return [];
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get swarms from foundation services:', error);
       return [];
     }
@@ -401,7 +401,7 @@ export class ApiRouteHandler {
       }
 
       throw new Error('No foundation services available for swarm creation');
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to create swarm:', error);
       throw error;
     }
@@ -445,7 +445,7 @@ export class ApiRouteHandler {
       // If no foundation services available, return empty array instead of mock data
       this.logger.warn('No foundation services available for task data');
       return [];
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get tasks from foundation services:', error);
       return [];
     }
@@ -513,7 +513,7 @@ export class ApiRouteHandler {
       }
 
       throw new Error('No foundation services available for task creation');
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to create task:', error);
       throw error;
     }
@@ -535,7 +535,7 @@ export class ApiRouteHandler {
 
     try {
       return (await storage.listDocuments()) || [];
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to list documents from storage: ', error);
       // Use foundation error handling to log and recover
       const { safeAsync } = (global as { foundation?: { safeAsync: Function } })
@@ -594,7 +594,7 @@ export class ApiRouteHandler {
         timestamp: new Date().toISOString(),
         status: 'success',
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Command execution failed: ', error);
 
       // Use foundation error handling for command failures
@@ -631,7 +631,7 @@ export class ApiRouteHandler {
         apiEndpoint: config.apiEndpoint || '/api',
         version: config.version || '1.0.0',
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to load settings from config service: ', error);
 
       // Use foundation error patterns for config failures with recovery
@@ -700,7 +700,7 @@ export class ApiRouteHandler {
         ...updatedConfig,
         updated: new Date().toISOString(),
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to update settings in storage: ', error);
 
       // Use foundation error handling for storage failures with retry

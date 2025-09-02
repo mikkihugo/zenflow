@@ -378,7 +378,7 @@ export class MLEnterpriseCoordinator {
 
 } catch (error) {
 			// Emit error event for coordination
-			this.emit("ml_training_error", {
+			this.emit("ml_trainingerror", {
 				trainingId,
 				error:error instanceof Error ? error.message : String(error),
 				timestamp:Date.now()

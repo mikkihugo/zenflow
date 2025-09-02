@@ -42,7 +42,7 @@ export function createLiveCodeAnalyzer(repositoryPath: string) {
 return new CodeAnalyzer(repositoryPath);
 }
 
-export function createAICodeAnalyzer(repositoryPath: string, aiConfig?: any) {
+export function createAICodeAnalyzer(repositoryPath: string, aiConfig?: Record<string, unknown>) {
 const analyzer = new CodeAnalyzer(repositoryPath);
 // Configure AI features when available
 if (aiConfig) {
@@ -55,8 +55,8 @@ if (aiConfig) {
 return analyzer;
 }
 
-export function createRepoAnalyzer(repositoryPath: string, config?: any) {
-const { RepoAnalyzer } = require('./repo-analyzer').
+export function createRepoAnalyzer(repositoryPath: string, config?: Record<string, unknown>) {
+const { RepoAnalyzer } = require('./repo-analyzer');
 return new RepoAnalyzer({ rootPath: repositoryPath, ...config });
 }
 

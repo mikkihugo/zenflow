@@ -11,8 +11,8 @@
 import { TaskMaster } from '@claude-zen/coordination';
 import { generateUUID, getLogger } from '@claude-zen/foundation';
 import { type Request, type Response, Router } from 'express';
-import type { WebSocketCoordinator } from '../../infrastructure/websocket/socket.coordinator';
-import { LogLevel, log } from '../../infrastructure/middleware/logging';
+import type { WebSocketCoordinator } from '../web/websocket';
+import { LogLevel, log } from '../web/middleware/logging';
 
 const logger = getLogger('TaskMasterRoutes');
 
@@ -20,7 +20,7 @@ const logger = getLogger('TaskMasterRoutes');
 const asyncHandler =
   (fn: (req: Request, res: Response) => Promise<void>) =>
   (req: Request, res: Response) =>
-    Promise.resolve(fn(req, _res)).catch((_error) => {
+    Promise.resolve(fn(req, _res)).catch((error) => {
       logger.error('AsyncHandler error: ', error);
       if (!res.headersSent) {
         res.status(500).json({
@@ -141,7 +141,7 @@ class TaskMasterManager {
         }
 
         logger.info('TaskMaster system initialized successfully');
-      } catch (_error) {
+      } catch (error) {
         logger.error('Failed to initialize TaskMaster system: ', error);
         throw new Error(
           `TaskMaster system initialization failed:${  (error as Error).message}`
@@ -172,7 +172,7 @@ class TaskMasterManager {
       }
 
       logger.info('TaskMaster system cleanup completed');
-    } catch (_error) {
+    } catch (error) {
       logger.error('Error during TaskMaster cleanup: ', error);
     }
   }
@@ -365,7 +365,7 @@ function setupFlowMetricsRoutes(
             health,
           });
         }
-      } catch (_error) {
+      } catch (error) {
         logger.error('Failed to get flow metrics: ', error);
         log(LogLevel.ERROR, 'Failed to get flow metrics', req, {
           error: (error as Error).message,
@@ -422,7 +422,7 @@ async function handleCreateTask(
       message: 'Task created successfully',
       timestamp: new Date().toISOString(),
     });
-  } catch (_error) {
+  } catch (error) {
     logger.error(`${TASK_ERROR_MESSAGES.createFailed  }:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.createFailed, req, {
       error: (error as Error).message,
@@ -518,7 +518,7 @@ async function handleGetTask(
       data: task,
       timestamp: new Date().toISOString(),
     });
-  } catch (_error) {
+  } catch (error) {
     logger.error(`Failed to get task ${req.params.taskId}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTaskFailed, req, {
       error: (error as Error).message,
@@ -608,7 +608,7 @@ async function handleGetTasksByState(
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (_error) {
+  } catch (error) {
     logger.error(`Failed to get tasks by state ${req.params.state}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTasksByStateFailed, req, {
       error: (error as Error).message,
@@ -876,7 +876,7 @@ async function handleMoveTask(
       },
       timestamp: new Date().toISOString(),
     });
-  } catch (_error) {
+  } catch (error) {
     handleMoveTaskError(req, res, error);
   }
 }
@@ -983,7 +983,7 @@ async function createPIPlanningEventHandler(
       `PI Planning event created:PI ${  planningIntervalNumber  } for ART ${  artId}`
     );
     sendPIEventSuccess(res, piEvent);
-  } catch (_error) {
+  } catch (error) {
     handlePIEventError(req, res, error);
   }
 }
@@ -1047,7 +1047,7 @@ function setupSystemHealthRoutes(
           success: true,
           data: healthDetails,
         });
-      } catch (_error) {
+      } catch (error) {
         logger.error('Failed to get system health: ', error);
         log(LogLevel.ERROR, 'Failed to get system health', req, {
           error: (error as Error).message,
@@ -1173,7 +1173,7 @@ async function createDashboardDataHandler(
         realTimeEnabled: !!manager.webSocketCoordinator,
       },
     });
-  } catch (_error) {
+  } catch (error) {
     logger.error('Failed to get dashboard data: ', error);
     log(LogLevel.ERROR, 'Failed to get dashboard data', req, {
       error: (error as Error).message,

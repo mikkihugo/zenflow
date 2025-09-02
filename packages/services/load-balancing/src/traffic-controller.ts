@@ -29,12 +29,12 @@ import { EmergencyProtocolHandler } from '../optimization/emergency-protocol-han
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
 
 // Simple no-op implementation for deprecated package
-const logger = {
- info: () => void 0,
- warn: () => void 0,
- error: () => void 0,
- debug: () => void 0,
-};
+// const logger = {
+//  info: () => void 0,
+//  warn: () => void 0,
+//  error: () => void 0,
+//  debug: () => void 0,
+// };
 
 export interface SystemMetrics {
  readonly cpuUsage: number;
@@ -383,7 +383,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  */
  async routeTask(
  taskId: string,
- taskRequirements: any
+ taskRequirements: Record<string, unknown>
  ): Promise<string | null> {
  if (!this.initialized || !this.routingEngine) {
  throw new Error('Traffic Controller not initialized');
@@ -611,7 +611,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  }
 
  if (metrics.errorRate > 0.1) {
- bottlenecks.push('high_error_rate');
+ bottlenecks.push('higherror_rate');
  severity = metrics.errorRate > 0.2 ? 'critical': ' high';
  }
 

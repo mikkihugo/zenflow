@@ -550,7 +550,7 @@ return ok();
 } catch (error) {
 const errorMessage = `Failed to initialize brain service:${error}`;
 this.logger.error(errorMessage, { error, serviceId:this.serviceId});
-recordMetric(`brain_service_init_error`, 1, { serviceId:this.serviceId});
+recordMetric(`brain_service_initerror`, 1, { serviceId:this.serviceId});
 
 this.eventBus.emit('brain-service:status', {
 serviceId:this.serviceId,
@@ -638,7 +638,7 @@ await this.learnFromOptimization(request, result);
 } catch (error) {
 const errorMessage = `Prompt optimization failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric(`brain_prompt_optimization_error`, 1, {
+recordMetric(`brain_prompt_optimizationerror`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -683,7 +683,7 @@ strategy:result.recommendations.optimizationStrategy
 } catch (error) {
 const errorMessage = `Complexity estimation failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric(`brain_complexity_estimation_error`, 1, {
+recordMetric(`brain_complexity_estimationerror`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -729,7 +729,7 @@ horizons:Object.keys(result.predictions)
 } catch (error) {
 const errorMessage = `Performance prediction failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric(`brain_performance_prediction_error`, 1, {
+recordMetric(`brain_performance_predictionerror`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -774,7 +774,7 @@ confidence:result.confidence
 } catch (error) {
 const errorMessage = `Autonomous coordination failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric(`brain_autonomous_coordination_error`, 1, {
+recordMetric(`brain_autonomous_coordinationerror`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -819,7 +819,7 @@ patterns:Object.keys(result.patterns)
 } catch (error) {
 const errorMessage = `Behavioral analysis failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric(`brain_behavioral_analysis_error`, 1, {
+recordMetric(`brain_behavioral_analysiserror`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });
@@ -864,7 +864,7 @@ throughput:result.performance.throughput
 } catch (error) {
 const errorMessage = `Neural processing failed:${error}`
 this.logger.error(errorMessage, { requestId:request.requestId, error});
-recordMetric(`brain_neural_processing_error`, 1, {
+recordMetric(`brain_neural_processingerror`, 1, {
 serviceId:this.serviceId,
 error:error.toString()
 });

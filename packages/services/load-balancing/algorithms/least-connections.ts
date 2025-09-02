@@ -166,9 +166,9 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * Handle agent failure.
    *
    * @param agentId
-   * @param _error
+   * @param error
    */
-  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
     // Reset active connections on failure

@@ -171,7 +171,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					// Check for result message
 					const resultMessage = messages.find((m) => m.type === "result");
 					expect(resultMessage).toBeTruthy();
-					expect((resultMessage as any).is_error).toBeFalsy();
+					expect((resultMessage as any).iserror).toBeFalsy();
 
 					logger.info(` Model ${model} working correctly`
 }
@@ -789,7 +789,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				// Check for result
 				const resultMessage = messages.find((m) => m.type === "result");
 				expect(resultMessage).toBeTruthy();
-				expect((resultMessage as any).is_error).toBeFalsy();
+				expect((resultMessage as any).iserror).toBeFalsy();
 
 				logger.info(" TypeScript error fixing integration working");
 },

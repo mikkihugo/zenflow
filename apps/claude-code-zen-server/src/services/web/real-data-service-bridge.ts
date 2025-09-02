@@ -70,7 +70,7 @@ export class RealDataServiceBridge implements RealWebDataService {
           database: 'healthy'
         }
       };
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to get system status:', error);
       return {
         status: 'error',
@@ -90,7 +90,7 @@ export class RealDataServiceBridge implements RealWebDataService {
         return systemState.swarms || [];
       }
       return [];
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to get swarms:', error);
       return [];
     }
@@ -106,7 +106,7 @@ export class RealDataServiceBridge implements RealWebDataService {
         return systemState.tasks || [];
       }
       return [];
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to get tasks:', error);
       return [];
     }
@@ -131,7 +131,7 @@ export class RealDataServiceBridge implements RealWebDataService {
         errorRate: 0.01 + Math.random() * 0.02,
         cacheHitRate: 0.85 + Math.random() * 0.1
       };
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to get service stats:', error);
       return {};
     }

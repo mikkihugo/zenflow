@@ -69,7 +69,7 @@ const EVENT_NAMES = {
 interface ServiceEvents {
  service_started: [{ serviceName: string; timestamp: Date }];
  service_stopped: [{ serviceName: string; timestamp: Date }];
- service_error: [{ serviceName: string; error: Error; timestamp: Date }];
+ serviceerror: [{ serviceName: string; error: Error; timestamp: Date }];
  health_check: [{ serviceName: string; healthy: boolean; timestamp: Date }];
  [key: string]: unknown[];
 }

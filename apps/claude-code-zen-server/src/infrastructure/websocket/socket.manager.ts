@@ -92,7 +92,7 @@ export class WebSocketManager {
         );
       });
 
-      socket.on('error', (_error) => {
+      socket.on('error', (error) => {
         this.logger.error(`Socket error for client ${socket.id}:`, error);
       });
     });
@@ -180,7 +180,7 @@ export class WebSocketManager {
               data: logs,
               timestamp: new Date().toISOString(),
             });
-          } catch (_error) {
+          } catch (error) {
             this.logger.debug('Log entries not available: ', error);
           }
           break;
@@ -188,7 +188,7 @@ export class WebSocketManager {
         default:
           this.logger.warn(`Unknown channel subscription:${  channel}`);
       }
-    } catch (_error) {
+    } catch (error) {
       this.logger.error(
         `Failed to send initial data for channel ${channel}:`,
         error
@@ -205,7 +205,7 @@ export class WebSocketManager {
       try {
         const status = await this.dataService.getSystemStatus();
         this.broadcast('system:status', status);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast system status: ', error);
       }
     }, 5000);
@@ -215,7 +215,7 @@ export class WebSocketManager {
       try {
         const tasks = await this.dataService.getTasks();
         this.broadcast('tasks:update', tasks);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast tasks: ', error);
       }
     }, 3000);
@@ -225,7 +225,7 @@ export class WebSocketManager {
       try {
         const stats = this.dataService.getServiceStats();
         this.broadcast('performance:update', stats);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast performance metrics: ', error);
       }
     }, 10000);
@@ -240,7 +240,7 @@ export class WebSocketManager {
         if (logs.length > 0) {
           this.broadcastToRoom('logs', 'logs:bulk', logs);
         }
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast logs: ', error);
       }
     }, 2000);
@@ -250,7 +250,7 @@ export class WebSocketManager {
       try {
         const facadeStatus = await this.getFacadeStatus();
         this.broadcast('facades:status', facadeStatus);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast facade status: ', error);
       }
     }, 15000);
@@ -260,7 +260,7 @@ export class WebSocketManager {
       try {
         const swarmStats = await this.getSwarmStats();
         this.broadcast('swarm-stats:update', swarmStats);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast swarm stats: ', error);
       }
     }, 8000);
@@ -270,7 +270,7 @@ export class WebSocketManager {
       try {
         const memoryStatus = await this.getMemoryStatus();
         this.broadcast('memory:status', memoryStatus);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast memory status: ', error);
       }
     }, 12000);
@@ -280,7 +280,7 @@ export class WebSocketManager {
       try {
         const databaseStatus = await this.getDatabaseStatus();
         this.broadcast('database:status', databaseStatus);
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Failed to broadcast database status: ', error);
       }
     }, 20000);
@@ -380,10 +380,10 @@ export class WebSocketManager {
             );
           }
         })
-        .catch((_error) => {
+        .catch((error) => {
           this.logger.warn('Failed to setup log broadcaster: ', error);
         });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Error setting up log broadcaster: ', error);
     }
   }
@@ -472,7 +472,7 @@ export class WebSocketManager {
         registeredServices,
         timestamp: new Date().toISOString()
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get facade status: ', error);
       return { 
         error: 'Failed to get facade status', 
@@ -499,7 +499,7 @@ export class WebSocketManager {
         '@claude-zen/coordination': { available: true, version: '1.0.0' },
         // Add other packages as they're implemented
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get package information: ', error);
       return {};
     }
@@ -518,7 +518,7 @@ export class WebSocketManager {
         coordination: { status: 'healthy', activeSwarms: 0 },
         // Add other services
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get service health: ', error);
       return {};
     }
@@ -745,7 +745,7 @@ export class WebSocketManager {
         coordinationEfficiency: activeSwarms > 0 ? Math.round((activeAgents / Math.max(totalAgents, 1)) * 100) : 0,
         timestamp: new Date().toISOString()
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get swarm stats: ', error);
       return { 
         error: 'Failed to get swarm stats', 
@@ -786,7 +786,7 @@ export class WebSocketManager {
         processUptime: Math.round(process.uptime()),
         timestamp: new Date().toISOString()
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get memory status: ', error);
       return { 
         error: 'Failed to get memory status',
@@ -848,7 +848,7 @@ export class WebSocketManager {
         successRate: 1 - (systemStats.databaseErrorRate || 0.02),
         timestamp: new Date().toISOString()
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get database status: ', error);
       return { 
         error: 'Failed to get database status',

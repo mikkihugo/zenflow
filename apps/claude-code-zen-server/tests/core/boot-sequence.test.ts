@@ -17,7 +17,7 @@ describe('Boot Sequence Tests', () => {
       if (system) {
         try {
           await system.shutdown();
-        } catch (_error) {
+        } catch (error) {
           // Ignore shutdown errors in tests
         }
       }
@@ -98,7 +98,7 @@ describe('Boot Sequence Tests', () => {
       if (coordinator) {
         try {
           await coordinator.shutdown();
-        } catch (_error) {
+        } catch (error) {
           // Ignore shutdown errors in tests
         }
       }

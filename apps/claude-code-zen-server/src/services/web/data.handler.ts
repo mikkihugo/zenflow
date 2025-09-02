@@ -7,7 +7,6 @@
 
 // Direct package imports - no facades
 import { DatabaseProvider } from '@claude-zen/database';
-import { EventBus } from '@claude-zen/event-system';
 import { BrainCoordinator } from '@claude-zen/brain';
 import { MemoryManager } from '@claude-zen/memory';
 import {
@@ -112,7 +111,6 @@ interface AgentData {
 export class WebDataService {
   // ALL direct package systems for comprehensive functionality
   private databaseSystem: DatabaseProvider | null = null;
-  private eventSystem: EventBus | null = null;
   private taskMasterSystem: TaskMaster | null = null;
   private workflowEngine: WorkflowEngine | null = null;
   private safetyFramework: SafeFramework | null = null;
@@ -137,7 +135,6 @@ export class WebDataService {
         async () => {
           const [
             database,
-            events,
             taskMaster,
             workflow,
             safety,
@@ -151,7 +148,6 @@ export class WebDataService {
           ] = await Promise.all([
             // Direct core package imports
             Promise.resolve(new DatabaseProvider()).catch(() => null),
-            Promise.resolve(new EventBus()).catch(() => null),
 
             // Direct service package imports
             Promise.resolve(new TaskMaster({ enableMetrics: true })).catch(
@@ -194,7 +190,6 @@ export class WebDataService {
 
           // Initialize ALL direct package systems
           this.databaseSystem = database;
-          this.eventSystem = events;
           this.taskMasterSystem = taskMaster;
           this.workflowEngine = workflow;
           this.safetyFramework = safety;
@@ -210,7 +205,7 @@ export class WebDataService {
         },
         { retries: 3, minTimeout: 1000 }
       );
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to initialize strategic systems: ', error);
     }
   }
@@ -235,7 +230,7 @@ export class WebDataService {
           failed: 0,
           blocked: metrics.blockedTasks || 0,
         };
-      } catch (_error) {
+      } catch (error) {
         logger.warn('Failed to get task statistics from TaskMaster: ', error);
       }
     }
@@ -278,7 +273,7 @@ export class WebDataService {
         const brainMetrics = await this.brainSystem.getCoordinationMetrics();
         swarmStats.active = brainMetrics.activeAgents || 1;
         swarmStats.total = brainMetrics.totalAgents || 4;
-      } catch (_error) {
+      } catch (error) {
         logger.warn(
           'Brain system metrics unavailable, using estimates: ',
           error
@@ -484,7 +479,7 @@ export class WebDataService {
       ).entries()) {
         swarms.push(this.createSwarmDataFromAgent(agent, index));
       }
-    } catch (_error) {
+    } catch (error) {
       logger.warn(
         'Brain coordination data unavailable, using mock data: ',
         error
@@ -538,7 +533,7 @@ export class WebDataService {
       }
 
       return [];
-    } catch (_error) {
+    } catch (error) {
       logger.warn('Failed to retrieve persisted swarm data:', error);
       return [];
     }
@@ -597,7 +592,7 @@ export class WebDataService {
       const health = await this.taskMasterSystem.getSystemHealth();
 
       return this.calculateTaskMetrics(flowMetrics, health);
-    } catch (_error) {
+    } catch (error) {
       logger.warn('TaskMaster metrics unavailable, using estimates: ', error);
       return null;
     }

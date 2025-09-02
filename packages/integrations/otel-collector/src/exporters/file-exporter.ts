@@ -292,7 +292,7 @@ export class FileExporter implements BaseExporter {
       for (const file of telemetryFiles) {
         try {
           file.stat = await fs.stat(file.path);
-} catch (_error) {
+} catch (error) {
           // Skip files that can't be accessed
 }
 }

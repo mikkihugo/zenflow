@@ -148,7 +148,7 @@ export class RecoveryStrategyManager extends EventEmitter {
     } catch (recoveryError) {
       const result: RecoveryResult = {
         success: false,
-        strategy: 'recovery_error',
+        strategy: 'recoveryerror',
         action: 'recovery_system_failure',
         duration: Date.now() - startTime,
         error: recoveryError.message,

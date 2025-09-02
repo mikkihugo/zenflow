@@ -220,7 +220,7 @@ this.logger.info(' Initializing DSPy-Brain ML Bridge');
 let _BrainCoordinator;
 try {
 // const brainModule = await import('@claude-zen/brain');\n // BrainCoordinator = brainModule.BrainCoordinator;\n throw new Error(' Brain package not available'); // Force fallback
-} catch (_error) {
+} catch (error) {
 this.logger.warn(
 'Brain package not available, using fallback implementation'
 );
@@ -298,11 +298,11 @@ task: DSPyOptimizationTask
 await this.initialize();
 
 if (!this.brainCoordinator) {
-throw new Error(`Brain coordinator not initialized`
+throw new Error(`Brain coordinator not initialized`);
 }
 
 const startTime = Date.now();
-this.logger.info(` Starting DSPy ${task.teleprompterType} optimization`
+this.logger.info(` Starting DSPy ${task.teleprompterType} optimization`);
 
 try {
 // Convert DSPy task to Brain optimization format
@@ -319,7 +319,7 @@ const dspyResult = this.translateBrainToDSPyResult(brainResult, task);
 this.optimizationHistory.set(task.teleprompterType, dspyResult);
 
 const duration = Date.now() - startTime;
-this.logger.info(` DSPy optimization completed in ${duration}ms`
+this.logger.info(` DSPy optimization completed in ${duration}ms`);
 
 this.emit(`optimization:completed`, {
 teleprompterType: task.teleprompterType,
@@ -355,7 +355,7 @@ mlEnhanced: boolean;
 await this.initialize();
 
 if (!this.brainCoordinator) {
-throw new Error(`Brain coordinator not initialized`
+throw new Error(`Brain coordinator not initialized`);
 }
 
 this.logger.info(' Analyzing task for teleprompter recommendation');

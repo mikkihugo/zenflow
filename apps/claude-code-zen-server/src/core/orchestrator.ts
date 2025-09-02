@@ -153,11 +153,11 @@ export class Orchestrator {
       const result = await taskPromise;
       this.eventBus.emit?.('task:completed', { task, result });
       return result;
-    } catch (_error) {
+    } catch (error) {
       const errorResult: TaskResult = {
         id: task.id,
         status: 'failure',
-        error: error instanceof Error ? (error as Error).message : 'Unknown error',
+        error: error instanceof Error ? error.message : 'Unknown error',
         duration: Date.now() - startTime,
       };
       this.eventBus.emit?.('task:failed', { task, error: errorResult });
@@ -181,8 +181,8 @@ export class Orchestrator {
 
     try {
       return await Promise.race([taskPromise, timeoutPromise]);
-    } catch (_error) {
-      if (error instanceof Error && (error as Error).message === 'Task timeout') {
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Task timeout') {
         return {
           id: task.id,
           status: 'timeout',
@@ -264,7 +264,7 @@ export class Orchestrator {
         if (!health.healthy) {
           this.logger.warn('Health check failed', { health });
         }
-      } catch (_error) {
+      } catch (error) {
         this.logger.error('Health check error', { error });
       }
     }, this.config.healthCheckInterval);

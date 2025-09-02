@@ -235,9 +235,9 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
    * Handle agent failure.
    *
    * @param agentId
-   * @param _error
+   * @param error
    */
-  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
     const profile = this.getOrCreateResourceProfile(agentId);
 
     // Mark all resources as potentially compromised

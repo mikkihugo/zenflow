@@ -89,7 +89,7 @@ this.logger.info(
 );
 return;
 }
-} catch (_error) {
+} catch (error) {
 this.logger.info(
 'Operations facade not available, retraining monitor will not start'
 );

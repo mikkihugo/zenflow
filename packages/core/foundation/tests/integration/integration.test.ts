@@ -253,7 +253,7 @@ describe('Foundation Integration Tests', () => {
 
         logger.info('Swarm coordination completed', {
           messageCount: messages.length,
-          success: !(resultMessage as any)?.is_error,
+          success: !(resultMessage as any)?.iserror,
         });
       },
       120000

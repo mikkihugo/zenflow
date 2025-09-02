@@ -120,7 +120,7 @@ program: DSPyModule;
 * stop_at_score:0.95, // Stop if score >= 0.95
 * metric_threshold:0.7, // Only consider demos with score >= 0.7
 * max_rounds:3, // Multiple bootstrap rounds per candidate
-* max_errors:10 // Allow some failures
+* maxerrors:10 // Allow some failures
 *});
 *
 * const result = await earlyStopSearch.compile(complexProgram, {
@@ -160,7 +160,7 @@ program: DSPyModule;
 * metric_threshold:0.8, // Strict demo filtering
 * max_rounds:5, // Thorough bootstrapping
 * num_threads:8, // Maximum parallelization
-* max_errors:20 // Allow for exploration
+* maxerrors:20 // Allow for exploration
 *});
 *
 * try {
@@ -211,7 +211,7 @@ private stop_at_score?: number;
 private metric_threshold?: number;
 private min_num_samples: number;
 private max_num_samples: number;
-private max_errors?: number;
+private maxerrors?: number;
 private num_candidate_sets: number;
 private max_labeled_demos: number;
 
@@ -227,7 +227,7 @@ max_labeled_demos?: number;
 max_rounds?: number;
 num_candidate_programs?: number;
 num_threads?: number | null;
-max_errors?: number | null;
+maxerrors?: number | null;
 stop_at_score?: number | null;
 metric_threshold?: number | null;
 }) {
@@ -242,7 +242,7 @@ this.stop_at_score = config.stop_at_score ?? undefined;
 this.metric_threshold = config.metric_threshold ?? undefined;
 this.min_num_samples = 1;
 this.max_num_samples = config.max_bootstrapped_demos ?? 4;
-this.max_errors = config.max_errors ?? undefined;
+this.maxerrors = config.maxerrors ?? undefined;
 this.num_candidate_sets = config.num_candidate_programs ?? 16;
 this.max_labeled_demos = config.max_labeled_demos ?? 16;
 
@@ -279,7 +279,7 @@ labeled_sample = true,
 this.trainset = trainset;
 this.valset = valset || trainset; // Note:Stanford DSPy uses trainset as fallback
 
-const effective_max_errors = this.max_errors ?? 10; // dspy.settings.max_errors equivalent
+const effective_maxerrors = this.maxerrors ?? 10; // dspy.settings.maxerrors equivalent
 
 const scores: number[] = [];
 const all_subscores: number[][] = [];
@@ -318,7 +318,7 @@ teacher_settings: this.teacher_settings,
 max_bootstrapped_demos: this.max_num_samples,
 max_labeled_demos: this.max_labeled_demos,
 max_rounds: this.max_rounds,
-max_errors: effective_max_errors,
+maxerrors: effective_maxerrors,
 });
 
 program = await optimizer.compile(student, {
@@ -345,7 +345,7 @@ teacher_settings: this.teacher_settings,
 max_bootstrapped_demos: size,
 max_labeled_demos: this.max_labeled_demos,
 max_rounds: this.max_rounds,
-max_errors: effective_max_errors,
+maxerrors: effective_maxerrors,
 });
 
 program = await optimizer.compile(student, {
@@ -428,7 +428,7 @@ typeof result === `boolean` ? (result ? 1 : 0) : (result as number);
 subscores.push(score);
 total_score += score;
 valid_evaluations++;
-} catch (_error) {
+} catch (error) {
 subscores.push(0);
 // Continue evaluation like Stanford implementation
 }

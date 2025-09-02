@@ -85,9 +85,7 @@ createBeamParser(): import('./beam-parser').BeamLanguageParser;
 * Default parser factory implementation
 */
 export class DefaultParserFactory implements ParserFactory {
-createBeamParser(
-options?: import('./beam-parser').BeamParserOptions
-): import('./beam-parser').BeamLanguageParser {
+createBeamParser(): import('./beam-parser').BeamLanguageParser {
 // Temporarily disabled due to syntax issues in beam-parser.ts
 throw new Error('BeamLanguageParser is temporarily disabled due to syntax issues');
 // const { BeamLanguageParser } = require('./beam-parser');

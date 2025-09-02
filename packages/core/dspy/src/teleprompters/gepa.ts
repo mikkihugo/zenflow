@@ -695,7 +695,7 @@ export class GEPA extends Teleprompter {
 						const prediction = await program.forward(example.inputs);
 						const score = this.metric_fn(example, { data:prediction});
 						results.push({ example, prediction:{ data: prediction}, score});
-} catch (_error) {
+} catch (error) {
 						results.push({
 							example,
 							prediction:{ data: null},

@@ -216,8 +216,8 @@ describe('Process Lifecycle Management - Simplified', () => {
       expect(() => {
         new ProcessLifecycleManager({
           onShutdown: async () => {},
-          onError: async (_error: Error) => {},
-          onUncaughtException: (_error: Error) => {},
+          onError: async (error: Error) => {},
+          onUncaughtException: (error: Error) => {},
           onUnhandledRejection: (_reason: unknown) => {},
         });
       }).not.toThrow();

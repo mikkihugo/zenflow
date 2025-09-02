@@ -278,7 +278,7 @@ async function clearSystemCaches() {
   for (const endpoint of cacheEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
-    } catch (_error) {
+    } catch (error) {
       // Ignore cache clear failures
     }
   }
@@ -293,7 +293,7 @@ async function resetDatabaseState() {
   for (const endpoint of dbEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
-    } catch (_error) {
+    } catch (error) {
       // Ignore database reset failures
     }
   }
@@ -309,7 +309,7 @@ async function clearMemoryState() {
   for (const endpoint of memoryEndpoints) {
     try {
       await fetch(endpoint, { method: 'POST' });
-    } catch (_error) {
+    } catch (error) {
       // Ignore memory clear failures
     }
   }
@@ -334,7 +334,7 @@ async function stopTestServices() {
     try {
       childProcess.kill('SIGTERM');
       await waitForProcessExit(childProcess, 10000);
-    } catch (_error) {
+    } catch (error) {
       logger.warn('Failed to stop ' + name + ' gracefully, force killing');
       childProcess.kill('SIGKILL');
     }

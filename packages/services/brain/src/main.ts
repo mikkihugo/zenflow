@@ -65,7 +65,7 @@ const __generateUUID = () => crypto.randomUUID();
 const __createTimestamp = () => Date.now();
 const __validateObject = (obj: any) => !!obj && typeof obj === 'object';
 const createErrorAggregator = () => ({
-  addError: (_error: Error) => {
+  addError: (error: Error) => {
     // Stub implementation - would store errors in strategic facade
   },
   getErrors: (): Error[] => [],

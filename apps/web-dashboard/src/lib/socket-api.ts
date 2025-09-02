@@ -47,7 +47,7 @@ export class SocketIOAPIClient {
           this.notifyConnectionHandlers(false);
         });
 
-        this.socket.on('connect_error', (error) => {
+        this.socket.on('connecterror', (error) => {
           logger.error('Socket.IO connection error', { error });
           this.isConnected = false;
           this.notifyConnectionHandlers(false);

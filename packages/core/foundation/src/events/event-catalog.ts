@@ -243,7 +243,7 @@ export interface TeamworkCollaborationFailedEvent extends BaseEvent {
   projectId: string;
   phase: string;
   error: string;
-  reason: 'timeout' | ' resource_unavailable' | ' system_error';
+  reason: 'timeout' | ' resource_unavailable' | ' systemerror';
 }
 
 // ============================================================================

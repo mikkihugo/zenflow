@@ -199,10 +199,10 @@ export class NeuralBridge {
  );
  return id;
 } catch (error) {
- const __errorMessage =
+ const _errorMessage =
  error instanceof Error ? error.message : String(error);
  this.foundationLogger.error(`Failed to create network ${id}:`, error);
- throw new Error(`Network creation failed: ${__errorMessage}`);
+ throw new Error(`Network creation failed: ${_errorMessage}`);
 }
 }
 

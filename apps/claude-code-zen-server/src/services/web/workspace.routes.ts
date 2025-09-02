@@ -121,7 +121,7 @@ export class WorkspaceApiRoutes {
           extension: path.extname(fullPath).slice(1),
         });
       }
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to list files: ', error);
       res.status(500).json({ error: 'Failed to list files' });
     }
@@ -156,7 +156,7 @@ export class WorkspaceApiRoutes {
         modified: stats.mtime,
         encoding: 'utf-8',
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get file content: ', error);
       res.status(500).json({ error: 'Failed to get file content' });
     }
@@ -192,7 +192,7 @@ export class WorkspaceApiRoutes {
         modified: stats.mtime,
         created: true,
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to create file: ', error);
       res.status(500).json({ error: 'Failed to create file' });
     }
@@ -224,7 +224,7 @@ export class WorkspaceApiRoutes {
         modified: stats.mtime,
         updated: true,
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to update file: ', error);
       res.status(500).json({ error: 'Failed to update file' });
     }
@@ -251,7 +251,7 @@ export class WorkspaceApiRoutes {
 
       await fs.remove(fullPath);
       res.json({ deleted: true, path: filePath });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to delete file: ', error);
       res.status(500).json({ error: 'Failed to delete file' });
     }
@@ -276,7 +276,7 @@ export class WorkspaceApiRoutes {
 
       await fs.ensureDir(fullPath);
       res.json({ created: true, path: dirPath });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to create directory: ', error);
       res.status(500).json({ error: 'Failed to create directory' });
     }
@@ -331,7 +331,7 @@ export class WorkspaceApiRoutes {
 
       await fs.remove(fullPath);
       res.json({ deleted: true, path: dirPath });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to delete directory: ', error);
       res.status(500).json({ error: 'Failed to delete directory' });
     }
@@ -371,7 +371,7 @@ export class WorkspaceApiRoutes {
         root: this.workspaceRoot,
         hasPackageJson: Boolean(packageInfo),
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get project info: ', error);
       res.status(500).json({ error: 'Failed to get project info' });
     }
@@ -416,7 +416,7 @@ export class WorkspaceApiRoutes {
         child.kill();
         res.status(408).json({ error: 'Command timeout' });
       }, 30000);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to execute command: ', error);
       res.status(500).json({ error: 'Failed to execute command' });
     }
@@ -462,7 +462,7 @@ export class WorkspaceApiRoutes {
 
       await searchDir(this.workspaceRoot);
       res.json({ results: results.slice(0, 100) });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to search files: ', error);
       res.status(500).json({ error: 'Failed to search files' });
     }
@@ -545,7 +545,7 @@ export class WorkspaceApiRoutes {
         total: results.length,
         truncated: results.length >= maxResults,
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to search content: ', error);
       res.status(500).json({ error: 'Failed to search content' });
     }
@@ -584,7 +584,7 @@ export class WorkspaceApiRoutes {
             .json({ error: 'Git not available or not a git repository' });
         }
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get git status: ', error);
       res.status(500).json({ error: 'Failed to get git status' });
     }
@@ -623,7 +623,7 @@ export class WorkspaceApiRoutes {
           stderr: error,
         });
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to execute git command: ', error);
       res.status(500).json({ error: 'Failed to execute git command' });
     }
@@ -685,7 +685,7 @@ export class WorkspaceApiRoutes {
         total: sortedFiles.length,
         lastScanned: new Date().toISOString(),
       });
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to get recent files: ', error);
       res.status(500).json({ error: 'Failed to get recent files' });
     }

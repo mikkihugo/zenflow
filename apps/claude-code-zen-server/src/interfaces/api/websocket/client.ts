@@ -97,12 +97,12 @@ export class WebSocketClient extends EventEmitter {
           }
         };
 
-        this.ws.onerror = (_error) => {
+        this.ws.onerror = (error) => {
           clearTimeout(timeout);
           this.emit('error', error);
           reject(error);
         };
-      } catch (_error) {
+      } catch (error) {
         reject(error);
       }
     });
@@ -135,7 +135,7 @@ export class WebSocketClient extends EventEmitter {
     if (this.isConnected && this.ws) {
       try {
         this.ws.send(message);
-      } catch (_error) {
+      } catch (error) {
         this.emit('error', error);
         this.queueMessage(message);
       }
@@ -167,7 +167,7 @@ export class WebSocketClient extends EventEmitter {
       if (message) {
         try {
           this.ws?.send(message);
-        } catch (_error) {
+        } catch (error) {
           this.emit('error', error);
           this.messageQueue.unshift(message);
           break;
@@ -188,7 +188,7 @@ export class WebSocketClient extends EventEmitter {
 
       try {
         await this.connect();
-      } catch (_error) {
+      } catch (error) {
         this.emit('reconnectError', error);
         if (this.reconnectAttempts < (this.options.maxReconnectAttempts ?? 0)) {
           this.scheduleReconnect();
@@ -208,7 +208,7 @@ export class WebSocketClient extends EventEmitter {
         try {
           // Note:WebSocket ping might not be available, use a message instead
           this.ws.send(JSON.stringify({ type: 'ping' }));
-        } catch (_error) {
+        } catch (error) {
           this.emit('error', error);
         }
       }

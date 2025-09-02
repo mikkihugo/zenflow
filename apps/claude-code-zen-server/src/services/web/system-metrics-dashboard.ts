@@ -46,7 +46,7 @@ async function getSystemCoordinator(): Promise<SystemCoordinator> {
         };
       },
     };
-  } catch (_error) {
+  } catch (error) {
     logger.warn(
       'Performance tracker unavailable, using fallback coordinator: ',
       error
@@ -176,7 +176,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
       logger.info('Dashboard monitoring started');
       return ok();
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to start dashboard: ', error);
       return err(error as Error);
     }
@@ -210,7 +210,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
       logger.info('Dashboard monitoring stopped');
       return ok();
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to stop dashboard: ', error);
       return err(error as Error);
     }
@@ -243,7 +243,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       };
 
       return ok(status);
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to get system status: ', error);
       return err(error as Error);
     }
@@ -289,7 +289,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       };
 
       return ok(JSON.stringify(report, null, 2));
-    } catch (_error) {
+    } catch (error) {
       logger.error('Failed to generate report: ', error);
       return err(error as Error);
     }
@@ -311,7 +311,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       } else {
         logger.warn('Dashboard update failed: ', statusResult.error);
       }
-    } catch (_error) {
+    } catch (error) {
       logger.error('Dashboard update error: ', error);
     }
   }

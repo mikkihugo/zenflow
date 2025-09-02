@@ -19,10 +19,12 @@ const logger = getLogger('core-system');
 // Constants for duplicate strings
 const STATUS_CHANGED_EVENT = 'status-changed';
 const READY_STATUS = 'ready';
-const ERROR_STATUS = '_error';
+const ERROR_STATUS = 'error';
 const INITIALIZING_STATUS = 'initializing';
 const SHUTDOWN_STATUS = 'shutdown';
 const TASKMASTER_NOT_AVAILABLE = 'TaskMaster service not available';
+const WEBSOCKET_CONNECTED_EVENT = 'websocket:connected';
+const WEBSOCKET_DISCONNECTED_EVENT = 'websocket:disconnected';
 
 export interface SystemConfig {
   memory?: {
@@ -59,7 +61,7 @@ export interface SystemConfig {
 }
 
 export interface SystemStatus {
-  status: 'initializing' | 'ready' | '_error' | 'shutdown';
+  status: 'initializing' | 'ready' | 'error' | 'shutdown';
   version: string;
   components: {
     memory: {
@@ -103,12 +105,15 @@ export interface SystemStatus {
 
 // Core System event map  
 interface CoreSystemEventMap extends EventMap {
-  '_error': [Error];
+  'error': [Error];
   'shutdown': [];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   'status-changed': [string];
   'initialized': [{ timestamp: string; config: SystemConfig }];
-  'websocket:connected': [string];
-  'websocket:disconnected': [string];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  WEBSOCKET_CONNECTED_EVENT: [string];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  WEBSOCKET_DISCONNECTED_EVENT: [string];
 }
 
 /**
@@ -178,7 +183,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       }
 
       // Register services in container
-      this.serviceContainer.register('taskmaster', this.taskMasterService as any);
+      this.serviceContainer.register('taskmaster', this.taskMasterService as TaskMasterService);
 
       // Initialize WebSocket heartbeat if enabled
       if (this.configuration.websocket?.enableEventStreaming) {
@@ -187,9 +192,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       }
 
       logger.info(' Core components initialization complete');
-    } catch (_error) {
-      logger.error(' Failed to initialize core components:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error(' Failed to initialize core components:', error);
+      throw error;
     }
   }
 
@@ -199,8 +204,8 @@ export class System extends EventEmitter<CoreSystemEventMap> {
   private setupEventHandlers(): void {
     try {
       // Handle system errors
-      this.on('_error', (_error) => {
-        logger.error('System _error:', _error);
+      this.on('error', (error) => {
+        logger.error('System error:', error);
         this.status = ERROR_STATUS;
         this.emit(STATUS_CHANGED_EVENT, this.status);
       });
@@ -218,22 +223,22 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       // Handle WebSocket events
-      this.on('websocket:connected', (...args: unknown[]) => { 
+  this.on(WEBSOCKET_CONNECTED_EVENT, (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections++;
         logger.debug(`WebSocket client connected: ${  socketId  } (total: ${this.activeConnections})`);
       });
 
-      this.on('websocket:disconnected', (...args: unknown[]) => { 
+  this.on(WEBSOCKET_DISCONNECTED_EVENT, (...args: unknown[]) => { 
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
         logger.debug(`WebSocket client disconnected: ${  socketId  } (total: ${this.activeConnections})`);
       });
 
       logger.info(' Event handlers configured');
-    } catch (_error) {
-      logger.error(' Failed to setup event handlers:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error(' Failed to setup event handlers:', error);
+      throw error;
     }
   }
 
@@ -264,11 +269,11 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       this.emit(STATUS_CHANGED_EVENT, this.status);
 
       logger.info(' Core System ready with WebSocket support');
-    } catch (_error) {
+    } catch (error) {
       this.status = ERROR_STATUS;
       this.emit(STATUS_CHANGED_EVENT, this.status);
-      logger.error(' Failed to initialize Core System:', _error);
-      throw _error;
+      logger.error(' Failed to initialize Core System:', error);
+      throw error;
     }
   }
 
@@ -343,7 +348,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
   async processDocument(documentPath: string): Promise<{
     success: boolean;
     workflowIds?: string[];
-    _error?: string;
+    error?: string;
   }> {
     await this.ensureInitialized();
     
@@ -367,17 +372,17 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       return { success: true, workflowIds };
-    } catch (_error) {
-      const errorMessage = (_error as Error).message;
-      logger.error(`Failed to process document ${documentPath}:`, _error);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      logger.error(`Failed to process document ${documentPath}:`, error);
       
-      this.broadcastEvent('document:_error', {
+      this.broadcastEvent('document:error', {
         path: documentPath,
-        _error: errorMessage,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       });
 
-      return { success: false, _error: errorMessage };
+      return { success: false, error: errorMessage };
     }
   }
 
@@ -387,7 +392,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
   async exportSystemData(format: string): Promise<{
     success: boolean;
     filename?: string;
-    _error?: string;
+    error?: string;
   }> {
     await this.ensureInitialized();
     
@@ -414,17 +419,17 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       return { success: true, filename };
-    } catch (_error) {
-      const errorMessage = (_error as Error).message;
-      logger.error(`Failed to export system data to ${format}:`, _error);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      logger.error(`Failed to export system data to ${format}:`, error);
       
-      this.broadcastEvent('export:_error', {
+      this.broadcastEvent('export:error', {
         format,
-        _error: errorMessage,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       });
 
-      return { success: false, _error: errorMessage };
+      return { success: false, error: errorMessage };
     }
   }
 
@@ -449,8 +454,8 @@ export class System extends EventEmitter<CoreSystemEventMap> {
         try {
           await this.taskMasterService.shutdown();
           logger.info(' TaskMaster service shutdown complete');
-        } catch (_error) {
-          logger.error('Error shutting down TaskMaster service:', _error);
+        } catch (error) {
+          logger.error('Error shutting down TaskMaster service:', error);
         }
       }
 
@@ -467,9 +472,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       logger.info(' Core System shutdown complete');
-    } catch (_error) {
-      logger.error(' Error during shutdown:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error(' Error during shutdown:', error);
+      throw error;
     }
   }
 
@@ -523,7 +528,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     if (!this.socketIOServer) return;
 
     this.socketIOServer.on('connection', (socket) => {
-      this.emit('websocket:connected', socket.id);
+      this.emit(WEBSOCKET_CONNECTED_EVENT, socket.id);
       
       // Handle system status requests
       socket.on('system:status', async () => {
@@ -532,19 +537,19 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       // Handle document processing requests
-      socket.on('document:process', async (_data: { _path: string }) => {
-        const result = await this.processDocument(_data._path);
+      socket.on('document:process', async (payload: { path: string }) => {
+        const result = await this.processDocument(payload.path);
         socket.emit('document:process:response', result);
       });
 
       // Handle export requests
-      socket.on('export:request', async (_data: { format: string }) => {
-        const result = await this.exportSystemData(data.format);
+      socket.on('export:request', async (payload: { format: string }) => {
+        const result = await this.exportSystemData(payload.format);
         socket.emit('export:response', result);
       });
 
       socket.on('disconnect', () => {
-        this.emit('websocket:disconnected', socket.id);
+        this.emit(WEBSOCKET_DISCONNECTED_EVENT, socket.id);
       });
     });
   }
@@ -641,14 +646,14 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       return result;
-    } catch (_error) {
-      logger.error('Failed to create SAFe task:', _error);
-      this.broadcastEvent('task:_error', {
+    } catch (error) {
+      logger.error('Failed to create SAFe task:', error);
+      this.broadcastEvent('task:error', {
         action: 'create',
-        _error: (_error as Error).message,
+        error: (error as Error).message,
         timestamp: new Date().toISOString(),
       });
-      throw _error;
+      throw error;
     }
   }
 
@@ -676,16 +681,16 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       return result;
-    } catch (_error) {
-      logger.error('Failed to move SAFe task:', _error);
-      this.broadcastEvent('task:_error', {
+    } catch (error) {
+      logger.error('Failed to move SAFe task:', error);
+      this.broadcastEvent('task:error', {
         action: 'move',
         taskId,
         toState,
-        _error: (_error as Error).message,
+        error: (error as Error).message,
         timestamp: new Date().toISOString(),
       });
-      throw _error;
+      throw error;
     }
   }
 
@@ -718,9 +723,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       return metrics;
-    } catch (_error) {
-      logger.error('Failed to get SAFe flow metrics:', _error);
-      throw _error;
+    } catch (error) {
+      logger.error('Failed to get SAFe flow metrics:', error);
+      throw error;
     }
   }
 
@@ -753,14 +758,14 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       return result;
-    } catch (_error) {
-      logger.error('Failed to create PI planning event:', _error);
-      this.broadcastEvent('pi:planning:_error', {
+    } catch (error) {
+      logger.error('Failed to create PI planning event:', error);
+      this.broadcastEvent('pi:planning:error', {
         event: eventData,
-        _error: (_error as Error).message,
+        error: (error as Error).message,
         timestamp: new Date().toISOString(),
       });
-      throw _error;
+      throw error;
     }
   }
 
@@ -774,7 +779,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
   runSystemChaosTest(): Promise<{
     success: boolean;
     results?: Record<string, unknown>;
-    _error?: string;
+    error?: string;
   }> {
     logger.info('Running system chaos test (WebSocket simulation)');
     

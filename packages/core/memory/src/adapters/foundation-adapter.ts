@@ -49,7 +49,7 @@ export class FoundationMemoryBackend extends BaseMemoryBackend {
       // TODO:recordMetric('memory_backend_initialized', 1, { storageType:config.storageType});
     } catch (error) {
       this.logger.error('Failed to initialize Foundation backend: ', error);
-      // TODO: recordMetric('memory_backend_init_errors', 1);
+      // TODO: recordMetric('memory_backend_initerrors', 1);
       throw error;
     }
   }

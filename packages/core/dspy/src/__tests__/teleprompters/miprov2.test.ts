@@ -203,7 +203,7 @@ expect(config.max_labeled_demos).toBe(4);
 expect(config.auto).toBe('light');
 expect(config.num_candidates).toBeNull();
 expect(config.num_threads).toBeNull();
-expect(config.max_errors).toBeNull();
+expect(config.maxerrors).toBeNull();
 expect(config.seed).toBe(9);
 expect(config.init_temperature).toBe(0.5);
 expect(config.verbose).toBe(false);
@@ -597,7 +597,7 @@ max_labeled_demos: 4,
 auto: 'light',
 num_candidates: null,
 num_threads: null,
-max_errors: null,
+maxerrors: null,
 seed: 9,
 init_temperature: 0.5,
 verbose: false,

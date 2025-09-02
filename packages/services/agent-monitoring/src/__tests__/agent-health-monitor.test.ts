@@ -370,7 +370,7 @@ describe('AgentHealthMonitor', () => {
 
       // Check for specific alert types
       const alertTypes = alerts.map((alert) => alert.type);
-      expect(alertTypes).toContain('high_cpu_usage');')      expect(alertTypes).toContain('high_memory_usage');')      expect(alertTypes).toContain('high_task_failure_rate');')      expect(alertTypes).toContain('high_response_time');')      expect(alertTypes).toContain('high_error_rate');')});
+      expect(alertTypes).toContain('high_cpu_usage');')      expect(alertTypes).toContain('high_memory_usage');')      expect(alertTypes).toContain('high_task_failure_rate');')      expect(alertTypes).toContain('high_response_time');')      expect(alertTypes).toContain('higherror_rate');')});
 
     it('should set appropriate alert severities', () => {
     ')      const agentId = 'severity-agent';

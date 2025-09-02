@@ -161,12 +161,12 @@ export class ExportSystem extends EventEmitter {
  validate: (data: unknown) => data !== undefined && data !== null,
  });
 
- logger.info(`Registered ${this.exporters.size} built-in exporters`
+ logger.info(`Registered ${this.exporters.size} built-in exporters`);
  }
 
  registerExporter(format: string, definition: ExporterDefinition): void {
  this.exporters.set(format.toLowerCase(), definition);
- logger.info(`Registered custom exporter:${format}`
+ logger.info(`Registered custom exporter: ${format}`);
  this.emit('exporter:registered', { format, definition });
  }
 
@@ -178,7 +178,7 @@ export class ExportSystem extends EventEmitter {
  const exporter = this.exporters.get(format.toLowerCase());
 
  if (!exporter) {
- throw new Error(`Unsupported export format:${format}`
+ throw new Error(`Unsupported export format: ${format}`);
  }
 
  const exportId = this.generateId();

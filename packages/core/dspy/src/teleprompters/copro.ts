@@ -434,7 +434,7 @@ export class COPRO extends Teleprompter {
 
 					total_score += numeric_score;
 					valid_evaluations++;
-} catch (_error) {
+} catch (error) {
 					// Continue with next example
 }
 }

@@ -62,20 +62,20 @@ import {
 } from '@claude-zen/foundation';
 
 // Optional imports with fallbacks for ML features
-let ConsistentHashing: any = null;
-let HashRing: any = null;
+let consistentHashing: any = null;
+let hashRing: any = null;
 let osutils: any = null;
 
 try {
-  ConsistentHashing = require('consistent-hashing');
+  consistentHashing = require('consistent-hashing');
 } catch {
-  ConsistentHashing = null; // Fallback:use simple round-robin
+  consistentHashing = null; // Fallback:use simple round-robin
 }
 
 try {
-  HashRing = require('hashring');
+  hashRing = require('hashring');
 } catch {
-  HashRing = null; // Fallback:use simple hashing
+  hashRing = null; // Fallback:use simple hashing
 }
 
 try {
@@ -96,34 +96,34 @@ try {
 }
 
 // Simple stub functions for telemetry (to be replaced with proper imports later)
-const recordMetric = (_name: string, _value?: number) => Promise.resolve();
-const recordHistogram = (_name: string, _value: number) => Promise.resolve();
-const recordGauge = (_name: string, _value: number) => Promise.resolve();
-const recordEvent = (_name: string, _data?: any) => Promise.resolve();
-const startTrace = (_name: string) => ({
+const recordMetric = (name: string, value?: number) => Promise.resolve();
+const recordHistogram = (name: string, value: number) => Promise.resolve();
+const recordGauge = (name: string, value: number) => Promise.resolve();
+const recordEvent = (name: string, data?: any) => Promise.resolve();
+const startTrace = (name: string) => ({
   end: () => {},
-  setAttributes: (_attrs: any) => {},
+  setAttributes: (attrs: any) => {},
 });
 const withTrace = <T>(fn: () => T) => fn();
 const withAsyncTrace = <T>(fn: () => Promise<T>) => fn();
-const __getKVStore = (_namespace: string) => ({
-  set: async (_key: string, _value: string) => {},
-  get: async (_key: string) => null,
-  delete: async (_key: string) => {},
+const __getKVStore = (namespace: string) => ({
+  set: async (key: string, value: string) => {},
+  get: async (key: string) => null,
+  delete: async (key: string) => {},
 });
 
 // Simple decorator stubs
 const __traced =
-  (_name: string) =>
-  (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) =>
+  (name: string) =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;
 const __tracedAsync =
-  (_name: string) =>
-  (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) =>
+  (name: string) =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;
 const __metered =
-  (_name: string) =>
-  (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) =>
+  (name: string) =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;
 
 import * as stats from 'simple-statistics';
@@ -224,8 +224,8 @@ export class LoadBalancer extends EventEmitter {
     // Will be initialized in start() method with getKVStore('load-balancing')
 
     // Initialize consistent hashing for distributed load balancing
-    this.consistentHashing = new ConsistentHashing();
-    this.hashRing = new HashRing();
+    this.consistentHashing = new consistentHashing();
+    this.hashRing = new hashRing();
 
     this.initializeComponents();
     this.initializeML();
@@ -295,7 +295,7 @@ export class LoadBalancer extends EventEmitter {
     this.setupMetrics();
 
     // Add agents to consistent hashing ring
-    this.setupConsistentHashing();
+    this.setupconsistentHashing();
 
     //  Complete initialization monitoring
     const initTime = this.getDuration(
@@ -422,7 +422,7 @@ export class LoadBalancer extends EventEmitter {
   /**
    * Setup consistent hashing for distributed load balancing.
    */
-  private setupConsistentHashing(): void {
+  private setupconsistentHashing(): void {
     // Initialize consistent hashing ring
     for (const agent of this.agents) {
       this.consistentHashing.add(agent.id, 1);
@@ -562,7 +562,7 @@ export class LoadBalancer extends EventEmitter {
         startupTime,
       });
 
-      const __errorInfo =
+      const errorInfo =
         result && typeof result === 'object' && ' error' in result
           ? result.error
           : new Error('Unknown error');
@@ -954,7 +954,7 @@ export class LoadBalancer extends EventEmitter {
           taskId: task.id,
           error: result.error,
         });
-        recordMetric('load_balancer_routing_errors_total', 1);
+        recordMetric('load_balancer_routingerrors_total', 1);
         throw result && typeof result === 'object' && ' error' in result
           ? result.error
           : new Error('Unknown startup error');

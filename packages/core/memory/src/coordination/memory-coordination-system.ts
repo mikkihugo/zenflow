@@ -365,7 +365,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
           success: 'false',
         });
 
-        recordMetric('memory_coordination_operation_errors', 1, {
+        recordMetric('memory_coordination_operationerrors', 1, {
           operation: request.operation,
           error: (error as Error).message,
         });

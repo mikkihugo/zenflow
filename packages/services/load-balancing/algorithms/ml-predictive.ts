@@ -257,9 +257,9 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
    * Handle agent failure.
    *
    * @param agentId
-   * @param _error
+   * @param error
    */
-  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
     // Record failure data
     const failureData: HistoricalData = {
       timestamp: new Date(),

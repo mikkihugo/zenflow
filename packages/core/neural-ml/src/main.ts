@@ -332,12 +332,12 @@ export function inject(token: unknown) {
   return (target: unknown, key: string, index: number) => {
     // Store injection metadata for later resolution
     const targetWithInjections = target as Record<string, unknown> & {
-      __injections?: Array<{ token: unknown; key: string; index: number }>;
+      injections?: Array<{ token: unknown; key: string; index: number }>;
     };
-    if (!targetWithInjections.__injections) {
-      targetWithInjections.__injections = [];
+    if (!targetWithInjections.injections) {
+      targetWithInjections.injections = [];
     }
-    targetWithInjections.__injections.push({ token, key, index });
+    targetWithInjections.injections.push({ token, key, index });
     logger.debug(
       `Dependency injection registered: ${  key  } at index ${  index}`,
       token

@@ -139,7 +139,7 @@ globalThis.testUtils = {
     const fs = await import('node:fs/promises');
     try {
       await fs.rm(dirPath, { recursive: true, force: true });
-    } catch (_error) {
+    } catch (error) {
       // Ignore cleanup errors in tests
     }
   },

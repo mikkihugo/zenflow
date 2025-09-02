@@ -838,7 +838,7 @@ export class MemorySystemManager extends EventEmitter {
  this.initialized = false;
 
  this.emit('systemShutdown', { name: this.config.name });
- this.logger.info(`Memory system '${this.config.name}' shut down`
+ this.logger.info(`Memory system '${this.config.name}' shut down`);
  } catch (error) {
  this.logger.error(`Error during memory system shutdown:`, error);
  throw error;

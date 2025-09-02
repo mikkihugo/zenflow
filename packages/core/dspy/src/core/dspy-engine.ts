@@ -275,7 +275,7 @@ export class DSPyEngine {
 				iteration: 0,
 				score: 0,
 			};
-		} catch (_error) {
+		} catch (error) {
 			logger.warn("Failed to generate prompt variation, using fallback");
 			return {
 				prompt: program.prompt + " (Please be specific and detailed in your response.)",
@@ -308,7 +308,7 @@ export class DSPyEngine {
 }
 
 			return testExamples.length > 0 ? totalScore / testExamples.length:0.5;
-} catch (_error) {
+} catch (error) {
 			logger.warn("Failed to evaluate prompt variation");
 			return 0.5; // Default middle score
 }

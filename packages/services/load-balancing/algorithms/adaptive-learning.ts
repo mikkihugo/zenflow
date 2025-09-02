@@ -239,9 +239,9 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    * Handle agent failure.
    *
    * @param agentId
-   * @param _error
+   * @param error
    */
-  public async onAgentFailure(agentId: string, _error: Error): Promise<void> {
+  public async onAgentFailure(agentId: string, error: Error): Promise<void> {
     // Find recent decisions involving this agent
     const recentDecisions = this.decisionHistory
       .filter((d) => d.agentId === agentId)

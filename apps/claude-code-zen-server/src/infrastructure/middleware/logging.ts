@@ -117,7 +117,7 @@ const getClientIp = (req: Request): string =>
  *
  * @param req Express request object
  */
-const getRequestSize = (_req: Request): number => {
+const getRequestSize = (req: Request): number => {
   const contentLength = req.headers[CONTENT_LENGTH_HEADER];
   if (contentLength) {
     return Number.parseInt(contentLength as string, 10);
@@ -141,7 +141,7 @@ const getRequestSize = (_req: Request): number => {
  *
  * @param res Express response object
  */
-const getResponseSize = (_res: Response): number => {
+const getResponseSize = (res: Response): number => {
   const contentLength = res.get(CONTENT_LENGTH_HEADER);
   if (contentLength) {
     return Number.parseInt(contentLength, 10);
@@ -182,7 +182,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  * @param path Request path
  * @param _method HTTP method (unused but available for extension)
  */
-const shouldLog = (_path: string, method: string): boolean => {
+const shouldLog = (path: string, method: string): boolean => {
   // Skip logging for health checks in production
   if (process.env['NODE_ENV'] === 'production' && path === '/health') {
     return false;
@@ -203,7 +203,7 @@ const shouldLog = (_path: string, method: string): boolean => {
  *
  * @param data Data object to sanitize
  */
-const sanitizeData = (_data: unknown): Record<string, unknown> => {
+const sanitizeData = (data: unknown): Record<string, unknown> => {
   if (!data || typeof data !== 'object') {
     return { value: data };
   }

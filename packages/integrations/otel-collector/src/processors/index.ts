@@ -241,7 +241,7 @@ export class ProcessorManager extends TypedEventBase {
         ) {
           overallStatus = 'degraded';
         }
-} catch (_error) {
+} catch (error) {
         processorStatuses.push({ name, status: 'unhealthy'});
         overallStatus = 'unhealthy';
 }

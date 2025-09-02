@@ -196,7 +196,7 @@ export class WebApiRoutes {
       this.logger.info(
         'Web API Routes facade initialized successfully with @claude-zen delegation'
       );
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to initialize Web API Routes facade: ', error);
       throw error;
     }
@@ -285,7 +285,7 @@ export class WebApiRoutes {
    */
   private setupCoreRoutes(app: Express, api: string): void {
     // Root route
-    app.get('/', (req, _res) => {
+    app.get('/', (req, res) => {
       res.json({
         message: 'Claude Code Zen API Server',
         version: getVersion(),
@@ -295,7 +295,7 @@ export class WebApiRoutes {
     });
 
     // Health check - delegate to monitoring package
-    app.get(`${api  }/health`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/health`, async (req: Request, res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -303,7 +303,7 @@ export class WebApiRoutes {
         );
         const health = await this.healthMonitor?.getSystemHealth();
         res.json(health);
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Health check failed',
           message: getErrorMessage(error),
@@ -312,7 +312,7 @@ export class WebApiRoutes {
     });
 
     // System status - delegate to monitoring package
-    app.get(`${api  }/system/status`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/system/status`, async (req: Request, res: Response) => {
       try {
         assertDefined(
           this.healthMonitor,
@@ -320,7 +320,7 @@ export class WebApiRoutes {
         );
         const status = await this.healthMonitor?.getSystemStatus();
         res.json(status);
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'System status failed',
           message: getErrorMessage(error),
@@ -329,7 +329,7 @@ export class WebApiRoutes {
     });
 
     // Production endpoints that integrate with foundation services
-    app.get(`${api  }/agents/status`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/agents/status`, async (req: Request, res: Response) => {
       try {
         assertDefined(this.workflowEngine, 'Workflow engine not initialized');
         const agents = await this.workflowEngine?.getAgents();
@@ -337,7 +337,7 @@ export class WebApiRoutes {
           success: true,
           data: agents || [],
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get agent status',
           message: getErrorMessage(error),
@@ -345,7 +345,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api  }/tasks`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/tasks`, async (req: Request, res: Response) => {
       try {
         assertDefined(this.workflowEngine, 'Workflow engine not initialized');
         const tasks = await this.workflowEngine?.getTasks(req.query);
@@ -353,7 +353,7 @@ export class WebApiRoutes {
           success: true,
           data: tasks || [],
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get tasks',
           message: getErrorMessage(error),
@@ -361,7 +361,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api  }/safe/metrics`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/safe/metrics`, async (req: Request, res: Response) => {
       try {
         assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
         const safetyMetrics = await this.healthMonitor?.getSafetyMetrics();
@@ -372,7 +372,7 @@ export class WebApiRoutes {
             summary: safetyMetrics ? 'Safety metrics available' : 'No active metrics',
           },
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get safety metrics',
           message: getErrorMessage(error),
@@ -380,7 +380,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api  }/events`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/events`, async (req: Request, res: Response) => {
       try {
         assertDefined(this.collaborationEngine, 'Collaboration engine not initialized');
         const events = await this.collaborationEngine?.getEvents(req.query);
@@ -388,7 +388,7 @@ export class WebApiRoutes {
           success: true,
           data: events || [],
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get events',
           message: getErrorMessage(error),
@@ -396,7 +396,7 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api  }/memory/status`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/memory/status`, async (req: Request, res: Response) => {
       try {
         assertDefined(this.healthMonitor, ERROR_MESSAGES.healthMonitorNotInitialized);
         const memoryStatus = await this.healthMonitor?.getMemoryStatus();
@@ -408,7 +408,7 @@ export class WebApiRoutes {
             free: 512,
           },
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get memory status',
           message: getErrorMessage(error),
@@ -431,14 +431,14 @@ export class WebApiRoutes {
     await this.advancedGUI.setupWebRoutes(app, `${api  }/agui`);
 
     // Task approval routes
-    app.get(`${api  }/agui/approvals`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/agui/approvals`, async (req: Request, res: Response) => {
       try {
         const approvals = await this.advancedGUI?.getPendingApprovals();
         res.json({
           success: true,
           data: approvals,
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get approvals',
           message: getErrorMessage(error),
@@ -448,7 +448,7 @@ export class WebApiRoutes {
 
     app.post(
       `${api  }/agui/approvals/:id/approve`,
-      async (_req: Request, _res: Response) => {
+      async (req: Request, res: Response) => {
         try {
           const result = await this.advancedGUI.approveTask(
             req.params.id,
@@ -458,7 +458,7 @@ export class WebApiRoutes {
             success: true,
             data: result,
           });
-        } catch (_error) {
+        } catch (error) {
           res.status(500).json({
             error: 'Failed to approve task',
             message: getErrorMessage(error),
@@ -482,14 +482,14 @@ export class WebApiRoutes {
     await this.workflowEngine?.setupWebRoutes(app, `${api  }/workflows`);
 
     // Task management routes
-    app.get(`${api  }/tasks`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/tasks`, async (req: Request, res: Response) => {
       try {
         const tasks = await this.workflowEngine?.getTasks(req.query);
         res.json({
           success: true,
           data: tasks,
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get tasks',
           message: getErrorMessage(error),
@@ -497,14 +497,14 @@ export class WebApiRoutes {
       }
     });
 
-    app.post(`${api  }/tasks`, async (_req: Request, _res: Response) => {
+    app.post(`${api  }/tasks`, async (req: Request, res: Response) => {
       try {
         const task = await this.workflowEngine?.createTask(req.body);
         res.status(201).json({
           success: true,
           data: task,
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to create task',
           message: getErrorMessage(error),
@@ -514,14 +514,14 @@ export class WebApiRoutes {
 
     app.post(
       `${api  }/tasks/:id/execute`,
-      async (_req: Request, _res: Response) => {
+      async (req: Request, res: Response) => {
         try {
           const result = await this.workflowEngine?.executeTask(req.params.id);
           res.json({
             success: true,
             data: result,
           });
-        } catch (_error) {
+        } catch (error) {
           res.status(500).json({
             error: 'Failed to execute task',
             message: getErrorMessage(error),
@@ -548,14 +548,14 @@ export class WebApiRoutes {
     await this.healthMonitor.setupWebRoutes(app, `${api  }/monitoring`);
 
     // Metrics endpoints
-    app.get(`${api  }/metrics`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/metrics`, async (req: Request, res: Response) => {
       try {
         const metrics = await this.healthMonitor?.getMetrics();
         res.json({
           success: true,
           data: metrics,
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get metrics',
           message: getErrorMessage(error),
@@ -563,14 +563,14 @@ export class WebApiRoutes {
       }
     });
 
-    app.get(`${api  }/analytics/llm`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/analytics/llm`, async (req: Request, res: Response) => {
       try {
         const analytics = await this.healthMonitor.getLLMAnalytics(req.query);
         res.json({
           success: true,
           data: analytics,
         });
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'Failed to get LLM analytics',
           message: getErrorMessage(error),
@@ -598,11 +598,11 @@ export class WebApiRoutes {
     await this.collaborationEngine?.setupWebRoutes(app, `${api  }/collaboration`);
 
     // WebSocket setup for real-time collaboration
-    app.get(`${api  }/ws`, async (_req: Request, _res: Response) => {
+    app.get(`${api  }/ws`, async (req: Request, res: Response) => {
       try {
         // Delegate WebSocket upgrade to collaboration engine
         await this.collaborationEngine?.handleWebSocketUpgrade(req, res);
-      } catch (_error) {
+      } catch (error) {
         res.status(500).json({
           error: 'WebSocket upgrade failed',
           message: getErrorMessage(error),

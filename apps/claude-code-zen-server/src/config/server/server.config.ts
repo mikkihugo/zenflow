@@ -64,8 +64,8 @@ export const DEFAULT_WEB_CONFIG: Required<
   auth: { enabled: false },
   theme: 'dark',
   realTime: true,
-  coreSystem: undefined as any,
-  container: undefined as any,
+  coreSystem: undefined,
+  container: undefined,
 };
 
 /**

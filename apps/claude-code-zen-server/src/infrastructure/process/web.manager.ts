@@ -65,7 +65,7 @@ export class WebProcessManager {
       await mkdir(dirname(this.pidFile), { recursive: true });
       await writeFile(this.pidFile, (this.pid || process.pid).toString());
       this.logger.debug(`PID file saved:${  this.pidFile}`);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Failed to save PID file: ', error);
       throw new Error(`Failed to save PID file:${  error}`);
     }
@@ -80,7 +80,7 @@ export class WebProcessManager {
         await unlink(this.pidFile);
         this.logger.debug(`PID file removed:${  this.pidFile}`);
       }
-    } catch (_error) {
+    } catch (error) {
       this.logger.warn('Failed to remove PID file: ', error);
       // Don't throw - this is cleanup
     }
@@ -100,7 +100,7 @@ export class WebProcessManager {
     }
 
     // Handle uncaught exceptions
-    process.on('uncaughtException', (_error) => {
+    process.on('uncaughtException', (error) => {
       this.logger.error('Uncaught exception: ', error);
       this.gracefulShutdown('uncaughtException');
     });
@@ -139,7 +139,7 @@ export class WebProcessManager {
 
       // Exit process
       process.exit(0);
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Error during shutdown: ', error);
       process.exit(1);
     }
@@ -177,7 +177,7 @@ export class WebProcessManager {
         isRunning: true,
         pidFile: this.pidFile,
       };
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Error checking running instance: ', error);
       return null;
     }
@@ -194,7 +194,7 @@ export class WebProcessManager {
       // This doesn't actually send a signal but checks if the process exists
       process.kill(pid, 0);
       return true;
-    } catch (_error: unknown) {
+    } catch (error: unknown) {
       const nodeError = error as NodeJS.ErrnoException;
       // Process exists if we get EPERM (permission denied)
       // Process doesn't exist if we get ESRCH or other errors
@@ -238,7 +238,7 @@ export class WebProcessManager {
 
       this.logger.info(`Instance ${targetPid} stopped successfully`);
       return true;
-    } catch (_error) {
+    } catch (error) {
       this.logger.error('Error stopping instance: ', error);
       return false;
     }

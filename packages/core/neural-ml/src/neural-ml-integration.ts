@@ -252,7 +252,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Initialize WASM module
  const wasmResult = await initializeWASM();
  if (!wasmResult.success) {
- throw new Error(`WASM initialization failed:${wasmResult.error}`
+ throw new Error(`WASM initialization failed: ${wasmResult.error}`);
  }
 
  // Initialize ML algorithms with default configurations
@@ -485,7 +485,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Initial suggestions from Bayesian optimizer
  const suggestions = await this.bayesianOptimizer.optimize([], bounds, 5);
  if (!suggestions.success) {
- throw new Error(`Bayesian optimization failed:${suggestions.error}`
+ throw new Error(`Bayesian optimization failed: ${suggestions.error}`);
  }
 
  let bestPoint = suggestions.data?.[0];

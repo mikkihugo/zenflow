@@ -91,7 +91,7 @@ export class LabeledFewShot extends Teleprompter {
 * max_bootstrapped_demos:8,
 * max_labeled_demos:16,
 * max_rounds:3,
-* max_errors:10
+* maxerrors:10
 *});
 *
 * const result = await bootstrap.compile(studentProgram, {
@@ -119,7 +119,7 @@ export class BootstrapFewShot extends Teleprompter {
 	private max_bootstrapped_demos:number;
 	private max_labeled_demos:number;
 	private max_rounds:number;
-	private max_errors?:number | null;
+	private maxerrors?:number | null;
 	private error_count:number = 0;
 
 	// Internal state matching Stanford implementation
@@ -139,7 +139,7 @@ export class BootstrapFewShot extends Teleprompter {
 			max_bootstrapped_demos?:number;
 			max_labeled_demos?:number;
 			max_rounds?:number;
-			max_errors?:number | null;
+			maxerrors?:number | null;
 } = {},
 	) {
 		super();
@@ -150,7 +150,7 @@ export class BootstrapFewShot extends Teleprompter {
 		this.max_bootstrapped_demos = config.max_bootstrapped_demos ?? 4;
 		this.max_labeled_demos = config.max_labeled_demos ?? 16;
 		this.max_rounds = config.max_rounds ?? 1;
-		this.max_errors = config.max_errors;
+		this.maxerrors = config.maxerrors;
 }
 
 	/**
@@ -402,9 +402,9 @@ export class BootstrapFewShot extends Teleprompter {
 			return success;
 } catch (error) {
 			this.error_count++;
-			const effective_max_errors = this.max_errors ?? 10; // Default max errors
+			const effective_maxerrors = this.maxerrors ?? 10; // Default max errors
 
-			if (this.error_count >= effective_max_errors) {
+			if (this.error_count >= effective_maxerrors) {
 				throw error;
 }
 
@@ -498,7 +498,7 @@ export interface BootstrapConfig {
 	max_bootstrapped_demos?:number;
 	max_labeled_demos?:number;
 	max_rounds?:number;
-	max_errors?:number | null;
+	maxerrors?:number | null;
 }
 
 export const DEFAULT_BOOTSTRAP_CONFIG:BootstrapConfig = {
@@ -508,7 +508,7 @@ export const DEFAULT_BOOTSTRAP_CONFIG:BootstrapConfig = {
 	max_bootstrapped_demos:4,
 	max_labeled_demos:16,
 	max_rounds:1,
-	max_errors:5,
+	maxerrors:5,
 };
 
 export interface BootstrapCompileOptions {
