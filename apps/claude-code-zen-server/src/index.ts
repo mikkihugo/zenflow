@@ -12,7 +12,15 @@ import {
   ok,
   err,
   getConfig,
+  EventBus,
+  isValidEventName,
+  EventLogger,
 } from '@claude-zen/foundation';
+
+// Type imports for server components
+import type { Server as HTTPServer } from 'http';
+import type { Server as SocketIOServer, Socket } from 'socket.io';
+import type { Application as Express, Request, Response } from 'express';
 
 // Initialize foundation config early
 getConfig();
@@ -25,10 +33,27 @@ class ClaudeZenServer {
   private server: HTTPServer | null = null;
   private io: SocketIOServer | null = null;
   private isShuttingDown = false;
+  
+  // EventBus integration
+  private eventBus: EventBus | null = null;
+  private socketListeners = new Map<string, Map<string, (...args: any[]) => void>>();
+  private eventBridgeEnabled = process.env.ZEN_EVENT_SERVER_SOCKET_BRIDGE === 'on';
 
   async start(): Promise<Result<void, Error>> {
     try {
       logger.info(' Starting Claude Code Zen Server');
+
+      // Initialize EventBus if bridge is enabled
+      if (this.eventBridgeEnabled) {
+        this.eventBus = EventBus.getInstance();
+        const initResult = await this.eventBus.initialize();
+        if (initResult.isErr()) {
+          logger.warn('Failed to initialize EventBus:', initResult.error);
+          this.eventBridgeEnabled = false;
+        } else {
+          logger.info('🔗 EventBus bridge enabled for Socket.IO integration');
+        }
+      }
 
       const express = (await import('express')).default;
       const app = express();
@@ -181,6 +206,22 @@ class ClaudeZenServer {
   }
 
   /**
+   * Log server startup information
+   */
+  private logServerStartup(): void {
+    const bridgeStatus = this.eventBridgeEnabled ? 'ENABLED' : 'DISABLED';
+    logger.info(`
+🚀 Claude Code Zen Server Started Successfully
+   📍 Address: http://${this.host}:${this.port}
+   🌐 Health: http://${this.host}:${this.port}/health
+   🔗 Socket.IO: http://${this.host}:${this.port}/socket.io/
+   ⚡ EventBus Bridge: ${bridgeStatus}
+   
+   Ready to serve requests and handle WebSocket connections!
+    `.trim());
+  }
+
+  /**
    * Initialize WebSocket services (Socket.IO only)
    */
   private async initializeWebSockets(server: HTTPServer): Promise<void> {
@@ -234,14 +275,19 @@ class ClaudeZenServer {
   }
 
   /**
-   * Setup socket subscription handlers
+   * Setup socket subscription handlers with EventBus bridge
    */
   private setupSocketSubscriptions(socket: Socket): void {
     socket.on('subscribe', (channel: string) => {
       socket.join(channel);
       logger.debug(`Client ${socket.id} subscribed to ${channel}`);
 
-      // Send initial data based on channel
+      // EventBus bridge: attach listeners for this channel
+      if (this.eventBridgeEnabled && this.eventBus) {
+        this.attachEventBusListeners(socket, channel);
+      }
+
+      // Send initial data based on channel (keep existing behavior)
       switch (channel) {
         case 'system':
           socket.emit('system:initial', {
@@ -267,7 +313,167 @@ class ClaudeZenServer {
     socket.on('unsubscribe', (channel: string) => {
       socket.leave(channel);
       logger.debug(`Client ${socket.id} unsubscribed from ${channel}`);
+
+      // EventBus bridge: remove listeners for this channel
+      if (this.eventBridgeEnabled && this.eventBus) {
+        this.removeEventBusListeners(socket, channel);
+      }
     });
+
+    // EventBus bridge: handle client publishes (optional)
+    if (this.eventBridgeEnabled && this.eventBus) {
+      socket.on('publish', (data: { channel: string; event: string; payload?: unknown }) => {
+        this.handleClientPublish(socket, data);
+      });
+    }
+
+    // Clean up listeners on disconnect
+    socket.on('disconnect', () => {
+      if (this.eventBridgeEnabled) {
+        this.cleanupSocketListeners(socket.id);
+      }
+    });
+  }
+
+  /**
+   * Attach EventBus listeners for a socket channel
+   */
+  private attachEventBusListeners(socket: Socket, channel: string): void {
+    if (!this.eventBus) return;
+
+    // Initialize listener map for this socket if not exists
+    if (!this.socketListeners.has(socket.id)) {
+      this.socketListeners.set(socket.id, new Map());
+    }
+
+    const socketListeners = this.socketListeners.get(socket.id)!;
+
+    // Create event pattern based on channel (e.g., 'system' -> 'system:*')
+    const eventPattern = `${channel}:`;
+    
+    // Create listener function that forwards events to socket
+    const listener = (eventData: unknown) => {
+      try {
+        socket.emit(eventPattern.slice(0, -1), {
+          data: eventData,
+          timestamp: new Date().toISOString(),
+        });
+        EventLogger.logEvent(`eventbus-to-socket:${channel}`, { socketId: socket.id, data: eventData });
+      } catch (error) {
+        EventLogger.logError(`eventbus-to-socket-error:${channel}`, error, { socketId: socket.id });
+      }
+    };
+
+    // Listen for events matching the pattern
+    // For simplicity, we'll listen to specific event names based on channel
+    const eventNames = this.getEventNamesForChannel(channel);
+    
+    eventNames.forEach(eventName => {
+      if (isValidEventName(eventName)) {
+        this.eventBus!.on(eventName, listener);
+        socketListeners.set(eventName, listener);
+        logger.debug(`Attached EventBus listener for ${eventName} to socket ${socket.id}`);
+      }
+    });
+  }
+
+  /**
+   * Remove EventBus listeners for a socket channel
+   */
+  private removeEventBusListeners(socket: Socket, channel: string): void {
+    if (!this.eventBus) return;
+
+    const socketListeners = this.socketListeners.get(socket.id);
+    if (!socketListeners) return;
+
+    const eventNames = this.getEventNamesForChannel(channel);
+    
+    eventNames.forEach(eventName => {
+      const listener = socketListeners.get(eventName);
+      if (listener && isValidEventName(eventName)) {
+        this.eventBus!.off(eventName, listener);
+        socketListeners.delete(eventName);
+        logger.debug(`Removed EventBus listener for ${eventName} from socket ${socket.id}`);
+      }
+    });
+
+    // Clean up socket entry if no listeners remain
+    if (socketListeners.size === 0) {
+      this.socketListeners.delete(socket.id);
+    }
+  }
+
+  /**
+   * Clean up all listeners for a socket
+   */
+  private cleanupSocketListeners(socketId: string): void {
+    if (!this.eventBus) return;
+
+    const socketListeners = this.socketListeners.get(socketId);
+    if (!socketListeners) return;
+
+    // Remove all listeners for this socket
+    for (const [eventName, listener] of socketListeners.entries()) {
+      if (isValidEventName(eventName)) {
+        this.eventBus.off(eventName, listener);
+      }
+    }
+
+    this.socketListeners.delete(socketId);
+    logger.debug(`Cleaned up all EventBus listeners for socket ${socketId}`);
+  }
+
+  /**
+   * Handle client publish requests with validation
+   */
+  private handleClientPublish(socket: Socket, data: { channel: string; event: string; payload?: unknown }): void {
+    try {
+      // Validate event name format and whitelist
+      const { channel, event, payload } = data;
+      const eventName = `${channel}:${event}`;
+
+      // Check if event is whitelisted (system:, registry:, agent:, llm:)
+      const whitelistedPrefixes = ['system:', 'registry:', 'agent:', 'llm:'];
+      const isWhitelisted = whitelistedPrefixes.some(prefix => eventName.startsWith(prefix));
+
+      if (!isWhitelisted) {
+        EventLogger.logError('client-publish-rejected', `Event ${eventName} not whitelisted`, { socketId: socket.id });
+        socket.emit('publish-error', { error: 'Event type not allowed', eventName });
+        return;
+      }
+
+      if (!isValidEventName(eventName)) {
+        EventLogger.logError('client-publish-invalid', `Event ${eventName} not in catalog`, { socketId: socket.id });
+        socket.emit('publish-error', { error: 'Invalid event name', eventName });
+        return;
+      }
+
+      // Emit to EventBus
+      if (this.eventBus) {
+        this.eventBus.emit(eventName, payload);
+        EventLogger.logEvent('client-publish-success', { eventName, socketId: socket.id });
+        logger.debug(`Client ${socket.id} published ${eventName} to EventBus`);
+      }
+    } catch (error) {
+      EventLogger.logError('client-publish-error', error, { socketId: socket.id, data });
+      socket.emit('publish-error', { error: 'Failed to publish event' });
+    }
+  }
+
+  /**
+   * Get event names that should be listened to for a given channel
+   */
+  private getEventNamesForChannel(channel: string): string[] {
+    const eventMap: Record<string, string[]> = {
+      system: ['system:start', 'system:error'],
+      registry: ['registry:agent-registered', 'registry:agent-unregistered'], 
+      agent: ['agent:task-started', 'agent:task-completed', 'agent:task-failed'],
+      llm: ['llm:inference-request', 'llm:inference-complete', 'llm:inference-failed'],
+      tasks: [], // Could be extended with task-specific events
+      logs: [], // Could be extended with log events
+    };
+
+    return eventMap[channel] || [];
   }
 
   /**
@@ -356,6 +562,14 @@ class ClaudeZenServer {
           logger.info('✅ Server closed successfully');
         }
       });
+    }
+
+    // Clean up EventBus listeners
+    if (this.eventBridgeEnabled) {
+      for (const socketId of this.socketListeners.keys()) {
+        this.cleanupSocketListeners(socketId);
+      }
+      logger.info('✅ EventBus listeners cleaned up');
     }
 
     // Close Socket.IO connections
