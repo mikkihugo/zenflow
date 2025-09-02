@@ -60,16 +60,45 @@ const getDatabaseSystem = async () => ({
 	},
 });
 
-const getEventSystem = async () => ({
-	emit: async (event: string, data: any) => {
-		logger.debug('Event emit (via bus)', { event, data });
-		eventBus.emit?.(event as any, data as any);
-	},
-	on: (event: string, callback: Function) => {
-		logger.debug('Event listener (local stub)', { event });
-		eventBus.on?.(event as any, callback as any);
-	},
-});
+// Get event system from foundation
+const getEventSystem = async () => {
+  try {
+    const { EventBus } = await import('@claude-zen/foundation');
+    const eventBus = EventBus.getInstance();
+    
+    return {
+      emit: async (event: string, data: any) => {
+        logger.debug('Event emit (via foundation EventBus)', { event, data });
+        eventBus.emit(event, data);
+      },
+      on: (event: string, callback: Function) => {
+        logger.debug('Event listener (via foundation EventBus)', { event });
+        eventBus.on(event, callback);
+      },
+      off: (event: string, callback: Function) => {
+        logger.debug('Event listener removal (via foundation EventBus)', { event });
+        eventBus.off(event, callback);
+      }
+    };
+  } catch (error) {
+    logger.error('Failed to initialize foundation EventBus, falling back to local stub', { error });
+    // Fallback to local stub if foundation is not available
+    return {
+      emit: async (event: string, data: any) => {
+        logger.debug('Event emit (local stub)', { event, data });
+        eventBus.emit?.(event as any, data as any);
+      },
+      on: (event: string, callback: Function) => {
+        logger.debug('Event listener (local stub)', { event });
+        eventBus.on?.(event as any, callback as any);
+      },
+      off: (event: string, callback: Function) => {
+        logger.debug('Event listener removal (local stub)', { event });
+        eventBus.off?.(event as any, callback as any);
+      }
+    };
+  }
+};
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';

@@ -710,4 +710,21 @@ export class MemoryCoordinationSystem extends EventEmitter {
       throw error;
     }
   }
+
+  /**
+   * Get the event system for external integration
+   */
+  getEventSystem() {
+    return {
+      emit: (event: string, data: unknown) => {
+        this.emit(event, data);
+      },
+      on: (event: string, callback: Function) => {
+        this.on(event, callback);
+      },
+      off: (event: string, callback: Function) => {
+        this.off(event, callback);
+      }
+    };
+  }
 }
