@@ -26,6 +26,7 @@ const eventBus = EventBus.getInstance();
 // Constants for error messages to prevent duplication
 const ADAPTER_NOT_INITIALIZED_ERROR = 'Database adapter not properly initialized - call initialize() first';
 const ADAPTER_UNAVAILABLE_ERROR = 'Database adapter instance is not available - configuration may be invalid';
+const ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR = 'Database adapter became unavailable during operation';
 
 /**
  * Database row interface for type-safe row validation
@@ -137,8 +138,13 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     }
   }
 
+  /**
+   * Initializes the database connection and ensures table schema.
+   * 
+   * @returns Promise resolving to Result indicating success or failure
+   */
   async initialize(): Promise<Result<void, Error>> {
-    return this.emitOperation('initialize', 'system', async () => {
+    return await this.emitOperation('initialize', 'system', async () => {
       try {
         // Connect using database package
         const dbType = this.config.type === 'memory' ? 'memory' : 'sqlite';
@@ -300,7 +306,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
         
         // Type-safe database query execution with validation
         if (!this.dbAdapter) {
-          return err(new Error('Database adapter became unavailable during operation'));
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
         }
         
         await this.dbAdapter.query(query, [
@@ -344,7 +350,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
         
         // Type-safe database query execution
         if (!this.dbAdapter) {
-          return err(new Error('Database adapter became unavailable during operation'));
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
         }
         
         const result = await this.dbAdapter.query(query, [key]) as Array<{ changes?: number }>;
@@ -365,15 +371,30 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+  /**
+   * Clears all memory entries from the database with comprehensive validation.
+   * 
+   * @returns Promise resolving to Result indicating success or failure
+   */
   async clear(): Promise<Result<void, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('clear', 'all', async () => {
+    return await this.emitOperation('clear', 'all', async () => {
       try {
         const query = `DELETE FROM ${this.tableName}`;
-        await this.dbAdapter!.query(query, []);
+        
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
+        }
+        
+        await this.dbAdapter.query(query, []);
 
         eventBus.emit('memory:storage:cleared', {
           backendId: this.getBackendId(),
@@ -387,32 +408,58 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+  /**
+   * Gets the count of active memory entries (excluding expired ones).
+   * 
+   * @returns Promise resolving to Result containing the count of active entries
+   */
   async size(): Promise<Result<number, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('size', 'count', async () => {
+    return await this.emitOperation('size', 'count', async () => {
       try {
         const query = `SELECT COUNT(*) as count FROM ${this.tableName} WHERE (ttl IS NULL OR ttl > ?)`;
-        const result = await this.dbAdapter!.query(query, [Date.now()]) as Array<{ count: number }>;
+        
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
+        }
+        
+        const result = await this.dbAdapter.query(query, [Date.now()]) as Array<{ count: number }>;
         const count = result[0]?.count || 0;
         return ok(count);
       } catch (error) {
-        return err(error instanceof Error ? error : new Error(String(error)));
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return err(new Error(`Failed to get memory size: ${errorMessage}`));
       }
     });
   }
 
+  /**
+   * Lists memory entry keys with optional filtering and sorting.
+   * 
+   * @param options - Optional query parameters for filtering and sorting
+   * @returns Promise resolving to Result containing array of keys
+   */
   async list(options?: MemoryQueryOptions): Promise<Result<string[], Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('list', 'keys', async () => {
+    return await this.emitOperation('list', 'keys', async () => {
       try {
         let query = `SELECT key FROM ${this.tableName} WHERE (ttl IS NULL OR ttl > ?)`;
-        const params: any[] = [Date.now()];
+        const params: (string | number)[] = [Date.now()];
 
         if (options?.pattern) {
           query += ' AND key LIKE ?';
@@ -433,7 +480,12 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           }
         }
 
-        const result = await this.dbAdapter!.query(query, params) as Array<{ key: string }>;
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
+        }
+        
+        const result = await this.dbAdapter.query(query, params) as Array<{ key: string }>;
         const keys = result.map(row => row.key);
         return ok(keys);
       } catch (error) {
@@ -442,12 +494,21 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+  /**
+   * Lists all distinct namespaces found in memory keys.
+   * 
+   * @returns Promise resolving to Result containing array of namespace strings
+   */
   async listNamespaces(): Promise<Result<string[], Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('listNamespaces', 'namespaces', async () => {
+    return await this.emitOperation('listNamespaces', 'namespaces', async () => {
       try {
         const query = `
           SELECT DISTINCT 
@@ -458,7 +519,12 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           ORDER BY namespace
         `;
         
-        const result = await this.dbAdapter!.query(query, [Date.now()]) as Array<{ namespace: string }>;
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
+        }
+        
+        const result = await this.dbAdapter.query(query, [Date.now()]) as Array<{ namespace: string }>;
         const namespaces = result.map(row => row.namespace);
         return ok(namespaces);
       } catch (error) {
@@ -467,12 +533,21 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+  /**
+   * Retrieves comprehensive memory usage statistics.
+   * 
+   * @returns Promise resolving to Result containing detailed memory statistics
+   */
   async getStats(): Promise<Result<MemoryStats, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('getStats', 'stats', async () => {
+    return await this.emitOperation('getStats', 'stats', async () => {
       try {
         const query = `
           SELECT 
@@ -484,7 +559,18 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           WHERE (ttl IS NULL OR ttl > ?)
         `;
         
-        const result = await this.dbAdapter!.query(query, [Date.now()]) as Array<{ totalKeys: number; totalSize: number; averageKeySize: number; averageValueSize: number }>;
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return err(new Error(ADAPTER_UNAVAILABLE_DURING_OPERATION_ERROR));
+        }
+        
+        const result = await this.dbAdapter.query(query, [Date.now()]) as Array<{ 
+          totalKeys: number; 
+          totalSize: number; 
+          averageKeySize: number; 
+          averageValueSize: number 
+        }>;
+        
         const row = result[0];
         const stats: MemoryStats = {
           totalKeys: row?.totalKeys || 0,
@@ -503,34 +589,62 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+  /**
+   * Performs a health check on the database connection.
+   * 
+   * @returns Promise resolving to Result containing health status boolean
+   */
   async health(): Promise<Result<boolean, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
+    if (!this.isInitialized()) {
+      return ok(false);
+    }
+    
+    if (!this.dbAdapter) {
       return ok(false);
     }
 
-    return this.emitOperation('health', 'check', async () => {
+    return await this.emitOperation('health', 'check', async () => {
       try {
         const query = 'SELECT 1';
-        const result = await this.dbAdapter!.query(query, []);
+        
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return ok(false);
+        }
+        
+        const result = await this.dbAdapter.query(query, []);
         return ok(result.length > 0);
-      } catch (error) {
+      } catch (healthCheckError) {
+        // Log the error for debugging but return false for health status
+        logger.warn('Database health check failed', { 
+          error: healthCheckError instanceof Error ? healthCheckError.message : String(healthCheckError) 
+        });
         return ok(false);
       }
     });
   }
 
+  /**
+   * Closes the database connection and cleans up resources.
+   * 
+   * @returns Promise resolving to Result indicating success or failure
+   */
   async close(): Promise<Result<void, Error>> {
-    return this.emitOperation('close', 'system', async () => {
+    return await this.emitOperation('close', 'system', async () => {
       try {
+        // Gracefully close database connection if available
         if (this.dbAdapter) {
           await this.dbAdapter.close();
           this.dbAdapter = null;
         }
         
+        // Update initialization state
         this.setInitialized(false);
         
-        logger.info('DatabaseBackedAdapter closed', {
-          backendId: this.getBackendId()
+        // Log successful closure for debugging
+        logger.info('DatabaseBackedAdapter closed successfully', {
+          backendId: this.getBackendId(),
+          timestamp: Date.now()
         });
 
         return ok();
@@ -555,8 +669,18 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     };
   }
 
+  /**
+   * Ensures the memory table exists with proper schema and indexes.
+   * 
+   * @returns Promise resolving to Result indicating success or failure
+   */
   private async ensureTable(): Promise<Result<void, Error>> {
     try {
+      // Validate adapter availability before table operations
+      if (!this.dbAdapter) {
+        return err(new Error('Database adapter not available for table creation'));
+      }
+
       const createTableQuery = `
         CREATE TABLE IF NOT EXISTS ${this.tableName} (
           key TEXT PRIMARY KEY,
@@ -569,15 +693,27 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
         )
       `;
 
-      await this.dbAdapter!.query(createTableQuery, []);
+      await this.dbAdapter.query(createTableQuery, []);
 
-      // Create index for TTL cleanup
+      // Create performance-optimized index for TTL cleanup operations
       const indexQuery = `CREATE INDEX IF NOT EXISTS idx_${this.tableName}_ttl ON ${this.tableName}(ttl)`;
-      await this.dbAdapter!.query(indexQuery, []);
+      
+      // Additional validation for continued adapter availability
+      if (!this.dbAdapter) {
+        return err(new Error('Database adapter became unavailable during index creation'));
+      }
+      
+      await this.dbAdapter.query(indexQuery, []);
+
+      logger.debug('Database table and indexes ensured successfully', {
+        tableName: this.tableName,
+        backendId: this.getBackendId()
+      });
 
       return ok();
     } catch (error) {
-      return err(error instanceof Error ? error : new Error(String(error)));
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return err(new Error(`Failed to ensure database table: ${errorMessage}`));
     }
   }
 }
