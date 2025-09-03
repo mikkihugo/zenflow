@@ -64,7 +64,14 @@ export {
   shutdownEventDrivenTelemetry,
 } from './telemetry-event-driven.js';
 
-// Direct telemetry creation functions (no facade pattern)
+/**
+ * Creates a new EventDrivenTelemetryManager.
+ *
+ * The optional `config` parameter is accepted for API compatibility but is ignored — this factory always returns the manager produced by `createEventDrivenTelemetryManager`.
+ *
+ * @param config - Optional configuration (not used).
+ * @returns A new EventDrivenTelemetryManager instance.
+ */
 export function createTelemetryManager(config?: unknown) {
   return createEventDrivenTelemetryManager();
 }
