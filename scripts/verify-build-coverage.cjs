@@ -47,9 +47,7 @@ for (const dir of packageDirs) {
           console.log(`✅ ${packageDir} - has build script`);
           
           // Check for special packages mentioned in the issue
-          if (packageDir.includes('singularity-coder')) {
-            specialPackages.push('singularity-coder');
-          }
+          // (singularity-coder removed)
           if (packageDir.includes('llm-providers')) {
             specialPackages.push('llm-providers');
           }
@@ -82,13 +80,11 @@ try {
   console.log(`✅ Build script will target ${toolsPackages.length} tools packages`);
   console.log(`✅ Build script will target ${integrationsPackages.length} integration packages`);
   
-  const foundSingularityCoder = toolsPackages.some(p => p.includes('singularity-coder'));
   const foundLlmProviders = integrationsPackages.some(p => p.includes('llm-providers'));
   
-  console.log(`${foundSingularityCoder ? '✅' : '❌'} singularity-coder ${foundSingularityCoder ? 'will be' : 'will NOT be'} built`);
   console.log(`${foundLlmProviders ? '✅' : '❌'} llm-providers ${foundLlmProviders ? 'will be' : 'will NOT be'} built`);
   
-  if (foundSingularityCoder && foundLlmProviders) {
+  if (foundLlmProviders) {
     console.log('\n🎉 SUCCESS: All requested packages are now included in the build system!');
   } else {
     console.log('\n❌ ISSUE: Some requested packages are missing from build system');

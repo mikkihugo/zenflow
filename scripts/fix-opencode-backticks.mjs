@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Quick corruption fixer for stray trailing backticks and malformed template literals
- * in packages/tools/singularity-coder/typescript-core/packages/opencode.
+ * (singularity-coder removed).
  *
  * It applies targeted regex replacements:
  * - Remove accidental trailing backticks after lines ending with `)` or `}` or string literals
@@ -18,7 +18,7 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const TARGET_DIR = path.join(
   ROOT,
-  'packages/tools/singularity-coder/typescript-core'
+  // 'packages/tools/singularity-coder/typescript-core' - removed
 );
 
 /** Collect all .ts/.tsx files recursively under a directory */

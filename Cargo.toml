@@ -16,7 +16,7 @@ members = [
 ]
 
 [workspace.dependencies]
-# Commonly used workspace dependencies for singularity-coder
+# Commonly used workspace dependencies
 toml = "0.8"
 walkdir = "2.5"
 which = "3.0"

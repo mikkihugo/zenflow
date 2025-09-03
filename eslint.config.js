@@ -118,7 +118,6 @@ export default [
                 '@claude-zen/monitoring',
                 '@claude-zen/telemetry',
                 '@claude-zen/ai-safety',
-                '@claude-zen/neural-ml',
                 '@claude-zen/memory',
                 '@claude-zen/interfaces',
                 '@claude-zen/*-linter',
@@ -126,7 +125,7 @@ export default [
                 '@claude-zen/*-operations'
               ],
               message:
-                'Import only @claude-zen/foundation or @claude-zen/database across packages. Use the EventBus for cross-domain communication.',
+                'Import only @claude-zen/foundation, @claude-zen/database, or @claude-zen/neural-ml across packages. Use the EventBus for cross-domain communication.',
             },
           ],
           // ESLint no-restricted-imports doesn't support explicit except for patterns directly;
@@ -228,9 +227,7 @@ export default [
     },
   },
 
-  // Singularity Coder Web (TS/TSX) - Browser env and UI-specific tuning
   {
-    files: ['packages/tools/singularity-coder/typescript-core/packages/web/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -289,9 +286,7 @@ export default [
       'unused-imports/no-unused-imports': 'warn',
     },
   },
-  // Singularity Coder Web (JS/JSX) - Browser env and UI-specific tuning
   {
-    files: ['packages/tools/singularity-coder/typescript-core/packages/web/**/*.{js,jsx}'],
     languageOptions: {
       globals: {
         window: 'readonly',
@@ -463,39 +458,7 @@ export default [
     },
   },
 
-  // Browser client code inside the Singularity Coder web package
-  {
-    files: [
-      'packages/tools/singularity-coder/typescript-core/packages/web/**/*.{ts,tsx,js,jsx}',
-    ],
-    languageOptions: {
-      globals: {
-        window: 'readonly',
-        document: 'readonly',
-        HTMLElement: 'readonly',
-  HTMLDivElement: 'readonly',
-        Element: 'readonly',
-        Node: 'readonly',
-  SVGSVGElement: 'readonly',
-  ResizeObserver: 'readonly',
-  Iterator: 'readonly',
-        Event: 'readonly',
-        EventTarget: 'readonly',
-        MessageEvent: 'readonly',
-        WebSocket: 'readonly',
-        CloseEvent: 'readonly',
-        console: 'readonly',
-        fetch: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
-        location: 'readonly',
-        navigator: 'readonly',
-      },
-    },
-    rules: {
-      'no-console': 'warn',
-    },
-  },
+  // (Broken singularity-coder config block removed)
 
   // Test files - Environment with Vitest globals
   {

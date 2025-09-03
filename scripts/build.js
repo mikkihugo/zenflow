@@ -48,7 +48,7 @@ try {
 		console.log("      Some service packages failed, continuing...");
 	}
 
-	console.log("    Building tools packages (including singularity-coder)...");
+	console.log("    Building tools packages...");
 	try {
 		execSync(
 			"find packages/tools -name package.json -execdir pnpm build \\;",
