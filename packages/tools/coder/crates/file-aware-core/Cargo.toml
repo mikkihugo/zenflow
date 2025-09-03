@@ -44,14 +44,61 @@ indexmap = { version = "2.2", features = ["serde"] }
 dashmap = { workspace = true }
 
 # Optional features for different environments
-tokio = { version = "1.0", features = ["fs", "io-util"], optional = true }
+tokio = { version = "1.0", features = ["fs", "io-util", "process"], optional = true }
+
+# Database integration
+tempfile = "3.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+# Core code analysis
+levenshtein = "1.0"                                            # String distance
+md5 = "0.7"                                                    # MD5 hashing for unique IDs
+
+# Optional database dependencies
+rusqlite = { version = "0.32", optional = true }
+# lancedb = { version = "0.8", optional = true }
+# kuzu = { version = "0.11.3-pre.3", optional = true }
+# tokio-postgres = { version = "0.7", optional = true }
+# mysql_async = { version = "0.34", optional = true }
+
+# Optional ML dependencies (commented out for now)
+# burn = { version = "0.13", optional = true }
+# burn-tch = { version = "0.13", optional = true }
+# burn-autodiff = { version = "0.13", optional = true }
+# burn-core = { version = "0.13", optional = true }
+# burn-optim = { version = "0.13", optional = true }
+# burn-dataset = { version = "0.13", optional = true }
+# burn-train = { version = "0.13", optional = true }
+# rust-bert = { version = "0.22", optional = true }
+# tch = { version = "0.14", optional = true }
+# tokenizers = { version = "0.15", optional = true }
+# linfa = { version = "0.7", optional = true }
+# linfa-clustering = { version = "0.7", optional = true }
+# linfa-preprocessing = { version = "0.7", optional = true }
 
 [features]
-default = ["async"]
-async = ["tokio"]
+default = ["sqlite"]
+sqlite = ["dep:rusqlite"]
+# lancedb = ["dep:lancedb"]
+# kuzu = ["dep:kuzu"]
+# postgres = ["dep:tokio-postgres"]
+# mysql = ["dep:mysql_async"]
+# ml = ["burn", "burn-tch", "burn-autodiff", "burn-core", "burn-optim", "burn-dataset", "burn-train"]
+# bert = ["rust-bert", "tch", "tokenizers"]
+# clustering = ["linfa", "linfa-clustering", "linfa-preprocessing"]
+# full = ["ml", "bert", "clustering", "postgres", "mysql"]
+# database-full = ["sqlite", "postgres", "mysql"]
+database-minimal = ["sqlite"]
 
 # For Rustler/Elixir integration
 rustler = []
 
 [dev-dependencies]
 tempfile = { workspace = true }
+criterion = "0.5"
+tokio-test = "0.4"
+
+# Benchmarks can be added when needed
+# [[bench]]
+# name = "ml_performance"
+# harness = false

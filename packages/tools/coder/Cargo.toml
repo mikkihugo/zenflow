@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-	"crates/code-mesh-core",
+	"crates/file-aware-core",
 	# Removed: Optional UI/TUI and WASM crates - not needed for pure engine
 	# "crates/code-mesh-tui",
 	# "crates/code-mesh-wasm",

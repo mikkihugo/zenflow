@@ -33,6 +33,12 @@ pub enum FileAwareError {
     
     #[error("Unsupported language: {language}")]
     UnsupportedLanguage { language: String },
+    
+    #[error("Authentication error: {message}")]
+    AuthenticationError { message: String },
+    
+    #[error("Database error: {message}")]
+    DatabaseError { message: String },
 }
 
 /// Result type for file-aware operations
@@ -257,7 +263,7 @@ impl FileAwareCore {
     }
     
     /// Process a file-aware request
-    pub fn process_request(&self, request: FileAwareRequest) -> Result<FileAwareResponse> {
+    pub fn process_request(&mut self, request: FileAwareRequest) -> Result<FileAwareResponse> {
         let start_time = std::time::Instant::now();
         
         // Build analysis context
@@ -268,10 +274,11 @@ impl FileAwareCore {
         
         let execution_time = start_time.elapsed().as_millis() as u64;
         
+        let context_clone = context.clone();
         Ok(FileAwareResponse {
             success: true,
             changes,
-            context,
+            context: context_clone.clone(),
             metadata: ResponseMetadata {
                 files_analyzed: context.relevant_files.len(),
                 execution_time_ms: execution_time,
@@ -333,7 +340,7 @@ impl FileAwareCore {
     }
     
     /// Analyze a single file (public API for external use)
-    pub fn analyze_file(&self, file_path: &str, root_path: &str) -> Result<AnalyzedContext> {
+    pub fn analyze_file(&mut self, file_path: &str, root_path: &str) -> Result<AnalyzedContext> {
         let request = FileAwareRequest {
             task: format!("Analyze file: {}", file_path),
             files: vec![file_path.to_string()],
@@ -373,11 +380,9 @@ pub extern "C" fn file_aware_core_new() -> *mut FileAwareCore {
 }
 
 #[no_mangle]
-pub extern "C" fn file_aware_core_free(core: *mut FileAwareCore) {
+pub unsafe extern "C" fn file_aware_core_free(core: *mut FileAwareCore) {
     if !core.is_null() {
-        unsafe {
-            drop(Box::from_raw(core));
-        }
+        drop(Box::from_raw(core));
     }
 }
 
@@ -386,7 +391,7 @@ pub fn process_request_json(request_json: &str) -> std::result::Result<String, S
     let request: FileAwareRequest = serde_json::from_str(request_json)
         .map_err(|e| format!("Invalid request JSON: {}", e))?;
     
-    let core = FileAwareCore::new();
+    let mut core = FileAwareCore::new();
     let response = core.process_request(request)
         .map_err(|e| format!("Analysis failed: {}", e))?;
     

@@ -8,8 +8,8 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    FileAwareRequest, AnalyzedContext, ComplexityLevel, FileDependency, SymbolReference,
-    Result, FileAwareError, analysis::FileAnalyzer
+    AnalyzedContext, SymbolReference, ComplexityLevel,
+    FileAwareRequest, Result, FileAwareError, analysis::FileAnalyzer
 };
 
 /// Context builder that analyzes project structure and relationships
@@ -30,7 +30,7 @@ impl ContextBuilder {
     }
 
     /// Build context from a file-aware request
-    pub fn build_context(&self, request: &FileAwareRequest) -> Result<AnalyzedContext> {
+    pub fn build_context(&mut self, request: &FileAwareRequest) -> Result<AnalyzedContext> {
         let root_path = Path::new(&request.root_path);
         
         // Discover relevant files
