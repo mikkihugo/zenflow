@@ -117,6 +117,11 @@ pnpm build
 
 Tests: run per-package only with `pnpm test`.
 
+### Package manager policy
+
+- Use pnpm only (v10.15.0+). npm/yarn/npx are not supported in this repo.
+- When a guide suggests `npx`, use `pnpm dlx` instead (example: `pnpm dlx create-svelte@latest`).
+
 ## Quality and functionality
 
 - Prefer surgical changes; preserve behavior
