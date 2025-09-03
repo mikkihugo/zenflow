@@ -351,9 +351,11 @@ impl<T: Float> TimeSeriesDatasetBuilder<T> {
       self
         .timestamps
         .ok_or_else(|| DataPipelineError::MissingData {
-  Utc.with_ymd_and_hms(2023, 1, 1, 0, 0, 0).unwrap(),
-  Utc.with_ymd_and_hms(2023, 1, 2, 0, 0, 0).unwrap(),
-  Utc.with_ymd_and_hms(2023, 1, 3, 0, 0, 0).unwrap(),
+          field: "timestamps".to_string(),
+        })?;
+
+    let mut time_series = TimeSeriesData::new(self.series_id, frequency);
+
     for (timestamp, value) in timestamps.into_iter().zip(values.into_iter()) {
       let exogenous = if let Some(ref exog) = self.exogenous {
         exog.get(time_series.data_points.len()).cloned()

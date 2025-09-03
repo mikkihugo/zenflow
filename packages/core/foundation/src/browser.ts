@@ -30,7 +30,7 @@ export const isDevelopment = () =>
 export const isProduction = () =>
   !isDevelopment() && typeof window !== 'undefined';
 export const isTest = () => false;
-export const getEnv = (key: string, defaultValue?: string) =>
+export const getEnv = (_key: string, defaultValue?: string) =>
   defaultValue || '';
 export const isDebug = () => isDevelopment();
 export const shouldLog = () => true;

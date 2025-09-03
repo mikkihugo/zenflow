@@ -464,6 +464,9 @@ pub use NetworkError as TrainingError;
 // Advanced modules
 pub mod advanced;
 
+// DSPy neural primitives for transformer layers and attention mechanisms
+pub mod dspy_neural_primitives;
+
 // Re-export optimization types for easy access
 pub use advanced::optimization::{
     GeneticOptimizer, ParticleSwarmOptimizer, HyperparameterOptimizer,

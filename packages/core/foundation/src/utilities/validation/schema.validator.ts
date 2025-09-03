@@ -378,7 +378,7 @@ export class JsonSchemaManager {
  * Get schema version for mode
  */
  private getSchemaVersion(
- documentType: string,
+ _documentType: string,
  mode: 'kanban' | 'agile' | 'safe'
  ): string {
  const modeVersionMap = {

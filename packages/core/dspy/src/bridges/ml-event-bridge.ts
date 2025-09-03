@@ -219,7 +219,8 @@ this.logger.info(' Initializing DSPy-Brain ML Bridge');
 // Import Brain coordinator - fallback if not available
 let BrainCoordinator;
 try {
-// const brainModule = await import('@claude-zen/brain');\n // BrainCoordinator = brainModule.BrainCoordinator;\n throw new Error(' Brain package not available'); // Force fallback
+// Brain package integration disabled - using fallback
+throw new Error('Brain package not available'); // Force fallback
 } catch (error) {
 this.logger.warn(
 'Brain package not available, using fallback implementation'

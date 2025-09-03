@@ -245,7 +245,7 @@ export class WebsocketHub {
   /**
    * Handle publish requests - forward to EventBus
    */
-  private handlePublish(connection: WebSocketConnection, message: InboundMessage): void {
+  private handlePublish(_connection: WebSocketConnection, message: InboundMessage): void {
     if (!message.event) {
       EventLogger.log('websocket-hub:publish-missing-event');
       return;

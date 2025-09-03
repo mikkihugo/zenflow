@@ -8,7 +8,6 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import {
 type Logger,
-safeAsync,
 type Result,
 ok,
 err,
@@ -212,7 +211,7 @@ async deleteDatabase(databaseId: string): Promise<Result<void, CodeQLError>> {
     this.databases.delete(databaseId);
 
     this.logger.info('Database deleted successfully', { databaseId });
-    return ok(undefined);
+    return ok();
   } catch (error) {
     if (error instanceof Error && 'type' in error) {
       return err(error as CodeQLError);
@@ -338,8 +337,7 @@ child.stderr.on('data', (data) => {
 stderr += data.toString();
 });
 
-const timeoutId = setTimeout(() => {</search>
-</search_and_replace>
+const timeoutId = setTimeout(() => {
   child.kill('SIGTERM');
   reject(
     this.createError('system', 'Database creation timeout', { timeout: this.config.timeout })
@@ -371,6 +369,7 @@ this.createError('system', 'Failed to spawn CodeQL process', {
 );
 });
 });
+}
 
 private createError(
 type:CodeQLError['type'],

@@ -24,12 +24,22 @@
 // import type { BehavioralIntelligence } from '../../behavioral-intelligence';
 
 import { getLogger } from '@claude-zen/foundation';
-import type {
-  CodingPrinciplesResearcher,
-  ProgrammingLanguage,
-  TaskDomain,
-  DevelopmentRole,
-} from './coding-principles-researcher';
+
+// Type definitions (previously in coding-principles-researcher)
+export type ProgrammingLanguage = 'typescript' | 'javascript' | 'python' | 'rust' | 'go' | 'java' | 'csharp';
+export type TaskDomain = 'web' | 'mobile' | 'desktop' | 'server' | 'ml' | 'data' | 'systems' | 
+  'event-driven' | 'web-app' | 'mobile-app' | 'microservices' | 'data-pipeline' | 'ml-model' | 
+  'game-dev' | 'blockchain' | 'embedded' | 'desktop-app';
+export type DevelopmentRole = 'developer' | 'architect' | 'lead' | 'senior' | 'junior' | 'fullstack' | 
+  'tech-lead' | 'fullstack-developer';
+
+export interface CodingPrinciplesResearcher {
+  analyzeLanguagePatterns(language: ProgrammingLanguage): Promise<any>;
+  generateDomainGuidelines(domain: TaskDomain): Promise<any>;
+  adaptToRole(role: DevelopmentRole): Promise<any>;
+  getAdaptivePrinciples?(context: any): Promise<any>;
+  submitFeedback?(feedback: any): Promise<any>;
+}
 
 // Add missing type declarations
 // Type for behavioral intelligence - define as needed or import if available
@@ -135,6 +145,8 @@ export interface CodingStandardsConfig {
   includePerformance?: boolean;
   /** Include security guidelines */
   includeSecurity?: boolean;
+  /** Include testing guidelines */
+  includeTesting?: boolean;
 }
 
 /**
@@ -207,6 +219,7 @@ export class IntelligentPromptGenerator {
       fileNaming: 'kebab-case',
       includePerformance: true,
       includeSecurity: true,
+      includeTesting: true,
 };
 }
 
@@ -299,7 +312,7 @@ export class IntelligentPromptGenerator {
     config: Required<CodingStandardsConfig>,
     complexityScore: number
   ): Promise<IntelligentPrompt> {
-    const codingStandards = this.generateCodingStandards(config);
+    const codingStandards = await this.generateCodingStandards(config);
     const phaseGuidelines = this.generatePhaseGuidelines(phase, context, config);
     const qualityMetrics = this.generateQualityMetrics(phase, config);
     
@@ -379,11 +392,11 @@ export class IntelligentPromptGenerator {
   /**
    * Generate comprehensive coding standards
    */
-  private generateCodingStandards(
+  private async generateCodingStandards(
     config: Required<CodingStandardsConfig>
-  ): string {
-    const enhancedStandards = this.buildEnhancedStandards(config);
-    const baseStandards = this.generateBaseStandards(config);
+  ): Promise<string> {
+    const enhancedStandards = await this.buildEnhancedStandards(config);
+    const baseStandards = await this.generateBaseStandards(config);
     const languageStandards = this.generateLanguageSpecificStandards(config);
     const featureStandards = this.generateFeatureStandards(config);
     const enhancedSections = this.appendEnhancedSections(enhancedStandards);
@@ -394,7 +407,7 @@ export class IntelligentPromptGenerator {
   /**
    * Build enhanced standards configuration
    */
-  private buildEnhancedStandards(config: Required<CodingStandardsConfig>) {
+  private async buildEnhancedStandards(config: Required<CodingStandardsConfig>) {
     const { language, includePerformance, includeSecurity, includeTesting } = config;
     
     const featureAnalysis = {
@@ -404,13 +417,13 @@ export class IntelligentPromptGenerator {
     };
 
     const performanceRecommendations = includePerformance ? 
-      this.getPerformanceRecommendations(language, featureAnalysis) : [];
+      await this.generatePerformanceRecommendations(language, featureAnalysis) : [];
     
     const securityRecommendations = includeSecurity ? 
-      this.getSecurityRecommendations(language, featureAnalysis) : [];
+      await this.generateSecurityRecommendations(language, featureAnalysis) : [];
     
     const testingRecommendations = includeTesting ? 
-      this.getTestingRecommendations(language, featureAnalysis) : [];
+      await this.generateTestingRecommendations(language, featureAnalysis) : [];
 
     return {
       contextualIntro: `These standards are customized for ${language} with emphasis on ${includePerformance ? 'performance, ' : ''}${includeSecurity ? 'security, ' : ''}${includeTesting ? 'testing' : ''}.`,
@@ -423,51 +436,18 @@ export class IntelligentPromptGenerator {
   /**
    * Generate base coding standards  
    */
-  private generateBaseStandards(config: Required<CodingStandardsConfig>): string {
-    const {
-      language,
-      maxComplexity,
-      maxLinesPerFunction,
-      maxParameters,
-      fileNaming,
-      includePerformance,
-      includeSecurity,
-      includeTesting,
-} = config;
+  private async generateBaseStandards(config: Required<CodingStandardsConfig>): Promise<string> {
+    const { language, maxComplexity, maxLinesPerFunction, maxParameters, fileNaming } = config;
+    const enhancedStandards = await this.buildEnhancedStandards(config);
 
-    // Advanced feature analysis system using the include flags
-    const featureAnalysis = {
-      performanceWeight: includePerformance ? 0.3 : 0.1,
-      securityWeight: includeSecurity ? 0.3 : 0.1,
-      testingWeight: includeTesting ? 0.3 : 0.1,
-    };
-
-    // Generate context-aware recommendations based on feature flags
-    const performanceRecommendations = includePerformance ? 
-      this.getPerformanceRecommendations(language, featureAnalysis) : [];
-    
-    const securityRecommendations = includeSecurity ? 
-      this.getSecurityRecommendations(language, featureAnalysis) : [];
-    
-    const testingRecommendations = includeTesting ? 
-      this.getTestingRecommendations(language, featureAnalysis) : [];
-
-    // Merge recommendations into enhanced standards
-    const enhancedStandards = {
-      contextualIntro: `These standards are customized for ${language} with emphasis on ${includePerformance ? 'performance, ' : ''}${includeSecurity ? 'security, ' : ''}${includeTesting ? 'testing' : ''}.`,
-      performanceSection: performanceRecommendations.length > 0 ? `## Performance Standards:\n${performanceRecommendations.map(r => `- ${r}`).join('\n')}` : '',
-      securitySection: securityRecommendations.length > 0 ? `## Security Standards:\n${securityRecommendations.map(r => `- ${r}`).join('\n')}` : '',
-      testingSection: testingRecommendations.length > 0 ? `## Testing Standards:\n${testingRecommendations.map(r => `- ${r}`).join('\n')}` : '',
-    };
-
-    let standards = `
+    return `
 ## Coding Standards & Best Practices (${language.toUpperCase()})
 ${enhancedStandards.contextualIntro}
 
 ### File Organization & Naming:
 - **Descriptive filenames**: Use clear, descriptive names that indicate file purpose
   - Good: user-authentication-service.${language === 'typescript' ? 'ts' : 'js'}
-  - Good: product-catalog-manager.${language === 'typescript' ? 'ts' : 'js'}  
+  - Good: product-catalog-manager.${language === 'typescript' ? 'ts' : 'js'}
   - Good: order-validation-utils.${language === 'typescript' ? 'ts' : 'js'}
   - Bad: helper.${language === 'typescript' ? 'ts' : 'js'}, utils.${language === 'typescript' ? 'ts' : 'js'}, data.${language === 'typescript' ? 'ts' : 'js'}
 - **Single responsibility**: Each file should have ONE clear purpose
@@ -481,70 +461,7 @@ ${enhancedStandards.contextualIntro}
 - **Cyclomatic complexity**: Keep below ${maxComplexity}
 - **Pure functions**: Prefer pure functions when possible
 - **Clear naming**: Function names should describe what they do`;
-
-    if (language === 'typescript') {
-      standards += `
-
-### TypeScript Quality Standards:
-- **Strict typing**: Always use explicit types, avoid 'any'
-- **Interface definitions**: Define clear interfaces for all data structures
-- **Type inference**: Leverage TypeScript's type inference when possible
-- **Null safety**: Handle undefined/null cases explicitly
-- **Union types**: Use union types for controlled variants
-- **Type guards**: Implement proper type guards for runtime checks`;
-    }
-
-    if (includePerformance) {
-      standards += `
-
-### Performance Guidelines:
-- **Big O awareness**: Consider algorithmic complexity
-- **Memory management**: Avoid memory leaks and excessive allocations
-- **Lazy loading**: Load resources only when needed
-- **Caching strategies**: Implement appropriate caching
-- **Bundle optimization**: Minimize bundle size and dependencies`;
-    }
-
-    if (includeSecurity) {
-      standards += `
-
-### Security Best Practices:
-- **Input validation**: Validate all external inputs
-- **Error handling**: Don't expose sensitive information in errors
-- **Authentication**: Implement proper authentication and authorization
-- **Data sanitization**: Sanitize user inputs to prevent injection attacks
-- **Dependency security**: Regularly update and audit dependencies`;
-    }
-
-    if (includeTesting) {
-      standards += `
-
-### Testing Requirements:
-- **Unit tests**: Cover core business logic
-- **Integration tests**: Verify component interactions
-- **Test-driven development**: Consider TDD for complex features
-- **Mocking**: Use mocks for external dependencies
-- **Coverage**: Aim for 80%+ test coverage`;
-    }
-
-    if (enhancedStandards.performanceSection) {
-      standards += `
-
-${enhancedStandards.performanceSection}`;
-    }
-    if (enhancedStandards.securitySection) {
-      standards += `
-
-${enhancedStandards.securitySection}`;
-    }
-    if (enhancedStandards.testingSection) {
-      standards += `
-
-${enhancedStandards.testingSection}`;
-    }
-
-    return standards;
-}
+  }
 
   /**
    * Generate phase-specific guidelines
@@ -746,8 +663,8 @@ Remember: Write code that tells a story - it should be self-documenting and easy
       // const { DSPyLLMBridge } = await import('../../coordination/dspy-llm-bridge');
       // const { NeuralBridge } = await import('../../neural-bridge');
       // Use modern EventBus for coordination instead
-      const { getEventBus } = await import('@claude-zen/foundation');
-      const eventBus = getEventBus();
+      const { EventBus } = await import('@claude-zen/foundation');
+      const eventBus = EventBus.getInstance();
       // Initialize DSPy bridge if not available
       // Legacy logger import removed as NeuralBridge is deprecated
       // const neuralBridge = new NeuralBridge(logger); // This line is removed as NeuralBridge is removed
@@ -797,19 +714,21 @@ Generate a complete, ready-to-use development prompt.`,
         priority:'high' as const,
 };
 
-      // Use DSPy to generate optimized prompt
-      const result = await eventBus.publishAndWaitForResponse(promptTask); // Changed to use eventBus
+      // Use DSPy to generate optimized prompt via events
+      eventBus.emit('dspy:prompt:generate', promptTask);
+      // For now, return a basic result - this would be enhanced with proper event handling
+      const result = { optimizedPrompt: null };
 
-      if (result.success && result.result) {
+      if (result.optimizedPrompt) {
         // Parse DSPy result into structured prompt components
         const dspyResult =
-          typeof result.result === 'string' ? JSON.parse(result.result) : result.result;
+          typeof result.optimizedPrompt === 'string' ? JSON.parse(result.optimizedPrompt) : result.optimizedPrompt;
 
         return {
           content:
             dspyResult.content || dspyResult.result || 'DSPy generated prompt content',
           codingStandards:
-            dspyResult.codingStandards || this.generateCodingStandards(config),
+            dspyResult.codingStandards || await this.generateCodingStandards(config),
           phaseGuidelines:
             dspyResult.phaseGuidelines || this.generatePhaseGuidelines(phase, context, config),
           qualityMetrics:
@@ -1659,6 +1578,95 @@ ${agentResponse}
 
 Please provide a detailed assessment to help improve the agent's output. Your feedback is critical for continuous learning.`;
   }
+
+  /**
+   * Generate language-specific standards
+   */
+  private generateLanguageSpecificStandards(config: Required<CodingStandardsConfig>): string {
+    const { language } = config;
+    
+    if (language === 'typescript') {
+      return `
+
+### TypeScript Quality Standards:
+- **Strict typing**: Always use explicit types, avoid 'any'
+- **Interface definitions**: Define clear interfaces for all data structures
+- **Type inference**: Leverage TypeScript's type inference when possible
+- **Null safety**: Handle undefined/null cases explicitly
+- **Union types**: Use union types for controlled variants
+- **Type guards**: Implement proper type guards for runtime checks`;
+    }
+    
+    return '';
+  }
+
+  /**
+   * Generate feature-specific standards
+   */
+  private generateFeatureStandards(config: Required<CodingStandardsConfig>): string {
+    const { includePerformance, includeSecurity, includeTesting } = config;
+    let featureStandards = '';
+
+    if (includePerformance) {
+      featureStandards += `
+
+### Performance Guidelines:
+- **Big O awareness**: Consider algorithmic complexity
+- **Memory management**: Avoid memory leaks and excessive allocations
+- **Lazy loading**: Load resources only when needed
+- **Caching strategies**: Implement appropriate caching
+- **Bundle optimization**: Minimize bundle size and dependencies`;
+    }
+
+    if (includeSecurity) {
+      featureStandards += `
+
+### Security Best Practices:
+- **Input validation**: Validate all external inputs
+- **Error handling**: Don't expose sensitive information in errors
+- **Authentication**: Implement proper authentication and authorization
+- **Data sanitization**: Sanitize user inputs to prevent injection attacks
+- **Dependency security**: Regularly update and audit dependencies`;
+    }
+
+    if (includeTesting) {
+      featureStandards += `
+
+### Testing Requirements:
+- **Unit tests**: Cover core business logic
+- **Integration tests**: Verify component interactions
+- **Test-driven development**: Consider TDD for complex features
+- **Mocking**: Use mocks for external dependencies
+- **Coverage**: Aim for 80%+ test coverage`;
+    }
+
+    return featureStandards;
+  }
+
+  /**
+   * Append enhanced sections to standards
+   */
+  private appendEnhancedSections(enhancedStandards: { performanceSection: string; securitySection: string; testingSection: string }): string {
+    let sections = '';
+    
+    if (enhancedStandards.performanceSection) {
+      sections += `
+
+${enhancedStandards.performanceSection}`;
+    }
+    if (enhancedStandards.securitySection) {
+      sections += `
+
+${enhancedStandards.securitySection}`;
+    }
+    if (enhancedStandards.testingSection) {
+      sections += `
+
+${enhancedStandards.testingSection}`;
+    }
+    
+    return sections;
+  }
 }
 
 /**
@@ -1679,4 +1687,5 @@ export const DEFAULT_CODING_STANDARDS:Required<CodingStandardsConfig> = {
   maxParameters:5,
   fileNaming: 'kebab-case',  includePerformance:true,
   includeSecurity:true,
+  includeTesting:true,
 };

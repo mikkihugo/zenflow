@@ -8,11 +8,17 @@
 // Note: DSPy moved to @claude-zen/dspy package
 // This package focuses on workflow orchestration
 
-// SPARC Methodology
-export * from '../sparc';
+// Core coordination
+export * from './core/coordination-orchestrator';
 
-// Teamwork Coordination  
-export * from '../teamwork';
+// Event types
+export * from './types/events';
 
-// Orchestration
-export * from '../orchestration';
+// SAFe framework
+export * from './safe/index';
+
+// TaskMaster system
+export * from './taskmaster/index';
+
+// Teamwork coordination
+export * from './teamwork/index';

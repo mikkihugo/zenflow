@@ -140,9 +140,9 @@ export class TelemetryEventBridge {
       }
 
       // Remove event listeners
-      this.eventListeners.forEach((listener, event) => {
+      for (const [event, listener] of this.eventListeners.entries()) {
         this.eventBus.off(event, listener);
-      });
+      }
       this.eventListeners.clear();
 
       this.isStarted = false;
@@ -186,7 +186,9 @@ export class TelemetryEventBridge {
         'telemetry:shutdown'
       ];
 
-      eventsToForward.forEach(eventName => {
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }
         if (isValidEventName(eventName)) {
           const listener = (data: unknown) => {
             this.eventBus.emit(eventName, data);
@@ -195,7 +197,9 @@ export class TelemetryEventBridge {
           eventEmitter.on(eventName, listener);
           this.eventListeners.set(eventName, listener);
         }
-      });
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }
 
       EventLogger.log('telemetry-bridge:event-forwarding-setup', {
         moduleId: this.config.moduleId,
@@ -269,12 +273,9 @@ export class TelemetryEventBridge {
 // =============================================================================
 
 /**
- * Create a TelemetryEventBridge bound to the given telemetry manager.
- *
- * Constructs the bridge using the provided partial config merged with the bridge defaults.
- *
- * @param config - Optional partial BridgeConfig to override defaults (e.g., `moduleId`, `heartbeatInterval`, `enableLogging`)
- * @returns The created TelemetryEventBridge instance
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }
  */
 export function createTelemetryEventBridge(
   telemetryManager: EventDrivenTelemetryManager,
@@ -284,13 +285,6 @@ export function createTelemetryEventBridge(
 }
 
 /**
- * Returns the default BridgeConfig for the TelemetryEventBridge.
- *
- * The returned object is a shallow copy of the module's DEFAULT_CONFIG and can
- * be safely mutated by callers without affecting the internal default.
- *
- * @returns A default BridgeConfig object
- */
-export function getDefaultTelemetryBridgeConfig(): BridgeConfig {
-  return { ...DEFAULT_CONFIG };
-}
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }

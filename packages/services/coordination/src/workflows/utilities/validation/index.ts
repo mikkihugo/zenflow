@@ -9,11 +9,15 @@
 export { SchemaValidator } from './schema-validator';
 export type {
   WorkflowContext,
-  WorkflowContextSchema,
   WorkflowDefinition,
-  WorkflowDefinitionSchema,
-  WorkflowExecutionResult,
-  WorkflowExecutionResultSchema,
   WorkflowStep,
-  WorkflowStepSchema
+  WorkflowExecutionResult
+} from './workflow-schemas';
+
+// Export schema constants
+export {
+  WORKFLOW_STEP_SCHEMA,
+  WORKFLOW_DEFINITION_SCHEMA,
+  WORKFLOW_CONTEXT_SCHEMA,
+  WORKFLOW_EXECUTION_RESULT_SCHEMA
 } from './workflow-schemas';

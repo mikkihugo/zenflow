@@ -254,7 +254,7 @@ export class WebApiRoutes {
   // Health check - event-driven
     app.get(`${api  }/health`, async (req: Request, res: Response) => {
       try {
-    const response = await this.bus.request('api:system:status', { correlationId: 'health' });
+            const response = await this.bus.request('taskmaster:system:status', { correlationId: 'health' });
     const health = response?.data ?? { status: 'ok' };
         res.json(health);
       } catch (error) {
@@ -268,7 +268,7 @@ export class WebApiRoutes {
   // System status - event-driven
     app.get(`${api  }/system/status`, async (req: Request, res: Response) => {
       try {
-    const response = await this.bus.request('api:system:status', { correlationId: 'status' });
+            const response = await this.bus.request('taskmaster:system:status', { correlationId: 'status' });
     const status = response?.data ?? { status: 'ok' };
         res.json(status);
       } catch (error) {
@@ -282,7 +282,7 @@ export class WebApiRoutes {
     // Production endpoints that integrate with foundation services
     app.get(`${api  }/agents/status`, async (req: Request, res: Response) => {
       try {
-        const response = await this.bus.request('api:swarms:list', { correlationId: 'agents' });
+        const response = await this.bus.request('taskmaster:swarms:list', { correlationId: 'agents' });
         res.json({ success: true, data: response?.data ?? [] });
       } catch (error) {
         res.status(500).json({ error: 'Failed to get agent status', message: getErrorMessage(error) });
@@ -300,7 +300,7 @@ export class WebApiRoutes {
 
     app.get(`${api  }/safe/metrics`, async (req: Request, res: Response) => {
       try {
-        const response = await this.bus.request('api:system:metrics', { correlationId: 'safety' });
+        const response = await this.bus.request('taskmaster:system:metrics', { correlationId: 'safety' });
         const safetyMetrics = response?.data ?? {};
         res.json({ success: true, data: { metrics: safetyMetrics, summary: Object.keys(safetyMetrics).length ? 'Safety metrics available' : 'No active metrics' } });
       } catch (error) {
@@ -310,7 +310,7 @@ export class WebApiRoutes {
 
     app.get(`${api  }/events`, async (req: Request, res: Response) => {
       try {
-        const response = await this.bus.request('api:events:list', { correlationId: 'events' });
+        const response = await this.bus.request('taskmaster:events:list', { correlationId: 'events' });
         res.json({ success: true, data: response?.data ?? [] });
       } catch (error) {
         res.status(500).json({ error: 'Failed to get events', message: getErrorMessage(error) });

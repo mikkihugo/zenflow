@@ -10,11 +10,6 @@ members = [
     # Core components (moved to new structure)
     "packages/core/fact-system/src/rust",
     "packages/core/neural-ml/neural-core",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-core",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-data",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-models",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-registry",
-    "packages/core/neural-ml/neural-core/claude-zen-neural-training",
     
     # taskmaster wasm has dependency conflicts, exclude for now
     # "packages/services/taskmaster/src/wasm",

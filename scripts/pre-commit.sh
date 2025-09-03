@@ -1,10 +1,8 @@
 #!/bin/bash
 
-/**
- * Pre-commit Hook - Foundation Enforcement
- * 
- * Runs validation checks before allowing commits
- */
+# Pre-commit Hook - Foundation Enforcement
+# 
+# Runs validation checks before allowing commits
 
 set -e
 

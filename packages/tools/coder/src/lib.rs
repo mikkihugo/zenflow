@@ -128,22 +128,17 @@ pub mod tool;
 // Utility modules
 pub mod config;
 pub mod error;
-pub mod events;
 pub mod features;
 pub mod permission;
 pub mod sync;
 pub mod utils;
+pub mod ts_event_bus;
 
 // Generated prompts
 pub mod prompts;
 
 // Re-export commonly used types
-pub use llm::{
-    EventDrivenLLMClient, LanguageModel, EventDrivenLanguageModel,
-    Message, MessageRole, MessageContent, GenerateOptions,
-    GenerateResult, StreamChunk, Usage, FinishReason,
-    LLMGenerateRequest, LLMGenerateResponse, LLMStreamRequest, LLMStreamChunk
-};
+
 pub use tool::{
     Tool, ToolContext, ToolResult, ToolRegistry, ToolError,
     ToolDefinition
@@ -161,7 +156,7 @@ pub use permission::{PermissionManager, PermissionContext, PermissionLevel};
 pub use error::{Error, Result};
 
 // Event system
-pub use events::{Event, EventBus, EventHandler};
+
 
 // Synchronization primitives
 pub use sync::{AsyncMutex, AsyncRwLock, Debouncer};

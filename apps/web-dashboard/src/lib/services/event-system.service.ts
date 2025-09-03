@@ -270,13 +270,13 @@ class EventSystemService {
   private notifyListeners(event: string): void {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
-      listeners.forEach(callback => {
+      for (const callback of listeners) {
         try {
           callback();
         } catch (error) {
           console.error('Error in event listener:', error);
         }
-      });
+      }
     }
   }
 

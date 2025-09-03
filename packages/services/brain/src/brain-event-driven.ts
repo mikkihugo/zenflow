@@ -1188,7 +1188,7 @@ status: 'ready', metrics
 });
 }, this.config.monitoring?.checkpointInterval || 10000);
 
-this.logger.info('Real-time monitoring setup complete').
+this.logger.info('Real-time monitoring setup complete');
 }
 
 // =============================================================================
@@ -1208,7 +1208,7 @@ const { complexity, priority, timeLimit, qualityRequirement} = context;
 
 if (complexity > 0.8 && qualityRequirement > 0.9 && timeLimit > 30000) {
 return 'dspy';
-} else if (complexity > 0.6 && priority === 'high; {
+} else if (complexity > 0.6 && priority === 'high') {
 return 'hybrid';
 } else if (complexity > 0.4) {
 return 'ml';
@@ -1221,14 +1221,14 @@ private async applyOptimizationStrategy(prompt:string, strategy:string, context:
 // Simulate strategy-specific optimization
 switch (strategy) {
 case 'dspy':
-return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context)}`
+return `[DSPy Optimized] ${prompt}\n\nContext:${JSON.stringify(context)}`;
 case 'hybrid':
-return `[Hybrid Optimized] ${prompt}\n\nOptimization:Advanced ML + DSPy techniques applied`
+return `[Hybrid Optimized] ${prompt}\n\nOptimization:Advanced ML + DSPy techniques applied`;
 case 'ml':
-return `[ML Optimized] ${prompt}\n\nML Enhancement:Pattern-based optimization applied`
+return `[ML Optimized] ${prompt}\n\nML Enhancement:Pattern-based optimization applied`;
 case 'basic':
 default:
-return `[Optimized] ${prompt}\n\nBasic optimization applied`
+return `[Optimized] ${prompt}\n\nBasic optimization applied`;
 }
 }
 
@@ -1242,8 +1242,8 @@ const strategyBonus = {
 }[strategy] || 0;
 
 const expectedAccuracy = Math.min(0.98, baseAccuracy + strategyBonus - complexity * 0.1);
-const estimatedDuration = Math.max(1000, complexity * 10000 + (strategy === 'dspy' ? 5000:0));
-const resourceRequirements = complexity > 0.7 ? 'high' :complexity > 0.4 ? ' medium' : ' low';
+const estimatedDuration = Math.max(1000, complexity * 10000 + (strategy === 'dspy' ? 5000 : 0));
+const resourceRequirements = complexity > 0.7 ? 'high' : complexity > 0.4 ? 'medium' : 'low';
 
 return { expectedAccuracy, estimatedDuration, resourceRequirements};
 }
@@ -1261,9 +1261,7 @@ return Math.min(0.95, baseConfidence + strategyConfidence - complexity * 0.1 + p
 }
 
 private generateOptimizationReasoning(strategy:string, complexity:number, confidence:number): string {
-return `Selected ${strategy} strategy based on complexity score of ${complexity.toFixed(2)}. `
-Confidence:${(confidence * 100).toFixed(1)}%.
-This approach optimizes for the given complexity and resource constraints.`
+return `Selected ${strategy} strategy based on complexity score of ${complexity.toFixed(2)}. Confidence: ${(confidence * 100).toFixed(1)}%. This approach optimizes for the given complexity and resource constraints.`;
 }
 
 private analyzeTechnicalComplexity(content:string, context:any): number {
@@ -1286,20 +1284,20 @@ return Math.min(1.0, (opTerms + processTerms) / 15);
 
 private analyzeBusinessComplexity(content:string, context:any): number {
 const businessTerms = (content.match(/\b(requirement|stakeholder|compliance|governance|audit)\b/gi) || []).length;
-const scaleIndicators = context?.scale === `global` ? 0.3:context?.scale === ' large' ? 0.2 : 0.1;
+const scaleIndicators = context?.scale === 'global' ? 0.3 : context?.scale === 'large' ? 0.2 : 0.1;
 return Math.min(1.0, businessTerms / 10 + scaleIndicators);
 }
 
 private generateComplexityRecommendations(complexity:number, dimensions:any, context:any): any {
-const strategy = complexity > 0.7 ? 'dspy' :complexity > 0.5 ? ' hybrid' : ' ml';
+const strategy = complexity > 0.7 ? 'dspy' : complexity > 0.5 ? 'hybrid' : 'ml';
 const timeEstimate = complexity * 3600000; // Base hour per complexity unit
-const resourceRequirements = complexity > 0.7 ? 'high' :complexity > 0.4 ? ' medium' : ' low';
+const resourceRequirements = complexity > 0.7 ? 'high' : complexity > 0.4 ? 'medium' : 'low';
 const riskFactors = [];
 
-if (dimensions.technical > 0.8) riskFactors.push('High technical complexity').
-if (dimensions.architectural > 0.8) riskFactors.push('Complex system architecture').
-if (dimensions.operational > 0.7) riskFactors.push('Operational challenges').
-if (dimensions.business > 0.7) riskFactors.push('Business complexity').
+if (dimensions.technical > 0.8) riskFactors.push('High technical complexity');
+if (dimensions.architectural > 0.8) riskFactors.push('Complex system architecture');
+if (dimensions.operational > 0.7) riskFactors.push('Operational challenges');
+if (dimensions.business > 0.7) riskFactors.push('Business complexity');
 
 return { optimizationStrategy:strategy, timeEstimate, resourceRequirements, riskFactors};
 }

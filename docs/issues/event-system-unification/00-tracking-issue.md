@@ -6,6 +6,11 @@
 
 **Result**: All packages now use the foundation-based event system. The separate `@claude-zen/event-system` package has been completely removed.
 
+## Validation (apply per merged PR)
+- pnpm install
+- pnpm type-check
+- pnpm --filter @claude-zen/web-dashboard dev (confirm real-time events)
+- pnpm build (never cancel)
 ## ✅ **COMPLETED SUB-ISSUES**
 
 - [x] 01 — Bridge System Monitoring to EventBus ✅ **COMPLETE**

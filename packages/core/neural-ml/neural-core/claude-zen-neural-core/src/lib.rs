@@ -83,6 +83,9 @@ pub mod error;
 pub mod integration;
 pub mod traits;
 
+/// DSPy acceleration module for high-performance DSPy operations
+pub mod dspy_acceleration;
+
 // Re-export claude-zen neural feedforward types for convenience
 pub use claude_zen_neural_feedforward::{
   ActivationFunction, Network, NetworkBuilder, TrainingAlgorithmTrait as TrainingAlgorithm, TrainingData,

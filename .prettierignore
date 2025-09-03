@@ -1,8 +1,29 @@
+# Build artifacts and compiled output
+scripts/
 dist/
-node_modules/
+build/
+target/
+apps/**/dist/
+apps/**/.svelte-kit/
+apps/**/build/
+
+# Node modules and dependencies
 coverage/
-*.tgz
-package-lock.json
-.github/
-docs/
-*.md
+node_modules/
+
+# Configuration and cache files
+.eslintcache
+**/*.tsbuildinfo
+
+# Generated files
+**/*.d.ts
+
+# Database and storage
+*.db
+*.sqlite*
+storage/
+qdrant_storage/
+
+# Logs and temp
+tmp/
+logs/

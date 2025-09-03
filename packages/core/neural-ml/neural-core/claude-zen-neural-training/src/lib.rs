@@ -43,6 +43,9 @@ pub mod metrics;
 pub mod optimizer;
 pub mod scheduler;
 
+// DSPy-specific optimizers for teleprompter acceleration
+pub mod dspy_optimizers;
+
 // Re-export main types for convenience
 #[allow(ambiguous_glob_reexports)]
 pub use loss::*;

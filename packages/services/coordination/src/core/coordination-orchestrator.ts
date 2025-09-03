@@ -9,7 +9,6 @@
  */
 
 import {
-  EventBus,
   getLogger,
   ok,
   err,
@@ -19,13 +18,13 @@ import {
   type Logger,
   type UUID
 } from '@claude-zen/foundation';
+import { EventBus } from '@claude-zen/foundation';
 
 import type {
   AgentId,
   AgentState,
   CoordinationConfig,
-  CoordinationTask,
-  CoordinationEvent
+  CoordinationTask
 } from './coordination-interfaces.js';
 
 /**
@@ -35,7 +34,6 @@ import type {
 export class CoordinationOrchestrator {
   private readonly logger: Logger;
   private readonly eventBus: EventBus;
-  private readonly config: CoordinationConfig;
   
   // Simple state tracking
   private readonly registeredAgents = new Set<string>();
@@ -43,10 +41,9 @@ export class CoordinationOrchestrator {
   
   private isInitialized = false;
 
-  constructor(config: CoordinationConfig, eventBus?: EventBus) {
-    this.config = config;
+  constructor(_config: CoordinationConfig, eventBus?: EventBus) {
     this.logger = getLogger('coordination-orchestrator');
-    this.eventBus = eventBus ?? new EventBus(config.eventBusConfig);
+    this.eventBus = eventBus ?? EventBus.getInstance();
 
     this.logger.info('Coordination Orchestrator created - connecting to existing packages');
   }
@@ -79,15 +76,11 @@ export class CoordinationOrchestrator {
       this.registeredAgents.add(agentKey);
 
       // Emit event for other packages to handle
-      await this.emitCoordinationEvent({
-        type: 'coordination:agent-registered',
-        category: 'coordination',
-        payload: { agentState },
-        coordinationMetadata: {
-          initiator: agentState.agentId,
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('coordination:agent-registered', {
+        agentState,
+        initiator: agentState.agentId,
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('Agent registered for coordination', { agentId: agentState.agentId });
@@ -100,43 +93,37 @@ export class CoordinationOrchestrator {
   /**
    * Submit a coordination task.
    */
-  public async submitTask(task: CoordinationTask): Promise<Result<UUID, Error>> {
+  public async submitTask(task: CoordinationTask): Promise<Result<void, Error>> {
     try {
       this.activeTasks.set(task.taskId, task);
 
       // Emit event for package-specific handlers
-      await this.emitCoordinationEvent({
-        type: 'coordination:task-submitted',
-        category: 'coordination',
-        payload: { task },
-        coordinationMetadata: {
-          initiator: this.getSystemAgent(),
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('coordination:task-submitted', {
+        task,
+        initiator: this.getSystemAgent(),
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('Task submitted for coordination', { 
-        taskId: task.taskId, 
-        type: task.type 
+        taskId: task.taskId,
+        type: task.type,
+        priority: task.priority
       });
-
-      return ok(task.taskId);
+      return ok();
     } catch (error) {
       return err(new Error(`Task submission failed: ${error}`));
     }
   }
 
   /**
-   * Get coordination system status.
+   * Get coordination status and metrics.
    */
   public getStatus(): {
-    initialized: boolean;
     registeredAgents: number;
     activeTasks: number;
   } {
     return {
-      initialized: this.isInitialized,
       registeredAgents: this.registeredAgents.size,
       activeTasks: this.activeTasks.size
     };
@@ -147,15 +134,11 @@ export class CoordinationOrchestrator {
    */
   public async coordinatePIPlanning(piId: UUID): Promise<Result<void, Error>> {
     try {
-      await this.emitCoordinationEvent({
-        type: 'safe:pi-planning-requested',
-        category: 'coordination',
-        payload: { piId },
-        coordinationMetadata: {
-          initiator: this.getSystemAgent(),
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('safe:pi-planning-requested', {
+        piId,
+        initiator: this.getSystemAgent(),
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('PI Planning coordination requested', { piId });
@@ -170,15 +153,11 @@ export class CoordinationOrchestrator {
    */
   public async coordinateApproval(approvalId: UUID): Promise<Result<void, Error>> {
     try {
-      await this.emitCoordinationEvent({
-        type: 'taskmaster:approval-requested',
-        category: 'coordination',
-        payload: { approvalId },
-        coordinationMetadata: {
-          initiator: this.getSystemAgent(),
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('taskmaster:approval-requested', {
+        approvalId,
+        initiator: this.getSystemAgent(),
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('TaskMaster approval coordination requested', { approvalId });
@@ -193,15 +172,11 @@ export class CoordinationOrchestrator {
    */
   public async coordinateTeamwork(sessionId: UUID): Promise<Result<void, Error>> {
     try {
-      await this.emitCoordinationEvent({
-        type: 'teamwork:collaboration-requested',
-        category: 'coordination',
-        payload: { sessionId },
-        coordinationMetadata: {
-          initiator: this.getSystemAgent(),
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('teamwork:collaboration-requested', {
+        sessionId,
+        initiator: this.getSystemAgent(),
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('Teamwork coordination requested', { sessionId });
@@ -216,15 +191,11 @@ export class CoordinationOrchestrator {
    */
   public async coordinateKanban(boardId: string): Promise<Result<void, Error>> {
     try {
-      await this.emitCoordinationEvent({
-        type: 'kanban:optimization-requested',
-        category: 'coordination',
-        payload: { boardId },
-        coordinationMetadata: {
-          initiator: this.getSystemAgent(),
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('kanban:optimization-requested', {
+        boardId,
+        initiator: this.getSystemAgent(),
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('Kanban coordination requested', { boardId });
@@ -239,15 +210,12 @@ export class CoordinationOrchestrator {
    */
   public async coordinateSPARC(projectId: UUID, phase: string): Promise<Result<void, Error>> {
     try {
-      await this.emitCoordinationEvent({
-        type: 'sparc:phase-coordination-requested',
-        category: 'coordination',
-        payload: { projectId, phase },
-        coordinationMetadata: {
-          initiator: this.getSystemAgent(),
-          timestamp: now(),
-          correlationId: generateUUID()
-        }
+      this.eventBus.emit('sparc:phase-coordination-requested', {
+        projectId,
+        phase,
+        initiator: this.getSystemAgent(),
+        timestamp: now(),
+        correlationId: generateUUID()
       });
 
       this.logger.info('SPARC coordination requested', { projectId, phase });
@@ -263,29 +231,35 @@ export class CoordinationOrchestrator {
 
   private setupEventListeners(): void {
     // Listen for coordination events from other packages
-    this.eventBus.on('coordination:*', (event: CoordinationEvent) => {
-      this.logger.debug('Coordination event received', { type: event.type });
+    this.eventBus.on('coordination:*', (...args: unknown[]) => {
+      const event = args[0];
+      this.logger.debug('Coordination event received', { event });
     });
 
     // Listen for package-specific events that need coordination
-    this.eventBus.on('safe:*', (event: CoordinationEvent) => {
-      this.logger.debug('SAFe event received for coordination', { type: event.type });
+    this.eventBus.on('safe:*', (...args: unknown[]) => {
+      const event = args[0];
+      this.logger.debug('SAFe event received for coordination', { event });
     });
 
-    this.eventBus.on('taskmaster:*', (event: CoordinationEvent) => {
-      this.logger.debug('TaskMaster event received for coordination', { type: event.type });
+    this.eventBus.on('taskmaster:*', (...args: unknown[]) => {
+      const event = args[0];
+      this.logger.debug('TaskMaster event received for coordination', { event });
     });
 
-    this.eventBus.on('teamwork:*', (event: CoordinationEvent) => {
-      this.logger.debug('Teamwork event received for coordination', { type: event.type });
+    this.eventBus.on('teamwork:*', (...args: unknown[]) => {
+      const event = args[0];
+      this.logger.debug('Teamwork event received for coordination', { event });
     });
 
-    this.eventBus.on('kanban:*', (event: CoordinationEvent) => {
-      this.logger.debug('Kanban event received for coordination', { type: event.type });
+    this.eventBus.on('kanban:*', (...args: unknown[]) => {
+      const event = args[0];
+      this.logger.debug('Kanban event received for coordination', { event });
     });
 
-    this.eventBus.on('sparc:*', (event: CoordinationEvent) => {
-      this.logger.debug('SPARC event received for coordination', { type: event.type });
+    this.eventBus.on('sparc:*', (...args: unknown[]) => {
+      const event = args[0];
+      this.logger.debug('SPARC event received for coordination', { event });
     });
   }
 
@@ -296,9 +270,5 @@ export class CoordinationOrchestrator {
       type: 'coordinator',
       instance: 1
     };
-  }
-
-  private async emitCoordinationEvent(event: CoordinationEvent): Promise<void> {
-    this.eventBus.emit(event.type, event);
   }
 }

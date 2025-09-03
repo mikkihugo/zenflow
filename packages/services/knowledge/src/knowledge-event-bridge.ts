@@ -140,9 +140,9 @@ export class KnowledgeEventBridge {
       }
 
       // Remove event listeners
-      this.eventListeners.forEach((listener, event) => {
+      for (const [event, listener] of this.eventListeners.entries()) {
         this.eventBus.off(event, listener);
-      });
+      }
       this.eventListeners.clear();
 
       this.isStarted = false;
@@ -185,7 +185,7 @@ export class KnowledgeEventBridge {
         'knowledge:error'
       ];
 
-      eventsToForward.forEach(eventName => {
+      for (const eventName of eventsToForward) {
         if (isValidEventName(eventName)) {
           const listener = (data: unknown) => {
             this.eventBus.emit(eventName, data);
@@ -194,7 +194,7 @@ export class KnowledgeEventBridge {
           eventEmitter.on(eventName, listener);
           this.eventListeners.set(eventName, listener);
         }
-      });
+      }
 
       EventLogger.log('knowledge-bridge:event-forwarding-setup', {
         moduleId: this.config.moduleId,

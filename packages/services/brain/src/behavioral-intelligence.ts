@@ -48,7 +48,7 @@ const brainCapabilities = {
 // import * as trendyways from 'trendyways';
 
 // Foundation-optimized logging
-const logger = getLogger('BehavioralIntelligence').
+const logger = getLogger('BehavioralIntelligence');
 
 /**
  * Agent execution data for behavioral learning
@@ -1642,19 +1642,20 @@ export async function demoBehavioralIntelligence(
 
   try {
     // 1. Learn from execution data
-    logger.info('📚 Learning from agent executions...').;    for (const data of executionData) {
+    logger.info('📚 Learning from agent executions...');
+    for (const data of executionData) {
       await behavioral.learnFromExecution(data);
-}
-    logger.info('✅ Learning completed\n').')
+    }
+    logger.info('✅ Learning completed\n');
     // 2. Predict agent performance
-    logger.info('🔮 Predicting agent performance...').
+    logger.info('🔮 Predicting agent performance...');
     const prediction = await behavioral.predictAgentPerformance(
       'agent-1',
       'data-processing',
       0.7
     );
-    logger.info('📊 Prediction for agent-1:').
-    logger.info('   • Duration: ' + prediction.predictedDuration.toFixed(0) + 'ms').
+    logger.info('📊 Prediction for agent-1:');
+    logger.info('   • Duration: ' + prediction.predictedDuration.toFixed(0) + 'ms');
     logger.info(
       '   • Success rate: ' + (prediction.predictedSuccess * 100).toFixed(1) + '%'
     );
@@ -1664,41 +1665,43 @@ export async function demoBehavioralIntelligence(
     logger.info(
       '   • Confidence: ' + (prediction.confidence * 100).toFixed(1) + '%'
     );
-    logger.info('   • Reasoning: ' + prediction.reasoning + '\n').
+    logger.info('   • Reasoning: ' + prediction.reasoning + '\n');
 
     // 3. Analyze task complexity
-    logger.info('📝 Analyzing task complexity...').
+    logger.info('📝 Analyzing task complexity...');
     const complexityAnalysis = await behavioral.analyzeTaskComplexity(
-      'neural-training',      {
-        modelSize: 'large',        dataSize:100000,
-}
+      'neural-training',
+      {
+        modelSize: 'large',
+        dataSize: 100000,
+      }
     );
-    logger.info(`🎯 Task complexity analysis:`);
+    logger.info('🎯 Task complexity analysis:');
     logger.info(
       '   • Complexity: ' + (complexityAnalysis.estimatedComplexity * 100).toFixed(1) + '%'
     );
     logger.info(`   • Difficulty: ${complexityAnalysis.difficulty}`);
     logger.info(
-      `   • Required skills: ${complexityAnalysis.requiredSkills.join(', ').`
+      `   • Required skills: ${complexityAnalysis.requiredSkills.join(', ')}`
     );
     logger.info(
       '   • Estimated duration: ' + complexityAnalysis.estimatedDuration.toFixed(0) + 'ms\n'
     );
 
     // 4. Find best agent for task
-    logger.info('🎯 Finding best agent for task...').
+    logger.info('🎯 Finding best agent for task...');
     const bestAgent = await behavioral.findBestAgentForTask(
       'data-processing',
       0.5,
       ['agent-1', 'agent-2']
     );
-    logger.info('🏆 Best agent selection:').
+    logger.info('🏆 Best agent selection:');
     logger.info('   • Selected: ' + bestAgent.agentId);
-    logger.info('   • Confidence: ' + (bestAgent.confidence * 100).toFixed(1) + '%').
-    logger.info('   • Reasoning: ' + bestAgent.reasoning + '\n').
+    logger.info('   • Confidence: ' + (bestAgent.confidence * 100).toFixed(1) + '%');
+    logger.info('   • Reasoning: ' + bestAgent.reasoning + '\n');
 
     // 5. Show behavioral intelligence stats
-    logger.info('📈 Behavioral Intelligence Statistics:').
+    logger.info('📈 Behavioral Intelligence Statistics:');
     const stats = behavioral.getStats();
     logger.info('   • Total agents: ' + stats.totalAgents);
     logger.info('   • Training data points: ' + stats.trainingDataPoints);
@@ -1710,13 +1713,13 @@ export async function demoBehavioralIntelligence(
       '   • Most active agents: ' + stats.mostActiveAgents.join(', ')
     );
 
-    logger.info('\n🎉 Behavioral Intelligence Demo Complete!').
-    logger.info('\n💡 Key Benefits for claude-code-zen:').
-    logger.info('   • Real-time agent performance prediction').
-    logger.info('   • Intelligent task-agent matching').
-    logger.info('   • Behavioral pattern learning and adaptation').
-    logger.info('   • Task complexity estimation for better routing').
-    logger.info('   • Data-driven swarm optimization').
+    logger.info('\n🎉 Behavioral Intelligence Demo Complete!');
+    logger.info('\n💡 Key Benefits for claude-code-zen:');
+    logger.info('   • Real-time agent performance prediction');
+    logger.info('   • Intelligent task-agent matching');
+    logger.info('   • Behavioral pattern learning and adaptation');
+    logger.info('   • Task complexity estimation for better routing');
+    logger.info('   • Data-driven swarm optimization');
   } catch (error) {
     logger.error('❌ Demo failed:', error);
   }
