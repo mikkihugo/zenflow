@@ -23,6 +23,23 @@ import type { JSONValue } from '../core/memory-system';
 const logger = getLogger('memory:database-adapter');
 const eventBus = EventBus.getInstance();
 
+// Constants for error messages to prevent duplication
+const ADAPTER_NOT_INITIALIZED_ERROR = 'Database adapter not properly initialized - call initialize() first';
+const ADAPTER_UNAVAILABLE_ERROR = 'Database adapter instance is not available - configuration may be invalid';
+
+/**
+ * Database row interface for type-safe row validation
+ */
+interface DatabaseRow {
+  key: string;
+  value: string;
+  metadata: string | null;
+  timestamp: number;
+  size: number;
+  type: string;
+  ttl: number | null;
+}
+
 export interface DatabaseMemoryConfig extends MemoryConfig {
   database: string;
   maxSize?: number;
@@ -57,6 +74,69 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+
+  /**
+   * Validates that a database row has the expected structure for MemoryEntry conversion.
+   * Provides type safety and prevents runtime errors from malformed data.
+   * 
+   * @param row - Raw database row to validate
+   * @returns true if row has valid structure, false otherwise
+   */
+  private isValidDatabaseRow(row: unknown): row is DatabaseRow {
+    if (!row || typeof row !== 'object') {
+      return false;
+    }
+
+    const typedRow = row as Record<string, unknown>;
+    
+    // Validate required fields exist and have appropriate types
+    return (
+      typeof typedRow.key === 'string' &&
+      typeof typedRow.value === 'string' &&
+      typeof typedRow.timestamp === 'number' &&
+      typeof typedRow.size === 'number' &&
+      typeof typedRow.type === 'string' &&
+      (typedRow.ttl === null || typeof typedRow.ttl === 'number') &&
+      (typedRow.metadata === null || typeof typedRow.metadata === 'string')
+    );
+  }
+
+  /**
+   * Safely parses JSON strings with comprehensive error handling and context.
+   * Prevents JSON parsing errors from crashing the application.
+   * 
+   * @param jsonString - String to parse as JSON
+   * @param fieldName - Field name for error context
+   * @returns Result containing parsed value or error
+   */
+  private safeJsonParse(jsonString: string, fieldName: string): Result<unknown, Error> {
+    try {
+      const parsed = JSON.parse(jsonString);
+      return ok(parsed);
+    } catch (parseError) {
+      const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
+      return err(new Error(`JSON parse error in ${fieldName}: ${errorMessage}`));
+    }
+  }
+
+  /**
+   * Safely stringifies values to JSON with comprehensive error handling.
+   * Prevents JSON stringification errors from crashing the application.
+   * 
+   * @param value - Value to stringify as JSON
+   * @param fieldName - Field name for error context
+   * @returns Result containing stringified value or error
+   */
+  private safeJsonStringify(value: unknown, fieldName: string): Result<string, Error> {
+    try {
+      const stringified = JSON.stringify(value);
+      return ok(stringified);
+    } catch (stringifyError) {
+      const errorMessage = stringifyError instanceof Error ? stringifyError.message : String(stringifyError);
+      return err(new Error(`JSON stringify error in ${fieldName}: ${errorMessage}`));
+    }
+  }
+
   async initialize(): Promise<Result<void, Error>> {
     return this.emitOperation('initialize', 'system', async () => {
       try {
@@ -80,7 +160,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           tableName: this.tableName
         });
 
-        return ok(undefined);
+        return ok();
       } catch (error) {
         const errorMsg = error instanceof Error ? error : new Error(String(error));
         logger.error('Failed to initialize DatabaseBackedAdapter', {
@@ -92,49 +172,120 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     });
   }
 
+  /**
+   * Retrieves a memory entry by key with TTL validation and comprehensive error handling.
+   * 
+   * This method performs several important operations:
+   * - Validates adapter initialization state
+   * - Checks TTL expiration to ensure data freshness
+   * - Safely parses JSON data with error recovery
+   * - Provides detailed type-safe row processing
+   * - Emits telemetry events for observability
+   * 
+   * @param key - The unique identifier for the memory entry
+   * @returns Promise resolving to Result containing MemoryEntry or null if not found
+   */
   async get(key: string): Promise<Result<MemoryEntry | null, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    // Enhanced initialization check with explicit adapter validation
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('get', key, async () => {
+    // Use operation emission for consistent telemetry and error handling
+    return await this.emitOperation('get', key, async () => {
       try {
-        const query = `SELECT * FROM ${this.tableName} WHERE key = ? AND (ttl IS NULL OR ttl > ?)`;
-        const rows = await this.dbAdapter!.query(query, [key, Date.now()]);
+        // Optimized query with explicit TTL handling for better performance
+        const currentTimestamp = Date.now();
+        const selectQuery = `SELECT * FROM ${this.tableName} WHERE key = ? AND (ttl IS NULL OR ttl > ?)`;
+        
+        const rows = await this.dbAdapter.query(selectQuery, [key, currentTimestamp]);
+        
+        // Handle empty result set with clear null return
         if (!rows || rows.length === 0) {
           return ok(null);
         }
 
-        const row = rows[0] as any;
+        // Type-safe row processing with comprehensive validation
+        const rawRow = rows[0];
+        if (!this.isValidDatabaseRow(rawRow)) {
+          return err(new Error(`Invalid database row structure for key: ${key}`));
+        }
+
+        // Enhanced JSON parsing with error recovery and validation
+        const parsedValue = this.safeJsonParse(rawRow.value, 'value');
+        const parsedMetadata = this.safeJsonParse(rawRow.metadata || '{}', 'metadata');
+
+        if (parsedValue.isErr()) {
+          return err(new Error(`Failed to parse value for key ${key}: ${parsedValue.error.message}`));
+        }
+
+        if (parsedMetadata.isErr()) {
+          return err(new Error(`Failed to parse metadata for key ${key}: ${parsedMetadata.error.message}`));
+        }
+
+        // Construct type-safe MemoryEntry with validated data
         const entry: MemoryEntry = {
-          key: row.key,
-          value: JSON.parse(row.value),
-          metadata: JSON.parse(row.metadata || '{}'),
-          timestamp: row.timestamp,
-          size: row.size,
-          type: row.type,
-          ttl: row.ttl
+          key: String(rawRow.key),
+          value: parsedValue.value,
+          metadata: parsedMetadata.value,
+          timestamp: Number(rawRow.timestamp),
+          size: Number(rawRow.size),
+          type: String(rawRow.type),
+          ttl: rawRow.ttl ? Number(rawRow.ttl) : undefined
         };
 
         return ok(entry);
       } catch (error) {
-        return err(error instanceof Error ? error : new Error(String(error)));
+        // Enhanced error handling with context preservation
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return err(new Error(`Database get operation failed for key '${key}': ${errorMessage}`));
       }
     });
   }
 
+  /**
+   * Stores a memory entry with comprehensive validation and error handling.
+   * 
+   * This method provides several advanced features:
+   * - JSON serialization with error detection
+   * - TTL calculation and validation
+   * - Metadata handling with defaults
+   * - Atomic database operations
+   * - Size calculation and optimization
+   * - Type inference and storage
+   * 
+   * @param key - Unique identifier for the memory entry
+   * @param value - JSONValue to store (will be serialized)
+   * @param options - Optional TTL and metadata configuration
+   * @returns Promise resolving to Result indicating success or failure
+   */
   async set(
     key: string, 
     value: JSONValue, 
     options?: { ttl?: number; metadata?: Record<string, unknown> }
   ): Promise<Result<void, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    // Enhanced initialization validation with specific error messages
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('set', key, async () => {
+    return await this.emitOperation('set', key, async () => {
       try {
-        const serializedValue = JSON.stringify(value);
+        // Safe JSON serialization with error handling
+        const serializedValueResult = this.safeJsonStringify(value, 'value');
+        if (serializedValueResult.isErr()) {
+          return err(new Error(`Failed to serialize value for key ${key}: ${serializedValueResult.error.message}`));
+        }
+
+        const serializedValue = serializedValueResult.value;
         const metadata = JSON.stringify(options?.metadata || {});
         const timestamp = Date.now();
         const size = serializedValue.length + key.length;
@@ -147,7 +298,12 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         
-        await this.dbAdapter!.query(query, [
+        // Type-safe database query execution with validation
+        if (!this.dbAdapter) {
+          return err(new Error('Database adapter became unavailable during operation'));
+        }
+        
+        await this.dbAdapter.query(query, [
           key, serializedValue, metadata, timestamp, size, type, ttl
         ]);
 
@@ -160,22 +316,38 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           ttl
         });
 
-        return ok(undefined);
+        return ok();
       } catch (error) {
         return err(error instanceof Error ? error : new Error(String(error)));
       }
     });
   }
 
+  /**
+   * Deletes a memory entry by key with comprehensive validation and event emission.
+   * 
+   * @param key - The unique identifier for the memory entry to delete
+   * @returns Promise resolving to Result containing boolean indicating if entry was deleted
+   */
   async delete(key: string): Promise<Result<boolean, Error>> {
-    if (!this.isInitialized() || !this.dbAdapter) {
-      return err(new Error('Adapter not initialized'));
+    if (!this.isInitialized()) {
+      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+    }
+    
+    if (!this.dbAdapter) {
+      return err(new Error(ADAPTER_UNAVAILABLE_ERROR));
     }
 
-    return this.emitOperation('delete', key, async () => {
+    return await this.emitOperation('delete', key, async () => {
       try {
         const query = `DELETE FROM ${this.tableName} WHERE key = ?`;
-        const result = await this.dbAdapter!.query(query, [key]) as Array<{ changes?: number }>;
+        
+        // Type-safe database query execution
+        if (!this.dbAdapter) {
+          return err(new Error('Database adapter became unavailable during operation'));
+        }
+        
+        const result = await this.dbAdapter.query(query, [key]) as Array<{ changes?: number }>;
         const deleted = (result[0]?.changes ?? 0) > 0;
         
         if (deleted) {
@@ -208,7 +380,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           timestamp: Date.now()
         });
 
-        return ok(undefined);
+        return ok();
       } catch (error) {
         return err(error instanceof Error ? error : new Error(String(error)));
       }
@@ -361,7 +533,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
           backendId: this.getBackendId()
         });
 
-        return ok(undefined);
+        return ok();
       } catch (error) {
         return err(error instanceof Error ? error : new Error(String(error)));
       }
@@ -403,7 +575,7 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
       const indexQuery = `CREATE INDEX IF NOT EXISTS idx_${this.tableName}_ttl ON ${this.tableName}(ttl)`;
       await this.dbAdapter!.query(indexQuery, []);
 
-      return ok(undefined);
+      return ok();
     } catch (error) {
       return err(error instanceof Error ? error : new Error(String(error)));
     }

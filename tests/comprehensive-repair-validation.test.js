@@ -1,19 +1,24 @@
 #!/usr/bin/env node
-		try {
-			require("blessed");
-			this.recordResult(
-				"Blessed UI Library",
-				true,
-				"Available for interactive dashboard",
-			);
-		} catch {
-			this.recordResult(
-				"Blessed UI Library",
-				false,
-				"Not available - will use text mode",
-			);
-		}
 
+/**
+ * Comprehensive Repair Validation Test Suite
+ * 
+ * Tests the complete system repair functionality including:
+ * - Dependency validation and installation
+ * - Configuration file integrity
+ * - Build system validation
+ * - Runtime component testing
+ * - Error recovery mechanisms
+ */
+
+const { execSync } = require('child_process');
+const { existsSync } = require('fs');
+const path = require('path');
+
+// Test project path configuration
+const TEST_PROJECT_PATH = process.env.TEST_PROJECT_PATH || process.cwd();
+
+// Console colors for better test output visibility
 const colors = {
 	green: "\x1b[32m",
 	red: "\x1b[31m",
@@ -23,635 +28,293 @@ const colors = {
 	reset: "\x1b[0m",
 };
 
+/**
+ * Enhanced logging function with color support and context
+ * @param {string} message - Log message to display
+ * @param {string} color - Color key from colors object
+ */
 function log(message, color = "reset") {
 	if (message && colors[color]) {
-		// No-op logging function for tests
+		console.log(`${colors[color]}${message}${colors.reset}`);
+	} else {
+		console.log(message);
 	}
 }
 
-class ComprehensiveRepairValidator {
+/**
+ * Test result recorder for systematic validation tracking
+ */
+class TestResultRecorder {
 	constructor() {
-		this.results = {
-			total: 0,
-			passed: 0,
-			failed: 0,
-			warnings: 0,
-			details: [],
-		};
+		this.results = [];
 	}
 
-	/** Run all validation tests */
-	async runAllTests() {
-		log("\n Comprehensive Repair Validation Test Suite", "blue");
-		log("=".repeat(60), "blue");
-
-		const testSuites = [
-			() => this.testSyntaxFixes(),
-			() => this.testScriptExecution(),
-			() => this.testTypeScriptCompilation(),
-			() => this.testDependencies(),
-			() => this.testNewImplementations(),
-			() => this.testPerformanceComponents(),
-			() => this.testDatabaseComponents(),
-			() => this.testErrorHandling(),
-		];
-
-		for (const testSuite of testSuites) {
-			try {
-				await testSuite();
-			} catch (error) {
-				this.recordResult("Test Suite Error", false, `${error.message}`);
-			}
-		}
-
-		this.displayResults();
-		return this.results.failed === 0;
+	recordResult(testName, success, details) {
+		this.results.push({ testName, success, details, timestamp: Date.now() });
+		const status = success ? 'PASS' : 'FAIL';
+		const color = success ? 'green' : 'red';
+		log(`${status}: ${testName} - ${details}`, color);
 	}
 
-	/** Test syntax fixes for all repaired scripts */
-	testSyntaxFixes() {
-		log("\n Testing Syntax Fixes", "cyan");
-
-		const repairedScripts = [
-			"scripts/performance-monitor.js",
-			"scripts/validate-sqlite-optimizations.js",
-			"scripts/quick-fix-ts.js",
-			"scripts/sync-check.js",
-			"scripts/test-monorepo-detection.js",
-			"start-unified-persistent.js",
-		];
-
-		for (const script of repairedScripts) {
-			try {
-				execSync(`node -c ${script}`, {
-					cwd: TEST_PROJECT_PATH,
-					stdio: "pipe",
-				});
-				this.recordResult(
-					`Syntax check: ${script}`,
-					true,
-					"Valid JavaScript syntax",
-				);
-			} catch (error) {
-				this.recordResult(
-					`Syntax check: ${script}`,
-					false,
-					`Syntax error: ${error.message}`,
-				);
-			}
-		}
+	getResults() {
+		return this.results;
 	}
 
-	/** Test script execution */
-	testScriptExecution() {
-		log("\n▶️ Testing Script Execution", "cyan");
-
-		const executableScripts = [
-			{ script: "scripts/validate-sqlite-optimizations.js", timeout: 10000 },
-			{ script: "scripts/quick-fix-ts.js", timeout: 5000 },
-			{ script: "scripts/test-monorepo-detection.js", timeout: 3000 },
-		];
-
-		for (const { script, timeout } of executableScripts) {
-			try {
-				execSync(`timeout ${Math.ceil(timeout / 1000)}s node ${script}`,
-				{
-					cwd: TEST_PROJECT_PATH,
-					stdio: "pipe",
-				});
-				this.recordResult(
-					`Execution: ${script}`,
-					true,
-					"Script runs without fatal errors",
-				);
-			} catch (error) {
-				if (error.message.includes("timeout")) {
-					this.recordResult(
-						`Execution: ${script}`,
-						true,
-						"Script started (timeout expected)",
-					);
-				} else {
-					this.recordResult(
-						`Execution: ${script}`,
-						false,
-						`Execution error: ${error.message}`,
-					);
-				}
-			}
-		}
-	}
-
-	/** Test TypeScript compilation */
-	testTypeScriptCompilation() {
-		log("\n Testing TypeScript Compilation", "cyan");
-
-		const tsFiles = [
-			"src/memory/enhanced-memory.ts",
-			"src/database/lancedb-interface.ts",
-			"src/mcp/performance-metrics.ts",
-			"src/dashboard/unified-performance-dashboard.ts",
-		];
-
-		for (const tsFile of tsFiles) {
-			try {
-				// Check if file exists
-				const fullPath = path.join(TEST_PROJECT_PATH, tsFile);
-				if (!existsSync(fullPath)) {
-					this.recordResult(
-						`TS Check: ${tsFile}`,
-						false,
-						"File does not exist",
-					);
-					continue;
-				}
-
-				// Try TypeScript compilation check (if tsc is available)
-				try {
-					execSync(`pnpm dlx tsc --noEmit --skipLibCheck ${tsFile}`, {
-						cwd: TEST_PROJECT_PATH,
-						stdio: "pipe",
-					});
-					this.recordResult(
-						`TS Compilation: ${tsFile}`,
-						true,
-						"TypeScript compiles without errors",
-					);
-				} catch {
-					// If tsc fails, at least check if it's valid JavaScript
-					execSync(`node -c ${tsFile}`, {
-						cwd: TEST_PROJECT_PATH,
-						stdio: "pipe",
-					});
-					this.recordResult(
-						`TS Check: ${tsFile}`,
-						true,
-						"Valid syntax (tsc not available)",
-					);
-				}
-			} catch (error) {
-				this.recordResult(
-					`TS Check: ${tsFile}`,
-					false,
-					`Error: ${error.message}`,
-				);
-			}
-		}
-	}
-
-	/** Test dependencies */
-	testDependencies() {
-		log("\n Testing Dependencies", "cyan");
-
-		const criticalDeps = ["better-sqlite3", "@lancedb/lancedb", "blessed"];
-
-		for (const dep of criticalDeps) {
-			try {
-				// Resolve without executing to validate presence
-				require.resolve(dep, { paths: [TEST_PROJECT_PATH] });
-				this.recordResult(
-					`Dependency: ${dep}`,
-					true,
-					"Package is resolvable (installed)",
-				);
-			} catch (error) {
-				this.recordResult(
-					`Dependency: ${dep}`,
-					false,
-					`Not installed or cannot be resolved: ${error.message}`,
-				);
-			}
-		}
-
-		// Test better-sqlite3 specifically (the problematic one)
-		try {
-			require("better-sqlite3");
-			this.recordResult(
-				"better-sqlite3 loading",
-				true,
-				"Library loads successfully",
-			);
-		} catch (error) {
-			if ((error?.message || "").includes("NODE_MODULE_VERSION")) {
-				this.recordResult(
-					"better-sqlite3 loading",
-					false,
-					"NODE_MODULE_VERSION mismatch - needs rebuild",
-				);
-			} else {
-				this.recordResult(
-					"better-sqlite3 loading",
-					false,
-					`Load error: ${error.message}`,
-				);
-			}
-		}
-	}
-
-	/** Test new implementations */
-	testNewImplementations() {
-		log("\n🆕 Testing New Implementations", "cyan");
-
-		const implementations = [
-			{
-				name: "Enhanced Memory System",
-				file: "src/memory/enhanced-memory.ts",
-				test: () => this.testEnhancedMemory(),
-			},
-			{
-				name: "LanceDB Interface",
-				file: "src/database/lancedb-interface.ts",
-				test: () => this.testLanceDBInterface(),
-			},
-			{
-				name: "MCP Performance Metrics",
-				file: "src/mcp/performance-metrics.ts",
-				test: () => this.testMCPMetrics(),
-			},
-			{
-				name: "Unified Dashboard",
-				file: "src/dashboard/unified-performance-dashboard.ts",
-				test: () => this.testUnifiedDashboard(),
-			},
-		];
-
-		for (const impl of implementations) {
-			try {
-				if (
-					!existsSync(path.join(TEST_PROJECT_PATH, impl.file))
-				) {
-					this.recordResult(impl.name, false, "Implementation file missing");
-					continue;
-				}
-
-				impl.test();
-				this.recordResult(
-					impl.name,
-					true,
-					"Implementation exists and has proper structure",
-				);
-			} catch (error) {
-				this.recordResult(
-					impl.name,
-					false,
-					`Implementation error: ${error.message}`,
-				);
-			}
-		}
-	}
-
-	/** Test enhanced memory implementation */
-	testEnhancedMemory() {
-		// Basic structure validation
-		const content = require("node:fs").readFileSync(
-			path.join(TEST_PROJECT_PATH, "src/memory/enhanced-memory.ts"),
-			"utf8",
-		);
-
-		const requiredComponents = [
-			"class EnhancedMemory",
-			"initialize()",
-			"store(",
-			"retrieve(",
-			"getStats()",
-			"saveToDisk()",
-			"EventEmitter",
-		];
-
-		for (const component of requiredComponents) {
-			if (!content.includes(component)) {
-				throw new Error(`Missing component: ${component}`);
-			}
-		}
-	}
-
-	/** Test LanceDB interface implementation */
-	testLanceDBInterface() {
-		const content = require("node:fs").readFileSync(
-			path.join(
-				TEST_PROJECT_PATH,
-				"src/database/lancedb-interface.ts",
-			),
-			"utf8",
-		);
-
-		const requiredComponents = [
-			"class LanceDBInterface",
-			"initialize()",
-			"createTable(",
-			"insertVectors(",
-			"searchSimilar(",
-			"getStats()",
-			"Connection",
-			"Table",
-		];
-
-		for (const component of requiredComponents) {
-			if (!content.includes(component)) {
-				throw new Error(`Missing component: ${component}`);
-			}
-		}
-	}
-
-	/** Test MCP metrics implementation */
-	testMCPMetrics() {
-		const content = require("node:fs").readFileSync(
-			path.join(TEST_PROJECT_PATH, "src/mcp/performance-metrics.ts"),
-			"utf8",
-		);
-
-		const requiredComponents = [
-			"class MCPPerformanceMetrics",
-			"recordRequest(",
-			"recordToolExecution(",
-			"recordMemoryOperation(",
-			"recordCoordinationOperation(",
-			"recordNeuralOperation(",
-			"getMetrics()",
-			"getOptimizationRecommendations()",
-		];
-
-		for (const component of requiredComponents) {
-			if (!content.includes(component)) {
-				throw new Error(`Missing component: ${component}`);
-			}
-		}
-	}
-
-	/** Test unified dashboard implementation */
-	testUnifiedDashboard() {
-		const content = require("node:fs").readFileSync(
-			path.join(
-				TEST_PROJECT_PATH,
-				"src/dashboard/unified-performance-dashboard.ts",
-			),
-			"utf8",
-		);
-
-		const requiredComponents = [
-			"class UnifiedPerformanceDashboard",
-			"start()",
-			"stop()",
-			"getSystemStatus()",
-			"assessSystemHealth(",
-			"generateReport()",
-		];
-
-		for (const component of requiredComponents) {
-			if (!content.includes(component)) {
-				throw new Error(`Missing component: ${component}`);
-			}
-		}
-	}
-
-	/** Test performance components */
-	testPerformanceComponents() {
-		log("\n Testing Performance Components", "cyan");
-
-		try {
-			// Test performance monitor
-			execSync("node -c scripts/performance-monitor.js", {
-				cwd: TEST_PROJECT_PATH,
-				stdio: "pipe",
-			});
-			this.recordResult(
-				"Performance Monitor",
-				true,
-				"Script is syntactically valid",
-			);
-		} catch (error) {
-			this.recordResult(
-				"Performance Monitor",
-				false,
-				`Syntax error: ${error.message}`,
-			);
-		}
-
-		// Test if blessed is available for the performance monitor
-		try {
-			require.resolve("blessed", { paths: [TEST_PROJECT_PATH] });
-			this.recordResult(
-				"Blessed UI Library",
-				true,
-				"Available for interactive dashboard",
-			);
-		} catch {
-			this.recordResult(
-				"Blessed UI Library",
-				false,
-				"Not available - will use text mode",
-			);
-		}
-	}
-
-	/** Test database components */
-	testDatabaseComponents() {
-		log("\n️ Testing Database Components", "cyan");
-
-		// Test SQLite optimizations script
-		try {
-			execSync("timeout 5s node scripts/validate-sqlite-optimizations.js", {
-				cwd: TEST_PROJECT_PATH,
-				stdio: "pipe",
-			});
-			this.recordResult(
-				"SQLite Validation Script",
-				true,
-				"Executes without fatal errors",
-			);
-		} catch (error) {
-			this.recordResult(
-				"SQLite Validation Script",
-				false,
-				`Execution failed: ${error.message}`,
-			);
-		}
-
-		// Check if LanceDB is accessible (resolvable)
-		try {
-			require.resolve("@lancedb/lancedb", { paths: [TEST_PROJECT_PATH] });
-			this.recordResult("LanceDB Library", true, "Resolvable");
-		} catch {
-			this.recordResult(
-				"LanceDB Library",
-				false,
-				"Import failed - may need installation",
-			);
-		}
-	}
-
-	/** Test error handling */
-	testErrorHandling() {
-		log("\n️ Testing Error Handling", "cyan");
-
-		// Test that scripts handle errors gracefully
-		const errorTests = [
-			{
-				name: "Performance Monitor Error Handling",
-				test: () => {
-					const content = require("node:fs").readFileSync(
-						"/home/mhugo/code/claude-zen-flow/scripts/performance-monitor.js",
-						"utf8",
-					);
-					return content.includes("try {") && content.includes("catch");
-				},
-			},
-			{
-				name: "Enhanced Memory Error Handling",
-				test: () => {
-					const content = require("node:fs").readFileSync(
-						"/home/mhugo/code/claude-zen-flow/src/memory/enhanced-memory.ts",
-						"utf8",
-					);
-					return content.includes("try {") && content.includes("catch");
-				},
-			},
-		];
-
-		for (const { name, test } of errorTests) {
-			try {
-				const hasErrorHandling = test();
-				this.recordResult(
-					name,
-					hasErrorHandling,
-					hasErrorHandling
-						? "Proper error handling implemented"
-						: "No error handling found",
-				);
-			} catch (error) {
-				this.recordResult(name, false, `Test failed: ${error.message}`);
-			}
-		}
-	}
-
-	/** Record test result */
-	recordResult(testName, passed, details) {
-		this.results.total++;
-
-		if (passed) {
-			this.results.passed++;
-			log(`   ${testName}`, "green");
-		} else {
-			this.results.failed++;
-			log(`   ${testName}`, "red");
-		}
-
-		if (details) {
-			log(`     ${details}`, "yellow");
-		}
-
-		this.results.details.push({
-			test: testName,
-			passed,
-			details,
-			timestamp: Date.now(),
-		});
-	}
-
-	/** Display final results */
-	displayResults() {
-		log("\n Test Results Summary", "blue");
-		log("=".repeat(50), "blue");
-
-		const successRate = (
-			(this.results.passed / this.results.total) *
-			100
-		).toFixed(1);
-
-		log(`Total Tests: ${this.results.total}`, "cyan");
-		log(`Passed: ${this.results.passed}`, "green");
-		log(
-			`Failed: ${this.results.failed}`,
-			this.results.failed > 0 ? "red" : "green",
-		);
-		log(
-			`Success Rate: ${successRate}%`,
-			successRate >= 90 ? "green" : successRate >= 70 ? "yellow" : "red",
-		);
-
-		if (this.results.failed === 0) {
-			log(
-				"\n All tests passed! Comprehensive repair is successful.",
-				"green",
-			);
-		} else if (this.results.failed <= 2) {
-			log(
-				"\n Minor issues detected. Overall repair is successful with warnings.",
-				"yellow",
-			);
-		} else {
-			log("\n Significant issues detected. Manual review required.", "red");
-		}
-
-		// Export results
-		const report = {
-			timestamp: new Date().toISOString(),
-			summary: this.results,
-			recommendations: this.generateRecommendations(),
-		};
-
-		require("node:fs").writeFileSync(
-			path.join(TEST_PROJECT_PATH, "test-results.json"),
-			JSON.stringify(report, null, 2),
-		);
-
-		log(`\n Detailed results saved to: test-results.json`, "cyan");
-	}
-
-	/** Generate recommendations based on test results */
-	generateRecommendations() {
-		const recommendations = [];
-
-		const failedTests = this.results.details.filter((d) => !d.passed);
-
-		for (const failed of failedTests) {
-			if (failed.test.includes("better-sqlite3")) {
-				recommendations.push({
-					category: "Dependencies",
-					issue: "better-sqlite3 NODE_MODULE_VERSION mismatch",
-					action: "Run: pnpm rebuild better-sqlite3",
-					priority: "high",
-				});
-			}
-
-			if (failed.test.includes("LanceDB")) {
-				recommendations.push({
-					category: "Dependencies",
-					issue: "LanceDB library not available",
-					action: "Run: pnpm add @lancedb/lancedb",
-					priority: "medium",
-				});
-			}
-
-			if (failed.test.includes("blessed")) {
-				recommendations.push({
-					category: "Dependencies",
-					issue: "Blessed UI library not available",
-					action:
-						"Run: pnpm add blessed (optional for interactive dashboard)",
-					priority: "low",
-				});
-			}
-		}
-
-		return recommendations;
+	getSummary() {
+		const total = this.results.length;
+		const passed = this.results.filter(r => r.success).length;
+		const failed = total - passed;
+		return { total, passed, failed };
 	}
 }
 
-// Run validation if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-	const validator = new ComprehensiveRepairValidator();
-	validator
-		.runAllTests()
-		.then((success) => {
-			process.exit(success ? 0 : 1);
-		})
-		.catch((error) => {
-			// Validation failed - using process.stderr instead of console
-			process.stderr.write(` Validation failed: ${error}\\n`);
-			process.exit(1);
-		});
+// Global test recorder instance
+const testRecorder = new TestResultRecorder();
+
+/**
+ * Blessed UI Library availability check with proper error handling
+ */
+function checkBlessedAvailability() {
+	try {
+		require("blessed");
+		testRecorder.recordResult(
+			"Blessed UI Library",
+			true,
+			"Available for interactive dashboard",
+		);
+		return true;
+	} catch (error) {
+		testRecorder.recordResult(
+			"Blessed UI Library",
+			false,
+			`Not available - will use text mode. Error: ${error.message}`,
+		);
+		return false;
+	}
 }
 
-export { ComprehensiveRepairValidator };
-export default ComprehensiveRepairValidator;
+/**
+ * Validates npm dependencies and installation status
+ */
+function validateNpmDependencies() {
+	try {
+		log("Validating npm dependencies...", "blue");
+		execSync('npm list --depth=0', { 
+			cwd: TEST_PROJECT_PATH,
+			stdio: 'pipe'
+		});
+		testRecorder.recordResult(
+			"NPM Dependencies",
+			true,
+			"All dependencies properly installed and resolved"
+		);
+		return true;
+	} catch (error) {
+		testRecorder.recordResult(
+			"NPM Dependencies", 
+			false,
+			`Dependency issues detected: ${error.message}`
+		);
+		return false;
+	}
+}
+
+/**
+ * Validates TypeScript compilation across the project
+ */
+function validateTypeScriptCompilation() {
+	try {
+		log("Validating TypeScript compilation...", "blue");
+		execSync('npx tsc --noEmit', { 
+			cwd: TEST_PROJECT_PATH,
+			stdio: 'pipe'
+		});
+		testRecorder.recordResult(
+			"TypeScript Compilation",
+			true,
+			"All TypeScript files compile without errors"
+		);
+		return true;
+	} catch (error) {
+		testRecorder.recordResult(
+			"TypeScript Compilation",
+			false,
+			`TypeScript compilation errors detected: ${error.message}`
+		);
+		return false;
+	}
+}
+
+/**
+ * Validates critical configuration files exist and are well-formed
+ */
+function validateConfigurationFiles() {
+	const criticalFiles = [
+		'package.json',
+		'tsconfig.json',
+		'CLAUDE.md'
+	];
+
+	let allFilesValid = true;
+
+	criticalFiles.forEach(file => {
+		const filePath = path.join(TEST_PROJECT_PATH, file);
+		if (existsSync(filePath)) {
+			testRecorder.recordResult(
+				`Configuration File: ${file}`,
+				true,
+				`File exists at ${filePath}`
+			);
+		} else {
+			testRecorder.recordResult(
+				`Configuration File: ${file}`,
+				false,
+				`Missing critical file: ${filePath}`
+			);
+			allFilesValid = false;
+		}
+	});
+
+	return allFilesValid;
+}
+
+/**
+ * Tests the build system functionality
+ */
+function validateBuildSystem() {
+	try {
+		log("Testing build system...", "blue");
+		execSync('npm run build', { 
+			cwd: TEST_PROJECT_PATH,
+			stdio: 'pipe'
+		});
+		testRecorder.recordResult(
+			"Build System",
+			true,
+			"Build completed successfully"
+		);
+		return true;
+	} catch (error) {
+		testRecorder.recordResult(
+			"Build System",
+			false,
+			`Build failed: ${error.message}`
+		);
+		return false;
+	}
+}
+
+/**
+ * Tests the test suite execution
+ */
+function validateTestSuite() {
+	try {
+		log("Running test suite...", "blue");
+		execSync('npm test', { 
+			cwd: TEST_PROJECT_PATH,
+			stdio: 'pipe'
+		});
+		testRecorder.recordResult(
+			"Test Suite",
+			true,
+			"All tests passed successfully"
+		);
+		return true;
+	} catch (error) {
+		testRecorder.recordResult(
+			"Test Suite",
+			false,
+			`Test failures detected: ${error.message}`
+		);
+		return false;
+	}
+}
+
+/**
+ * Validates provider integrations are working
+ */
+function validateProviderIntegrations() {
+	const providerPaths = [
+		path.join(TEST_PROJECT_PATH, 'packages/integrations/claude-provider'),
+		path.join(TEST_PROJECT_PATH, 'packages/integrations/copilot-provider'),
+		path.join(TEST_PROJECT_PATH, 'packages/integrations/github-models-provider'),
+		path.join(TEST_PROJECT_PATH, 'packages/integrations/gemini-provider')
+	];
+
+	let allProvidersValid = true;
+
+	providerPaths.forEach(providerPath => {
+		const indexFile = path.join(providerPath, 'src/index.ts');
+		if (existsSync(indexFile)) {
+			testRecorder.recordResult(
+				`Provider Integration: ${path.basename(providerPath)}`,
+				true,
+				`Provider structure valid at ${providerPath}`
+			);
+		} else {
+			testRecorder.recordResult(
+				`Provider Integration: ${path.basename(providerPath)}`,
+				false,
+				`Missing provider index file: ${indexFile}`
+			);
+			allProvidersValid = false;
+		}
+	});
+
+	return allProvidersValid;
+}
+
+/**
+ * Main test runner function
+ */
+async function runComprehensiveValidation() {
+	log("Starting Comprehensive Repair Validation", "cyan");
+	log("=" * 50, "cyan");
+
+	// Run all validation tests to ensure comprehensive system validation
+	const testResults = [
+		checkBlessedAvailability(),
+		validateConfigurationFiles(),
+		validateNpmDependencies(),
+		validateTypeScriptCompilation(),
+		validateBuildSystem(),
+		validateTestSuite(),
+		validateProviderIntegrations()
+	];
+	
+	// Log test completion for debugging
+	log(`Completed ${testResults.length} validation tests`, "blue");
+
+	// Generate summary
+	const summary = testRecorder.getSummary();
+	
+	log("\nValidation Summary:", "yellow");
+	log(`Total Tests: ${summary.total}`, "blue");
+	log(`Passed: ${summary.passed}`, "green");
+	log(`Failed: ${summary.failed}`, summary.failed > 0 ? "red" : "green");
+
+	const overallSuccess = summary.failed === 0;
+	log(`\nOverall Result: ${overallSuccess ? "SUCCESS" : "FAILURE"}`, overallSuccess ? "green" : "red");
+
+	// Exit with appropriate code
+	process.exit(overallSuccess ? 0 : 1);
+}
+
+// Run the validation if this file is executed directly
+if (require.main === module) {
+	runComprehensiveValidation().catch(error => {
+		log(`Validation failed with error: ${error.message}`, "red");
+		process.exit(1);
+	});
+}
+
+module.exports = {
+	runComprehensiveValidation,
+	testRecorder,
+	validateNpmDependencies,
+	validateTypeScriptCompilation,
+	validateConfigurationFiles,
+	validateBuildSystem,
+	validateTestSuite,
+	validateProviderIntegrations
+};
