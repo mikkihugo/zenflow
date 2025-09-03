@@ -130,22 +130,7 @@ dashmap = { workspace = true }
 futures = { workspace = true }
 futures-util = { workspace = true }
 
-[[bench]]
-name = "tool_benchmarks"
-harness = false
-
-[[bench]]
-name = "llm_benchmarks"
-harness = false
-
-[[bench]]
-name = "memory_benchmarks"
-harness = false
-
-[[bench]]
-name = "integration_benchmarks"
-harness = false
-
-[[bench]]
-name = "performance_benchmarks"
-harness = false
+# Benchmarks commented out - implement when needed
+# [[bench]]
+# name = "tool_benchmarks"
+# harness = false

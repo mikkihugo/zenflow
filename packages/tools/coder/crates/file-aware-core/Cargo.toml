@@ -1,0 +1,57 @@
+[package]
+name = "file-aware-core"
+version = "0.1.0"
+authors = ["claude-code-zen Team"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "Pure Rust file-aware code analysis core - Rustler ready for Elixir NIFs"
+
+# Rustler-ready configuration
+[lib]
+name = "file_aware_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Core Rust dependencies - minimal and portable
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+anyhow = "1.0"
+
+# File system and path handling
+walkdir = { workspace = true }
+ignore = "0.4"
+glob = "0.3"
+
+# Text processing
+regex = "1.10"
+aho-corasick = "1.1"
+memchr = "2.7"
+
+# AST parsing - tree-sitter for multiple languages
+tree-sitter = "0.22"
+tree-sitter-rust = "0.21"
+tree-sitter-typescript = "0.21"
+tree-sitter-javascript = "0.21"
+tree-sitter-python = "0.21"
+tree-sitter-go = "0.21"
+
+# Parallel processing
+rayon = "1.8"
+
+# Hash maps and collections
+indexmap = { version = "2.2", features = ["serde"] }
+dashmap = { workspace = true }
+
+# Optional features for different environments
+tokio = { version = "1.0", features = ["fs", "io-util"], optional = true }
+
+[features]
+default = ["async"]
+async = ["tokio"]
+
+# For Rustler/Elixir integration
+rustler = []
+
+[dev-dependencies]
+tempfile = { workspace = true }
