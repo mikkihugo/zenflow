@@ -1,157 +1,95 @@
-[package]
-name = "coder"
-version = "0.1.0"
-authors = ["claude-code-zen Team"]
-edition = "2021"
-license = "MIT OR Apache-2.0"
-description = "High-performance, WASM-powered distributed swarm intelligence core library for concurrent code execution and neural mesh computing"
-homepage = "https://github.com/ruvnet/code-mesh"
-repository = "https://github.com/ruvnet/code-mesh"
-documentation = "https://docs.rs/code-mesh-core"
-readme = "README.md"
-keywords = ["wasm", "distributed", "swarm", "neural", "performance"]
-categories = ["development-tools", "web-programming", "concurrency", "algorithms", "wasm"]
-
 [workspace]
+resolver = "2"
+members = [
+	"crates/code-mesh-core",
+	# Removed: Optional UI/TUI and WASM crates - not needed for pure engine
+	# "crates/code-mesh-tui",
+	# "crates/code-mesh-wasm",
+]
 
-[dependencies]
-# Workspace dependencies
-tokio = { version = "1.0", features = ["full", "sync"], optional = true }
+[workspace.package]
+edition = "2021"
+authors = ["Zenflow contributors"]
+license = "MIT OR Apache-2.0"
+
+[workspace.dependencies]
+toml = "0.8"
+walkdir = "2.5"
+which = "3.0"
+url = "2.5"
+tempfile = "3.10"
+mockall = "0.12"
+criterion = { version = "0.5", features = ["html_reports"] }
+pprof = { version = "0.13", features = ["criterion", "flamegraph"] }
+jemallocator = "0.5"
+memory-stats = "1.1"
+flame = "0.2"
+inferno = "0.11"
+lru = "0.12"
+dashmap = "5.5"
 futures = "0.3"
+futures-util = "0.3"
+
+# Storage pins to avoid conflicts
+libsqlite3-sys = "0.37"
+rusqlite = "0.37"
+
+# Neural core shared deps (mirrored here so { workspace = true } resolves)
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
 anyhow = "1.0"
-reqwest = { version = "0.12", features = ["json", "rustls-tls", "stream"] }
-tracing = "0.1"
-uuid = { version = "1.0", features = ["v4", "serde"] }
+log = "0.4"
 chrono = { version = "0.4", features = ["serde"] }
-base64 = "0.22"
-sha2 = "0.10"
-dirs = "5.0"
+tokio = { version = "1.0", features = ["full"] }
+num-traits = "0.2"
+polars = { version = "0.41", features = ["lazy", "temporal", "csv", "parquet", "json"] }
+ndarray = { version = "0.16", features = ["serde"] }
+burn = { version = "0.18", default-features = false, features = ["std"] }
+burn-core = "0.18"
+burn-tensor = "0.18"
+burn-autodiff = "0.18"
+burn-wgpu = "0.18"
+burn-ndarray = "0.18"
+candle-core = "0.9"
+candle-nn = "0.9"
+ort = { version = "2.0.0-rc.10", features = ["download-binaries"] }
+tract-onnx = "0.21"
+tokenizers = "0.21"
+regex = "1.11"
+reqwest = { version = "0.12", features = ["json"] }
+smartcore = { version = "0.4", default-features = false, features = ["ndarray-bindings"] }
+wasm-bindgen = "0.2.93"
+js-sys = "0.3.70"
+web-sys = { version = "0.3.70" }
 
-# Core specific dependencies
-async-trait = "0.1"
-indexmap = { version = "2.2", features = ["serde"] }
-parking_lot = "0.12"
-once_cell = "1.19"
-rand = "0.8"
-urlencoding = "2.1"
-futures-util = "0.3"
-pin-project = "1.1"
-bytes = "1.6"
-hex = "0.4"
-toml = { workspace = true }
-hostname = "0.3"
+[workspace.lints.rust]
+unused_variables = "warn"
+unused_imports = "warn"
+dead_code = "warn"
+unused_mut = "warn"
+unreachable_code = "warn"
+deprecated = "warn"
 
-# LLM SDK dependencies (optional based on features)
-async-openai = { version = "0.23", optional = true }
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+similar_names = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 
-# Tool system
-regex = "1.10"
-similar = "2.5"
-glob = "0.3"
-walkdir = { workspace = true }
-which = { workspace = true }
-url = { workspace = true }
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
 
-# Web functionality
-html5ever = { version = "0.26", optional = true }
-markup5ever_rcdom = { version = "0.2", optional = true }
-html2md = { version = "0.2", optional = true }
-scraper = { version = "0.18", optional = true }
-cookie = { version = "0.18", optional = true }
-http = { version = "0.2", optional = true }
-
-# WASM-specific dependencies
-wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
-js-sys = "0.3"
-serde_wasm_bindgen = "0.6"
-web-sys = { version = "0.3.77", optional = true, features = [
-    "console",
-    "Window",
-    "Document",
-    "Request",
-    "RequestInit",
-    "RequestMode",
-    "Response",
-    "Headers",
-    "AbortController",
-    "AbortSignal",
-    "FormData",
-    "Blob",
-    "File",
-    "ReadableStream",
-    "WritableStream",
-    "TextDecoder",
-    "TextEncoder",
-    "Url",
-    "UrlSearchParams",
-] }
-
-# Process execution and file operations
-notify = "6.1"
-tempfile = { workspace = true }
-filetime = "0.2"
-mime_guess = "2.0"
-ignore = "0.4"
-
-# Text processing
-aho-corasick = "1.1"
-memchr = "2.7"
-
-# Cross-platform support
-cfg-if = "1.0"
-
-# Storage - use workspace version to fix conflicts
-rusqlite = { workspace = true, features = ["bundled"], optional = true }
-
-[features]
-default = ["std", "auto-optimization", "native", "web"]
-std = []
-auto-optimization = []
-native = ["rusqlite", "reqwest/native-tls", "tokio"]
-wasm = ["dep:web-sys", "dep:js-sys", "dep:wasm-bindgen", "dep:wasm-bindgen-futures"]
-openai = ["async-openai"]
-anthropic = []
-mistral = []
-web = ["html5ever", "markup5ever_rcdom", "html2md", "scraper", "dep:cookie", "dep:http"]
-
-# Feature gate for GitHub Copilot support (disabled by default)
-copilot = []
-
-[dev-dependencies]
-mockall = { workspace = true }
-tempfile = { workspace.true }
-tokio-test = "0.4"
-criterion = { workspace = true }
-pprof = { workspace = true }
-jemallocator = { workspace = true }
-memory-stats = { workspace = true }
-flame = { workspace = true }
-inferno = { workspace = true }
-lru = { workspace = true }
-dashmap = { workspace = true }
-futures = { workspace = true }
-futures-util = { workspace = true }
-
-[[bench]]
-name = "tool_benchmarks"
-harness = false
-
-[[bench]]
-name = "llm_benchmarks"
-harness = false
-
-[[bench]]
-name = "memory_benchmarks"
-harness = false
-
-[[bench]]
-name = "integration_benchmarks"
-harness = false
-
-[[bench]]
-name = "performance_benchmarks"
-harness = false
+[profile.dev]
+opt-level = 0
+debug = 2
+split-debuginfo = "unpacked"

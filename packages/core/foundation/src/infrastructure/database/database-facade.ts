@@ -237,9 +237,9 @@ export class DatabaseFacade {
           ...baseConnection,
           async commit() { /* no-op for fallback */ },
           async rollback() { /* no-op for fallback */ },
-          async savepoint(name: string) { void name; /* no-op for fallback */ },
-          async releaseSavepoint(name: string) { void name; /* no-op for fallback */ },
-          async rollbackToSavepoint(name: string) { void name; /* no-op for fallback */ },
+          savepoint(name: string) { void name; /* no-op for fallback */ },
+          releaseSavepoint(name: string) { void name; /* no-op for fallback */ },
+          rollbackToSavepoint(name: string) { void name; /* no-op for fallback */ },
         };
         return operation(txConnection);
       },

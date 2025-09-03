@@ -7,8 +7,8 @@
 
 import { EventBus } from '@claude-zen/foundation';
 import { IntelligenceOrchestrator, BrainEvents } from '../brain-coordinator';
-import { TaskAnalyzer, TaskAnalysisEvents } from '../autonomous-optimization-engine';
-import { TaskComplexityEstimator, ComplexityEvents } from '../task-complexity-estimator';
+import { TaskAnalyzer } from '../autonomous-optimization-engine';
+import { TaskComplexityEstimator } from '../task-complexity-estimator';
 
 describe('Event-Driven Brain Integration', () => {
   let brain: IntelligenceOrchestrator;
@@ -125,7 +125,7 @@ describe('Event-Driven Brain Integration', () => {
     brain.emit('brain:task_submitted', {
       taskId: 'brain-test-001',
       task: 'Generate unit tests for a React component',
-      context: { framework: 'React', testing: 'Jest' },
+      context: { framework: 'React', testing: 'Vitest' },
       timestamp: Date.now(),
     });
 

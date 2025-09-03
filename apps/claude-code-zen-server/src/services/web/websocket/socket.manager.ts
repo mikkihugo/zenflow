@@ -341,7 +341,7 @@ export class WebSocketManager {
       const info: Record<string, { available: boolean; version: string | null }> = {};
       info['@claude-zen/foundation'] = { available: true, version: '1.1.1' };
       info['@claude-zen/database'] = { available: false, version: null };
-      // Event system is now part of foundation
+      info['@claude-zen/event-system'] = { available: false, version: null };
       info['@claude-zen/brain'] = { available: false, version: null };
       info['@claude-zen/coordination'] = { available: true, version: '1.0.0' };
       return info;
@@ -391,7 +391,7 @@ export class WebSocketManager {
   ): { name: string; capability: 'full' | 'partial' | 'fallback'; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const infrastructurePackages = {
       ['@claude-zen/database']: { status: packageInfo['@claude-zen/database']?.available ? 'registered' : 'fallback', version: packageInfo['@claude-zen/database']?.version },
-      // Event system is now part of foundation
+      ['@claude-zen/event-system']: { status: packageInfo['@claude-zen/event-system']?.available ? 'registered' : 'fallback', version: packageInfo['@claude-zen/event-system']?.version },
     };
     const registeredServices = Object.keys(serviceHealth).filter((s) => ['database', 'events', 'otel'].includes(s) && serviceHealth[s].status === 'healthy');
     const healthScore = Math.round((registeredServices.length / 3) * 100);

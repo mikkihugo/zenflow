@@ -128,11 +128,11 @@ export class ApiRouteHandler {
   private handleSystemStatus(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(2000, res, 'Status request timed out');
-    const handler = this.correlatedHandler('taskmaster:system:status:response', correlationId, cancel, (payload) => {
+    const handler = this.correlatedHandler('api:system:status:response', correlationId, cancel, (payload) => {
       res.json(payload);
     });
-    this.bus.on('taskmaster:system:status:response', handler);
-    this.bus.emit('taskmaster:system:status:request', { correlationId });
+    this.bus.on('api:system:status:response', handler);
+    this.bus.emit('api:system:status:request', { correlationId });
   }
 
   /**
@@ -141,11 +141,11 @@ export class ApiRouteHandler {
   private handleGetSwarms(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Swarms request timed out');
-    const handler = this.correlatedHandler('taskmaster:swarms:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ swarms: unknown }>) => {
+    const handler = this.correlatedHandler('api:swarms:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ swarms: unknown }>) => {
       res.json(payload.swarms ?? []);
     });
-    this.bus.on('taskmaster:swarms:list:response', handler);
-    this.bus.emit('taskmaster:swarms:list:request', { correlationId });
+    this.bus.on('api:swarms:list:response', handler);
+    this.bus.emit('api:swarms:list:request', { correlationId });
   }
 
   /**
@@ -168,11 +168,11 @@ export class ApiRouteHandler {
   private handleGetTasks(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Tasks request timed out');
-    const handler = this.correlatedHandler('taskmaster:tasks:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ tasks: unknown }>) => {
+    const handler = this.correlatedHandler('api:tasks:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ tasks: unknown }>) => {
       res.json(payload.tasks ?? []);
     });
-    this.bus.on('taskmaster:tasks:list:response', handler);
-    this.bus.emit('taskmaster:tasks:list:request', { correlationId });
+    this.bus.on('api:tasks:list:response', handler);
+    this.bus.emit('api:tasks:list:request', { correlationId });
   }
 
   /**
@@ -181,12 +181,12 @@ export class ApiRouteHandler {
   private handleCreateTask(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(4000, res, 'Create task timed out');
-    const handler = this.correlatedHandler('taskmaster:tasks:create:response', correlationId, cancel, (payload: CorrelatedPayload<{ task: unknown }>) => {
+    const handler = this.correlatedHandler('api:tasks:create:response', correlationId, cancel, (payload: CorrelatedPayload<{ task: unknown }>) => {
       this.webSocket.broadcast('task:created', payload.task);
       res.json(payload.task);
     });
-    this.bus.on('taskmaster:tasks:create:response', handler);
-    this.bus.emit('taskmaster:tasks:create:request', { correlationId, input: req.body });
+    this.bus.on('api:tasks:create:response', handler);
+    this.bus.emit('api:tasks:create:request', { correlationId, input: req.body });
   }
 
   /**
@@ -195,11 +195,11 @@ export class ApiRouteHandler {
   private handleGetDocuments(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Documents request timed out');
-    const handler = this.correlatedHandler('taskmaster:documents:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ documents: unknown }>) => {
+    const handler = this.correlatedHandler('api:documents:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ documents: unknown }>) => {
       res.json(payload.documents ?? []);
     });
-    this.bus.on('taskmaster:documents:list:response', handler);
-    this.bus.emit('taskmaster:documents:list:request', { correlationId });
+    this.bus.on('api:documents:list:response', handler);
+    this.bus.emit('api:documents:list:request', { correlationId });
   }
 
   /**
@@ -208,11 +208,11 @@ export class ApiRouteHandler {
   private handleExecuteCommand(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(5000, res, 'Execute command timed out');
-    const handler = this.correlatedHandler('taskmaster:execute:response', correlationId, cancel, (payload) => {
+    const handler = this.correlatedHandler('api:execute:response', correlationId, cancel, (payload) => {
       res.json(payload.result ?? payload);
     });
-    this.bus.on('taskmaster:execute:response', handler);
-    this.bus.emit('taskmaster:execute:request', { correlationId, input: req.body });
+    this.bus.on('api:execute:response', handler);
+    this.bus.emit('api:execute:request', { correlationId, input: req.body });
   }
 
   /**
@@ -221,11 +221,11 @@ export class ApiRouteHandler {
   private handleGetSettings(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(2000, res, 'Settings request timed out');
-    const handler = this.correlatedHandler('taskmaster:settings:get:response', correlationId, cancel, (payload: CorrelatedPayload<{ settings: unknown }>) => {
+    const handler = this.correlatedHandler('api:settings:get:response', correlationId, cancel, (payload: CorrelatedPayload<{ settings: unknown }>) => {
       res.json(payload.settings ?? {});
     });
-    this.bus.on('taskmaster:settings:get:response', handler);
-    this.bus.emit('taskmaster:settings:get:request', { correlationId });
+    this.bus.on('api:settings:get:response', handler);
+    this.bus.emit('api:settings:get:request', { correlationId });
   }
 
   /**
@@ -234,12 +234,12 @@ export class ApiRouteHandler {
   private handleUpdateSettings(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(4000, res, 'Update settings timed out');
-    const handler = this.correlatedHandler('taskmaster:settings:update:response', correlationId, cancel, (payload: CorrelatedPayload<{ settings: unknown }>) => {
+    const handler = this.correlatedHandler('api:settings:update:response', correlationId, cancel, (payload: CorrelatedPayload<{ settings: unknown }>) => {
       this.webSocket.broadcast('settings:updated', payload.settings);
       res.json(payload.settings ?? {});
     });
-    this.bus.on('taskmaster:settings:update:response', handler);
-    this.bus.emit('taskmaster:settings:update:request', { correlationId, input: req.body });
+    this.bus.on('api:settings:update:response', handler);
+    this.bus.emit('api:settings:update:request', { correlationId, input: req.body });
   }
 
   /**
@@ -248,12 +248,12 @@ export class ApiRouteHandler {
   private handleGetLogs(req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Logs request timed out');
-    const handler = this.correlatedHandler('taskmaster:logs:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ logs: unknown }>) => {
+    const handler = this.correlatedHandler('api:logs:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ logs: unknown }>) => {
       res.json(payload.logs ?? []);
     });
-    this.bus.on('taskmaster:logs:list:response', handler);
+    this.bus.on('api:logs:list:response', handler);
     const { limit = 100, offset = 0 } = req.query;
-    this.bus.emit('taskmaster:logs:list:request', { correlationId, limit: Number(limit), offset: Number(offset) });
+    this.bus.emit('api:logs:list:request', { correlationId, limit: Number(limit), offset: Number(offset) });
   }
 
   // Helper utilities for correlation-based responses

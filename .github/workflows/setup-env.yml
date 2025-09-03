@@ -1,0 +1,70 @@
+name: Setup Environment
+
+on:
+  workflow_call:
+
+jobs:
+  setup-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup dotfiles and environment
+        run: |
+          # Clone dotfiles repo if it doesn't exist
+          if [ ! -d "$HOME/.dotfiles" ]; then
+            echo "🔧 Cloning dotfiles repository..."
+            git clone https://github.com/mikkihugo/dotfiles.git $HOME/.dotfiles
+          else
+            echo "📁 Dotfiles already exist, pulling latest..."
+            cd $HOME/.dotfiles && git pull
+          fi
+          
+          # Create .env file with secrets
+          touch ~/.env
+          
+          # Add organization/personal secrets to environment file
+          [ -n "${{ secrets.ANTHROPIC_API_KEY }}" ] && echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" >> ~/.env
+          [ -n "${{ secrets.OPENAI_API_KEY }}" ] && echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> ~/.env
+          [ -n "${{ secrets.CLAUDE_API_KEY }}" ] && echo "CLAUDE_API_KEY=${{ secrets.CLAUDE_API_KEY }}" >> ~/.env
+          [ -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] && echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> ~/.env
+          [ -n "${{ secrets.DATABASE_URL }}" ] && echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ~/.env
+          [ -n "${{ secrets.ENCRYPTION_KEY }}" ] && echo "ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}" >> ~/.env
+          [ -n "${{ secrets.REDIS_URL }}" ] && echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> ~/.env
+          
+          # Default environment settings
+          echo "NODE_ENV=${NODE_ENV:-development}" >> ~/.env
+          echo "DEBUG=${DEBUG:-claude-zen:*}" >> ~/.env
+          echo "LOG_LEVEL=${LOG_LEVEL:-info}" >> ~/.env
+          echo "TYPESCRIPT_STRICT=true" >> ~/.env
+          
+          # Set restrictive permissions
+          chmod 600 ~/.env
+          
+          # Setup dotfiles (run install script if exists)
+          if [ -f "$HOME/.dotfiles/install.sh" ]; then
+            echo "🚀 Running dotfiles installation..."
+            bash $HOME/.dotfiles/install.sh
+          elif [ -f "$HOME/.dotfiles/setup.sh" ]; then
+            echo "🚀 Running dotfiles setup..."
+            bash $HOME/.dotfiles/setup.sh
+          else
+            echo "📋 Symlinking common dotfiles..."
+            # Common dotfiles symlinks
+            [ -f "$HOME/.dotfiles/.bashrc" ] && ln -sf $HOME/.dotfiles/.bashrc $HOME/.bashrc
+            [ -f "$HOME/.dotfiles/.zshrc" ] && ln -sf $HOME/.dotfiles/.zshrc $HOME/.zshrc
+            [ -f "$HOME/.dotfiles/.gitconfig" ] && ln -sf $HOME/.dotfiles/.gitconfig $HOME/.gitconfig
+            [ -f "$HOME/.dotfiles/.vimrc" ] && ln -sf $HOME/.dotfiles/.vimrc $HOME/.vimrc
+          fi
+          
+          # Ensure environment is loaded in shell
+          echo "" >> ~/.bashrc
+          echo "# Load environment variables" >> ~/.bashrc
+          echo "if [ -f ~/.env ]; then" >> ~/.bashrc
+          echo "  export \$(grep -v '^#' ~/.env | xargs)" >> ~/.bashrc
+          echo "fi" >> ~/.bashrc
+          
+      - name: Verify environment setup
+        run: |
+          echo "Environment file created:"
+          ls -la ~/.env
+          echo "Environment variables loaded:"
+          source ~/.env && env | grep -E "(ANTHROPIC|OPENAI|NODE_ENV|DEBUG|LOG_LEVEL)" || echo "No matching env vars found"

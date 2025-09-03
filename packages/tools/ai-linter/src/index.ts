@@ -37,13 +37,8 @@ ProcessingResult,
 // Event-driven policy: avoid direct import from other internal packages
 // Provide a minimal local shim; real provider should be accessed via events
 class GitHubCopilotAPI {
-	constructor(opts: Record<string, unknown>) {
-		// Intentionally unused parameter for compatibility
-		void opts;
-	}
-	async chat(args: Record<string, unknown>): Promise<{ text: string }> {
-		// Intentionally unused parameter for compatibility  
-		void args;
+	constructor(_opts: any) {}
+	async chat(_args: any): Promise<{ text: string }> {
 		return { text: '' };
 	}
 }

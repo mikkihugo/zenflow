@@ -79,7 +79,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Initialize the service
    */
-  async initialize(): Promise<void> {
+  initialize(): Promise<void> {
     try {
       this.logger.info('Initializing SAFe Portfolio Traceability Service...');
 
@@ -89,7 +89,7 @@ export class SafePortfolioTraceabilityService {
       this.logger.info('SAFe Portfolio Traceability Service initialized successfully');
     } catch (error) {
       this.logger.error(`Failed to initialize SAFe Portfolio Traceability Service:`, error);
-      throw error;
+  throw error;
     }
   }
 
@@ -145,7 +145,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Analyze epic context using AI
    */
-  private async analyzeEpicContext(context: EpicGenerationContext): Promise<{ businessValue: number; complexity: string; urgency: string; }> {
+  private analyzeEpicContext(context: EpicGenerationContext): Promise<{ businessValue: number; complexity: string; urgency: string; }> {
     // TODO: Implement AI analysis of epic context
     return {
       businessValue: context.strategic.businessValue,
@@ -157,7 +157,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Generate business case for epic
    */
-  private async generateBusinessCase(
+  private generateBusinessCase(
     epicId: string,
     context: EpicGenerationContext,
     analysis: { businessValue: number; complexity: string; urgency: string }
@@ -250,33 +250,32 @@ export class SafePortfolioTraceabilityService {
   /**
    * Get traceability record for epic
    */
-  async getEpicTraceability(epicId: string): Promise<Record<string, unknown> | null> {
+  getEpicTraceability(epicId: string): Promise<Record<string, unknown> | null> {
     // TODO: Implement traceability retrieval
     void epicId;
-    return Promise.resolve(null);
+    return null;
   }
 
   /**
    * Update epic traceability
    */
-  async updateEpicTraceability(epicId: string, updates: Record<string, unknown>): Promise<void> {
+  updateEpicTraceability(epicId: string, updates: Record<string, unknown>): Promise<void> {
     // TODO: Implement traceability updates
     void epicId;
     void updates;
-    return Promise.resolve();
   }
 
   /**
    * Generate learning insights from epic outcomes
    */
-  async learnFromEpicOutcome(epicId: string, outcome: Record<string, unknown>): Promise<{ patterns: unknown[]; improvements: unknown[] }> {
+  learnFromEpicOutcome(epicId: string, outcome: Record<string, unknown>): Promise<{ patterns: unknown[]; improvements: unknown[] }> {
     // TODO: Implement learning from epic outcomes
     void epicId;
     void outcome;
-    return Promise.resolve({
+    return {
       patterns: [],
       improvements: []
-    });
+    };
   }
 }
 

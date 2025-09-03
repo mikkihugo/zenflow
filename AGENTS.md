@@ -8,8 +8,8 @@ Enterprise AI platform with agents, workflows, and a web-first interface. Packag
 
 ## Core architecture principles
 
-- Event-driven only: communicate across packages via the single EventBus from foundation (the old "TypedEventBus" name is deprecated)
-- Import boundary: only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml may be imported directly
+- Event-driven only: communicate across packages via the single typed EventBus from foundation
+- Import boundary: only @claude-zen/foundation and @claude-zen/database may be imported directly
 - Backend-agnostic data access: use database adapters; avoid binding to a specific backend
 - WASM-first heavy compute: route through Rust/WASM gateways
 
@@ -30,7 +30,7 @@ src/
 - Tools: code-analyzer, git-operations, parsers, ai-linter, etc.
 - Integrations: llm-providers, exporters, otel-collector
 
-Legacy notes: NeuralBridge and similar legacy orchestrators are deprecated; "TypedEventBus" name is legacy—use EventBus; remove facades/shims.
+Legacy notes: NeuralBridge and similar legacy orchestrators are deprecated; “swarm” terminology remains.
 
 ## Agent coordination
 
@@ -57,6 +57,27 @@ pnpm --filter @claude-zen/web-dashboard dev
 - Use WASM gateway for heavy compute; avoid JS math
 - Keep access through the provided gateway APIs
 
+## Testing guidelines
+
+**Test file organization:**
+- Tests MUST be in `tests/` or `__tests__/` directories, never in `src/`
+- Test files should use `.test.ts` or `.spec.ts` extensions
+- Structure: `packages/[package]/tests/` or `packages/[package]/__tests__/`
+
+**Example structure:**
+```
+packages/services/brain/
+├── src/
+│   └── brain-coordinator.ts
+└── tests/  # ← Tests here, not in src/
+    └── brain-coordinator.test.ts
+```
+
+**Import rules for tests:**
+- Test files can import from their own package's src
+- Follow same foundation/database import restrictions
+- Use Vitest for testing framework
+
 ## Dev workflow
 
 ```bash
@@ -66,7 +87,7 @@ pnpm --filter @claude-zen/web-dashboard dev
 pnpm build
 ```
 
-Tests: run per-package only.
+Tests: run per-package only with `pnpm test`.
 
 ## Quality and functionality
 
@@ -80,12 +101,12 @@ Tests: run per-package only.
 
 TaskMaster and event-driven flows
 - The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
-- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (taskmaster:tasks:*, taskmaster:system:status)
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
 - Downstream packages should implement responders listening on these topics and emit typed responses
 
 TaskMaster and event-driven flows
 - The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
-- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (taskmaster:tasks:*, taskmaster:system:status)
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
 - Downstream packages should implement responders listening on these topics and emit typed responses
 
 ## Task approval example
@@ -594,7 +615,7 @@ import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 // ✅ Direct package imports (current architecture)
 import { BrainCoordinator } from '@claude-zen/brain';
 import { DatabaseProvider } from '@claude-zen/database';
-import { EventBus } from '@claude-zen/foundation';
+import { EventManager } from '@claude-zen/event-system';
 
 // ✅ Coordination package (unified)
 import { SafeFramework } from '@claude-zen/coordination/safe';
@@ -603,12 +624,6 @@ import { TeamworkOrchestrator } from '@claude-zen/coordination/teamwork';
 ```
 
 ### Testing Strategy
-
-**Test Organization**:
-- **✅ DO**: Place all test files in dedicated `test/` directories within packages
-- **❌ DON'T**: Place test files in `src/` directories or root package directories
-- **✅ DO**: Use proper test file naming: `*.test.js`, `*.spec.js`, or descriptive names
-- **✅ DO**: Organize tests by domain/feature within the test directory
 
 **Domain-Specific Testing**:
 
