@@ -67,34 +67,37 @@ const getEventSystem = async () => {
     const eventBus = EventBus.getInstance();
     
     return {
-      emit: async (event: string, data: any) => {
+      emit: async (event: string, data: unknown) => {
         logger.debug('Event emit (via foundation EventBus)', { event, data });
-        eventBus.emit(event, data);
+        const res = await eventBus.emitSafe(event, data);
+        if (res.isErr()) {
+          logger.error('Event emit failed', { event, error: res.error });
+        }
       },
-      on: (event: string, callback: Function) => {
+      on: (event: string, callback: (payload: unknown) => void) => {
         logger.debug('Event listener (via foundation EventBus)', { event });
         eventBus.on(event, callback);
       },
-      off: (event: string, callback: Function) => {
+      off: (event: string, callback: (payload: unknown) => void) => {
         logger.debug('Event listener removal (via foundation EventBus)', { event });
         eventBus.off(event, callback);
       }
     };
   } catch (error) {
     logger.error('Failed to initialize foundation EventBus, falling back to local stub', { error });
-    // Fallback to local stub if foundation is not available
+    // TODO: replace top-level EventBus stub with a pure in-memory emitter stub
     return {
       emit: async (event: string, data: any) => {
         logger.debug('Event emit (local stub)', { event, data });
-        eventBus.emit?.(event as any, data as any);
+        /* stub implementation */
       },
-      on: (event: string, callback: Function) => {
+      on: (event: string, callback: (payload: unknown) => void) => {
         logger.debug('Event listener (local stub)', { event });
-        eventBus.on?.(event as any, callback as any);
+        /* stub implementation */
       },
-      off: (event: string, callback: Function) => {
+      off: (event: string, callback: (payload: unknown) => void) => {
         logger.debug('Event listener removal (local stub)', { event });
-        eventBus.off?.(event as any, callback as any);
+        /* stub implementation */
       }
     };
   }
