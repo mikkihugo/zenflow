@@ -9,6 +9,8 @@ import {
   EventBus,
   isValidEventName,
   EventLogger,
+  DynamicEventRegistry,
+  dynamicEventRegistry,
 } from '@claude-zen/foundation';
 import { randomUUID } from 'crypto';
 import { WebSocket } from 'ws';
@@ -77,6 +79,9 @@ export class WebsocketHub {
     }
 
     try {
+      // Register with DynamicEventRegistry for monitoring
+      await this.registerWithEventRegistry();
+
       // Set up EventBus integration if bridge is enabled
       if (this.bridgeEnabled) {
         await this.setupEventSystemIntegration();
@@ -87,6 +92,27 @@ export class WebsocketHub {
     } catch (error) {
       // Fail-open: log and continue
       EventLogger.logError('websocket-hub:initialization-failed', error as Error, {
+        component: WebsocketHub.componentName
+      });
+    }
+  }
+
+  /**
+   * Register this hub with the DynamicEventRegistry for monitoring
+   */
+  private async registerWithEventRegistry(): Promise<void> {
+    try {
+      await dynamicEventRegistry.registerModule({
+        name: WebsocketHub.componentName,
+        version: '1.0.0',
+        capabilities: ['websocket-broadcasting', 'event-forwarding'],
+        status: 'active'
+      });
+
+      EventLogger.log('websocket-hub:registered-with-event-registry');
+    } catch (error) {
+      // Fail-open: log and continue
+      EventLogger.logError('websocket-hub:registry-registration-failed', error as Error, {
         component: WebsocketHub.componentName
       });
     }
@@ -104,6 +130,12 @@ export class WebsocketHub {
           const eventName = args[1] as string | undefined;
           if (!eventName) return;
           
+          // Use foundation's event validation
+          if (!isValidEventName(eventName)) {
+            EventLogger.log('websocket-hub:invalid-event-name', { eventName });
+            return;
+          }
+          
           // Check if event matches our whitelist
           const isWhitelisted = this.eventWhitelist.some(prefix => 
             eventName.startsWith(prefix)
@@ -116,7 +148,9 @@ export class WebsocketHub {
           // Broadcast to subscribed connections
           this.broadcast('eventbus', {
             type: eventName,
-            data: payload
+            data: payload,
+            timestamp: new Date().toISOString(),
+            source: 'foundation-eventbus'
           });
           
         } catch (error) {
@@ -211,7 +245,7 @@ export class WebsocketHub {
   /**
    * Handle publish requests - forward to EventBus
    */
-  private handlePublish(connection: WebSocketConnection, message: InboundMessage): void {
+  private handlePublish(_connection: WebSocketConnection, message: InboundMessage): void {
     if (!message.event) {
       EventLogger.log('websocket-hub:publish-missing-event');
       return;
@@ -386,4 +420,35 @@ export class WebsocketHub {
   async execute(): Promise<void> {
     await this.initialize();
   }
+<<<<<<< Current (Your changes)
+=======
+
+  /**
+   * Get event system metrics from DynamicEventRegistry
+   */
+  async getEventSystemMetrics() {
+    try {
+      const metrics = await dynamicEventRegistry.getEventMetrics();
+      const flows = await dynamicEventRegistry.getEventFlows();
+      const activeModules = await dynamicEventRegistry.getActiveModules();
+      
+      return {
+        metrics,
+        flows,
+        activeModules,
+        websocketStats: this.getStats()
+      };
+    } catch (error) {
+      EventLogger.logError('websocket-hub:metrics-failed', error as Error, {
+        component: WebsocketHub.componentName
+      });
+      return {
+        metrics: null,
+        flows: null,
+        activeModules: null,
+        websocketStats: this.getStats()
+      };
+    }
+  }
+>>>>>>> Incoming (Background Agent changes)
 }

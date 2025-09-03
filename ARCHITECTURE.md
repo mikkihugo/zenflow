@@ -6,6 +6,10 @@ The Advanced Multi-Level Workflow Architecture represents a complete transformat
 
 **Mission Accomplished:** Transform `Vision→PRD→Epic→Feature→Task→Code` (linear) to multi-level parallel streams with AGUI-powered human oversight and SAFe integration.
 
+### **🔌 Event-Driven Architecture**
+
+**Critical Note:** Services with internal event emitters must provide EventBus bridges to appear in DynamicEventRegistry metrics and the web dashboard. This enables system-wide event visibility while preserving domain boundaries and existing functionality.
+
 ### **🚀 Architecture Evolution**
 
 **BEFORE:** Linear workflow with single-threaded execution

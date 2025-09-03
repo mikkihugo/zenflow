@@ -5,6 +5,7 @@ import importPlugin from 'eslint-plugin-import';
 import sonarjs from 'eslint-plugin-sonarjs';
 import unicorn from 'eslint-plugin-unicorn';
 import unusedImports from 'eslint-plugin-unused-imports';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   js.configs.recommended,
@@ -833,4 +834,7 @@ export default [
       'security/**/*',
     ],
   },
+
+  // This must be the last entry to override all other formatting rules
+  prettierConfig,
 ];

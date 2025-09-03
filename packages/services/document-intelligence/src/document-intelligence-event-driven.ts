@@ -1,4 +1,128 @@
 /**
+ * Event-driven Document Intelligence - simplified stub implementation
+ * This file provides a lightweight, syntactically-correct implementation
+ * used to allow TypeScript parsing and incremental fixes in the monorepo.
+ */
+
+import { getLogger, TypedEventBase, createServiceContainer, recordMetric } from '@claude-zen/foundation';
+import { generateUUID } from '@claude-zen/foundation';
+
+const logger = getLogger('EventDrivenDocumentIntelligence');
+
+export interface DocumentData {
+	id?: string;
+	type: string;
+	title: string;
+	content: string;
+	metadata?: Record<string, unknown>;
+}
+
+export interface DocumentProcessingResult {
+	documentId: string;
+	success: boolean;
+	processedDocuments: DocumentData[];
+	workflowsTriggered: string[];
+	error?: string;
+}
+
+export interface WorkflowDefinition {
+	name: string;
+	description: string;
+	version: string;
+	steps: any[];
+}
+
+export interface WorkflowExecutionResult {
+	success: boolean;
+	results: Record<string, unknown>;
+	steps: any[];
+	error?: string;
+}
+
+export interface ContentAnalysis {
+	type: string;
+	complexity: 'simple' | 'moderate' | 'complex';
+	topics: string[];
+	entities: string[];
+	structure: { sections: number; headings: string[]; wordCount: number };
+}
+
+export interface ProductRequirements {
+	functional: string[];
+	nonFunctional: string[];
+	constraints: string[];
+	assumptions: string[];
+	stakeholders: string[];
+	businessValue: string;
+}
+
+export class EventDrivenDocumentIntelligence extends TypedEventBase {
+	private serviceContainer: ReturnType<typeof createServiceContainer> | null = null;
+	private initialized = false;
+	private workflows = new Map<string, WorkflowDefinition>();
+	private documentIndex = new Map<string, DocumentData>();
+	private documentsProcessed = 0;
+	private workflowsExecuted = 0;
+	private requirementsExtracted = 0;
+
+	constructor() {
+		super();
+		this.serviceContainer = createServiceContainer();
+	}
+
+	async initialize(): Promise<void> {
+		if (this.initialized) return;
+		logger.info('Initializing event-driven document intelligence system');
+		// Register a minimal document-processor if needed
+		await this.registerDefaultWorkflows();
+		this.initialized = true;
+		recordMetric('document_intelligence_initializations', 1);
+		logger.info('Document intelligence system initialized', { workflowCount: this.workflows.size });
+	}
+
+	private async registerDefaultWorkflows(): Promise<void> {
+		const workflows: WorkflowDefinition[] = [
+			{ name: 'vision-to-prd', description: 'Vision to PRD', version: '1.0.0', steps: [] },
+			{ name: 'prd-to-epic', description: 'PRD to Epic', version: '1.0.0', steps: [] },
+			{ name: 'content-analysis', description: 'Content analysis', version: '1.0.0', steps: [] },
+		];
+
+		for (const wf of workflows) this.workflows.set(wf.name, wf);
+		logger.info(`Registered ${workflows.length} default workflows`);
+	}
+
+	async processDocumentInternal(documentData: DocumentData, processingType?: string): Promise<DocumentProcessingResult> {
+		const documentId = documentData.id || generateUUID();
+		const processedDocuments: DocumentData[] = [];
+		const workflowsTriggered: string[] = [];
+
+		this.documentsProcessed++;
+		this.documentIndex.set(documentId, { ...documentData, id: documentId });
+
+		// Simple dispatch: trigger content-analysis for everything
+		workflowsTriggered.push('content-analysis');
+
+		return { documentId, success: true, processedDocuments, workflowsTriggered };
+	}
+
+	async analyzeContentInternal(content: string, contentType: string): Promise<ContentAnalysis> {
+		const words = content.split(/\s+/).filter(Boolean);
+		const wordCount = words.length;
+		return {
+			type: contentType,
+			complexity: wordCount < 200 ? 'simple' : wordCount < 1000 ? 'moderate' : 'complex',
+			topics: [],
+			entities: [],
+			structure: { sections: 0, headings: [], wordCount },
+		};
+	}
+
+	async extractRequirementsInternal(_visionDocument: string): Promise<ProductRequirements> {
+		this.requirementsExtracted++;
+		return { functional: [], nonFunctional: [], constraints: [], assumptions: [], stakeholders: [], businessValue: '' };
+	}
+}
+/**
 * @fileoverview Document Intelligence Implementation - 100% Event-Driven
 *
 * Foundation-powered document intelligence system with event-based brain coordination
@@ -9,11 +133,7 @@
 // FOUNDATION IMPORTS - Internal operations
 // =============================================================================
 
-import {
-createServiceContainer, getLogger, type Logger,
-TypedEventBase, generateUUID,
-recordMetric, withTrace
-} from '@claude-zen/foundation';
+import { createServiceContainer, getLogger, type Logger, TypedEventBase, generateUUID, recordMetric, withTrace } from '@claude-zen/foundation';
 
 // =============================================================================
 // EVENT INTERFACES - Brain coordination
@@ -22,80 +142,80 @@ recordMetric, withTrace
 interface DocumentIntelligenceEvents {
 // Brain requests
 'brain:document-intelligence:process-document': {
-requestId:string;
-documentData:DocumentData;
-processingType?:'vision-to-prd' | ' prd-to-epic' | ' analyze' | ' extract';
-timestamp:number;
+	requestId: string;
+	documentData: DocumentData;
+	processingType?: 'vision-to-prd' | 'prd-to-epic' | 'analyze' | 'extract';
+	timestamp: number;
 };
 'brain:document-intelligence:get-workflows': {
-requestId:string;
-timestamp:number;
+	requestId: string;
+	timestamp: number;
 };
 'brain:document-intelligence:execute-workflow': {
-requestId:string;
-workflowName:string;
-context:Record<string, any>;
-timestamp:number;
+	requestId: string;
+	workflowName: string;
+	context: Record<string, unknown>;
+	timestamp: number;
 };
 'brain:document-intelligence:analyze-content': {
-requestId:string;
-content:string;
-contentType:string;
-timestamp:number;
+	requestId: string;
+	content: string;
+	contentType: string;
+	timestamp: number;
 };
 'brain:document-intelligence:extract-requirements': {
-requestId:string;
-visionDocument:string;
-timestamp:number;
+	requestId: string;
+	visionDocument: string;
+	timestamp: number;
 };
 
 // Document Intelligence responses
 'document-intelligence:document-processed': {
-requestId:string;
-result:DocumentProcessingResult;
-timestamp:number;
+	requestId: string;
+	result: DocumentProcessingResult;
+	timestamp: number;
 };
 'document-intelligence:workflows-list': {
-requestId:string;
-workflows:WorkflowDefinition[];
-timestamp:number;
+	requestId: string;
+	workflows: WorkflowDefinition[];
+	timestamp: number;
 };
 'document-intelligence:workflow-executed': {
-requestId:string;
-workflowName:string;
-result:WorkflowExecutionResult;
-timestamp:number;
+	requestId: string;
+	workflowName: string;
+	result: WorkflowExecutionResult;
+	timestamp: number;
 };
 'document-intelligence:content-analyzed': {
-requestId:string;
-analysis:ContentAnalysis;
-timestamp:number;
+	requestId: string;
+	analysis: ContentAnalysis;
+	timestamp: number;
 };
 'document-intelligence:requirements-extracted': {
-requestId:string;
-requirements:ProductRequirements;
-timestamp:number;
+	requestId: string;
+	requirements: ProductRequirements;
+	timestamp: number;
 };
 'document-intelligence:error': {
-requestId:string;
-error:string;
-timestamp:number;
+	requestId: string;
+	error: string;
+	timestamp: number;
 };
 
 // Document events (outbound to other systems)
-'document-created':{
-documentId:string;
-type:string;
-title:string;
-metadata?:Record<string, any>;
-timestamp:number;
+'document-created': {
+	documentId: string;
+	type: string;
+	title: string;
+	metadata?: Record<string, unknown>;
+	timestamp: number;
 };
-'workflow-completed':{
-workflowId:string;
-workflowName:string;
-documentType:string;
-result:any;
-timestamp:number;
+'workflow-completed': {
+	workflowId: string;
+	workflowName: string;
+	documentType: string;
+	result: unknown;
+	timestamp: number;
 };
 }
 
@@ -348,13 +468,13 @@ await this.initializeInternal();
 }
 
 private async initializeInternal():Promise<void> {
-this.logger.info('Initializing event-driven document intelligence system').
+	this.logger.info('Initializing event-driven document intelligence system');
 
-// Initialize foundation-powered components
-await this.serviceContainer.register('document-processor', {
-processDocument:this.processDocumentInternal.bind(this),
-analyzeContent:this.analyzeContentInternal.bind(this),
-});
+	// Initialize foundation-powered components
+	await this.serviceContainer.register('document-processor', {
+		processDocument: this.processDocumentInternal.bind(this),
+		analyzeContent: this.analyzeContentInternal.bind(this),
+	});
 
 // Register default workflows
 await this.registerDefaultWorkflows();
@@ -394,9 +514,9 @@ name: 'content-analysis', description: 'Analyze document content for structure a
 {
 type: 'analyze-structure', name: 'Analyze document structure', params:{ outputKey: 'structure_analysis'},
 },
-{
-type: 'extract-entities', name: 'Extract entities and topics', params:{ outputKey: `entity_extraction},
-},
+		{
+			type: 'extract-entities', name: 'Extract entities and topics', params: { outputKey: 'entity_extraction' },
+		},
 ],
 },
 ];
@@ -405,7 +525,7 @@ for (const workflow of workflows) {
 this.workflows.set(workflow.name, workflow);
 }
 
-this.logger.info(`Registered ${workflows.length} default workflows`
+	this.logger.info(`Registered ${workflows.length} default workflows`);
 }
 
 private async processDocumentInternal(

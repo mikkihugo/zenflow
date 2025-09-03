@@ -37,7 +37,7 @@
  *
  * // Register infrastructure service with expected packages
  * await registerService('infrastructure', [
- * '@claude-zen/event-system', * '@claude-zen/database', * '@claude-zen/system-monitoring') *], [
+ * '@claude-zen/foundation', * '@claude-zen/database', * '@claude-zen/system-monitoring') *], [
  * 'Event system management', * 'Database access and ORM', * 'System monitoring and telemetry') *]);
  * ```
  *

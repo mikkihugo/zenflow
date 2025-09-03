@@ -194,7 +194,7 @@ case "${1:-list}" in
     "all")
         publish_all
         ;;
-    "agui"|"foundation"|"workflows"|"brain"|"event-system"|"ai-safety"|"knowledge"|"teamwork"|"sparc"|"coordination-core"|"multi-level-orchestration"|"safe-framework"|"memory-orchestration"|"llm-routing"|"agent-manager")
+    "agui"|"foundation"|"workflows"|"brain"|"ai-safety"|"knowledge"|"teamwork"|"sparc"|"coordination-core"|"multi-level-orchestration"|"safe-framework"|"memory-orchestration"|"llm-routing"|"agent-manager")
         publish_one "$1"
         ;;
     *)

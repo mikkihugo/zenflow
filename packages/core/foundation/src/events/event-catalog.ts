@@ -549,9 +549,15 @@ export const EVENT_CATALOG = {
   'teamwork:review-acknowledged': ' TeamworkReviewAcknowledgedEvent',
   'teamwork:review-complete': ' TeamworkReviewCompleteEvent',
   'teamwork:collaboration-failed': ' TeamworkCollaborationFailedEvent',
+  'teamwork:collaboration-requested': ' BaseEvent',
+  // TaskMaster Events
+  'taskmaster:approval-requested': ' BaseEvent',
+  'taskmaster:task-submitted': ' BaseEvent',
   // SAFe Events (Minimal)
   'safe:pi-planning-initiated': ' SafePIPlanningEvent',
   'safe:epic-updated': ' SafeEpicEvent',
+  'safe:agent-registered': ' BaseEvent',
+  'safe:pi-planning-requested': ' BaseEvent',
   // Git Operations Events
   'git:operation:started': ' GitOperationStartedEvent',
   'git:operation:completed': ' GitOperationCompletedEvent',
@@ -592,6 +598,13 @@ export const EVENT_CATALOG = {
   // System Events
   'system:component-started': ' SystemStartEvent',
   'system:error': ' SystemErrorEvent',
+  // Additional Coordination Events
+  'kanban:optimization-requested': ' BaseEvent',
+  'sparc:phase-coordination-requested': ' BaseEvent',
+  'workflow:execution-started': ' BaseEvent',
+  'orchestration:coordination-requested': ' BaseEvent',
+  'assessment:completed': ' BaseEvent',
+  'state-machine:transition': ' BaseEvent',
 } as const;
 
 export type EventName = keyof typeof EVENT_CATALOG;

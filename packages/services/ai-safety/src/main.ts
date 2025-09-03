@@ -16,7 +16,7 @@
  * - Structured validation and type safety
  *
  * ENHANCEMENT: Basic  Comprehensive foundation integration
- * PATTERN: Matches memory, knowledge, event-system, teamwork, brain packages
+ * PATTERN: Matches memory, knowledge, foundation (event-system), teamwork, brain packages
  *
  * @example Enterprise usage with Result pattern
  * '''typescript'

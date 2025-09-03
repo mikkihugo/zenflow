@@ -23,7 +23,7 @@ SPECIFICATION → PSEUDOCODE → ARCHITECTURE → REFINEMENT → COMPLETION
 ### **Clean Implementation**
 
 - **Standalone Package**: No complex coordination dependencies
-- **Minimal Dependencies**: Only foundation and event-system packages
+- **Minimal Dependencies**: Only foundation package (includes event system)
 - **Type-Safe**: Full TypeScript support with comprehensive interfaces
 - **Engine-Based**: Core SPARC engine with phase handlers
 
@@ -236,7 +236,7 @@ pnpm clean
 
 - **[@claude-zen/coordination-core](../coordination-core)** - Strategic coordination (can use SPARC)
 - **[@claude-zen/foundation](../foundation)** - Core utilities and logging
-- **[@claude-zen/event-system](../event-system)** - Type-safe events (future integration)
+- **[@claude-zen/foundation](../foundation)** - Type-safe events (future integration)
 
 ## 📄 **License**
 

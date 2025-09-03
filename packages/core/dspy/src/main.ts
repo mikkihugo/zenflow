@@ -97,84 +97,112 @@ TrainingData,
 // PROFESSIONAL SYSTEM ACCESS - Production naming patterns
 // =============================================================================
 
-export async function getDSPySystemAccess(config?: any): Promise<any> {
+// Interface for DSPy configuration
+interface DSPyConfig {
+  engineConfig?: Record<string, unknown>;
+  serviceConfig?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+// Interface for DSPy system access result
+interface DSPySystemAccess {
+  createEngine: (engineConfig?: Record<string, unknown>) => unknown;
+  getService: () => Promise<unknown>;
+  initializeService: () => Promise<unknown>;
+  dspyModule: unknown;
+  example: unknown;
+  chatAdapter: unknown;
+  ensemble: unknown;
+  optimizeModule: (module: unknown, config?: unknown, examples?: unknown) => Promise<unknown>;
+  evaluateModule: (module: unknown, config?: unknown, testSet?: unknown) => Promise<unknown>;
+  trainModule: (module: unknown, trainSet?: unknown, config?: unknown) => Promise<unknown>;
+  [key: string]: unknown;
+}
+
+export async function getDSPySystemAccess(config?: DSPyConfig): Promise<DSPySystemAccess> {
+  // Config parameter available for future use
+  void config;
 const { createDSPyEngine: createEngine } = await import('./core/dspy-engine');
 const { getDSPyService: getService, initializeDSPyService } = await import(
 './core/service'
 );
-const { DSPyModule } = await import('./primitives/module');
-const { Example } = await import('./primitives/example');
-const { ChatAdapter } = await import('./adapters/chat-adapter');
-const { Ensemble } = await import('./teleprompters/ensemble');
+const { DSPyModule: dspyModule } = await import('./primitives/module');
+const { Example: example } = await import('./primitives/example');
+const { ChatAdapter: chatAdapter } = await import('./adapters/chat-adapter');
+const { Ensemble: ensemble } = await import('./teleprompters/ensemble');
 
 const engine = createEngine();
 const service = await getService();
 
 return {
-createEngine: (engineConfig?: any) => createEngine(engineConfig),
+createEngine: (engineConfig?: Record<string, unknown>) => createEngine(engineConfig),
 getService: () => getService(),
 initializeService: () => initializeDSPyService(),
-createModule: (signature: any) => {
-const module = new DSPyModule();
+dspyModule,
+example,
+chatAdapter,
+ensemble,
+createModule: (signature?: Record<string, unknown>) => {
+const module = new dspyModule();
 // Configure module with signature if provided
 if (signature && typeof signature === 'object') {
 Object.assign(module, signature);
 }
 return module;
 },
-createExample: (inputs: any, outputs?: any) => new Example(inputs, outputs),
-createChatAdapter: (modelInfo: any) => new ChatAdapter(modelInfo),
-createEnsemble: (predictors: any[]) => {
-const ensemble = new Ensemble();
+createExample: (inputs: Record<string, unknown>, outputs?: Record<string, unknown>) => new example(inputs, outputs),
+createChatAdapter: (modelInfo: Record<string, unknown>) => new chatAdapter(modelInfo),
+createEnsemble: (predictors: unknown[]) => {
+const ensembleInstance = new ensemble();
 // Configure ensemble with predictors if provided
 if (predictors && Array.isArray(predictors) && predictors.length > 0) {
-ensemble.predictors = predictors;
+ensembleInstance.predictors = predictors;
 }
-return ensemble;
+return ensembleInstance;
 },
-optimizeModule: async (module: any, examples: any[], options?: any) =>
-engine.compile(module, examples, options),
-evaluateModule: async (module: any, examples: any[], metrics: any[]) =>
-engine.evaluate(module, examples, metrics),
-trainModule: async (module: any, trainingData: any, config?: any) =>
-engine.train(module, trainingData, config),
+optimizeModule: async (module: unknown, examples: unknown[], options?: Record<string, unknown>) =>
+await engine.compile(module, examples, options),
+evaluateModule: async (module: unknown, examples: unknown[], metrics: unknown[]) =>
+await engine.evaluate(module, examples, metrics),
+trainModule: async (module: unknown, trainingData: unknown, config?: Record<string, unknown>) =>
+await engine.train(module, trainingData, config),
 getEngineUtils: () => engine.utils || {},
 shutdown: () => service?.shutdown?.(),
 };
 }
 
-export async function getDSPyEngineAccess(config?: any): Promise<any> {
+export async function getDSPyEngineAccess(config?: Record<string, unknown>): Promise<Record<string, unknown>> {
 const { createDSPyEngine: createEngine } = await import('./core/dspy-engine');
 const engine = createEngine(config);
 return {
-create: (engineConfig?: any) => createEngine(engineConfig),
-compile: (module: any, examples: any[], options?: any) =>
+create: (engineConfig?: Record<string, unknown>) => createEngine(engineConfig),
+compile: (module: unknown, examples: unknown[], options?: Record<string, unknown>) =>
 engine.compile(module, examples, options),
-evaluate: (module: any, examples: any[], metrics: any[]) =>
+evaluate: (module: unknown, examples: unknown[], metrics: unknown[]) =>
 engine.evaluate(module, examples, metrics),
-train: (module: any, trainingData: any, config?: any) =>
+train: (module: unknown, trainingData: unknown, config?: Record<string, unknown>) =>
 engine.train(module, trainingData, config),
-optimize: (candidates: any[], config?: any) =>
+optimize: (candidates: unknown[], config?: Record<string, unknown>) =>
 engine.optimize(candidates, config),
 utils: engine.utils || {},
 };
 }
 
-export async function getDSPyOptimization(config?: any): Promise<any> {
+export async function getDSPyOptimization(config?: Record<string, unknown>): Promise<Record<string, unknown>> {
 const system = await getDSPySystemAccess(config);
 
 return {
-optimize: (module: any, examples: any[], options?: any) =>
+optimize: (module: unknown, examples: unknown[], options?: Record<string, unknown>) =>
 system.optimizeModule(module, examples, options),
-ensemble: (predictors: any[]) => system.createEnsemble(predictors),
-fewShot: (module: any, examples: any[], k: number = 5) => {
+ensemble: (predictors: unknown[]) => system.createEnsemble(predictors),
+fewShot: (module: unknown, examples: unknown[], k: number = 5) => {
 // Few-shot learning implementation
-const fewShotExamples = examples.slice(0, k);
+const fewShotExamples = (examples as unknown[]).slice(0, k);
 return system.optimizeModule(module, fewShotExamples, {
 strategy: 'few-shot',
 });
 },
-bootstrap: (module: any, examples: any[], rounds: number = 3) =>
+bootstrap: (module: unknown, examples: unknown[], rounds: number = 3) =>
 // Bootstrap optimization implementation
 system.optimizeModule(module, examples, {
 strategy: 'bootstrap',
@@ -183,40 +211,43 @@ rounds,
 };
 }
 
-export async function getDSPyML(config?: any): Promise<any> {
+export async function getDSPyML(config?: Record<string, unknown>): Promise<Record<string, unknown>> {
 const system = await getDSPySystemAccess(config);
 return {
-createModule: (signature: any) => system.createModule(signature),
-trainModel: (module: any, data: any) => system.trainModule(module, data),
-evaluateModel: (module: any, examples: any[], metrics: any[]) =>
+createModule: (signature: unknown) => system.createModule(signature),
+trainModel: (module: unknown, data: unknown) => system.trainModule(module, data),
+evaluateModel: (module: unknown, examples: unknown[], metrics: unknown[]) =>
 system.evaluateModule(module, examples, metrics),
-predictBatch: async (module: any, inputs: any[]) => {
+predictBatch: async (module: unknown, inputs: unknown[]) => {
 const results = [];
 for (const input of inputs) {
-const result = await module.forward(input);
+const result = await (module as { forward: (input: unknown) => Promise<unknown> }).forward(input);
 results.push(result);
 }
 return results;
 },
-createTrainingData: (examples: any[]) => ({
+createTrainingData: (examples: unknown[]) => ({
 examples,
 size: examples.length,
-validate: () => examples.every((ex) => ex.inputs && ex.outputs),
+validate: () => Array.isArray(examples) && examples.every((ex: unknown) => 
+typeof ex === 'object' && ex !== null && 
+'inputs' in ex && 'outputs' in ex
+),
 }),
 };
 }
 
-export async function getDSPyTeleprompters(config?: any): Promise<any> {
+export async function getDSPyTeleprompters(config?: Record<string, unknown>): Promise<Record<string, unknown>> {
 const system = await getDSPySystemAccess(config);
 return {
-ensemble: (predictors: any[]) => system.createEnsemble(predictors),
-bootstrap: (module: any, examples: any[]) =>
+ensemble: (predictors: unknown[]) => system.createEnsemble(predictors),
+bootstrap: (module: unknown, examples: unknown[]) =>
 system.optimizeModule(module, examples, { strategy: 'bootstrap' }),
-fewShot: (module: any, examples: any[], k?: number) =>
+fewShot: (module: unknown, examples: unknown[], k?: number) =>
 system.optimizeModule(module, examples, { strategy: 'few-shot', k }),
-copro: (module: any, examples: any[]) =>
+copro: (module: unknown, examples: unknown[]) =>
 system.optimizeModule(module, examples, { strategy: 'copro' }),
-miprov2: (module: any, examples: any[]) =>
+miprov2: (module: unknown, examples: unknown[]) =>
 system.optimizeModule(module, examples, { strategy: 'miprov2' }),
 };
 }

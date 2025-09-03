@@ -953,7 +953,7 @@ return issues;
 
 private addSystemWideBottlenecks(bottlenecks:string[], systemLoad:number): void {
 if (systemLoad > 75) {
-bottlenecks.push(`System-wide:High load trend detected`
+bottlenecks.push(`System-wide: High load trend detected`);
 }
 }
 
@@ -970,7 +970,7 @@ const avgCpuUsage = mean(recentData.map((d) => d.cpuUsage));
 const avgErrorRate = mean(recentData.map((d) => d.errorRate));
 
 if (avgCpuUsage > 0.9 || avgErrorRate > 0.15) {
-bottlenecks.push(`Agent ${ agentId } (high resource usage/errors)`
+bottlenecks.push(`Agent ${agentId} (high resource usage/errors)`);
 }
 }
 }
@@ -990,7 +990,7 @@ const std = standardDeviation(scores);
 const avg = mean(scores);
 
 if (std > avg * 0.3) {
-suggestions.push(`Consider redistributing tasks from high-performing to low-performing agents`
+suggestions.push(`Consider redistributing tasks from high-performing to low-performing agents`);
 }
 }
 
@@ -1051,13 +1051,13 @@ throw error;
 */
 private async setupPerformanceMonitoring():Promise<void> {
 try {
-logger.debug('Setting up performance monitoring...').
+logger.debug('Setting up performance monitoring...');
 
 // Setup monitoring for real-time performance tracking
 // This would establish connections to monitoring systems
 await new Promise(resolve => setTimeout(resolve, 50));
 
-logger.debug('Performance monitoring setup complete').
+logger.debug('Performance monitoring setup complete');
 } catch (error) {
 logger.error(`Failed to setup performance monitoring: `, error);
 throw error;
@@ -1080,7 +1080,7 @@ activeConnections:Math.floor(Math.random() * 50),
 queueSize:Math.floor(Math.random() * 20)
 };
 } catch (error) {
-logger.warn(`Failed to load realtime metrics for ${ agentId }:`, error);
+logger.warn(`Failed to load realtime metrics for ${agentId}:`, error);
 return {};
 }
 }
@@ -1101,7 +1101,7 @@ const queueFactor = Math.min(1, (metrics.queueSize || 5) / 20);
 
 return (cpuFactor + memoryFactor + queueFactor) / 3;
 } catch (error) {
-logger.warn(`Failed to apply ML forecast for ${ agentId }:`, error);
+logger.warn(`Failed to apply ML forecast for ${agentId}:`, error);
 return 0.5; // Default prediction
 }
 }
@@ -1155,7 +1155,7 @@ if (history.length > 1000) {
 history.splice(0, history.length - 1000);
 }
 } catch (error) {
-logger.error(`Failed to log performance snapshot for agent ${ agentId }:`, error);
+logger.error(`Failed to log performance snapshot for agent ${agentId}:`, error);
 }
 }
 
@@ -1202,7 +1202,7 @@ learningPhase: profile.learningPhase
 
 return profile;
 } catch (error) {
-logger.error(`Failed to get agent performance profile for ${ agentId }:`, error);
+logger.error(`Failed to get agent performance profile for ${agentId}:`, error);
 return {
 historicalCpuAvg:0.1,
 historicalMemoryAvg:0.1,
@@ -1262,7 +1262,7 @@ samples: history.length
 
 return baseline;
 } catch (error) {
-logger.error(`Failed to calculate baseline for agent ${ agentId }:`, error);
+logger.error(`Failed to calculate baseline for agent ${agentId}:`, error);
 return {
 cpu:0.1,
 memory:0.1,
@@ -1308,9 +1308,9 @@ factors++;
 
 // Trend risk factor
 let trendRisk = 0;
-if (metrics.trends?.cpu === `increasing); trendRisk += 0.3;
-if (metrics.trends?.memory === 'increasing; trendRisk += 0.2;
-if (metrics.trends?.errors === `increasing); trendRisk += 0.5;
+if (metrics.trends?.cpu === 'increasing') trendRisk += 0.3;
+if (metrics.trends?.memory === 'increasing') trendRisk += 0.2;
+if (metrics.trends?.errors === 'increasing') trendRisk += 0.5;
 riskScore += trendRisk * 0.1; // 10% weight for trends
 
 // Volatility risk factor
@@ -1323,7 +1323,7 @@ riskScore += Math.min(volatilityRisk, 1) * 0.05; // 5% weight for volatility
 const normalizedRisk = factors > 0 ? riskScore / factors:0;
 const confidenceAdjustedRisk = normalizedRisk * profile.profileCompleteness;
 
-logger.debug(`Risk score calculated for agent ${ agentId }: ${ confidenceAdjustedRisk.toFixed(3)}`, {
+logger.debug(`Risk score calculated for agent ${agentId}: ${confidenceAdjustedRisk.toFixed(3)}`, {
 factors,
 profileCompleteness: profile.profileCompleteness,
 trends: metrics.trends,
@@ -1332,7 +1332,7 @@ volatility: metrics.volatility
 
 return Math.max(0, Math.min(1, confidenceAdjustedRisk)); // Clamp between 0 and 1
 } catch (error) {
-logger.error(`Failed to calculate risk score for agent ${ agentId }:`, error);
+logger.error(`Failed to calculate risk score for agent ${agentId}:`, error);
 return 0.5; // Default moderate risk
 }
 }
@@ -1355,7 +1355,7 @@ context:{
 systemLoad:process.cpuUsage(),
 memoryUsage:process.memoryUsage(),
 activeConnections:this.performanceHistory.size,
-environment: process.env.NODE_ENV || `development`
+environment: process.env.NODE_ENV || 'development'
 },
 recommendations:this.generatePerformanceRecommendations(eventType, eventData)
 };
@@ -1364,12 +1364,12 @@ recommendations:this.generatePerformanceRecommendations(eventType, eventData)
 logger.warn(`Critical performance event for agent ${agentId}`, criticalEvent);
 
 // Use TaskMaster for human approval workflows instead of automated remediation
-if (criticalEvent.severity === `critical); {
+if (criticalEvent.severity === 'critical') {
 await this.createTaskMasterIncident(agentId, eventType, eventData, criticalEvent);
 }
 
 } catch (error) {
-logger.error(`Failed to log critical performance event for agent ${ agentId }:`, error);
+logger.error(`Failed to log critical performance event for agent ${agentId}:`, error);
 }
 }
 
@@ -1381,23 +1381,23 @@ const recommendations = [];
 
 switch (eventType) {
 case 'cpu_spike':
-recommendations.push('Consider implementing request queuing to smooth CPU load').
-recommendations.push('Review recent code changes for CPU-intensive operations').
+recommendations.push('Consider implementing request queuing to smooth CPU load');
+recommendations.push('Review recent code changes for CPU-intensive operations');
 if (eventData.riskScore > 0.7) {
-recommendations.push('Scale horizontally by adding additional agent instances').
+recommendations.push('Scale horizontally by adding additional agent instances');
 }
 break;
 case 'memory_leak':
-recommendations.push('Monitor for memory leaks in long-running operations').
-recommendations.push('Implement memory profiling and garbage collection monitoring').
+recommendations.push('Monitor for memory leaks in long-running operations');
+recommendations.push('Implement memory profiling and garbage collection monitoring');
 break;
 case 'error_spike':
-recommendations.push('Review error logs for patterns and root causes').
-recommendations.push(`Implement circuit breaker patterns for external dependencies`
+recommendations.push('Review error logs for patterns and root causes');
+recommendations.push('Implement circuit breaker patterns for external dependencies');
 break;
 }
 
-recommendations.push(`Current risk score: ${ eventData.riskScore.toFixed(2) } - monitor closely`
+recommendations.push(`Current risk score: ${eventData.riskScore.toFixed(2)} - monitor closely`);
 return recommendations;
 }
 
@@ -1411,19 +1411,20 @@ eventData:any,
 criticalEvent:any
 ):Promise<void> {
 try {
-logger.info(`Creating TaskMaster incident for agent ${ agentId }, event: ${ eventType}`
+logger.info(`Creating TaskMaster incident for agent ${agentId}, event: ${eventType}`);
 
 // Create a task for human approval via TaskMaster facade
 const incidentTask = {
-type: `performance_incident`, agentId,
+type: 'performance_incident',
+agentId,
 eventType,
-severity:criticalEvent.severity,
+severity: criticalEvent.severity,
 description: `Critical performance event: ${eventType} for agent ${agentId}`,
-recommendedActions:this.getRecommendedActions(eventType),
+recommendedActions: this.getRecommendedActions(eventType),
 eventData,
 criticalEvent,
-requiresApproval:true,
-timestamp:new Date()
+requiresApproval: true,
+timestamp: new Date()
 };
 
 // TODO:Use TaskMaster facade when available
@@ -1434,14 +1435,14 @@ timestamp:new Date()
 logger.info(`TaskMaster incident created (facade integration pending): `, incidentTask);
 
 // Log the incident creation attempt
-await this.logPerformanceRemediation(agentId, eventType, `taskmaster_incident`, {
-incidentCreated:true,
-timestamp:new Date(),
+await this.logPerformanceRemediation(agentId, eventType, 'taskmaster_incident', {
+incidentCreated: true,
+timestamp: new Date(),
 eventData
 });
 
 } catch (error) {
-logger.error(`Failed to trigger automated remediation for agent ${ agentId }:`, error);
+logger.error(`Failed to trigger automated remediation for agent ${agentId}:`, error);
 }
 }
 
@@ -1503,7 +1504,7 @@ logger.info(`Performance remediation logged for agent ${agentId}`, remediationLo
 // This enables learning from remediation effectiveness
 
 } catch (error) {
-logger.error(`Failed to log performance remediation for agent ${ agentId }:`, error);
+logger.error(`Failed to log performance remediation for agent ${agentId}:`, error);
 }
 }
 }

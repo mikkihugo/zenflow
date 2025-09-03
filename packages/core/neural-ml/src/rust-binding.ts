@@ -162,6 +162,15 @@ export class RustNeuralML {
       'performance_metrics',
       'quality_metrics',
       'model_serialization',
+      
+      // DSPy-Specific Optimization (new extensions)
+      'dspy_gradient_optimization',
+      'dspy_multi_objective_pareto',
+      'dspy_concept_drift_detection',
+      'dspy_simd_acceleration',
+      'dspy_gpu_acceleration',
+      'dspy_transformer_attention',
+      'dspy_neural_primitives',
     ];
   }
 

@@ -49,327 +49,54 @@ export interface SegmentationResult {
 segments:DocumentSegment[];
 strategy:DocumentClassification['recommendedStrategy']; totalSegments:number;
 averageSegmentSize:number;
-preservedBlocks:number;
-qualityScore:number; // 0-1 overall segmentation quality
-processingTime:number;
-metadata:{
-documentType:string;
-originalLength:number;
-segmentationRatio:number; // segments per 1000 characters
-algorithmBlocksFound:number;
-conceptClustersFound:number;
-};
+/**
+ * Segmentation Engine - simplified, valid TypeScript stub.
+ * Provides minimal interfaces and a simple segmentation method so parsing can proceed.
+ */
+
+import { getLogger, TypedEventBase } from '@claude-zen/foundation';
+
+const logger = getLogger('SegmentationEngine');
+
+export interface DocumentSegment {
+	id: string;
+	content: string;
+	startPosition: number;
+	endPosition: number;
+	segmentType: 'algorithm' | 'concept' | 'implementation' | 'context' | 'metadata';
 }
 
-/**
-* Segmentation configuration
-*/
+export interface SegmentationResult {
+	segments: DocumentSegment[];
+	totalSegments: number;
+	processingTime: number;
+}
+
 export interface SegmentationConfig {
-strategy?:DocumentClassification['recommendedStrategy']; maxSegmentSize:number;
-minSegmentSize:number;
-algorithmPreservationThreshold:number;
-conceptClusteringThreshold:number;
-enableBoundaryDetection:boolean;
-enableContextExpansion:boolean;
-preserveAlgorithmBlocks:boolean;
-adaptiveCharacterLimits:boolean;
+	maxSegmentSize?: number;
+	minSegmentSize?: number;
 }
 
-/**
-* Enhanced Algorithm block identification (DeepCode style)
-*/
-interface AlgorithmBlock {
-startIndex:number;
-endIndex:number;
-type: 'pseudocode' | 'procedure' | 'mathematical' | 'implementation' | 'formula' | 'complexity-analysis';
-confidence:number;
-complexity:{
-cyclomaticComplexity:number; // Control flow complexity
-algorithmicComplexity:string; // Big O notation if detected
-mathematicalComplexity:number; // Mathematical formula complexity
-structuralDepth:number; // Nesting level
-};
-structure:{
-hasInputOutput:boolean;
-hasControlFlow:boolean;
-hasIterations:boolean;
-hasRecursion:boolean;
-hasPreconditions:boolean;
-hasPostconditions:boolean;
-};
-relatedDescription:{
-startIndex:number;
-endIndex:number;
-relationType: `explanation | example|proof | context;
-} | null;
-extractedElements:{
-variables:string[];
-functions:string[];
-constants:string[];
-operators:string[];
-keywords:string[];
-};
-qualityScore:number; // 0-1 based on completeness and clarity
-}
-
-/**
-* Intelligent document segmentation engine
-*/
 export class SegmentationEngine extends TypedEventBase {
+	private config: Required<SegmentationConfig>;
 
-constructor(config:Partial<SegmentationConfig> = {}) {
-super();
+	constructor(config: Partial<SegmentationConfig> = {}) {
+		super();
+		this.config = { maxSegmentSize: config.maxSegmentSize ?? 12000, minSegmentSize: config.minSegmentSize ?? 500 };
+	}
 
-this.config = {
-maxSegmentSize:config.maxSegmentSize || 12000,
-minSegmentSize:config.minSegmentSize || 500,
-algorithmPreservationThreshold:config.algorithmPreservationThreshold || 0.3,
-conceptClusteringThreshold:config.conceptClusteringThreshold || 0.4,
-enableBoundaryDetection:config.enableBoundaryDetection !== false,
-enableContextExpansion:config.enableContextExpansion !== false,
-preserveAlgorithmBlocks:config.preserveAlgorithmBlocks !== false,
-adaptiveCharacterLimits:config.adaptiveCharacterLimits !== false,
-...config
-};
-
-this.algorithmPatterns = this.initializeAlgorithmPatterns();
-this.boundaryPatterns = this.initializeBoundaryPatterns();
+	async segmentDocument(content: string): Promise<SegmentationResult> {
+		const start = Date.now();
+		// Very basic segmentation: split by paragraphs
+		const paragraphs = content.split(/\n\s*\n/).filter(Boolean);
+		const segments = paragraphs.map((p, i) => ({ id: `seg-${i}`, content: p, startPosition: 0, endPosition: p.length, segmentType: 'concept' as const }));
+		const end = Date.now();
+		const result: SegmentationResult = { segments, totalSegments: segments.length, processingTime: end - start };
+		this.emit('segmentation_complete', result);
+		logger.info(`Segmented document into ${segments.length} segments`);
+		return result;
+	}
 }
-
-/**
-* Initialize enhanced algorithm detection patterns (DeepCode style)
-*/
-private initializeAlgorithmPatterns():RegExp[] {
-return [
-// Enhanced algorithm headers with complexity analysis
-/(algorithm\s+\d+|procedure\s+\d+|method\s+\d+|function\s+\w+|def\s+\w+)/gi,
-
-// Mathematical formulas and equations (LaTeX-style)
-/\$\$[\s\S]*?\$\$|\$[^$]+\$|\\begin\{equation\}[\s\S]*?\\end\{equation\}/g,
-
-// Input/Output patterns with enhanced detection
-/(input\s*:|output\s*:|returns?\s*:|require\s*:|ensure\s*:|precondition\s*:|postcondition\s*:|given\s*:|when\s*:|then\s*:)/gi,
-
-// Enhanced control flow patterns
-/(for\s+each|for\s+.*\s+in|while.*do|if.*then|else\s*if|else|repeat.*until|switch|case|loop|iterate|traverse)/gi,
-
-// Mathematical and computational operations
-/(compute|calculate|sum|product|maximum|minimum|sort|search|find|select|optimize|minimize|maximize|integrate|differentiate)/gi,
-
-// Algorithm structure indicators
-/(step\s+\d+|phase\s+\d+|\d+\.\s+|^\s*[-*+]\s+|begin|end|initialization|termination)/gm,
-
-// Pseudocode patterns
-/(let\s+\w+|set\s+\w+|assign|initialize|declare|define|call|invoke|execute)/gi,
-
-// Mathematical symbols and notation
-/[∀∃∈∉⊆⊇∪∩∑∏∫∂∇±×÷≤≥≠≈∞]/g,
-
-// Complexity analysis patterns
-/(o\(\w+\)|θ\(\w+\)|ω\(\w+\)|time\s+complexity|space\s+complexity|running\s+time)/gi,
-
-// Code blocks and implementation sections
-/```[\w]*\n[\s\S]*?\n```|`[^`]+`/g`
-];
-}
-
-/**
-* Initialize boundary detection patterns
-*/
-private initializeBoundaryPatterns():RegExp[] {
-return [
-// Section headers
-/^#+\s+.*/gm,
-
-// Paragraph boundaries
-/\n\s*\n/g,
-
-// List boundaries
-/^\s*[-*+]\s+/gm,
-/^\s*\d+\.\s+/gm,
-
-// Code block boundaries
-/```[\s\S]*?```/g,`
-/`[^`]+`/g,`
-
-// Formula boundaries
-/\$\$[\s\S]*?\$\$/g,
-/\$[^$]+\$/g
-];
-}
-
-/**
-* Segment document using intelligent strategies
-*/
-async segmentDocument(
-content:string,
-classification:DocumentClassification
-):Promise<SegmentationResult> {
-const _startTime = performance.now();
-logger.info(`Starting document segmentation with strategy:${classification.recommendedStrategy}``
-
-try {
-// Adapt configuration based on classification
-const adaptedConfig = this.adaptConfigForClassification(classification);
-
-// Identify algorithm blocks first
-const algorithmBlocks = this.identifyAlgorithmBlocks(content);
-
-// Apply segmentation strategy
-const segments = await this.applySegmentationStrategy(
-content,
-classification.recommendedStrategy,
-algorithmBlocks,
-adaptedConfig
-);
-
-// Calculate quality metrics
-const qualityScore = this.calculateSegmentationQuality(segments, content);
-
-const endTime = performance.now();
-const processingTime = endTime - startTime;
-
-const result:SegmentationResult = {
-segments,
-strategy:classification.recommendedStrategy,
-totalSegments:segments.length,
-averageSegmentSize:this.calculateAverageSegmentSize(segments),
-preservedBlocks:algorithmBlocks.length,
-qualityScore,
-processingTime,
-metadata:{
-documentType:classification.documentType,
-originalLength:content.length,
-segmentationRatio:(segments.length / content.length) * 1000,
-algorithmBlocksFound:algorithmBlocks.length,
-conceptClustersFound:this.countConceptClusters(segments)
-}
-};
-
-this.emit(`segmentation_complete`, result);
-logger.info(`Document segmented into ${segments}.lengthsegments (${processingTime.toFixed(2)}ms)``
-
-return result;
-} catch (error) {
-logger.error(`Error during document segmentation:`, error);); throw new Error(`Document segmentation failed:${error}``
-}
-}
-
-/**
-* Adapt configuration based on document classification
-*/
-private adaptConfigForClassification(classification:DocumentClassification): SegmentationConfig {
-const adapted = { ...this.config};
-
-// Adjust segment sizes based on document type
-if (classification.documentType === `algorithm' || classification.algorithmDensity > 0.5) {
-; adapted.maxSegmentSize = Math.max(adapted.maxSegmentSize, 15000);
-adapted.algorithmPreservationThreshold = 0.2; // More sensitive
-}
-
-if (classification.documentType === 'research{
-; adapted.maxSegmentSize = Math.min(adapted.maxSegmentSize, 8000);
-adapted.conceptClusteringThreshold = 0.3; // More clustering
-}
-
-if (classification.conceptComplexity > 0.6) {
-adapted.enableContextExpansion = true;
-adapted.maxSegmentSize += 3000; // Allow larger segments for complex concepts
-}
-
-return adapted;
-}
-
-/**
-* Identify algorithm blocks in content
-*/
-private identifyAlgorithmBlocks(content:string): AlgorithmBlock[] {
-const blocks:AlgorithmBlock[] = [];
-
-for (const pattern of this.algorithmPatterns) {
-let match;
-while ((match = pattern.exec(content)) !== null) {
-const startIndex = match.index;
-
-// Expand context to include complete algorithm description
-const expandedBoundary = this.findAlgorithmBoundaries(content, startIndex);
-
-const blockContent = content.substring(expandedBoundary.start, expandedBoundary.end);
-const block:AlgorithmBlock = {
-startIndex:expandedBoundary.start,
-endIndex:expandedBoundary.end,
-type:this.classifyAlgorithmType(match[0]),
-confidence:this.calculateAlgorithmConfidence(blockContent),
-complexity:this.analyzeComplexity(blockContent),
-structure:this.analyzeStructure(blockContent),
-relatedDescription:this.findRelatedDescription(content, expandedBoundary),
-extractedElements:this.extractAlgorithmElements(blockContent),
-qualityScore:this.calculateAlgorithmQuality(blockContent)
-};
-
-// Avoid duplicate blocks
-const overlaps = blocks.some(existing =>
-this.blocksOverlap(existing, block)
-);
-
-if (!overlaps && block.confidence > this.config.algorithmPreservationThreshold) {
-blocks.push(block);
-}
-}
-}
-
-return this.mergeOverlappingBlocks(blocks);
-}
-
-/**
-* Find algorithm boundaries using natural content breaks
-*/
-private findAlgorithmBoundaries(content:string, startIndex:number): { start: number; end: number} {
-// Find natural boundaries - expand to include context
-let start = Math.max(0, startIndex - 300);
-let end = Math.min(content.length, startIndex + 500);
-
-// Find natural start boundary
-while (start > 0 && !this.isNaturalBoundary(content[start])) {
-start -= 1;
-}
-
-// Find natural end boundary
-while (end < content.length && !this.isNaturalBoundary(content[end])) {
-end += 1;
-}
-
-return { start, end};
-}
-
-/**
-* Check if character represents a natural content boundary
-*/
-private isNaturalBoundary(char:string): boolean {
-return ['\n', '.', '!', '?',;].includes(char);').
-
-/**
-* Enhanced algorithm classification with complexity analysis (DeepCode style)
-*/
-private classifyAlgorithmType(algorithmText:string): AlgorithmBlock['type'] {
-; const text = algorithmText.toLowerCase();
-
-// Check for mathematical formulas and complexity analysis
-if (text.includes('o(; || text.includes('θ(; || text.includes(' complexity'). {
-; return 'complexity-analysis;
-}
-
-// Check for LaTeX formulas or mathematical notation
-if (text.includes('$$; || text.includes('\\begin{equation}; || /[∀∃∈∉⊆⊇∪∩∑∏∫∂∇]/.test(text)) {
-; return 'formula;
-}
-
-// Check for traditional mathematical expressions
-if (text.includes('formula; || text.includes(' equation; || text.includes(' theorem'). {
-; return 'mathematical;
-}
-
-// Check for procedure/function definitions
 if (text.includes('procedure; || text.includes(' function; || text.includes(' def '). {
 ; return 'procedure;
 }

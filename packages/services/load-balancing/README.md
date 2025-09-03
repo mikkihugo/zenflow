@@ -111,7 +111,7 @@ This package is part of the claude-code-zen strategic architecture:
 ## 🔗 Dependencies
 
 - `@claude-zen/foundation` - Core utilities and logging
-- `@claude-zen/event-system` - Event-driven coordination
+- `@claude-zen/foundation` - Event-driven coordination
 - `@claude-zen/neural-ml` - Machine learning capabilities
 
 ## 🧪 Testing

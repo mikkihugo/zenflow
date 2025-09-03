@@ -1,7 +1,6 @@
 import { EventBus } from '@claude-zen/foundation';
 import type {
   SystemStatusData,
-  SwarmStatusData,
   TaskMetricsData,
 } from '../web/data.handler';
 
@@ -9,52 +8,32 @@ export type CorrelatedPayload<T = unknown> = T & { correlationId?: string };
 
 // Strongly-typed event map for the server API request/response flow
 export interface AppEvents {
-  // Health/status
-  'api:system:status:request': CorrelatedPayload<{}>;
-  'api:system:status:response': CorrelatedPayload<SystemStatusData>;
-
-  // Swarms
-  'api:swarms:list:request': CorrelatedPayload<{}>;
-  'api:swarms:list:response': CorrelatedPayload<{ swarms: SwarmStatusData[] }>;
-
-  // Tasks (metrics + CRUD slice we expose)
-  'api:tasks:metrics:request': CorrelatedPayload<{}>;
-  'api:tasks:metrics:response': CorrelatedPayload<{ metrics: TaskMetricsData }>;
-  'api:tasks:list:request': CorrelatedPayload<{}>;
-  'api:tasks:list:response': CorrelatedPayload<{ tasks: unknown[] }>;
-  'api:tasks:create:request': CorrelatedPayload<{ input: unknown }>;
-  'api:tasks:create:response': CorrelatedPayload<{ task: unknown }>;
-
-  // Documents
-  'api:documents:list:request': CorrelatedPayload<{}>;
-  'api:documents:list:response': CorrelatedPayload<{ documents: unknown[] }>;
-
-  // Execute generic command
-  'api:execute:request': CorrelatedPayload<{ input: unknown }>;
-  'api:execute:response': CorrelatedPayload<{ result: unknown }>;
-
-  // Settings
-  'api:settings:get:request': CorrelatedPayload<{}>;
-  'api:settings:get:response': CorrelatedPayload<{ settings: unknown }>;
-  'api:settings:update:request': CorrelatedPayload<{ input: unknown }>;
-  'api:settings:update:response': CorrelatedPayload<{ settings: unknown }>;
-
-  // Logs
-  'api:logs:list:request': CorrelatedPayload<{ limit?: number; offset?: number }>;
-  'api:logs:list:response': CorrelatedPayload<{ logs: unknown[] }>;
-
-  // Brain intelligence events
-  'api:brain:analyze:request': CorrelatedPayload<{ task: string; context?: Record<string, unknown> }>;
-  'api:brain:analyze:response': CorrelatedPayload<{ analysis: { taskId: string; taskType: string; complexity: number; suggestedTools?: string[] } }>;
-  'api:brain:optimize:request': CorrelatedPayload<{ task: string; basePrompt: string; context?: Record<string, unknown>; priority?: string }>;
-  'api:brain:optimize:response': CorrelatedPayload<{ optimization: { strategy: string; prompt: string; confidence: number; reasoning: string } }>;
-  'api:brain:complexity:request': CorrelatedPayload<{ taskId: string; task: string; context?: Record<string, unknown> }>;
-  'api:brain:complexity:response': CorrelatedPayload<{ complexity: { taskId: string; estimate: any; timestamp: number } }>;
-  'api:brain:status:request': CorrelatedPayload<{}>;
-  'api:brain:status:response': CorrelatedPayload<{ status: { initialized: boolean; sessionId?: string; metrics: any } }>;
-
-  // Error channel
-  'api:error': CorrelatedPayload<{ scope: string; error: string }>;
+  // TaskMaster system events (renamed from confusing api: prefix)
+  'taskmaster:system:status:request': CorrelatedPayload<{}>;
+  'taskmaster:system:status:response': CorrelatedPayload<SystemStatusData>;
+  'taskmaster:system:metrics:request': CorrelatedPayload<{}>;
+  'taskmaster:system:metrics:response': CorrelatedPayload<SystemMetricsData>;
+  'taskmaster:system:health:request': CorrelatedPayload<{}>;
+  'taskmaster:system:health:response': CorrelatedPayload<SystemHealthData>;
+  
+  // TaskMaster task management events
+  'taskmaster:tasks:metrics:request': CorrelatedPayload<{}>;
+  'taskmaster:tasks:metrics:response': CorrelatedPayload<{ metrics: TaskMetricsData }>;
+  'taskmaster:tasks:list:request': CorrelatedPayload<{}>;
+  'taskmaster:tasks:list:response': CorrelatedPayload<{ tasks: unknown[] }>;
+  'taskmaster:tasks:create:request': CorrelatedPayload<{ input: unknown }>;
+  'taskmaster:tasks:create:response': CorrelatedPayload<{ task: unknown }>;
+  'taskmaster:tasks:update:request': CorrelatedPayload<{ id: string; updates: unknown }>;
+  'taskmaster:tasks:update:response': CorrelatedPayload<{ task: unknown }>;
+  'taskmaster:tasks:delete:request': CorrelatedPayload<{ id: string }>;
+  'taskmaster:tasks:delete:response': CorrelatedPayload<{ success: boolean }>;
+  
+  // Legacy events (keep for backward compatibility)
+  'orchestrator:started': { config: unknown };
+  'orchestrator:stopped': {};
+  'task:completed': { task: unknown; result: unknown };
+  'task:failed': { task: unknown; error: unknown };
+  'health:check': SystemHealthData;
 }
 
 export type AppEventBus = EventBus<AppEvents>;

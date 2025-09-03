@@ -1,5 +1,5 @@
 import { z, getLogger } from '@claude-zen/foundation';
-import {
+import type {
   WorkflowContext,
   WorkflowDefinition,
   WorkflowStep

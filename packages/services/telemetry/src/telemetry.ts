@@ -51,11 +51,12 @@ export class TelemetryManager {
     this.initialized = true;
   }
 
-  async shutdown(): Promise<void> {
+  shutdown(): Promise<void> {
     this.metrics.clear();
     this.traces.clear();
     this.initialized = false;
     this.logger.info('Telemetry manager shut down');
+    return Promise.resolve();
   }
 
   isInitialized(): boolean {
@@ -69,7 +70,7 @@ export class TelemetryManager {
   recordMetric(
     name: string,
     value: number = 1,
-    attributes?: Record<string, any>
+    attributes?: Record<string, unknown>
   ): void {
     if (!this.config.enableMetrics) return;
 
@@ -87,7 +88,7 @@ export class TelemetryManager {
   recordHistogram(
     name: string,
     value: number,
-    attributes?: Record<string, any>
+    attributes?: Record<string, unknown>
   ): void {
     this.recordMetric(`${name  }.histogram`, value, attributes);
   }
@@ -95,12 +96,12 @@ export class TelemetryManager {
   recordGauge(
     name: string,
     value: number,
-    attributes?: Record<string, any>
+    attributes?: Record<string, unknown>
   ): void {
     this.recordMetric(`${name  }.gauge`, value, attributes);
   }
 
-  recordEvent(name: string, data?: any): void {
+  recordEvent(name: string, data?: unknown): void {
     const event = {
       name,
       timestamp: Date.now(),
@@ -110,7 +111,7 @@ export class TelemetryManager {
     this.logger.info('Telemetry event', event);
   }
 
-  startTrace(name: string, options?: SpanOptions): any {
+  startTrace(name: string, options?: SpanOptions): { setAttributes: (attrs: Record<string, unknown>) => void; end: () => void } {
     if (!this.config.enableTracing) {
       return { setAttributes: () => {}, end: () => {} };
     }
@@ -130,8 +131,8 @@ export class TelemetryManager {
     this.logger.debug('Started trace', { name, traceId });
 
     return {
-      setAttributes: (attributes: Record<string, any>) => {
-        trace.attributes = { ...trace.attributes, ...attributes };
+      setAttributes: (attributes: Record<string, unknown>) => {
+        trace.attributes = { ...trace.attributes, ...attributes } as Record<string, unknown>;
       },
       end: () => {
         trace.status = 'completed';
@@ -207,11 +208,11 @@ export class TelemetryManager {
     }
   }
 
-  getMetrics(): Record<string, any> {
+  getMetrics(): Record<string, unknown> {
     return Object.fromEntries(this.metrics);
   }
 
-  getTraces(): Record<string, any> {
+  getTraces(): Record<string, unknown> {
     return Object.fromEntries(this.traces);
   }
 }
@@ -253,7 +254,7 @@ export async function shutdownTelemetry(): Promise<void> {
 export function recordMetric(
   name: string,
   value: number = 1,
-  attributes?: Record<string, any>
+  attributes?: Record<string, unknown>
 ): void {
   getTelemetry().recordMetric(name, value, attributes);
 }
@@ -261,7 +262,7 @@ export function recordMetric(
 export function recordHistogram(
   name: string,
   value: number,
-  attributes?: Record<string, any>
+  attributes?: Record<string, unknown>
 ): void {
   getTelemetry().recordHistogram(name, value, attributes);
 }
@@ -269,40 +270,32 @@ export function recordHistogram(
 export function recordGauge(
   name: string,
   value: number,
-  attributes?: Record<string, any>
+  attributes?: Record<string, unknown>
 ): void {
   getTelemetry().recordGauge(name, value, attributes);
 }
 
-export function recordEvent(name: string, data?: any): void {
-  getTelemetry().recordEvent(name, data);
+export function recordEvent(name: string, data?: unknown): void {
+  getTelemetry().recordEvent(name, data as unknown);
 }
 
-export function startTrace(name: string, options?: SpanOptions): unknown {
-  return getTelemetry().startTrace(name, options);
+export function startTrace(name: string, options?: SpanOptions): { setAttributes: (attrs: Record<string, unknown>) => void; end: () => void } {
+  return getTelemetry().startTrace(name, options) as { setAttributes: (attrs: Record<string, unknown>) => void; end: () => void };
 }
 
-export function withTrace<T>(fn: () => T): T;
-export function withTrace<T>(name: string, fn: () => T): T;
 export function withTrace<T>(nameOrFn: string | (() => T), fn?: () => T): T {
+  // Forward to global telemetry instance
   return typeof nameOrFn === 'function'
-    ? getTelemetry().withTrace(nameOrFn)
-    : getTelemetry().withTrace(nameOrFn, fn!);
+    ? getTelemetry().withTrace(nameOrFn as () => T)
+    : getTelemetry().withTrace(nameOrFn as string, fn!);
 }
 
-export async function withAsyncTrace<T>(fn: () => Promise<T>): Promise<T>;
-export async function withAsyncTrace<T>(
-  name: string,
-  fn: () => Promise<T>
-): Promise<T>;
-export async function withAsyncTrace<T>(
-  nameOrFn: string | (() => Promise<T>),
-  fn?: () => Promise<T>
-): Promise<T> {
+export async function withAsyncTrace<T>(nameOrFn: string | (() => Promise<T>), fn?: () => Promise<T>): Promise<T> {
+  // Forward to global telemetry instance
   if (typeof nameOrFn === 'function') {
-    return await getTelemetry().withAsyncTrace(nameOrFn);
+    return await getTelemetry().withAsyncTrace(nameOrFn as () => Promise<T>);
   }
-  return await getTelemetry().withAsyncTrace(nameOrFn, fn!);
+  return await getTelemetry().withAsyncTrace(nameOrFn as string, fn!);
 }
 
 // =============================================================================
@@ -332,7 +325,7 @@ export function tracedAsync(name?: string) {
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: unknown[]) {
-      const className = (target as any)?.constructor?.name ?? 'UnknownClass';
+  const className = ((target as unknown) as Record<string, unknown>)?.constructor?.name ?? 'UnknownClass';
       const traceName = name || `${className  }.${  propertyKey}`;
       return await withAsyncTrace(traceName, () =>
         originalMethod.apply(this, args)
@@ -349,7 +342,7 @@ export function metered(name?: string) {
   ) => {
     const originalMethod = descriptor.value;
     descriptor.value = function (this: unknown, ...args: unknown[]) {
-      const className = (target as any)?.constructor?.name ?? 'UnknownClass';
+  const className = ((target as unknown) as Record<string, unknown>)?.constructor?.name ?? 'UnknownClass';
       const metricName = name || `${className  }.${propertyKey}.calls`
       recordMetric(metricName, 1);
       return originalMethod.apply(this, args);
@@ -369,4 +362,4 @@ export function setTraceAttributes(attributes: Record<string, unknown>): void {
 export type Span = ReturnType<typeof startTrace>;
 export type Tracer = TelemetryManager;
 export type Meter = TelemetryManager;
-export type Attributes = Record<string, any>;
+export type Attributes = Record<string, unknown>;

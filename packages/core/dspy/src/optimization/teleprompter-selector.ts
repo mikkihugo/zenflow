@@ -29,7 +29,7 @@
 
 import type { Logger } from "@claude-zen/foundation";
 import { EventEmitter, getLogger } from "@claude-zen/foundation";
-import { DSPyBrainMLBridge} from "../ml-bridge/dspy-brain-ml-bridge";
+import { DSPyBrainMLBridge} from "../bridges/ml-event-bridge";
 // Removed unused import:import type { Teleprompter} from `../teleprompters/teleprompter`
 
 // Task analysis interfaces

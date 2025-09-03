@@ -162,6 +162,88 @@ eventBus.emit('user-registered', {
 });
 ```
 
+## Bridging Local Emitters to EventBus
+
+### Overview
+
+Services with internal event emitters can bridge to the foundation EventBus to appear in DynamicEventRegistry metrics and the web dashboard. This enables system-wide event visibility without breaking existing functionality.
+
+### Bridge Implementation Pattern
+
+```typescript
+import { EventBus, DynamicEventRegistry, EventLogger, isValidEventName } from '@claude-zen/foundation';
+
+class LocalEmitterBridge {
+  private eventBus = EventBus.getInstance();
+  private localEmitter: LocalEventEmitter;
+  private moduleId: string;
+
+  constructor(localEmitter: LocalEventEmitter, moduleId: string) {
+    this.localEmitter = localEmitter;
+    this.moduleId = moduleId;
+    this.setupBridge();
+    this.registerModule();
+  }
+
+  private setupBridge() {
+    // Listen to local events and re-emit on EventBus
+    this.localEmitter.addEventListener('*', (eventName: string, payload: unknown) => {
+      const fullEventName = `${this.moduleId}:${eventName}`;
+      
+      // Validate event name before emission
+      if (isValidEventName(fullEventName)) {
+        this.eventBus.emit(fullEventName, payload);
+        EventLogger.log('bridge:event-forwarded', { 
+          from: eventName, 
+          to: fullEventName,
+          moduleId: this.moduleId 
+        });
+      } else {
+        EventLogger.log('bridge:invalid-event', { 
+          eventName: fullEventName,
+          moduleId: this.moduleId 
+        });
+      }
+    });
+  }
+
+  private registerModule() {
+    // Register module for event tracking
+    DynamicEventRegistry.registerModule({
+      moduleId: this.moduleId,
+      moduleName: this.moduleId,
+      moduleType: 'service',
+      supportedEvents: ['event1', 'event2'] // List your local events
+    });
+
+    // Send periodic heartbeats
+    setInterval(() => {
+      DynamicEventRegistry.sendModuleHeartbeat(this.moduleId);
+    }, 30000); // Every 30 seconds
+  }
+}
+
+// Usage: Bridge existing local emitter
+const bridge = new LocalEmitterBridge(existingLocalEmitter, 'my-service');
+```
+
+### Important Guidelines
+
+- **ZERO IMPORTS**: Original service files must remain unchanged - no imports of EventBus or bridge code
+- **Fail-Open**: Bridges should log errors but never crash the service
+- **Domain Boundaries**: Use appropriate prefixes (e.g., `my-service:event-name`)
+- **Event Validation**: Always validate event names with `isValidEventName()` before emission
+- **Heartbeat Management**: Send periodic heartbeats to maintain module visibility
+
+### Validation Checklist
+
+After implementing a bridge:
+
+- [ ] `DynamicEventRegistry.getActiveModules()` lists your module
+- [ ] `getEventFlows()` shows your events within 60s window
+- [ ] Web dashboard displays your module's event activity
+- [ ] No breaking changes to existing service functionality
+
 ## Integration Examples
 
 ### Neural Network Training

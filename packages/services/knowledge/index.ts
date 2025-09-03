@@ -509,7 +509,7 @@
  *
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  * @requires @claude-zen/brain - Neural intelligence integration
- * @requires @claude-zen/event-system - Knowledge event coordination
+ * @requires @claude-zen/foundation - Knowledge event coordination
  *
  * @packageDocumentation
  */
@@ -593,6 +593,13 @@ export {
 } from './src/errors';
 // Direct error class exports for easy access
 export * from './src/errors.js';
+
+// Event bridge exports for foundation integration
+export {
+  KnowledgeEventBridge,
+  createKnowledgeEventBridge,
+  getDefaultKnowledgeBridgeConfig,
+} from './src/knowledge-event-bridge.js';
 // Intelligence Coordination Types
 export type {
   CrossDomainTransferResult as IntelligenceTransferResult,

@@ -80,12 +80,12 @@ Tests: run per-package only.
 
 TaskMaster and event-driven flows
 - The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
-- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (taskmaster:tasks:*, taskmaster:system:status)
 - Downstream packages should implement responders listening on these topics and emit typed responses
 
 TaskMaster and event-driven flows
 - The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
-- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
+- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (taskmaster:tasks:*, taskmaster:system:status)
 - Downstream packages should implement responders listening on these topics and emit typed responses
 
 ## Task approval example
@@ -594,7 +594,7 @@ import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 // ✅ Direct package imports (current architecture)
 import { BrainCoordinator } from '@claude-zen/brain';
 import { DatabaseProvider } from '@claude-zen/database';
-import { EventManager } from '@claude-zen/event-system';
+import { EventBus } from '@claude-zen/foundation';
 
 // ✅ Coordination package (unified)
 import { SafeFramework } from '@claude-zen/coordination/safe';
@@ -603,6 +603,12 @@ import { TeamworkOrchestrator } from '@claude-zen/coordination/teamwork';
 ```
 
 ### Testing Strategy
+
+**Test Organization**:
+- **✅ DO**: Place all test files in dedicated `test/` directories within packages
+- **❌ DON'T**: Place test files in `src/` directories or root package directories
+- **✅ DO**: Use proper test file naming: `*.test.js`, `*.spec.js`, or descriptive names
+- **✅ DO**: Organize tests by domain/feature within the test directory
 
 **Domain-Specific Testing**:
 

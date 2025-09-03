@@ -354,7 +354,7 @@ kanban.on('health:critical', (health) => {
 - **XState** - Professional state machine foundation
 - **EventEmitter3** - High-performance event system
 - **@claude-zen/foundation** - Logging and utility foundation
-- **@claude-zen/event-system** - Type-safe event coordination
+- **@claude-zen/foundation** - Type-safe event coordination
 
 ## 📈 **Performance**
 

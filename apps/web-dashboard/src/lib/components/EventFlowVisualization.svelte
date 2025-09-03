@@ -1,124 +1,92 @@
 <script lang="ts">
 import { clearInterval } from 'timers';
-  import { onMount, onDestroy } from 'svelte';
-  import { toast } from '@zerodevx/svelte-toast';
-  
-  interface EventFlow {
-    id: string;
-    eventName: string;
-    source: string;
-    target: string;
-    timestamp: Date;
-    latency: number;
-    success: boolean;
-  }
-  
-  interface EventMetrics {
-    totalEvents: number;
-    eventsPerSecond: number;
-    averageLatency: number;
-    errorRate: number;
-    activeModules: number;
-    systemHealth: 'healthy' | 'degraded' | 'critical';
-  }
-  
-  // Component state
-  let eventFlows: EventFlow[] = [];
-  let eventMetrics: EventMetrics = {
-    totalEvents: 0,
-    eventsPerSecond: 0,
-    averageLatency: 0,
-    errorRate: 0,
-    activeModules: 0,
-    systemHealth: 'healthy'
-  };
-  
-  let updateInterval: NodeJS.Timeout;
-  let isConnected = false;
-  let websocket: WebSocket | null = null;
+import { onMount, onDestroy } from 'svelte';
+import { toast } from '@zerodevx/svelte-toast';
+import { eventSystemService, type EventFlow, type EventMetrics, type ActiveModule } from '../services/event-system.service.js';
+
+// Component state
+let eventFlows: EventFlow[] = [];
+let eventMetrics: EventMetrics = {
+  totalEvents: 0,
+  eventsPerSecond: 0,
+  averageLatency: 0,
+  errorRate: 0,
+  activeModules: 0,
+  systemHealth: 'healthy'
+};
+
+let activeModules: ActiveModule[] = [];
+let updateInterval: NodeJS.Timeout;
+let isConnected = false;
   
   onMount(async () => {
     try {
-      await connectToEventSystem();
-      startDataUpdates();
-      isConnected = true;
-      toast.push('Connected to event system', { theme: { '--toastColor': 'mintcream', '--toastBackground': 'rgba(34, 197, 94, 0.9)' } });
+      // Connect to event system service
+      await eventSystemService.connect();
+      
+      // Subscribe to updates
+      const unsubscribeStatus = eventSystemService.on('status', () => {
+        const status = eventSystemService.status;
+        isConnected = status.isConnected;
+        
+        if (status.isConnected) {
+          toast.push('Connected to event system', { theme: { '--toastColor': 'mintcream', '--toastBackground': 'rgba(34, 197, 94, 0.9)' } });
+        } else if (status.error) {
+          toast.push(`Connection failed: ${status.error}`, { theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } });
+        }
+      });
+      
+      const unsubscribeEventFlows = eventSystemService.on('eventFlows', () => {
+        eventFlows = eventSystemService.eventFlows;
+      });
+      
+      const unsubscribeEventMetrics = eventSystemService.on('eventMetrics', () => {
+        const metrics = eventSystemService.eventMetrics;
+        eventMetrics = {
+          totalEvents: metrics.totalEvents,
+          eventsPerSecond: metrics.avgProcessingTime > 0 ? 1000 / metrics.avgProcessingTime : 0,
+          averageLatency: metrics.avgProcessingTime,
+          errorRate: metrics.errorRate,
+          activeModules: metrics.activeModules,
+          systemHealth: metrics.errorRate > 0.1 ? 'degraded' : 'healthy'
+        };
+      });
+      
+      const unsubscribeActiveModules = eventSystemService.on('activeModules', () => {
+        activeModules = eventSystemService.activeModules;
+      });
+      
+      // Initial data load
+      eventFlows = eventSystemService.eventFlows;
+      const metrics = eventSystemService.eventMetrics;
+      eventMetrics = {
+        totalEvents: metrics.totalEvents,
+        eventsPerSecond: metrics.avgProcessingTime > 0 ? 1000 / metrics.avgProcessingTime : 0,
+        averageLatency: metrics.avgProcessingTime,
+        errorRate: metrics.errorRate,
+        activeModules: metrics.activeModules,
+        systemHealth: metrics.errorRate > 0.1 ? 'degraded' : 'healthy'
+      };
+      activeModules = eventSystemService.activeModules;
+      
+      // Cleanup on destroy
+      onDestroy(() => {
+        unsubscribeStatus();
+        unsubscribeEventFlows();
+        unsubscribeEventMetrics();
+        unsubscribeActiveModules();
+        eventSystemService.disconnect();
+      });
+      
     } catch (error) {
       console.error('Failed to initialize event visualization:', error);
       toast.push('Failed to connect to event system', { theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } });
     }
   });
   
-  onDestroy(() => {
-    if (updateInterval) {
-      clearInterval(updateInterval);
-    }
-    if (websocket) {
-      websocket.close();
-    }
-  });
+  // onDestroy is now handled in onMount with proper cleanup
   
-  async function connectToEventSystem() {
-    console.log('Connecting to event system via WebSocket...');
-    
-    try {
-      // Determine WebSocket URL based on current location
-      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${location.host}/api/events/ws`;
-      
-      websocket = new WebSocket(wsUrl);
-      
-      websocket.onopen = () => {
-        console.log('WebSocket connected successfully');
-        isConnected = true;
-        
-        // Subscribe to all event types
-        websocket?.send(JSON.stringify({
-          type: 'subscribe',
-          eventTypes: ['event-flows', 'event-metrics', 'module-status']
-        }));
-        
-        toast.push('Connected to event system', { 
-          theme: { '--toastColor': 'mintcream', '--toastBackground': 'rgba(34, 197, 94, 0.9)' } 
-        });
-      };
-      
-      websocket.onmessage = (event) => {
-        try {
-          const message = JSON.parse(event.data);
-          handleWebSocketMessage(message);
-        } catch (error) {
-          console.error('Failed to parse WebSocket message:', error);
-        }
-      };
-      
-      websocket.onclose = () => {
-        console.log('WebSocket connection closed');
-        isConnected = false;
-        toast.push('Disconnected from event system', { 
-          theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } 
-        });
-        
-        // Attempt to reconnect after 5 seconds
-        setTimeout(() => {
-          if (!isConnected) {
-            connectToEventSystem();
-          }
-        }, 5000);
-      };
-      
-      websocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        isConnected = false;
-      };
-      
-    } catch (error) {
-      console.error('Failed to establish WebSocket connection:', error);
-      toast.push('Failed to connect to event system', { 
-        theme: { '--toastColor': 'white', '--toastBackground': 'rgba(239, 68, 68, 0.9)' } 
-      });
-    }
-  }
+  // connectToEventSystem function removed - now handled by service
   
   function handleWebSocketMessage(message: any) {
     switch (message.type) {
@@ -159,11 +127,7 @@ import { clearInterval } from 'timers';
     }
   }
   
-  function startDataUpdates() {
-    updateInterval = setInterval(() => {
-      // No chart updates; metrics are shown in cards and list below
-    }, 2000);
-  }
+  // startDataUpdates function removed - now handled by service
   
   function getHealthColor(health: string): string {
     switch (health) {
@@ -260,15 +224,53 @@ import { clearInterval } from 'timers';
           {#each eventFlows as flow}
             <div class="flex items-center justify-between p-3 rounded border">
               <div class="flex items-center gap-3">
-                <span class="text-xl">{flow.success ? '✅' : '❌'}</span>
+                <span class="text-xl">📡</span>
                 <div>
-                  <p class="font-medium text-gray-900">{flow.eventName}</p>
+                  <p class="font-medium text-gray-900">{flow.type}</p>
                   <p class="text-sm text-gray-600">{flow.source} → {flow.target}</p>
                 </div>
               </div>
               <div class="text-right">
                 <p class="text-sm text-gray-500">{formatTimestamp(flow.timestamp)}</p>
-                <p class="text-sm text-gray-500">{formatLatency(flow.latency)}</p>
+                {#if flow.duration}
+                  <p class="text-sm text-gray-500">{formatLatency(flow.duration)}</p>
+                {/if}
+              </div>
+            </div>
+          {/each}
+        {/if}
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Modules -->
+  <div class="bg-white rounded-lg shadow border">
+    <div class="p-6 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Active Modules</h3>
+      <p class="text-sm text-gray-600">Currently registered modules in the event system</p>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-3 max-h-64 overflow-y-auto">
+        {#if activeModules.length === 0}
+          <p class="text-gray-500">No active modules yet.</p>
+        {:else}
+          {#each activeModules as module}
+            <div class="flex items-center justify-between p-3 rounded border">
+              <div class="flex items-center gap-3">
+                <span class="text-xl">{module.status === 'active' ? '🟢' : '🟡'}</span>
+                <div>
+                  <p class="font-medium text-gray-900">{module.name}</p>
+                  <p class="text-sm text-gray-600">v{module.version} • {module.status}</p>
+                  <p class="text-xs text-gray-500">
+                    Capabilities: {module.capabilities.join(', ')}
+                  </p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-gray-500">
+                  Last heartbeat: {formatTimestamp(module.lastHeartbeat)}
+                </p>
               </div>
             </div>
           {/each}

@@ -30,7 +30,7 @@ export const isDevelopment = () =>
 export const isProduction = () =>
   !isDevelopment() && typeof window !== 'undefined';
 export const isTest = () => false;
-export const getEnv = (key: string, defaultValue?: string) =>
+export const getEnv = (_key: string, defaultValue?: string) =>
   defaultValue || '';
 export const isDebug = () => isDevelopment();
 export const shouldLog = () => true;
@@ -223,10 +223,10 @@ export const createCircuitBreaker = () => ({
   fire: <T>(fn: () => Promise<T>): Promise<T> => fn(),
 });
 
-// EVENT SYSTEM - Import from @claude-zen/event-system directly
+// EVENT SYSTEM - Import from @claude-zen/foundation directly
 // =============================================================================
 // Foundation does not export EventEmitter to avoid circular dependencies
-// Import EventEmitter directly from:@claude-zen/event-system
+// Import EventEmitter directly from @claude-zen/foundation
 
 // TYPE SYSTEM - All types and type utilities (no runtime code)
 // =============================================================================

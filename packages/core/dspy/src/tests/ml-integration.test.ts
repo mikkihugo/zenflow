@@ -16,10 +16,10 @@
 */
 
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import type { OptimizationTask } from '../autonomous/teleprompter-selector';
-import { AutonomousTeleprompterSelector } from '../autonomous/teleprompter-selector';
+import type { OptimizationTask } from '../optimization/teleprompter-selector';
+import { AutonomousTeleprompterSelector } from '../optimization/teleprompter-selector';
 import { MLIntegrationDemo } from '../examples/ml-integration-demo';
-import { DSPyBrainMLBridge } from '../ml-bridge/dspy-brain-ml-bridge';
+import { DSPyBrainMLBridge } from '../bridges/ml-event-bridge';
 import { COPROML } from '../teleprompters/copro-ml';
 import { GRPOML } from '../teleprompters/grpo-ml';
 import { MIPROv2ML } from '../teleprompters/miprov2-ml';
