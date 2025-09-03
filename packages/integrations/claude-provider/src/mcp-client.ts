@@ -28,7 +28,7 @@ export class ClaudeMcpClient {
       logger.info(`Connecting to MCP server: ${config.name}`);
       
       // Use Claude Code SDK to create MCP client connection
-      const claudeCode = await import('@anthropic-ai/claude-code');
+      await import('@anthropic-ai/claude-code');
       
       // Create connection to external MCP server
       const connection = await this.createMcpConnection(config);
@@ -136,14 +136,14 @@ export class ClaudeMcpClient {
     this.mcpConnections.clear();
   }
 
-  private async createMcpConnection(config: McpServerConfig): Promise<any> {
+  private async createMcpConnection(_config: McpServerConfig): Promise<any> {
     // Implementation would depend on the Claude Code SDK's MCP client capabilities
     // This is a placeholder for the actual MCP connection logic
     return {
       listTools: async () => [],
-      callTool: async (name: string, params: any) => ({}),
+      callTool: async (_name: string, _params: any) => ({}),
       listResources: async () => [],
-      readResource: async (uri: string) => ({}),
+      readResource: async (_uri: string) => ({}),
       close: async () => {}
     };
   }

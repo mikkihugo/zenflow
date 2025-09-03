@@ -14,7 +14,7 @@ Advanced AI development platform with sophisticated agent coordination, multi-da
 - **📊 Enterprise Workflows**: TaskMaster, Teamwork coordination, and XState-powered workflow engines
 - **💾 Multi-Database Architecture**: SQLite, LanceDB, and Kuzu graph database integration with connection pooling
 - **🧠 Neural WASM Modules**: High-performance neural processing with Rust acceleration for heavy compute
-- **📦 31-Package Monorepo**: Comprehensive enterprise-grade component library with strict domain boundaries
+- **📦 52+ Package Monorepo**: Comprehensive enterprise-grade component library with strict domain boundaries
 - **⚡ Cross-Platform Deployment**: Self-contained executables (116MB each) for Linux, macOS, Windows
 - **🔧 GitHub Integration**: Authentication and development workflow integration for CI/CD
 
@@ -22,9 +22,9 @@ Advanced AI development platform with sophisticated agent coordination, multi-da
 
 ### Prerequisites
 
-- **Node.js**: Version 22.18.0+ (required)
-- **pnpm**: Version 10.15.0+ (required - npm will not work properly)
-- **Rust**: Latest stable (for WASM modules)
+- Node.js 22.18.0+ (required)
+- pnpm 10.15.0+ (required) — npm/yarn are not supported here
+- Rust (stable) for WASM modules (auto-installs if missing)
   
 Note: mise is not required for this repository. Use your system toolchain or asdf/volta if preferred.
 
@@ -38,18 +38,15 @@ cd zenflow
 # Install dependencies
 pnpm install
 
-# Start web dashboard (primary interface)
+# Start web dashboard (PRIMARY interface)
 pnpm --filter @claude-zen/web-dashboard dev
 # Access at: http://localhost:3000
-
-# Or start both server and dashboard
-pnpm dev
 ```
 
 ### Production Usage
 
 ```bash
-# Build everything (creates cross-platform binaries)
+# Build everything (creates cross-platform binaries) — NEVER CANCEL
 pnpm build
 
 # Run production binaries
@@ -67,7 +64,7 @@ pnpm build
 
 ## 🏗️ Architecture
 
-**Enterprise AI Development Platform** with 31 packages organized in strategic domains:
+**Enterprise AI Development Platform** with 52+ packages organized in strategic domains:
 
 ### Core Domains
 
@@ -107,8 +104,11 @@ pnpm run build:packages                     # Build packages individually
 pnpm run build:rust                         # Build WASM modules
 
 # Quality assurance
-pnpm type-check                             # TypeScript validation (fastest)
-pnpm test                                   # Run test suites
+pnpm type-check                             # TypeScript validation (completes; may show pre-existing errors)
+# Run tests per-package only (monorepo test runner can OOM)
+# Examples:
+pnpm --filter @claude-zen/foundation test
+pnpm --filter @claude-zen/coordination test
 pnpm lint                                   # Code linting and formatting
 ```
 
@@ -116,11 +116,11 @@ pnpm lint                                   # Code linting and formatting
 
 | Operation | Expected Time | Status |
 |-----------|---------------|---------|
-| `pnpm install` | 2-20 seconds | ✅ Works |
-| `pnpm type-check` | 1-2 seconds | ✅ Works |
-| `pnpm build` | 1-2 minutes | ✅ Works |
-| Web dashboard dev | 5-10 seconds | ✅ Works perfectly |
-| `pnpm test` | 15+ minutes | ⚠️ Memory constraints |
+| `pnpm install` | 2-3 seconds | ✅ Works |
+| `pnpm type-check` | ~25-30 seconds | ⚠️ Completes with known errors |
+| `pnpm build` | 5-6 minutes | ✅ Produces SEA binaries (do not cancel) |
+| Web dashboard dev | ~1 second | ✅ Works perfectly |
+| Per-package tests | 3-5 seconds each | ⚠️ Run per-package only |
 
 ### Repository Structure
 
@@ -157,9 +157,9 @@ zenflow/
 
 ### Interface Domains
 
-- **Primary**: Web dashboard (comprehensive enterprise interface)
-- **Secondary**: MCP servers for tool integration (limited scope)
-- **Minimal**: Terminal screens for basic status display only
+- Primary: Web dashboard (comprehensive enterprise interface)
+- Secondary: MCP servers for tool integration (limited scope)
+- Minimal: Terminal screens for basic status display only
 
 ## 🤖 Agent Coordination
 
@@ -243,7 +243,8 @@ Artifacts:
 ### Critical rules
 
 - Use the single foundation EventBus for inter-package calls
-- Only direct internal imports allowed: @claude-zen/foundation and @claude-zen/database
+- Allowed direct internal imports: `@claude-zen/foundation`, `@claude-zen/database`, `@claude-zen/neural-ml`
+- LLM Provider exception: `@claude-zen/*-provider` packages may import each other for shared functionality
 - All heavy compute must route through the Rust/WASM gateway
 - Keep domain boundaries intact (no ad-hoc cross-domain helpers)
 
@@ -256,16 +257,18 @@ Validate that VITE is ready and basic navigation works.
 pnpm --filter @claude-zen/web-dashboard dev
 ```
 
-## 🧪 Testing
+## 🧪 Testing Policy
 
-- Run tests per-package only (don’t run monorepo tests)
-- Foundation has some failing tests by design; others vary
+- Tests MUST live in `tests/` directories, never in `src/` or `__tests__/`
+- `__tests__/` directories are forbidden (see AGENTS.md for details and migration tips)
+- Run tests per-package only:
 
-Examples:
 ```bash
 pnpm --filter @claude-zen/foundation test
 pnpm --filter @claude-zen/coordination test
 ```
+
+<!-- Consolidated into Testing Policy above -->
 
 ## 🧰 Daily development
 
@@ -287,7 +290,8 @@ Linting and type-checking have pre-existing issues across the repo; fix only whe
 
 Event-driven enforcement and validators
 - Cross-package calls must go through the single typed EventBus from @claude-zen/foundation
-- Only direct internal imports allowed: @claude-zen/foundation and @claude-zen/database
+- Allowed direct internal imports: `@claude-zen/foundation`, `@claude-zen/database`, `@claude-zen/neural-ml`
+- LLM Provider exception: `@claude-zen/*-provider` packages may import each other
 - Pre-commit runs scripts/validate-imports.js and scripts/validate-dependencies.js to enforce this
 - Server TaskMaster routes now proxy via the typed EventBus; no direct @claude-zen/coordination imports
 

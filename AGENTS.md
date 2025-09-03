@@ -10,6 +10,7 @@ Enterprise AI platform with agents, workflows, and a web-first interface. Packag
 
 - Event-driven only: communicate across packages via the single typed EventBus from foundation
 - Import boundary: only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml may be imported directly
+- **LLM Provider Exception**: LLM provider packages (@claude-zen/*-provider) may import each other for shared functionality and provider coordination
 - Backend-agnostic data access: use database adapters; avoid binding to a specific backend
 - WASM-first heavy compute: route through Rust/WASM gateways
 
@@ -47,6 +48,28 @@ pnpm --filter @claude-zen/web-dashboard dev
 ```
 - Secondary: limited MCP; Minimal terminal status only
 
+## Authentication guidelines
+
+**Authentication logic belongs in provider packages:**
+- LLM provider packages (`@claude-zen/*-provider`) contain authentication implementations
+- Server provides CLI interface that orchestrates provider authentication
+- Avoid duplicating authentication logic between server and providers
+
+**Example architecture:**
+```typescript
+// ❌ WRONG - Server duplicates auth logic
+// apps/server/auth.ts has full OAuth implementation
+
+// ✅ CORRECT - Server uses provider
+// apps/server/auth.ts
+export async function authLogin() {
+  const { CopilotAuth } = await import('@claude-zen/copilot-provider');
+  const auth = new CopilotAuth();
+  const token = await auth.authenticate();
+  await saveToken(token);
+}
+```
+
 ## Database guidelines
 
 - Use adapters from @claude-zen/database (SQLite, LanceDB, Kuzu)
@@ -60,18 +83,23 @@ pnpm --filter @claude-zen/web-dashboard dev
 ## Testing guidelines
 
 **Test file organization:**
-- Tests MUST be in `tests/` or `__tests__/` directories, never in `src/`
+- Tests MUST be in `tests/` directories, never in `src/` or `__tests__/`
 - Test files should use `.test.ts` or `.spec.ts` extensions
-- Structure: `packages/[package]/tests/` or `packages/[package]/__tests__/`
+- **FORBIDDEN**: `__tests__/` directories are not allowed
 
-**Example structure:**
+**Directory Structure:**
 ```
-packages/services/brain/
+packages/[package]/
 ├── src/
-│   └── brain-coordinator.ts
-└── tests/  # ← Tests here, not in src/
-    └── brain-coordinator.test.ts
+│   └── component.ts
+└── tests/           # ← Tests here, not in src/ or __tests__/
+    └── component.test.ts
 ```
+
+**Migration Strategy:**
+- **New packages**: Use `tests/` directory
+- **Existing packages**: Keep `__tests__/` or migrate to `tests/` gradually
+- **Mixed usage**: Both are valid, no enforcement needed
 
 **Import rules for tests:**
 - Test files can import from their own package's src
@@ -765,11 +793,43 @@ fi
 npm run clean 2>/dev/null || echo "Clean failed but continuing"
 ```
 
-**Why `|| true` is forbidden:**
-- Hides real failures that need attention
-- Makes debugging difficult
-- Violates enterprise reliability standards
-- Prevents proper CI/CD failure detection
+#### Test Directory Structure
+```bash
+# ❌ FORBIDDEN - __tests__ directories
+packages/my-package/
+├── src/
+└── __tests__/          # ← NOT ALLOWED
+    └── component.test.ts
+
+# ✅ CORRECT - tests/ directories only
+packages/my-package/
+├── src/
+└── tests/              # ← ONLY ALLOWED
+    └── component.test.ts
+```
+
+**Why `__tests__/` is forbidden:**
+- Inconsistent with modern testing conventions
+- Less explicit than `tests/` directory
+- Creates confusion about test organization
+- Legacy Jest convention that should be avoided
+
+#### Alternatives for Test Organization
+```bash
+# Option 1: Standard tests/ directory
+packages/my-package/
+└── tests/
+    ├── unit/
+    ├── integration/
+    └── e2e/
+
+# Option 2: Flat structure in tests/
+packages/my-package/
+└── tests/
+    ├── component.test.ts
+    ├── utils.test.ts
+    └── api.test.ts
+```
 
 #### Alternatives for Error Handling
 ```bash

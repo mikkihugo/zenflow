@@ -58,6 +58,23 @@ const SKIP_PATTERNS = [
 let violations = 0;
 
 /**
+ * Check if a module name belongs to an LLM provider package
+ */
+function isLLMProviderModule(moduleName) {
+	const llmProviderPatterns = [
+		"@claude-zen/claude-provider",
+		"@claude-zen/copilot-provider",
+		"@claude-zen/gemini-provider",
+		"@claude-zen/github-models-provider",
+		"@claude-zen/llm-providers"
+	];
+
+	return llmProviderPatterns.some(pattern =>
+		moduleName.startsWith(pattern)
+	);
+}
+
+/**
  * Check if path should be skipped
  */
 function shouldSkip(filePath) {
@@ -120,16 +137,21 @@ function checkFile(filePath) {
 					violations++;
 				}
 
-				// Enforce internal dependency boundary: only allow foundation/database
-						if (
-							importedModule.startsWith("@claude-zen/") &&
-							!importedModule.startsWith("@claude-zen/foundation") &&
-							!importedModule.startsWith("@claude-zen/database") &&
-							!importedModule.startsWith("@claude-zen/neural-ml")
-						) {
+				// Enforce internal dependency boundary: only allow foundation/database + LLM provider imports
+				const isAllowedInternalImport =
+					importedModule.startsWith("@claude-zen/foundation") ||
+					importedModule.startsWith("@claude-zen/database") ||
+					importedModule.startsWith("@claude-zen/neural-ml") ||
+					// Allow imports of LLM provider packages from anywhere
+					isLLMProviderModule(importedModule);
+
+				if (
+					importedModule.startsWith("@claude-zen/") &&
+					!isAllowedInternalImport
+				) {
 					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(
-								`   Restricted internal import: ${importedModule} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
+						`   Restricted internal import: ${importedModule} — Only @claude-zen/foundation, @claude-zen/database, @claude-zen/neural-ml, and LLM provider packages are allowed between packages`,
 					);
 					logger.error("");
 					violations++;
@@ -149,15 +171,20 @@ function checkFile(filePath) {
 					violations++;
 				}
 
+						const isAllowedInternalRequire =
+							requiredModule.startsWith("@claude-zen/foundation") ||
+							requiredModule.startsWith("@claude-zen/database") ||
+							requiredModule.startsWith("@claude-zen/neural-ml") ||
+							// Allow imports of LLM provider packages from anywhere
+							isLLMProviderModule(requiredModule);
+
 						if (
 							requiredModule.startsWith("@claude-zen/") &&
-							!requiredModule.startsWith("@claude-zen/foundation") &&
-							!requiredModule.startsWith("@claude-zen/database") &&
-							!requiredModule.startsWith("@claude-zen/neural-ml")
+							!isAllowedInternalRequire
 						) {
 					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(
-							`   Restricted internal require: ${requiredModule} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
+							`   Restricted internal require: ${requiredModule} — Only @claude-zen/foundation, @claude-zen/database, @claude-zen/neural-ml, and LLM provider packages are allowed between packages`,
 					);
 					logger.error("");
 					violations++;
@@ -177,15 +204,20 @@ function checkFile(filePath) {
 					violations++;
 				}
 
+				const isAllowedDynamicImport =
+					dynModule.startsWith("@claude-zen/foundation") ||
+					dynModule.startsWith("@claude-zen/database") ||
+					dynModule.startsWith("@claude-zen/neural-ml") ||
+					// Allow imports of LLM provider packages from anywhere
+					isLLMProviderModule(dynModule);
+
 				if (
 					dynModule.startsWith("@claude-zen/") &&
-					!dynModule.startsWith("@claude-zen/foundation") &&
-					!dynModule.startsWith("@claude-zen/database") &&
-					!dynModule.startsWith("@claude-zen/neural-ml")
+					!isAllowedDynamicImport
 				) {
 					logger.error(` ${relativePath}:${i + 1}`);
 					logger.error(
-						`   Restricted internal dynamic import: ${dynModule} — Only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml are allowed between packages`,
+						`   Restricted internal dynamic import: ${dynModule} — Only @claude-zen/foundation, @claude-zen/database, @claude-zen/neural-ml, and LLM provider packages are allowed between packages`,
 					);
 					logger.error("");
 					violations++;

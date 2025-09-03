@@ -61,23 +61,24 @@ export async function registerClaudeHandlers(bus = EventBus.getInstance()) {
   }
 
   // Claude chat completion (non-stream)
-  bus.on('llm:claude:chat:request', async (request: ClaudeRequest) => {
-    if (request.stream) {
+  bus.on('llm:claude:chat:request', async (request: unknown) => {
+    const req = request as ClaudeRequest;
+    if (req.stream) {
       // Handle streaming
       try {
         const provider = await getProvider();
         const streamRequest: ClaudeCompletionRequest = {
-          messages: request.messages,
-          model: request.model,
-          temperature: request.temperature,
-          max_tokens: request.max_tokens,
+          messages: req.messages,
+          ...(req.model ? { model: req.model } : {}),
+          ...(req.temperature !== undefined ? { temperature: req.temperature } : {}),
+          ...(req.max_tokens !== undefined ? { max_tokens: req.max_tokens } : {}),
           stream: true
         };
 
         const stream = provider.createMessageStream(streamRequest);
         for await (const chunk of stream) {
           const msg: ClaudeStreamChunk = {
-            correlationId: request.correlationId,
+            correlationId: req.correlationId,
             text: chunk.content?.[0]?.text || '',
             done: false,
           };
@@ -85,7 +86,7 @@ export async function registerClaudeHandlers(bus = EventBus.getInstance()) {
         }
         
         const finalMsg: ClaudeStreamChunk = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           text: '', 
           done: true 
         };
@@ -94,7 +95,7 @@ export async function registerClaudeHandlers(bus = EventBus.getInstance()) {
         logger.error('Claude chat stream error', { error });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const errorMsg: ClaudeStreamChunk = {
-          correlationId: request.correlationId,
+          correlationId: req.correlationId,
           text: '',
           done: true,
           error: errorMessage,
@@ -106,16 +107,16 @@ export async function registerClaudeHandlers(bus = EventBus.getInstance()) {
       try {
         const provider = await getProvider();
         const chatRequest: ClaudeCompletionRequest = {
-          messages: request.messages,
-          model: request.model,
-          temperature: request.temperature,
-          max_tokens: request.max_tokens,
+          messages: req.messages,
+          ...(req.model ? { model: req.model } : {}),
+          ...(req.temperature !== undefined ? { temperature: req.temperature } : {}),
+          ...(req.max_tokens !== undefined ? { max_tokens: req.max_tokens } : {}),
           stream: false
         };
 
         const response = await provider.createChatCompletion(chatRequest);
         const msg: ClaudeResponse = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           text: response.choices[0]?.message?.content || '',
           usage: response.usage
         };
@@ -124,7 +125,7 @@ export async function registerClaudeHandlers(bus = EventBus.getInstance()) {
         logger.error('Claude chat error', { error });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const msg: ClaudeResponse = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           error: errorMessage 
         };
         bus.emit('llm:claude:chat:response', msg);
@@ -133,44 +134,46 @@ export async function registerClaudeHandlers(bus = EventBus.getInstance()) {
   });
 
   // Claude context7 tools execution
-  bus.on('llm:claude:context7:tool:request', async (request: {
-    correlationId: string;
-    toolName: string;
-    parameters: any;
-  }) => {
+  bus.on('llm:claude:context7:tool:request', async (request: unknown) => {
+    const req = request as {
+      correlationId: string;
+      toolName: string;
+      parameters: any;
+    };
     try {
       const provider = await getProvider();
-      const result = await provider.executeContext7Tool(request.toolName, request.parameters);
+      const result = await provider.executeContext7Tool(req.toolName, req.parameters);
       bus.emit('llm:claude:context7:tool:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         result
       });
     } catch (error) {
       logger.error('Claude context7 tool error', { error });
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       bus.emit('llm:claude:context7:tool:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         error: errorMessage
       });
     }
   });
 
   // Claude context7 resources
-  bus.on('llm:claude:context7:resources:request', async (request: {
-    correlationId: string;
-  }) => {
+  bus.on('llm:claude:context7:resources:request', async (request: unknown) => {
+    const req = request as {
+      correlationId: string;
+    };
     try {
       const provider = await getProvider();
       const resources = await provider.getContext7Resources();
       bus.emit('llm:claude:context7:resources:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         resources
       });
     } catch (error) {
       logger.error('Claude context7 resources error', { error });
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       bus.emit('llm:claude:context7:resources:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         error: errorMessage
       });
     }

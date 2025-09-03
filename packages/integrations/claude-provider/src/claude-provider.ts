@@ -6,7 +6,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { ClaudeMcpClient, McpServerConfig } from './mcp-client.js';
+import { ClaudeMcpClient } from './mcp-client.js';
+import type { McpServerConfig } from './mcp-client.js';
 
 const logger = getLogger('claude-provider');
 

@@ -34,7 +34,8 @@
     "node_modules",
     "**/*.test.ts",
     "**/*.spec.ts",
-    "src/__tests__/**/*",
+  "__tests__/**/*",
+  "src/__tests__/**/*",
     "../../packages-old/**/*"
   ]
 }
