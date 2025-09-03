@@ -1,0 +1,356 @@
+# Code Analyzer Core Configuration
+# This file contains externalized configuration for security patterns, validation rules,
+# quality thresholds, and SPARC methodology definitions.
+
+version: "1.0.0"
+last_updated: "2025-01-25T12:00:00Z"
+
+# Security Configuration
+security:
+  # Suspicious patterns that trigger security alerts
+  suspicious_patterns:
+    - "admin"
+    - "root" 
+    - "system"
+    - "config"
+    - "secret"
+    - "password"
+    - "token"
+    - "api_key"
+    - "private"
+    - "internal"
+    - "test"
+    - "debug"
+    - "../"
+    - "./"
+    - "<script>"
+    - "SELECT "
+    - "DROP "
+    - "DELETE "
+    - "INSERT "
+    - "UPDATE "
+    - "javascript:"
+    - "data:"
+    - "vbscript:"
+    - "onload="
+    - "onerror="
+    - "eval("
+    - "document.cookie"
+    - "localStorage"
+    - "sessionStorage"
+  
+  # Severity weights for different types of patterns
+  severity_weights:
+    high: 1.0
+    medium: 0.7
+    low: 0.3
+  
+  # Patterns that are explicitly allowed (whitelist)
+  whitelist_patterns:
+    - "test_project"
+    - "demo_app"
+    - "example_"
+    - "sample_"
+    - "tutorial_"
+    - "docs_"
+  
+  # Custom security rules with regex patterns
+  custom_rules:
+    - name: "SQL Injection Detection"
+      pattern: "(?i)(union\\s+select|drop\\s+table|insert\\s+into|update\\s+set|delete\\s+from)"
+      severity: "high"
+      description: "Detects potential SQL injection patterns"
+      enabled: true
+    
+    - name: "XSS Detection"
+      pattern: "(?i)(<script[^>]*>|javascript:|vbscript:|onload=|onerror=|onclick=)"
+      severity: "high"
+      description: "Detects potential cross-site scripting patterns"
+      enabled: true
+    
+    - name: "Path Traversal"
+      pattern: "(\\.\\./|\\.\\\\|\\\\\\.\\.)"
+      severity: "medium"
+      description: "Detects directory traversal attempts"
+      enabled: true
+    
+    - name: "Credential Exposure"
+      pattern: "(?i)(password\\s*[:=]\\s*[\"'][^\"']+[\"']|api_key\\s*[:=]\\s*[\"'][^\"']+[\"'])"
+      severity: "high" 
+      description: "Detects exposed credentials in code"
+      enabled: true
+  
+  # Machine learning configuration
+  ml_enabled: true
+  confidence_threshold: 0.8
+
+# URL Validation Configuration
+url_validation:
+  # Allowed URL schemes
+  allowed_schemes:
+    - "https"
+    - "http"
+    - "ftp"
+    - "sftp"
+  
+  # Blocked domains (security risk)
+  blocked_domains:
+    - "malware-example.com"
+    - "phishing-site.net"
+    - "suspicious-domain.org"
+  
+  # Maximum URL length
+  max_url_length: 2048
+  
+  # Require TLS for external URLs
+  require_tls: false
+  
+  # Custom URL validators
+  custom_validators:
+    - name: "Internal Network Check"
+      regex: "^https?://(localhost|127\\.0\\.0\\.1|192\\.168\\.|10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.).*"
+      allow: true
+      description: "Allow internal network URLs"
+    
+    - name: "File Protocol Block"
+      regex: "^file://.*"
+      allow: false
+      description: "Block file protocol URLs for security"
+
+# Quality Configuration
+quality:
+  # Quality thresholds for different metrics
+  thresholds:
+    code_complexity:
+      min_score: 0.0
+      max_score: 15.0
+      weight: 1.0
+      enabled: true
+    
+    test_coverage:
+      min_score: 0.8
+      max_score: 1.0
+      weight: 1.5
+      enabled: true
+    
+    documentation_coverage:
+      min_score: 0.7
+      max_score: 1.0
+      weight: 0.8
+      enabled: true
+    
+    security_score:
+      min_score: 0.9
+      max_score: 1.0
+      weight: 2.0
+      enabled: true
+  
+  # Deliverable configurations
+  deliverable_configs:
+    TechnicalSpecification:
+      required_quality_gates: ["RequirementsReview", "TechnicalReview"]
+      custom_validations: ["completeness_check", "consistency_check"]
+      timeout_seconds: 300
+    
+    DesignDocument:
+      required_quality_gates: ["ArchitectureReview", "SecurityReview"]
+      custom_validations: ["design_patterns_check", "scalability_check"]
+      timeout_seconds: 600
+    
+    CodeImplementation:
+      required_quality_gates: ["CodeReview", "SecurityScan", "TestCoverage"]
+      custom_validations: ["style_check", "complexity_check", "vulnerability_scan"]
+      timeout_seconds: 1200
+    
+    TestSuite:
+      required_quality_gates: ["TestReview", "CoverageCheck"]
+      custom_validations: ["test_completeness", "edge_case_coverage"]
+      timeout_seconds: 900
+  
+  # Quality gate configurations
+  quality_gate_configs:
+    RequirementsReview:
+      criteria:
+        - name: "completeness"
+          threshold: 0.9
+          weight: 1.0
+          required: true
+        - name: "clarity"
+          threshold: 0.8
+          weight: 0.8
+          required: true
+      auto_approve: false
+      required_reviewers: 2
+    
+    CodeReview:
+      criteria:
+        - name: "style_compliance"
+          threshold: 0.95
+          weight: 0.8
+          required: true
+        - name: "complexity"
+          threshold: 10.0
+          weight: 1.2
+          required: true
+        - name: "test_coverage"
+          threshold: 0.8
+          weight: 1.5
+          required: true
+      auto_approve: false
+      required_reviewers: 1
+    
+    SecurityScan:
+      criteria:
+        - name: "vulnerability_count"
+          threshold: 0.0
+          weight: 2.0
+          required: true
+        - name: "security_score"
+          threshold: 0.9
+          weight: 2.0
+          required: true
+      auto_approve: true
+      required_reviewers: 0
+
+# SPARC Methodology Configuration
+sparc:
+  # Phase definitions with comprehensive metadata
+  phase_definitions:
+    specification:
+      name: "Specification"
+      description: "Requirements analysis and documentation phase"
+      required_deliverables: ["TechnicalSpecification", "RequirementsDocument"]
+      entry_criteria:
+        - "Stakeholder requirements identified"
+        - "Project scope defined"
+        - "Success criteria established"
+      exit_criteria:
+        - "Requirements documented and approved"
+        - "Acceptance criteria defined"
+        - "Technical specifications reviewed"
+      estimated_duration_hours: 40
+    
+    pseudocode:
+      name: "Pseudocode"
+      description: "Algorithm design and logic specification phase"
+      required_deliverables: ["PseudocodeDocument", "AlgorithmDesign"]
+      entry_criteria:
+        - "Requirements approved"
+        - "Technical specifications complete"
+      exit_criteria:
+        - "Algorithms designed and documented"
+        - "Logic flow validated"
+        - "Edge cases identified"
+      estimated_duration_hours: 32
+    
+    architecture:
+      name: "Architecture"
+      description: "System design and component definition phase"
+      required_deliverables: ["ArchitectureDocument", "DesignDocument"]
+      entry_criteria:
+        - "Pseudocode approved"
+        - "System requirements understood"
+      exit_criteria:
+        - "Architecture designed and documented"
+        - "Components and interfaces defined"
+        - "Non-functional requirements addressed"
+      estimated_duration_hours: 48
+    
+    refinement:
+      name: "Refinement"
+      description: "Implementation details and optimization phase"
+      required_deliverables: ["DetailedDesign", "OptimizationPlan"]
+      entry_criteria:
+        - "Architecture approved"
+        - "Design documents complete"
+      exit_criteria:
+        - "Implementation details specified"
+        - "Performance optimizations identified"
+        - "Resource requirements finalized"
+      estimated_duration_hours: 36
+    
+    completion:
+      name: "Completion"
+      description: "Final implementation and testing phase"
+      required_deliverables: ["CodeImplementation", "TestSuite", "Documentation"]
+      entry_criteria:
+        - "Refinement approved"
+        - "Implementation plan ready"
+      exit_criteria:
+        - "Code implemented and tested"
+        - "Quality gates passed"
+        - "Documentation complete"
+      estimated_duration_hours: 80
+  
+  # Phase transition rules
+  transition_rules:
+    - from_phase: "specification"
+      to_phase: "pseudocode"
+      required_conditions:
+        - "All specification deliverables approved"
+        - "Requirements review passed"
+        - "Stakeholder sign-off obtained"
+      auto_transition: false
+    
+    - from_phase: "pseudocode"
+      to_phase: "architecture"
+      required_conditions:
+        - "Pseudocode review passed"
+        - "Algorithm validation complete"
+        - "Logic flow approved"
+      auto_transition: false
+    
+    - from_phase: "architecture"
+      to_phase: "refinement"
+      required_conditions:
+        - "Architecture review passed"
+        - "Design patterns validated"
+        - "Scalability requirements met"
+      auto_transition: false
+    
+    - from_phase: "refinement"
+      to_phase: "completion"
+      required_conditions:
+        - "Detailed design approved"
+        - "Performance requirements validated"
+        - "Implementation plan ready"
+      auto_transition: false
+  
+  # Quality requirements for each phase
+  quality_requirements:
+    specification:
+      - "Requirements completeness >= 95%"
+      - "Stakeholder approval obtained"
+      - "Acceptance criteria defined"
+    
+    pseudocode:
+      - "Algorithm correctness verified"
+      - "Edge cases documented"
+      - "Performance characteristics estimated"
+    
+    architecture:
+      - "Design patterns appropriate"
+      - "Scalability requirements addressed"
+      - "Security considerations included"
+    
+    refinement:
+      - "Implementation details complete"
+      - "Optimization opportunities identified"
+      - "Resource constraints validated"
+    
+    completion:
+      - "Code quality score >= 8.5/10"
+      - "Test coverage >= 90%"
+      - "Documentation complete"
+      - "Security scan passed"
+  
+  # Automation settings
+  automation_settings:
+    auto_validate: true
+    parallel_execution: false
+    max_concurrent_phases: 2
+    retry_failed_gates: true
+    notification_channels:
+      - "email"
+      - "slack"
+      - "webhook"

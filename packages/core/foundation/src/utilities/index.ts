@@ -40,7 +40,6 @@ export {
   isTest,
   isWindows,
   isWSL,
-  startMonitoring,
 } from './system';
 
 export {

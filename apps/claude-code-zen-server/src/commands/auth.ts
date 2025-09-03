@@ -31,9 +31,13 @@ interface TokenResponse {
   scope: string;
 }
 
-const GITHUB_CLIENT_ID = '01ab8ac9400c4e429b23'; // VSCode client ID for Copilot
+// VS Code's official GitHub Copilot OAuth client ID
+const GITHUB_CLIENT_ID = '01ab8ac9400c4e429b23'; // This is VS Code's actual client ID
 const DEVICE_CODE_URL = 'https://github.com/login/device/code';
 const ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token';
+
+// Required scopes for Copilot access (aligned with VS Code)
+const COPILOT_SCOPES = ['read:user', 'user:email', 'repo', 'workflow'];
 
 /**
  * Configuration directory name for Claude Zen storage architecture.
@@ -189,16 +193,17 @@ async function ensureClaudeZenDir(): Promise<string> {
 }
 
 async function initiateDeviceFlow(): Promise<DeviceFlowResponse> {
-  logger.info('Initiating GitHub device flow for Copilot authentication');
+  logger.info('Initiating GitHub device flow for Copilot authentication (VS Code compatible)');
   const response = await fetch(DEVICE_CODE_URL, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'GitHubCopilotChat/0.22.4',
     },
     body: new URLSearchParams({
       client_id: GITHUB_CLIENT_ID,
-      scope: 'read:user',
+      scope: COPILOT_SCOPES.join(' '),
     }),
   });
 
@@ -224,6 +229,7 @@ async function pollForToken(
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'GitHubCopilotChat/0.22.4',
       },
       body: new URLSearchParams({
         client_id: GITHUB_CLIENT_ID,
@@ -272,11 +278,9 @@ async function saveToken(token: string): Promise<void> {
   const tokenData = {
     access_token: token,
     created_at: new Date().toISOString(),
-    source: 'github-copilot-oauth',
-    usage:
-      'Use this token with OpenAI API endpoints for GitHub Copilot integration',
-    expires_note:
-      'This token does not expire, but can be revoked from GitHub settings',
+    source: 'vscode-compatible-oauth',
+    usage: 'VS Code compatible token for GitHub Copilot API access',
+    expires_note: 'This token does not expire, but can be revoked from GitHub settings',
   };
 
   await fs.writeFile(tokenPath, JSON.stringify(tokenData, null, 2));
@@ -339,40 +343,15 @@ async function copyToClipboard(text: string): Promise<void> {
 
 export async function authLogin(): Promise<void> {
   try {
-    logger.info('Starting GitHub Copilot authentication...');
-
-    // Step 1:Initiate device flow
-    const deviceFlow = await initiateDeviceFlow();
-
-    // Step 2:Display user code and instructions
-    logger.info('\n GitHub Copilot Authentication');
-    logger.info('═'.repeat(50));
-    logger.info(`\n Your verification code:${  deviceFlow.user_code}`);
-    logger.info(` Visit:${  deviceFlow.verification_uri}`);
-    logger.info(
-      `⏰ Code expires in ${  Math.floor(deviceFlow.expires_in / 60)  } minutes\n`
-    );
-
-    // Try to copy code to clipboard
-    await copyToClipboard(deviceFlow.user_code);
-
-    // Step 3: Wait for user confirmation
-    await promptUser(
-      'Press Enter after you have authorized the application...'
-    );
-
-    // Step 4:Poll for token
-    logger.info('Waiting for authorization...');
-    const tokenResponse = await pollForToken(
-      deviceFlow.device_code,
-      deviceFlow.interval
-    );
-
-    // Step 5:Save token
-    await saveToken(tokenResponse.access_token);
-
-    logger.info('\n Authentication successful!');
-    logger.info('You can now use GitHub Copilot with Claude Code Zen.');
+    // Use the new copilot provider authentication
+    const { CopilotAuth } = await import('@claude-zen/copilot-provider');
+    
+    const auth = new CopilotAuth();
+    const githubToken = await auth.authenticate();
+    
+    // Save the VS Code-compatible token
+    await saveToken(githubToken);
+    
   } catch (error) {
     logger.error('Authentication failed: ', error);
     process.exit(1);

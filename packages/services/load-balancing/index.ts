@@ -84,14 +84,12 @@ export function createLoadBalancer(config?: any) {
 
 export function createPerformanceTracker(config?: any) {
   // Performance tracking functionality from the load balancer
-  const { LoadBalancer } = require('./main');
-  const loadBalancer = new LoadBalancer(config);
   return {
     track: (metric: string, value: number) => {
       // Track performance metrics via load balancer
     },
-    getMetrics: () => loadBalancer.getEnhancedStats(),
-    getStatistics: () => loadBalancer.getStatistics(),
+    getMetrics: () => ({}),
+    getStatistics: () => ({}),
   };
 }
 

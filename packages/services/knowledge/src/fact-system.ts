@@ -170,7 +170,7 @@ class KnowledgeFactSystem {
   private listeners = new Set<(fact: CoordinationFact) => void>();
 
   // Event-driven architecture with EventBus
-  private eventBus = new EventBus();
+  private eventBus = EventBus.getInstance();
 
   // Unified fact database - single source with coordinated indexing
   private factDatabase: DatabaseConnection | null = null; // Primary database with unified indexes

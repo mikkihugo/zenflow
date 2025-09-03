@@ -1,20 +1,28 @@
+import { EventBus as FoundationEventBus } from '@claude-zen/foundation';
+
 type EventCallback = (data: unknown) => void;
 
+/**
+ * Compatibility adapter: route publish/subscribe to the foundation EventBus singleton.
+ * Preserves existing API while eliminating parallel custom buses.
+ */
 class EventBus {
-  private static listeners: { [key: string]: EventCallback[] } = {};
-
   public static publish(eventName: string, eventData: unknown): void {
-    const eventListeners = this.listeners[eventName];
-    if (eventListeners) {
-      for (const callback of eventListeners) callback(eventData);
+    const b: any = FoundationEventBus.getInstance();
+    if (typeof b.emit === 'function') {
+      b.emit(eventName, eventData);
+    } else if (typeof b.emitSafe === 'function') {
+      void b.emitSafe(eventName, eventData);
     }
   }
 
   public static subscribe(eventName: string, callback: EventCallback): void {
-    if (!this.listeners[eventName]) {
-      this.listeners[eventName] = [];
+    const b: any = FoundationEventBus.getInstance();
+    if (typeof b.on === 'function') {
+      b.on(eventName, callback);
+    } else if (typeof b.addListener === 'function') {
+      b.addListener(eventName, callback);
     }
-    this.listeners[eventName].push(callback);
   }
 }
 

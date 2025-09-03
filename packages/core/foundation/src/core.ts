@@ -5,7 +5,7 @@
  * Import this for basic foundation functionality without heavy dependencies.
  */
 
-export type { Config } from './core/config/index.js';
+export type { Config } from './config/index.js';
 // =============================================================================
 // CORE CONFIGURATION SYSTEM
 // =============================================================================
@@ -21,7 +21,7 @@ export {
   requireEnv,
   shouldLog,
   validateConfig,
-} from './core/config';
+} from './config';
 export type { Logger, LoggingConfig } from './core/logging/index.js';
 // =============================================================================
 // CORE LOGGING SYSTEM

@@ -65,34 +65,43 @@ import {
 let consistentHashing: any = null;
 let hashRing: any = null;
 let osutils: any = null;
-
-try {
-  consistentHashing = require('consistent-hashing');
-} catch {
-  consistentHashing = null; // Fallback:use simple round-robin
-}
-
-try {
-  hashRing = require('hashring');
-} catch {
-  hashRing = null; // Fallback:use simple hashing
-}
-
-try {
-  osutils = require('node-os-utils');
-} catch {
-  osutils = null; // Fallback:use basic system metrics
-}
-
-import { EventEmitter } from '@claude-zen/foundation';
-
-// TensorFlow import - optional dependency support
 let tf: any = null;
-try {
-  tf = require('@tensorflow/tfjs-node');
-} catch {
-  // TensorFlow not available - will use fallback implementations
-  logger.warn('@tensorflow/tfjs-node not available, ML predictions disabled');
+
+// Initialize optional dependencies synchronously
+function initializeOptionalDependencies() {
+  try {
+    // Use dynamic import syntax for optional dependencies
+    import('consistent-hashing').then(module => {
+      consistentHashing = module.default || module;
+    }).catch(() => {
+      consistentHashing = null; // Fallback:use simple round-robin
+    });
+
+    import('hashring').then(module => {
+      hashRing = module.default || module;
+    }).catch(() => {
+      hashRing = null; // Fallback:use simple hashing
+    });
+
+    import('node-os-utils').then(module => {
+      osutils = module.default || module;
+    }).catch(() => {
+      osutils = null; // Fallback:use basic system metrics
+    });
+
+    import('@tensorflow/tfjs-node').then(module => {
+      tf = module.default || module;
+    }).catch(() => {
+      // TensorFlow not available - will use fallback implementations
+      console.warn('@tensorflow/tfjs-node not available, ML predictions disabled');
+    });
+  } catch (error) {
+    // If dynamic imports fail completely, set all to null
+    consistentHashing = null;
+    hashRing = null;
+    osutils = null;
+    tf = null;
+  }
 }
 
 // Simple stub functions for telemetry (to be replaced with proper imports later)
@@ -222,6 +231,9 @@ export class LoadBalancer extends EventEmitter {
 
     // Foundation provides embedded KV storage (no external dependencies needed)
     // Will be initialized in start() method with getKVStore('load-balancing')
+
+    // Initialize optional dependencies
+    initializeOptionalDependencies();
 
     // Initialize consistent hashing for distributed load balancing
     this.consistentHashing = new consistentHashing();

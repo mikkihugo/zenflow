@@ -10,8 +10,8 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: [
-      'src/_tests__/**/*.test.ts',
-      'src/_tests__/**/*.test.tsx',
+      'src/__tests__/**/*.test.ts',
+      'src/__tests__/**/*.test.tsx',
       'tests/**/*.test.ts',
       'tests/**/*.test.tsx',
     ],

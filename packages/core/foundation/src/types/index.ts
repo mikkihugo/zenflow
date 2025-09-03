@@ -77,7 +77,24 @@ export interface AuditEntry extends Timestamped {
 // Additional utility types needed by brain package
 export type NonEmptyArray<T> = [T, ...T[]];
 
-export type LogLevel = 'debug|info|warn|error|fatal';
+/**
+ * Logging levels.
+ * Compat: include 'warning' alongside 'warn' to satisfy legacy expectations.
+ */
+export type LogLevel = 'debug' | 'info' | 'warn' | 'warning' | 'error' | 'fatal';
+
+/**
+ * Legacy-compatible enum for tests expecting WARNING === 'warning'.
+ * Also provides WARN === 'warn' used by current logging.
+ */
+export enum LogLevelEnum {
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  WARNING = 'warning',
+  ERROR = 'error',
+  FATAL = 'fatal',
+}
 
 // =============================================================================
 // TYPE UTILITIES - Advanced type manipulation utilities
@@ -351,7 +368,6 @@ export {
   isTimestamp,
   // Utility functions from primitives
   isUUID,
-  LogLevel as LogLevelEnum,
   now,
   // Enums from primitives
   Priority as PriorityEnum,

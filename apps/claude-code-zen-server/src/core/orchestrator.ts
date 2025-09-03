@@ -1,4 +1,5 @@
 import { getLogger } from '@claude-zen/foundation';
+import type { EventBus } from '@claude-zen/foundation';
 
 // Use facade patterns instead of direct coordination imports
 // import type { CoordinationManager} from "../coordination/coordination-manager";
@@ -15,9 +16,7 @@ interface CoordinationManager {
   isHealthy?: () => Promise<boolean>;
 }
 
-interface EventBus {
-  emit?: (event: string, data?: unknown) => void;
-}
+/** Using foundation EventBus type for dependencies */
 
 interface MemoryManager {
   store?: (key: string, value: unknown) => Promise<void>;

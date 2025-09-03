@@ -15,7 +15,7 @@ export function getDatabaseAccess() {
 // Create infrastructure system utility
 export const infrastructureSystem = {
   database: new DatabaseProvider(),
-  events: new EventBus(),
+  events: EventBus.getInstance(),
 };
 
 // TODO:Add configuration module when needed

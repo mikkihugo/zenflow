@@ -130,7 +130,7 @@ export class MachineLearningWorkflowManager {
 	private mlMetricsStore: 'KeyValueStore' | 'null' = null; // For performance metrics
 
 	// Event-driven architecture with EventBus
-	private eventBus = new EventBus();
+	private eventBus = EventBus.getInstance();
 
 	// Enterprise Coordination State
 	private activeTrainingJobs:Map<string, MLTrainingProgressEvent> = new Map();
@@ -414,7 +414,7 @@ export class MachineLearningWorkflowManager {
 			// Event-driven policy: request Rust neural-ml service via EventBus instead of direct import
 			try {
 				const { EventBus } = await import('@claude-zen/foundation');
-				new EventBus().emit?.('neural-ml:training:start:request' as any, { trainingId, modelId } as any);
+				EventBus.getInstance().emit?.('neural-ml:training:start:request' as any, { trainingId, modelId } as any);
 
 				// Create model configuration
 			const modelConfig = {

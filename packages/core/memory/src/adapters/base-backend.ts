@@ -10,7 +10,7 @@
 
 import { EventEmitter } from '@claude-zen/foundation';
 import type { MemoryConfig } from '../types';
-import type { JSONValue } from '../core/memory-system';
+import type { JSONValue } from '../coordination/memory-system';
 
 // Define BackendCapabilities here to avoid circular dependency
 export interface BackendCapabilities {
@@ -132,7 +132,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
   // Protected utility methods for subclasses
   protected updateStats(
-    operation: 'read' | ' write' | ' delete' | ' size_check' | ' cleanup',
+    operation: 'read' | 'write' | 'delete' | 'size_check' | 'cleanup',
     size?: number
   ): void {
     this.stats.lastAccessed = Date.now();
@@ -250,7 +250,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
 
       healthy =
         retrieved !== null &&
-        (retrieved as Record<string, unknown>)?.test === true;
+        (retrieved as Record<string, unknown>)?.['test'] === true;
     } catch (error) {
       healthy = false;
       this.emitError(error as Error, 'healthCheck');

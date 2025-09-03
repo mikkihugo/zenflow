@@ -1,95 +1,62 @@
 [workspace]
-resolver = "2"
 members = [
-	"crates/file-aware-core",
-	# Removed: Optional UI/TUI and WASM crates - not needed for pure engine
-	# "crates/code-mesh-tui",
-	# "crates/code-mesh-wasm",
+    "crates/code-analyzer-core",
+    "crates/quality-gates",
+    "crates/sparc-methodology",
+    "crates/safe-integration",
 ]
-
-[workspace.package]
-edition = "2021"
-authors = ["Zenflow contributors"]
-license = "MIT OR Apache-2.0"
+resolver = "2"
 
 [workspace.dependencies]
-toml = "0.8"
-walkdir = "2.5"
-which = "3.0"
-url = "2.5"
-tempfile = "3.10"
-mockall = "0.12"
-criterion = { version = "0.5", features = ["html_reports"] }
-pprof = { version = "0.13", features = ["criterion", "flamegraph"] }
-jemallocator = "0.5"
-memory-stats = "1.1"
-flame = "0.2"
-inferno = "0.11"
-lru = "0.12"
-dashmap = "5.5"
-futures = "0.3"
-futures-util = "0.3"
-
-# Storage pins to avoid conflicts
-libsqlite3-sys = "0.37"
-rusqlite = "0.37"
-
-# Neural core shared deps (mirrored here so { workspace = true } resolves)
+# Core Rust dependencies
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0"
 anyhow = "1.0"
-log = "0.4"
-chrono = { version = "0.4", features = ["serde"] }
 tokio = { version = "1.0", features = ["full"] }
-num-traits = "0.2"
-polars = { version = "0.41", features = ["lazy", "temporal", "csv", "parquet", "json"] }
-ndarray = { version = "0.16", features = ["serde"] }
-burn = { version = "0.18", default-features = false, features = ["std"] }
-burn-core = "0.18"
-burn-tensor = "0.18"
-burn-autodiff = "0.18"
-burn-wgpu = "0.18"
-burn-ndarray = "0.18"
-candle-core = "0.9"
-candle-nn = "0.9"
-ort = { version = "2.0.0-rc.10", features = ["download-binaries"] }
-tract-onnx = "0.21"
-tokenizers = "0.21"
-regex = "1.11"
-reqwest = { version = "0.12", features = ["json"] }
-smartcore = { version = "0.4", default-features = false, features = ["ndarray-bindings"] }
-wasm-bindgen = "0.2.93"
-js-sys = "0.3.70"
-web-sys = { version = "0.3.70" }
 
-[workspace.lints.rust]
-unused_variables = "warn"
-unused_imports = "warn"
-dead_code = "warn"
-unused_mut = "warn"
-unreachable_code = "warn"
-deprecated = "warn"
+# File system and path handling
+walkdir = "2.5"
+ignore = "0.4"
+glob = "0.3"
 
-[workspace.lints.clippy]
-all = { level = "warn", priority = -1 }
-pedantic = { level = "warn", priority = -1 }
-nursery = { level = "warn", priority = -1 }
-cargo = { level = "warn", priority = -1 }
-module_name_repetitions = "allow"
-similar_names = "allow"
-must_use_candidate = "allow"
-missing_errors_doc = "allow"
-missing_panics_doc = "allow"
+# Text processing
+regex = "1.10"
+aho-corasick = "1.1"
+memchr = "2.7"
 
-[profile.release]
-opt-level = 3
-lto = "fat"
-codegen-units = 1
-panic = "abort"
-strip = true
+# AST parsing
+tree-sitter = "0.22"
+tree-sitter-rust = "0.21"
+tree-sitter-typescript = "0.21"
+tree-sitter-javascript = "0.21"
+tree-sitter-python = "0.21"
+tree-sitter-go = "0.21"
 
-[profile.dev]
-opt-level = 0
-debug = 2
-split-debuginfo = "unpacked"
+# Parallel processing
+rayon = "1.8"
+
+# Collections and data structures
+indexmap = { version = "2.2", features = ["serde"] }
+dashmap = "7.0.0-rc2"
+
+# Database dependencies (for code analysis storage)
+rusqlite = "0.32"
+tempfile = "3.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+# ML and analysis
+levenshtein = "1.0"
+md5 = "0.7"
+
+# Development dependencies
+criterion = "0.5"
+tokio-test = "0.4"
+
+# Additional dependencies
+uuid = { version = "1.8", features = ["v4"] }
+metrics = "0.21"
+tracing = "0.1"
+num_cpus = "1.16"
+serde_yaml = "0.9"
+notify = "6.1"

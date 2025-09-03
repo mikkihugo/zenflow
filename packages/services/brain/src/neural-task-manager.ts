@@ -1054,7 +1054,7 @@ export class NeuralTaskManager {
  logger.info('📦 Requesting neural-ml service via EventBus')
  try {
    const { EventBus } = await import('@claude-zen/foundation');
-   const bus = new EventBus();
+   const bus = EventBus.getInstance();
    bus.emit?.('neural-ml:load:request' as any, { source: 'brain:orchestrator' } as any);
  } catch {}
  // Return a mock object; real processing should occur out-of-process via events

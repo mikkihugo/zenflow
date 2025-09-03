@@ -90,3 +90,5 @@ export {
 } from './handling/error.handler';
 // Export recovery functions (createErrorRecovery from here, not handler)
 export * from './handling/error.recovery';
+// Export additional types from error.types
+export type { ErrorResult, SuccessResult } from './errors/error.types.js';

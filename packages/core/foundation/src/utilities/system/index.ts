@@ -4,7 +4,6 @@
  * System detection and capability utilities.
  */
 
-export * from './capability.provider.js';
 export {
   checkSystemRequirements,
   createSystemSummary,

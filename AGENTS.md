@@ -743,3 +743,54 @@ pnpm --filter @claude-zen/web-dashboard dev
 - **Build System Reliability**: Consistent cross-platform binary generation
 
 **Remember**: Claude Code Zen is a **sophisticated enterprise platform** - respect the architecture, leverage the frameworks, and focus on the comprehensive web interface as your primary development target.
+
+## 🚫 Forbidden Patterns
+
+### Code Quality Violations
+
+**NEVER use these patterns in the codebase:**
+
+#### Command Failure Suppression
+```bash
+# ❌ FORBIDDEN - Suppresses all command failures
+npm run clean || true
+rm -rf dist/ || true
+
+# ✅ CORRECT - Handle errors properly
+if ! npm run clean; then
+  echo "Clean failed, continuing..."
+fi
+
+# Or use proper error handling
+npm run clean 2>/dev/null || echo "Clean failed but continuing"
+```
+
+**Why `|| true` is forbidden:**
+- Hides real failures that need attention
+- Makes debugging difficult
+- Violates enterprise reliability standards
+- Prevents proper CI/CD failure detection
+
+#### Alternatives for Error Handling
+```bash
+# Option 1: Conditional execution
+command_that_might_fail || echo "Command failed, but continuing"
+
+# Option 2: Explicit error checking
+if command_that_might_fail; then
+  echo "Success"
+else
+  echo "Failed, but continuing"
+fi
+
+# Option 3: Use proper error codes
+command_that_might_fail
+exit_code=$?
+if [ $exit_code -ne 0 ]; then
+  echo "Command failed with code $exit_code"
+fi
+```
+
+---
+
+## 📈 Success Metrics

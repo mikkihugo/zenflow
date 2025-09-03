@@ -173,16 +173,8 @@ export interface EventSubscription {
   readonly createdAt: string;
 }
 
-export interface EventBus {
-  emit(event: string | symbol, ...args: unknown[]): boolean;
-  on(event: string | symbol, handler: (...args: unknown[]) => void): this;
-  off(event: string | symbol, handler: (...args: unknown[]) => void): this;
-  once(event: string | symbol, handler: (...args: unknown[]) => void): this;
-  removeAllListeners(event?: string | symbol): this;
-  publish(event: string, data: unknown): void;
-  subscribe(event: string, handler: (data: unknown) => void): void;
-  unsubscribe(event: string, handler: (data: unknown) => void): void;
-}
+export type EventBus<T extends Record<string, unknown> = Record<string, unknown>> =
+  import('@claude-zen/foundation').EventBus<T>;
 
 // =============================================================================
 // CONFIGURATION INTERFACES

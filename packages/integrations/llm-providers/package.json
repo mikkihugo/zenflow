@@ -60,7 +60,8 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/database": "workspace:*",
-    "@anthropic-ai/claude-code": "^1.0.94",
+    "@claude-zen/copilot-provider": "workspace:*",
+    "@claude-zen/claude-provider": "workspace:*",
     "validator": "^13.12.0"
   },
   "devDependencies": {

@@ -1,0 +1,42 @@
+{
+  "name": "@claude-zen/copilot-provider",
+  "version": "1.0.0",
+  "description": "GitHub Copilot integration provider for Claude Code Zen",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/claude-code-zen.git",
+    "directory": "packages/integrations/copilot-provider"
+  },
+  "keywords": [
+    "github-copilot",
+    "ai",
+    "chat",
+    "completions",
+    "claude-zen"
+  ],
+  "license": "MIT"
+}

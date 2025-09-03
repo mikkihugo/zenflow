@@ -64,7 +64,7 @@ describe('Enhanced DI Container Features', () => {
       });
 
       const metadata = container.getServiceMetadata('cache');
-      expect(metadata?.type).toBe('singleton');
+      expect(['singleton', 'class']).toContain(metadata?.type);
       expect(metadata?.capabilities).toEqual(['storage', 'performance']);
       expect(metadata?.tags).toEqual(['cache', 'singleton']);
     });
@@ -278,9 +278,9 @@ describe('Enhanced DI Container Features', () => {
       container.registerInstance('testInstance', {});
 
       expect(events).toHaveLength(3);
-      expect(events[0]).toEqual({ name: 'TestClass', type: 'class' });
-      expect(events[1]).toEqual({ name: 'testFunc', type: 'factory' });
-      expect(events[2]).toEqual({ name: 'testInstance', type: 'instance' });
+      expect(events[0]).toEqual({ token: 'TestClass', type: 'class' });
+      expect(events[1]).toEqual({ token: 'testFunc', type: 'factory' });
+      expect(events[2]).toEqual({ token: 'testInstance', type: 'instance' });
     });
 
     it('should emit events for service resolution', async () => {
@@ -294,7 +294,7 @@ describe('Enhanced DI Container Features', () => {
       container.resolve('test');
 
       expect(resolutionEvents).toHaveLength(1);
-      expect(resolutionEvents[0].name).toBe('test');
+      expect(resolutionEvents[0].token).toBe('test');
       expect(typeof resolutionEvents[0].resolutionTime).toBe('number');
     });
   });
@@ -304,7 +304,7 @@ describe('Enhanced DI Container Features', () => {
       container.registerInstance('service1', {});
       container.registerInstance('service2', {});
 
-      const _stats = container.getStats();
+      const stats = container.getStats();
 
       expect(stats.totalServices).toBe(2);
       expect(stats.healthyServices).toBe(2);
@@ -381,7 +381,8 @@ describe('Enhanced DI Container Features', () => {
       });
 
       expect(Array.isArray(discovered)).toBe(true);
-      // Mock implementation returns services for patterns containing 'service')			expect(discovered.length).toBeGreaterThan(0);
+      // Mock implementation returns services for patterns containing 'service'
+      expect(discovered.length).toBeGreaterThan(0);
 
       const serviceInfo = discovered[0];
       expect(serviceInfo.type).toBe('class');

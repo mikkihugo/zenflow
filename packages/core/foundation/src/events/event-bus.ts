@@ -79,6 +79,15 @@ const safeAsync = async <T>(
  }
 };
 
+export function ensureSingleBusInstance(bus: unknown) {
+  if (process.env['NODE_ENV'] !== 'production') {
+    const g = globalThis as any;
+    if (g.__cz_bus && g.__cz_bus !== bus) {
+      logger.warn('[EventBus] Multiple instances detected in development.');
+    }
+    g.__cz_bus = g.__cz_bus || bus;
+  }
+}
 export interface EventBusConfig {
  maxListeners?: number;
  enableMiddleware?: boolean;
@@ -179,6 +188,17 @@ export class EventBus<
  >(config?: EventBusConfig): EventBus<T> {
  if (!EventBus.instance) {
  EventBus.instance = new EventBus<T>(config);
+ try {
+ ensureSingleBusInstance(EventBus.instance);
+ } catch {
+ // ignore guardrail errors
+ }
+ } else {
+ try {
+ ensureSingleBusInstance(EventBus.instance);
+ } catch {
+ // ignore
+ }
  }
  return EventBus.instance as EventBus<T>;
  }
@@ -249,7 +269,7 @@ export class EventBus<
  (this.busMetrics.eventTypes[eventKey] || 0) + 1;
  }
 
- // Handle middleware for synchronous usage
+ // Handle middleware for synchronous usage (non-blocking)
  if (this.busConfig.enableMiddleware && this.middleware.length > 0) {
  this.runMiddleware(String(event), payload).catch((error) => {
  if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
@@ -267,8 +287,34 @@ export class EventBus<
  logger.info(`Emitting event:${String(event)}`, { payload });
  }
 
- // Emit event
- const result = super.emit(String(event), payload);
+ // Listener error isolation: invoke each listener safely and continue
+ const raw =
+ typeof (this as any).rawListeners === 'function'
+ ? (this as any).rawListeners(event)
+ : this.listeners(event);
+
+ const listeners = (raw || []) as ((...args: unknown[]) => void)[];
+
+ for (const listener of listeners) {
+ try {
+ // Ensure correct 'this' for once wrappers
+ (listener as (...args: unknown[]) => void).call(this, payload);
+ } catch (err) {
+ if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
+ if (this.busConfig.enableLogging) {
+ logger.error(`Listener error for event '${String(event)}':`, err);
+ }
+ // Avoid throwing when no error listeners are registered
+ if (this.listenerCount('error') > 0) {
+ try {
+ // Use super.emit to avoid re-entering isolation logic
+ super.emit('error', err);
+ } catch {
+ // swallow to preserve isolation contract
+ }
+ }
+ }
+ }
 
  // Update processing time metrics
  if (this.busConfig.enableMetrics) {
@@ -276,7 +322,8 @@ export class EventBus<
  this.updateProcessingTimeMetrics(processingTime);
  }
 
- return result;
+ // Return true if there were listeners registered
+ return listeners.length > 0;
  } catch (error) {
  if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
  if (this.busConfig.enableLogging) {

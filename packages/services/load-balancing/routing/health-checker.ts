@@ -14,13 +14,13 @@ import type { Agent } from '../types';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    logger.info(`[DEBUG] ${  message}`, meta || ''),
+    console.log(`[DEBUG] ${message}`, meta || ''),
   info: (message: string, meta?: unknown) =>
-    logger.info(`[INFO] ${  message}`, meta || ''),
+    console.log(`[INFO] ${message}`, meta || ''),
   warn: (message: string, meta?: unknown) =>
-    logger.warn(`[WARN] ${  message}`, meta || ''),
+    console.warn(`[WARN] ${message}`, meta || ''),
   error: (message: string, meta?: unknown) =>
-    logger.error(`[ERROR] ${  message}`, meta || ''),
+    console.error(`[ERROR] ${message}`, meta || ''),
 };
 
 interface HealthStatus {
@@ -31,7 +31,7 @@ interface HealthStatus {
   consecutiveFailures: number;
 }
 
-export class HealthChecker extends EventEmitter implements HealthChecker {
+export class HealthChecker extends EventEmitter {
   private healthStatuses: Map<string, HealthStatus> = new Map();
   private checkInterval: number;
   private healthCheckTimer: NodeJS.Timeout | null = null;

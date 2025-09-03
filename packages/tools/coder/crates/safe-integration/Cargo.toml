@@ -1,0 +1,27 @@
+[package]
+name = "safe-integration"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["claude-code-zen Team"]
+description = "SAFe 6.0 integration and user story management"
+
+[dependencies]
+# Workspace dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
+chrono = { workspace = true, features = ["serde"] }
+
+# SAFe integration dependencies
+uuid = { version = "1.0", features = ["v4", "serde"] }
+dashmap = { workspace = true }
+
+# SPARC methodology dependency
+sparc-methodology = { path = "../sparc-methodology" }
+
+[lib]
+name = "safe_integration"
+crate-type = ["rlib"]

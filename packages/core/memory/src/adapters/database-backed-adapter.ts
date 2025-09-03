@@ -19,7 +19,7 @@ const logger = getLogger('DatabaseBackedAdapter');
 const ADAPTER_NOT_INITIALIZED_ERROR = 'Adapter not initialized';
 
 export interface DatabaseMemoryConfig {
-  type: 'sqlite' | ' memory';
+  type: 'sqlite' | 'memory';
   database: string;
   maxSize?: number;
   ttl?: number;
@@ -35,12 +35,12 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
   private initialized = false;
 
   constructor(private config: DatabaseMemoryConfig) {
-    super();
+    super(config);
     this.databaseProvider = new DatabaseProvider();
     logger.debug('DatabaseBackedAdapter created', { config });
   }
 
-  async initialize(): Promise<Result<void, Error>> {
+  async initialize(): Promise<void> {
     try {
       logger.info('Initializing database-backed memory adapter', {
         type: this.config.type,
@@ -52,18 +52,17 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
       this.initialized = true;
 
       logger.info('Database-backed memory adapter initialized successfully');
-      return ok();
     } catch (error) {
       logger.error('Failed to initialize database-backed memory adapter', {
         error,
       });
-      return err(error instanceof Error ? error : new Error(String(error)));
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
 
-  async store(key: string, value: unknown): Promise<Result<void, Error>> {
+  async store(key: string, value: unknown): Promise<void> {
     if (!this.initialized || !this.storage) {
-      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+      throw new Error(ADAPTER_NOT_INITIALIZED_ERROR);
     }
 
     try {
@@ -77,39 +76,38 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 
       await this.storage.set(key, entry);
       logger.debug('Stored memory entry', { key, size: entry.size });
-      return ok();
     } catch (error) {
       logger.error('Failed to store memory entry', { key, error });
-      return err(error instanceof Error ? error : new Error(String(error)));
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
 
-  async retrieve(key: string): Promise<Result<unknown, Error>> {
+  async retrieve<T = unknown>(key: string): Promise<T | null> {
     if (!this.initialized || !this.storage) {
-      return err(new Error(ADAPTER_NOT_INITIALIZED_ERROR));
+      throw new Error(ADAPTER_NOT_INITIALIZED_ERROR);
     }
 
     try {
       const entry = (await this.storage.get(key)) as MemoryEntry | null;
 
       if (!entry) {
-        return ok(null);
+        return null;
       }
 
       // Check TTL
       if (entry.ttl && entry.timestamp + entry.ttl < Date.now()) {
         await this.storage.delete(key);
-        return ok(null);
+        return null;
       }
 
       logger.debug('Retrieved memory entry', {
         key,
         age: Date.now() - entry.timestamp,
       });
-      return ok(entry.value);
+      return entry.value as T;
     } catch (error) {
       logger.error('Failed to retrieve memory entry', { key, error });
-      return err(error instanceof Error ? error : new Error(String(error)));
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
 

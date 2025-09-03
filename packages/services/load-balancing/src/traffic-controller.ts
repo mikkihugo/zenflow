@@ -208,16 +208,8 @@ export class TrafficController extends EventBus<TrafficEvents> {
 
  try {
  this.logger.info(
- '🚦 Initializing Traffic Controller with foundation EventBus...'
+ '🚦 Initializing Traffic Controller...'
  );
-
- // Initialize EventBus first
- const eventBusResult = await super.initialize();
- if (eventBusResult.isErr()) {
- throw new Error(
- `EventBus initialization failed:${eventBusResult.error?.message}`
- );
- }
 
  // Initialize load balancing components
  this.routingEngine = new IntelligentRoutingEngine();

@@ -17,7 +17,7 @@
 * @version 1.0.0
 */
 
-import type { EventEmitter } from 'node:events';
+import type { EventEmitter } from '@claude-zen/foundation';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 // Event-driven policy: avoid direct type imports from other internal packages

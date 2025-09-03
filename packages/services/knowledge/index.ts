@@ -673,8 +673,8 @@ export async function createKnowledgeSharingSystem(
 
   // Create logger and event bus if not provided
   const finalLogger = logger || console;
-  const finalEventBus =
-    eventBus || new (await import('node:events')).EventEmitter();
+  const { EventBus: FoundationEventBus } = await import('@claude-zen/foundation');
+  const finalEventBus = eventBus || FoundationEventBus.getInstance();
 
   const system = new CrossAgentKnowledgeIntegration(
     finalConfig,

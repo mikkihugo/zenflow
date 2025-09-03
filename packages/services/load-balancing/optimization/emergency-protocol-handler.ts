@@ -14,13 +14,13 @@ import type { EmergencyHandler } from '../interfaces';
 
 const logger = {
   debug: (message: string, meta?: unknown) =>
-    logger.info(`[DEBUG] ${  message}`, meta || ''),
+    console.log(`[DEBUG] ${message}`, meta || ''),
   info: (message: string, meta?: unknown) =>
-    logger.info(`[INFO] ${  message}`, meta || ''),
+    console.log(`[INFO] ${message}`, meta || ''),
   warn: (message: string, meta?: unknown) =>
-    logger.warn(`[WARN] ${  message}`, meta || ''),
+    console.warn(`[WARN] ${message}`, meta || ''),
   error: (message: string, meta?: unknown) =>
-    logger.error(`[ERROR] ${  message}`, meta || ''),
+    console.error(`[ERROR] ${message}`, meta || ''),
 };
 
 interface EmergencyProtocol {

@@ -21,7 +21,16 @@ import type {
 import { taskPriorityToNumber } from '../types';
 
 // Direct brain.js import for practical neural networks
-const brain = require('brain.js');
+let brain: any = null;
+
+// Initialize brain.js asynchronously
+function initializeBrainJs() {
+  import('brain.js').then(module => {
+    brain = module.default || module;
+  }).catch(() => {
+    brain = null; // Fallback if brain.js not available
+  });
+}
 
 // Foundation-optimized logging
 const logger = getLogger('MLPredictiveAlgorithm');
@@ -104,6 +113,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       initialized: false,
       lastTrainingSize: 0,
     };
+    // Initialize brain.js
+    initializeBrainJs();
     this.initializeModels();
   }
 

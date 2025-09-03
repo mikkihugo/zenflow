@@ -51,17 +51,17 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should add multiple listeners to same event', () => {
         const results: number[] = [];
 
-        eventBase.on('data', (data) => {
+        eventBus.on('data', (data) => {
           results.push(data.value * 2);
         });
-        eventBase.on('data', (data) => {
+        eventBus.on('data', (data) => {
           results.push(data.value + 1);
         });
-        eventBase.on('data', (data) => {
+        eventBus.on('data', (data) => {
           results.push(data.value - 1);
         });
 
-        eventBase.emit('data', { value: 10 });
+        eventBus.emit('data', { value: 10 });
 
         expect(results).toHaveLength(3);
         expect(results).toContain(20); // * 2
@@ -76,12 +76,12 @@ describe('Event System - Comprehensive Coverage', () => {
           callCount++;
         };
 
-        eventBase.on('status', listener);
-        eventBase.emit('status', { status: 'online', timestamp: Date.now() });
+        eventBus.on('status', listener);
+        eventBus.emit('status', { status: 'online', timestamp: Date.now() });
         expect(callCount).toBe(1);
 
-        eventBase.off('status', listener);
-        eventBase.emit('status', { status: 'offline', timestamp: Date.now() });
+        eventBus.off('status', listener);
+        eventBus.emit('status', { status: 'offline', timestamp: Date.now() });
         expect(callCount).toBe(1); // Should not increase
       });
 
@@ -90,7 +90,7 @@ describe('Event System - Comprehensive Coverage', () => {
 
         // Should not throw when removing listener that was never added
         expect(() => {
-          eventBase.off('data', listener);
+          eventBus.off('data', listener);
         }).not.toThrow();
       });
 
@@ -98,18 +98,18 @@ describe('Event System - Comprehensive Coverage', () => {
         let callCount = 0;
         let lastValue: number | undefined;
 
-        eventBase.once('data', (data) => {
+        eventBus.once('data', (data) => {
           callCount++;
           lastValue = data.value;
         });
 
         // First emit should trigger listener
-        eventBase.emit('data', { value: 42 });
+        eventBus.emit('data', { value: 42 });
         expect(callCount).toBe(1);
         expect(lastValue).toBe(42);
 
         // Second emit should NOT trigger listener
-        eventBase.emit('data', { value: 100 });
+        eventBus.emit('data', { value: 100 });
         expect(callCount).toBe(1); // Still 1
         expect(lastValue).toBe(42); // Still original value
       });
@@ -117,10 +117,10 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should handle multiple once listeners', () => {
         const results: string[] = [];
 
-        eventBase.once('message', (msg) => results.push('A:' + msg.text));
-        eventBase.once('message', (msg) => results.push('B:' + msg.text));
+        eventBus.once('message', (msg) => results.push('A:' + msg.text));
+        eventBus.once('message', (msg) => results.push('B:' + msg.text));
 
-        eventBase.emit('message', { text: 'test', id: '1' });
+        eventBus.emit('message', { text: 'test', id: '1' });
 
         expect(results).toHaveLength(2);
         expect(results).toContain('A:test');
@@ -128,36 +128,36 @@ describe('Event System - Comprehensive Coverage', () => {
 
         // Second emit should not trigger any listeners
         results.length = 0;
-        eventBase.emit('message', { text: 'test2', id: '2' });
+        eventBus.emit('message', { text: 'test2', id: '2' });
         expect(results).toHaveLength(0);
       });
     });
 
     describe('Event Emission', () => {
       it('should return false when no listeners exist', () => {
-        const result = eventBase.emit('data', { value: 123 });
+        const result = eventBus.emit('data', { value: 123 });
         expect(result).toBe(false);
       });
 
       it('should return true when listeners exist and are called', () => {
-        eventBase.on('data', () => {});
-        const result = eventBase.emit('data', { value: 123 });
+        eventBus.on('data', () => {});
+        const result = eventBus.emit('data', { value: 123 });
         expect(result).toBe(true);
       });
 
       it('should handle mixed regular and once listeners', () => {
         const results: string[] = [];
 
-        eventBase.on('message', (msg) => results.push('regular:' + msg.text));
-        eventBase.once('message', (msg) => results.push('once:' + msg.text));
+        eventBus.on('message', (msg) => results.push('regular:' + msg.text));
+        eventBus.once('message', (msg) => results.push('once:' + msg.text));
 
         // First emit
-        eventBase.emit('message', { text: 'first', id: '1' });
+        eventBus.emit('message', { text: 'first', id: '1' });
         expect(results).toEqual(['regular:first', 'once:first']);
 
         // Second emit - only regular listener should fire
         results.length = 0;
-        eventBase.emit('message', { text: 'second', id: '2' });
+        eventBus.emit('message', { text: 'second', id: '2' });
         expect(results).toEqual(['regular:second']);
       });
     });
@@ -166,22 +166,22 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should continue calling other listeners if one throws', () => {
         const results: number[] = [];
 
-        eventBase.on('data', () => {
+        eventBus.on('data', () => {
           throw new Error('First listener error');
         });
-        eventBase.on('data', (data) => {
+        eventBus.on('data', (data) => {
           results.push(data.value);
         });
-        eventBase.on('data', () => {
+        eventBus.on('data', () => {
           throw new Error('Third listener error');
         });
-        eventBase.on('data', (data) => {
+        eventBus.on('data', (data) => {
           results.push(data.value * 2);
         });
 
         // Should not throw and should still call non-throwing listeners
         expect(() => {
-          eventBase.emit('data', { value: 5 });
+          eventBus.emit('data', { value: 5 });
         }).not.toThrow();
 
         expect(results).toEqual([5, 10]);
@@ -193,13 +193,13 @@ describe('Event System - Comprehensive Coverage', () => {
         let capturedError: Error | undefined;
         let capturedContext: string | undefined;
 
-        eventBase.on('error', (errorData) => {
+        eventBus.on('error', (errorData) => {
           capturedError = errorData.error;
           capturedContext = errorData.context;
         });
 
         const testError = new Error('Test error message');
-        eventBase.emit('error', { error: testError, context: 'test-context' });
+        eventBus.emit('error', { error: testError, context: 'test-context' });
 
         expect(capturedError).toBe(testError);
         expect(capturedContext).toBe('test-context');
@@ -208,13 +208,13 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should handle events with optional properties', () => {
         let capturedData: { error: Error; context?: string } | undefined;
 
-        eventBase.on('error', (errorData) => {
+        eventBus.on('error', (errorData) => {
           capturedData = errorData;
         });
 
         // Emit without optional context
         const testError = new Error('No context');
-        eventBase.emit('error', { error: testError });
+        eventBus.emit('error', { error: testError });
 
         expect(capturedData?.error).toBe(testError);
         expect(capturedData?.context).toBeUndefined();
@@ -225,13 +225,13 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should handle rapid event emissions', () => {
         const results: number[] = [];
 
-        eventBase.on('data', (data) => {
+        eventBus.on('data', (data) => {
           results.push(data.value);
         });
 
         // Emit many events rapidly
         for (let i = 0; i < 100; i++) {
-          eventBase.emit('data', { value: i });
+          eventBus.emit('data', { value: i });
         }
 
         expect(results).toHaveLength(100);
@@ -242,16 +242,16 @@ describe('Event System - Comprehensive Coverage', () => {
       it('should handle event emissions during listener execution', () => {
         const results: string[] = [];
 
-        eventBase.on('message', (msg) => {
+        eventBus.on('message', (msg) => {
           results.push('outer:' + msg.text);
 
           // Emit another event during listener execution
           if (msg.text === 'trigger') {
-            eventBase.emit('message', { text: 'inner', id: 'inner' });
+            eventBus.emit('message', { text: 'inner', id: 'inner' });
           }
         });
 
-        eventBase.emit('message', { text: 'trigger', id: 'outer' });
+        eventBus.emit('message', { text: 'trigger', id: 'outer' });
 
         expect(results).toEqual(['outer:trigger', 'outer:inner']);
       });
@@ -264,15 +264,15 @@ describe('Event System - Comprehensive Coverage', () => {
           executed = true;
         };
 
-        eventBase.once('data', listener);
+        eventBus.once('data', listener);
 
         // Emit to trigger once listener
-        eventBase.emit('data', { value: 1 });
+        eventBus.emit('data', { value: 1 });
         expect(executed).toBe(true);
 
         // Try to remove already-cleaned-up listener
         expect(() => {
-          eventBase.off('data', listener);
+          eventBus.off('data', listener);
         }).not.toThrow();
       });
     });
@@ -283,15 +283,15 @@ describe('Event System - Comprehensive Coverage', () => {
         const messageResults: string[] = [];
         const statusResults: string[] = [];
 
-        eventBase.on('data', (data) => dataResults.push(data.value));
-        eventBase.on('message', (msg) => messageResults.push(msg.text));
-        eventBase.on('status', (status) => statusResults.push(status.status));
+        eventBus.on('data', (data) => dataResults.push(data.value));
+        eventBus.on('message', (msg) => messageResults.push(msg.text));
+        eventBus.on('status', (status) => statusResults.push(status.status));
 
         // Emit different types of events
-        eventBase.emit('data', { value: 42 });
-        eventBase.emit('message', { text: 'hello', id: '1' });
-        eventBase.emit('status', { status: 'online', timestamp: Date.now() });
-        eventBase.emit('data', { value: 100 });
+        eventBus.emit('data', { value: 42 });
+        eventBus.emit('message', { text: 'hello', id: '1' });
+        eventBus.emit('status', { status: 'online', timestamp: Date.now() });
+        eventBus.emit('data', { value: 100 });
 
         expect(dataResults).toEqual([42, 100]);
         expect(messageResults).toEqual(['hello']);

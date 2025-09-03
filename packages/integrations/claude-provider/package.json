@@ -1,0 +1,39 @@
+{
+  "name": "@claude-zen/claude-provider",
+  "version": "1.0.0",
+  "description": "Anthropic Claude integration provider for Claude Code Zen",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@anthropic-ai/claude-code": "^1.0.102"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "keywords": [
+    "claude",
+    "anthropic",
+    "ai",
+    "chat",
+    "completions",
+    "claude-zen"
+  ],
+  "license": "MIT"
+}

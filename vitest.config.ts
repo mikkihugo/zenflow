@@ -33,6 +33,12 @@
  */
 
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/**
+ * Get the directory name for the current module in ESM
+ */
+const _dirname = fileURLToPath(new URL('.', import.meta.url));
 import { defineConfig } from 'vitest/config';
 
 /**

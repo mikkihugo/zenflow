@@ -89,7 +89,8 @@ export class ContainerImpl implements Container {
  singleton: options.singleton === true,
  registeredAt: Date.now(),
  });
- this.emit('serviceRegistered', { token, type: 'function' });
+ // Align emitted type with metadata and tests
+ this.emit('serviceRegistered', { token, type: 'factory' });
  }
 
  registerValue<T>(
@@ -106,6 +107,10 @@ export class ContainerImpl implements Container {
  singleton: true,
  registeredAt: Date.now(),
  });
+ // Ensure replacement semantics take effect for singletons
+ this.singletonCache.set(token, value);
+ // Track disposables registered as values/instances
+ this.trackDisposable(value as unknown);
  this.emit('serviceRegistered', { token, type: 'instance' });
  }
 
@@ -153,39 +158,48 @@ export class ContainerImpl implements Container {
  }
 
  async resolveAsync<T>(token: string): Promise<T> {
+   const start = Date.now();
    const metadata = this.serviceMetadata.get(token);
    if (!metadata) {
      throw new Error(`Service '${token}' is not registered`);
    }
 
    if (metadata.singleton && this.singletonCache.has(token)) {
-     return this.singletonCache.get(token) as T;
+     const instance = this.singletonCache.get(token) as T;
+     this.trackDisposable(instance as unknown);
+     this.emit('serviceResolved', { token, type: metadata.type, resolutionTime: Date.now() - start });
+     return instance;
    }
 
    if (metadata.type === ASYNC_FACTORY_TYPE) {
- const factory = this.services.get(token) as () => Promise<T>;
- const instance = await factory();
+     const factory = this.services.get(token) as () => Promise<T>;
+     const instance = await factory();
 
- if (metadata.singleton) {
- this.singletonCache.set(token, instance);
- }
+     if (metadata.singleton) {
+       this.singletonCache.set(token, instance);
+     }
 
- this.emit('serviceResolved', { token, type: metadata.type });
- return instance;
- }
+     // Ensure async-factory instances participate in disposal and emit timing once
+     this.handleServiceInstance(instance, metadata, token, start);
+     return instance;
+   }
 
- // Fallback to sync resolution
- return this.resolve<T>(token);
+   // Fallback to sync resolution
+   return this.resolve<T>(token);
  }
 
  resolve<T>(token: string): T {
+   const start = Date.now();
    const metadata = this.serviceMetadata.get(token);
    if (!metadata) {
      throw new Error(`Service '${token}' is not registered`);
    }
 
    if (metadata.singleton && this.singletonCache.has(token)) {
-     return this.singletonCache.get(token) as T;
+     const instance = this.singletonCache.get(token) as T;
+     this.trackDisposable(instance as unknown);
+     this.emit('serviceResolved', { token, type: metadata.type, resolutionTime: Date.now() - start });
+     return instance;
    }
 
    const serviceDefinition = this.services.get(token);
@@ -193,13 +207,13 @@ export class ContainerImpl implements Container {
      throw new Error(`Service definition for '${token}' not found`);
    }
 
- const instance = this.createServiceInstance<T>(
- serviceDefinition,
- metadata,
- token
- );
- this.handleServiceInstance(instance, metadata, token);
- return instance;
+   const instance = this.createServiceInstance<T>(
+     serviceDefinition,
+     metadata,
+     token
+   );
+   this.handleServiceInstance(instance, metadata, token, start);
+   return instance;
  }
 
  private createServiceInstance<T>(
@@ -235,25 +249,45 @@ export class ContainerImpl implements Container {
  }
 
  private handleServiceInstance<T>(
- instance: T,
- metadata: ServiceInfo,
- token: string
+   instance: T,
+   metadata: ServiceInfo,
+   token: string,
+   startTime?: number
  ): void {
- if (metadata.singleton) {
- this.singletonCache.set(token, instance);
+   if (metadata.singleton) {
+     this.singletonCache.set(token, instance);
+   }
+
+   if (
+     instance &&
+     typeof (instance as { dispose?: () => void | Promise<void> }).dispose ===
+       'function'
+   ) {
+     this.disposableServices.add(
+       instance as unknown as { dispose(): void | Promise<void> }
+     );
+   }
+
+   const resolutionTime =
+     typeof startTime === 'number' ? Date.now() - startTime : 0;
+
+   this.emit('serviceResolved', {
+     token,
+     type: metadata.type,
+     resolutionTime,
+   });
  }
 
- if (
- instance &&
- typeof (instance as { dispose?: () => void | Promise<void> }).dispose ===
- 'function'
- ) {
- this.disposableServices.add(
- instance as unknown as { dispose(): void | Promise<void> }
- );
- }
-
- this.emit('serviceResolved', { token, type: metadata.type });
+ private trackDisposable(instance: unknown): void {
+   if (
+     instance &&
+     typeof (instance as { dispose?: () => void | Promise<void> }).dispose ===
+       'function'
+   ) {
+     this.disposableServices.add(
+       instance as { dispose(): void | Promise<void> }
+     );
+   }
  }
 
  has(token: string): boolean {

@@ -6,7 +6,7 @@
  * @file Coordination system:resource-monitor
  */
 import type { LoadMetrics } from '../types';
-export declare class ResourceMonitor implements ResourceMonitor {
+export declare class ResourceMonitor {
     private monitoringAgents;
     private metricsCache;
     private thresholds;

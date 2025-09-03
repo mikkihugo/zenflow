@@ -1,0 +1,73 @@
+[package]
+name = "code-analyzer-core"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["claude-code-zen Team"]
+description = "Core code analysis and intelligence engine"
+
+[dependencies]
+# Workspace dependencies
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true, features = ["fs", "io-util", "process"] }
+
+# File system and path handling
+walkdir = { workspace = true }
+ignore = "0.4"
+glob = "0.3"
+
+# Text processing
+regex = { workspace = true }
+aho-corasick = "1.1"
+memchr = "2.7"
+
+# AST parsing
+tree-sitter = { workspace = true }
+tree-sitter-rust = { workspace = true }
+tree-sitter-typescript = { workspace = true }
+tree-sitter-javascript = { workspace = true }
+tree-sitter-python = { workspace = true }
+tree-sitter-go = { workspace = true }
+
+# Parallel processing
+rayon = { workspace = true }
+
+# Collections and data structures
+indexmap = { workspace = true }
+dashmap = { workspace = true }
+
+# Database dependencies (for code analysis storage)
+rusqlite = { workspace = true }
+tempfile = { workspace = true }
+chrono = { workspace = true, features = ["serde"] }
+
+# Core code analysis
+levenshtein = { workspace = true }
+md5 = "0.7"
+
+# Configuration and serialization
+serde_yaml = { workspace = true }
+notify = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+metrics = { workspace = true }
+num_cpus = { workspace = true }
+
+# Quality gates integration
+quality-gates = { path = "../quality-gates" }
+
+[features]
+default = ["sqlite"]
+sqlite = []
+
+[lib]
+name = "code_analyzer_core"
+crate-type = ["rlib"]
+
+[dev-dependencies]
+criterion = { workspace = true }
+tokio-test = { workspace = true }
+num_cpus = "1.16"

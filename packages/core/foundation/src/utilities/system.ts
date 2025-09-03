@@ -9,26 +9,10 @@
 import * as os from 'node:os';
 import * as process from 'node:process';
 import {
-  displaySystemStatus,
-  getCapabilityScores,
-  getSystemCapabilityData,
-  type SystemCapabilityData,
-  startSystemMonitoring,
-} from './system/capability.provider.js';
-import {
   type DetectedWorkspace,
   WorkspaceDetector,
 } from './system/monorepo.detector.js';
 
-// Re-export available functions from capability provider
-export {
-  createHealthDataProviders,
-  displaySystemStatus,
-  getCapabilityScores,
-  getInstallationSuggestions,
-  getSystemCapabilityData,
-  startSystemMonitoring,
-} from './system/capability.provider.js';
 export type { DetectedWorkspace } from './system/monorepo.detector.js';
 // Re-export system modules for convenience
 export { WorkspaceDetector } from './system/monorepo.detector.js';
@@ -508,63 +492,9 @@ export function detectWorkspace(
   return detector.detectWorkspaceRoot(startPath);
 }
 
-/**
- * Get system capabilities and health information
- *
- * @returns System capability data
- *
- * @example
- * '''typescript'
- * const capabilities = await getSystemCapabilities();
- * logger.info(`System health:${capabilities.systemHealthScore}%`
- * logger.info('Available packages:' + (capabilities.availablePackages) + '/' + capabilities.totalPackages);
- * '
- */
-export function getSystemCapabilities(): Promise<SystemCapabilityData> {
-  return Promise.resolve(getSystemCapabilityData());
-}
 
-/**
- * Display system status information to console
- *
- * @example
- * '''typescript'
- * await showSystemStatus();
- * // Outputs detailed system status with colors and emojis
- * '
- */
-export function showSystemStatus(): Promise<void> {
-  return displaySystemStatus();
-}
 
-/**
- * Start system monitoring for status changes
- *
- * @example
- * '''typescript'
- * startMonitoring();
- * // Begins logging system events and status changes
- * '
- */
-export function startMonitoring(): void {
-  startSystemMonitoring();
-}
 
-/**
- * Get capability scores for different system areas
- *
- * @returns Record of capability area names to scores
- *
- * @example
- * '''typescript'
- * const scores = await getCapabilityScoreMap();
- * logger.info('Intelligence capability: ', scores.intelligence);
-' * logger.info('Infrastructure capability: ', scores.infrastructure);
-' * '
- */
-export function getCapabilityScoreMap(): Promise<Record<string, number>> {
-  return getCapabilityScores();
-}
 
 /**
  * Create a formatted system summary for logging or display

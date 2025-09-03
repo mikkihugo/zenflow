@@ -87,7 +87,7 @@ function buildClientOptions(modelId: string): GeminiClientOptions {
   return { model: modelId }
 }
 
-export async function registerGeminiHandlers(bus = new EventBus()) {
+export async function registerGeminiHandlers(bus = EventBus.getInstance()) {
   const clientCache = new Map<string, Promise<GeminiClient>>()
 
   async function getClient(modelId: string): Promise<GeminiClient> {

@@ -6,7 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from '@claude-zen/foundation';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 

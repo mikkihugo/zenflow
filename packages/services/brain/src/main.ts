@@ -118,8 +118,8 @@ export class FoundationBrainCoordinator {
   private configStore: KeyValueStore | null = null;
   private knowledgeGraph: GraphStore | null = null;
 
-  // Event-driven architecture with EventBus
-  private eventBus = new EventBus();
+  // Event-driven architecture with EventBus (standardized on singleton)
+  private eventBus = EventBus.getInstance();
 
   constructor(config: BrainConfig = {}) {
     this.brainConfig = {
@@ -172,7 +172,7 @@ export class FoundationBrainCoordinator {
 
       // Initialize performance tracking via EventBus (optional, non-blocking)
       try {
-        const eb = new EventBus();
+        const eb = EventBus.getInstance();
         eb.emit?.('operations:performance:requestTracker' as any, { source: 'brain' } as any);
         // Listener would respond out-of-process; brain operates without a direct import
       } catch {}

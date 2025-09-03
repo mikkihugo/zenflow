@@ -8,7 +8,7 @@
 
 import type { LoadMetrics } from '../types';
 
-export class ResourceMonitor implements ResourceMonitor {
+export class ResourceMonitor {
   private monitoringAgents: Set<string> = new Set();
   private metricsCache: Map<string, LoadMetrics> = new Map();
   private thresholds: Map<string, Record<string, number>> = new Map();

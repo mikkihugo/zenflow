@@ -82,7 +82,7 @@ return;
 // Event-driven policy: request metrics availability via EventBus instead of importing operations
 try {
 	const { EventBus } = await import('@claude-zen/foundation');
-	const bus = new EventBus();
+	const bus = EventBus.getInstance();
 	bus.emit?.('operations:performance:available?' as any, { source: 'brain:retraining' } as any);
 } catch (_e) {
 	// Continue without blocking; metrics optional
@@ -254,7 +254,7 @@ Format as JSON with keys:approach, epochs, batchSize, successCriteria, risks``
 let retrainingPlan = 'Automatic retraining plan: Default optimization strategy with learning rate adjustment';
 try {
 	const { EventBus } = await import('@claude-zen/foundation');
-	const bus = new EventBus();
+	const bus = EventBus.getInstance();
 	bus.emit?.('llm:plans:retraining:request' as any, { prompt: retrainingPrompt } as any);
 } catch {}
 
