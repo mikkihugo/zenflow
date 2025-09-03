@@ -69,6 +69,21 @@ export function createTelemetryManager(config?: unknown) {
   return createEventDrivenTelemetryManager();
 }
 
+/**
+ * Returns a small facade exposing telemetry creation and lifecycle helpers.
+ *
+ * The optional `config` value is captured and provided to the returned
+ * `createTelemetryManager` function; callers can use that factory to create
+ * a manager without importing other internals. Note: the underlying manager
+ * implementation may ignore the config.
+ *
+ * @param config - Optional configuration object forwarded to the returned `createTelemetryManager`
+ * @returns An object with:
+ *   - `createTelemetryManager()` — factory that creates a telemetry manager (captures `config`)
+ *   - `getEventDrivenTelemetry` — accessor for the event-driven telemetry API
+ *   - `initializeEventDrivenTelemetry` — initializer for the telemetry subsystem
+ *   - `shutdownEventDrivenTelemetry` — shutdown helper for the telemetry subsystem
+ */
 export function createTelemetryAccess(config?:unknown) {
   return {
     createTelemetryManager: () => createTelemetryManager(config),
