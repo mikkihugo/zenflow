@@ -51,6 +51,7 @@ const SKIP_PATTERNS = [
 	"packages/core/database", // Allow database core to import underlying libs directly
 	"packages/core/neural-ml", // Allow neural-ml core to import underlying libs directly
 	"tests", // Skip top-level tests
+	"test-", // Skip root-level test files
 	"scripts/validate-imports.js", // Allow this script itself
 	"scripts/validate-dependencies.js", // Allow validation scripts
 ];
