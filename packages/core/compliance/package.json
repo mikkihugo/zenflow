@@ -1,0 +1,41 @@
+{
+  "name": "@claude-zen/compliance",
+  "version": "0.1.0",
+  "description": "EU AI Act and regulatory compliance framework for Claude Zen",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "ai",
+    "compliance",
+    "eu-ai-act",
+    "governance",
+    "regulation"
+  ],
+  "author": "Claude Zen Team",
+  "license": "MIT"
+}
