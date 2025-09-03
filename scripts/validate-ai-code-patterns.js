@@ -28,6 +28,26 @@ const AI_ANTIPATTERNS = [
     message: 'Add the actual implementation',
     severity: 'error'
   },
+  {
+    pattern: /function\s+\w+\([^)]*\)\s*\{\s*\}/gi,
+    message: 'Empty function - add actual implementation',
+    severity: 'error'
+  },
+  {
+    pattern: /return\s+undefined;?\s*\/\/.*stub/gi,
+    message: 'Replace undefined stub with proper return value',
+    severity: 'error'
+  },
+  {
+    pattern: /if\s*\(\s*true\s*\)/gi,
+    message: 'Replace hardcoded true condition with actual logic',
+    severity: 'error'
+  },
+  {
+    pattern: /\/\/\s*FIXME.*AI/gi,
+    message: 'Fix AI-generated FIXME comments',
+    severity: 'error'
+  },
   
   // Event system anti-patterns
   {

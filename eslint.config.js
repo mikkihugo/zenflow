@@ -59,6 +59,25 @@ export default [
   // TS handles undefined variables/types; avoid false positives (DOM types etc.)
   'no-undef': 'off',
 
+      // Production Security & Safety
+      'no-debugger': 'error',                              // Remove debugger statements
+      'no-alert': 'error',                                 // No alert/confirm in production
+      'no-process-env': 'warn',                            // Use config instead of process.env
+      '@typescript-eslint/no-non-null-assertion': 'error', // Force null checks in production
+      '@typescript-eslint/strict-boolean-expressions': 'error', // Explicit boolean checks
+      'no-throw-literal': 'error',                         // Throw proper Error objects
+      'prefer-promise-reject-errors': 'error',             // Reject with Error objects
+
+      // Anti-AI Laziness Rules
+      '@typescript-eslint/no-empty-function': 'error',     // No empty implementations
+      '@typescript-eslint/no-unused-expressions': 'error', // No meaningless statements
+      'no-empty': 'error',                                 // No empty blocks
+      'no-constant-condition': 'error',                    // No if(true) or while(true)
+      'no-unreachable': 'error',                           // No dead code after returns
+      '@typescript-eslint/no-unnecessary-condition': 'error', // No always-true/false conditions
+      'no-useless-return': 'error',                        // No unnecessary return statements
+      'no-useless-catch': 'error',                         // No catch blocks that just rethrow
+
       // AI Security & Quality - Advanced
       'no-eval': 'error',
       'no-implied-eval': 'error',
