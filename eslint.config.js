@@ -111,14 +111,23 @@ export default [
           ],
           patterns: [
             {
-              group: ['@claude-zen/*'],
+              group: [
+                '@claude-zen/brain',
+                '@claude-zen/coordination', 
+                '@claude-zen/knowledge',
+                '@claude-zen/monitoring',
+                '@claude-zen/telemetry',
+                '@claude-zen/ai-safety',
+                '@claude-zen/neural-ml',
+                '@claude-zen/memory',
+                '@claude-zen/interfaces',
+                '@claude-zen/*-linter',
+                '@claude-zen/*-analyzer',
+                '@claude-zen/*-operations'
+              ],
               message:
                 'Import only @claude-zen/foundation or @claude-zen/database across packages. Use the EventBus for cross-domain communication.',
-              // ESLint supports "allow" via negative pattern by combining with exceptions in overriding rules;
-              // here we exclude foundation/database by specifying separate allowed patterns below
             },
-            // Allowlist: foundation and database (and any subpath)
-            // Note: patterns are matched in order; we add negative lookahead alternatives via separate overrides if needed
           ],
           // ESLint no-restricted-imports doesn't support explicit except for patterns directly;
           // we rely on the validator scripts for precise enforcement and keep lint as a soft guard.
