@@ -186,7 +186,9 @@ export class TelemetryEventBridge {
         'telemetry:shutdown'
       ];
 
-      for (const eventName of eventsToForward) {
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }
         if (isValidEventName(eventName)) {
           const listener = (data: unknown) => {
             this.eventBus.emit(eventName, data);
@@ -195,6 +197,8 @@ export class TelemetryEventBridge {
           eventEmitter.on(eventName, listener);
           this.eventListeners.set(eventName, listener);
         }
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
       }
 
       EventLogger.log('telemetry-bridge:event-forwarding-setup', {
@@ -269,7 +273,9 @@ export class TelemetryEventBridge {
 // =============================================================================
 
 /**
- * Create a telemetry event bridge
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }
  */
 export function createTelemetryEventBridge(
   telemetryManager: EventDrivenTelemetryManager,
@@ -279,8 +285,6 @@ export function createTelemetryEventBridge(
 }
 
 /**
- * Get default telemetry event bridge configuration
- */
-export function getDefaultTelemetryBridgeConfig(): BridgeConfig {
-  return { ...DEFAULT_CONFIG };
-}
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }

@@ -2,7 +2,6 @@
  * @fileoverview Live Code Analyzer - Core Implementation  
  * Real-time code analysis with TypeScript AST parsing and AI insights
  */
-
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Project } from 'ts-morph';

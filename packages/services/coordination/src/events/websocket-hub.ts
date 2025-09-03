@@ -420,8 +420,6 @@ export class WebsocketHub {
   async execute(): Promise<void> {
     await this.initialize();
   }
-<<<<<<< Current (Your changes)
-=======
 
   /**
    * Get event system metrics from DynamicEventRegistry
@@ -450,5 +448,4 @@ export class WebsocketHub {
       };
     }
   }
->>>>>>> Incoming (Background Agent changes)
 }

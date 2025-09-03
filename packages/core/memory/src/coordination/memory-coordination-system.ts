@@ -710,8 +710,6 @@ export class MemoryCoordinationSystem extends EventEmitter {
       throw error;
     }
   }
-<<<<<<< Current (Your changes)
-=======
 
   /**
    * Get the event system for external integration
@@ -729,5 +727,4 @@ export class MemoryCoordinationSystem extends EventEmitter {
       }
     };
   }
->>>>>>> Incoming (Background Agent changes)
 }
