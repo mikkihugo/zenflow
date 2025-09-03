@@ -130,7 +130,9 @@ export class CopilotAuth {
 
       for (const cmd of clipboardCommands) {
         try {
-          const proc = spawn(cmd[0], cmd.slice(1), { stdio: 'pipe' });
+          const [command, ...args] = cmd;
+          if (!command) continue;
+          const proc = spawn(command, args, { stdio: 'pipe' });
           proc.stdin?.write(text);
           proc.stdin?.end();
 

@@ -29,7 +29,7 @@ export type { GitHubModelsAuthOptions } from './github-models-auth.js';
 import { GitHubModelsProvider } from './github-models-provider.js';
 export function createGitHubModelsProvider(token?: string): GitHubModelsProvider {
   return new GitHubModelsProvider({ 
-    token, 
+    ...(token ? { token } : {}),
     autoInitialize: !!token 
   });
 }

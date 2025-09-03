@@ -227,19 +227,19 @@ Generate comprehensive analysis reports:
 
 ```bash
 # Quick system summary
-npx tsx src/utils/agent-gap-analysis.ts stats
+pnpm dlx tsx src/utils/agent-gap-analysis.ts stats
 
 # Full comparison report
-npx tsx src/utils/agent-gap-analysis.ts report
+pnpm dlx tsx src/utils/agent-gap-analysis.ts report
 
 # Auto-assignment capability audit
-npx tsx src/utils/agent-gap-analysis.ts audit
+pnpm dlx tsx src/utils/agent-gap-analysis.ts audit
 
 # Performance benchmarks
-npx tsx src/utils/agent-gap-analysis.ts benchmark
+pnpm dlx tsx src/utils/agent-gap-analysis.ts benchmark
 
 # List all agents by category
-npx tsx src/utils/agent-gap-analysis.ts agents
+pnpm dlx tsx src/utils/agent-gap-analysis.ts agents
 ```
 
 ## 🔍 Competitive Analysis

@@ -97,9 +97,8 @@ packages/[package]/
 ```
 
 **Migration Strategy:**
-- **New packages**: Use `tests/` directory
-- **Existing packages**: Keep `__tests__/` or migrate to `tests/` gradually
-- **Mixed usage**: Both are valid, no enforcement needed
+- All packages must use `tests/` now. Migrate any legacy `__tests__/` directories to `tests/`.
+- Update tsconfig and vitest globs accordingly per package.
 
 **Import rules for tests:**
 - Test files can import from their own package's src

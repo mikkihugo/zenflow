@@ -24,7 +24,7 @@ import type {
   MemoryTierConfig,
 } from './types';
 import type { BaseMemoryBackend } from '../backends/base-backend';
-import type { JSONValue } from '../core/memory-system';
+import type { JSONValue } from './memory-system';
 
 export class MemoryCoordinationSystem extends EventEmitter {
   private logger: Logger;

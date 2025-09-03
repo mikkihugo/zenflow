@@ -1,14 +1,18 @@
 #!/usr/bin/env node
-
-/** Comprehensive Repair Validation Test Suite */
-/** Validates all major repairs and implementations */
-
-import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import path from "node:path";
-
-// Constants
-const TEST_PROJECT_PATH = TEST_PROJECT_PATH;
+		try {
+			require("blessed");
+			this.recordResult(
+				"Blessed UI Library",
+				true,
+				"Available for interactive dashboard",
+			);
+		} catch {
+			this.recordResult(
+				"Blessed UI Library",
+				false,
+				"Not available - will use text mode",
+			);
+		}
 
 const colors = {
 	green: "\x1b[32m",
@@ -110,7 +114,8 @@ class ComprehensiveRepairValidator {
 
 		for (const { script, timeout } of executableScripts) {
 			try {
-				execSync(`timeout ${timeout / 1000}s node ${script} || true`, {
+				execSync(`timeout ${Math.ceil(timeout / 1000)}s node ${script}`,
+				{
 					cwd: TEST_PROJECT_PATH,
 					stdio: "pipe",
 				});
@@ -163,7 +168,7 @@ class ComprehensiveRepairValidator {
 
 				// Try TypeScript compilation check (if tsc is available)
 				try {
-					execSync(`npx tsc --noEmit --skipLibCheck ${tsFile}`, {
+					execSync(`pnpm dlx tsc --noEmit --skipLibCheck ${tsFile}`, {
 						cwd: TEST_PROJECT_PATH,
 						stdio: "pipe",
 					});
@@ -202,41 +207,32 @@ class ComprehensiveRepairValidator {
 
 		for (const dep of criticalDeps) {
 			try {
-				execSync(`npm list ${dep}`, {
-					cwd: TEST_PROJECT_PATH,
-					stdio: "pipe",
-				});
-				this.recordResult(`Dependency: ${dep}`, true, "Package is installed");
+				// Resolve without executing to validate presence
+				require.resolve(dep, { paths: [TEST_PROJECT_PATH] });
+				this.recordResult(
+					`Dependency: ${dep}`,
+					true,
+					"Package is resolvable (installed)",
+				);
 			} catch (error) {
-				if (error.message.includes("npm ERR!")) {
-					this.recordResult(
-						`Dependency: ${dep}`,
-						false,
-						"Package not found or version mismatch",
-					);
-				} else {
-					this.recordResult(
-						`Dependency: ${dep}`,
-						true,
-						"Package available (version check skipped)",
-					);
-				}
+				this.recordResult(
+					`Dependency: ${dep}`,
+					false,
+					`Not installed or cannot be resolved: ${error.message}`,
+				);
 			}
 		}
 
 		// Test better-sqlite3 specifically (the problematic one)
 		try {
-			execSync("node -e "require('better-sqlite3')"", {
-				cwd: TEST_PROJECT_PATH,
-				stdio: "pipe",
-			});
+			require("better-sqlite3");
 			this.recordResult(
 				"better-sqlite3 loading",
 				true,
 				"Library loads successfully",
 			);
 		} catch (error) {
-			if (error.message.includes("NODE_MODULE_VERSION")) {
+			if ((error?.message || "").includes("NODE_MODULE_VERSION")) {
 				this.recordResult(
 					"better-sqlite3 loading",
 					false,
@@ -308,7 +304,7 @@ class ComprehensiveRepairValidator {
 	testEnhancedMemory() {
 		// Basic structure validation
 		const content = require("node:fs").readFileSync(
-			"/home/mhugo/code/claude-zen-flow/src/memory/enhanced-memory.ts",
+			path.join(TEST_PROJECT_PATH, "src/memory/enhanced-memory.ts"),
 			"utf8",
 		);
 
@@ -332,7 +328,10 @@ class ComprehensiveRepairValidator {
 	/** Test LanceDB interface implementation */
 	testLanceDBInterface() {
 		const content = require("node:fs").readFileSync(
-			"/home/mhugo/code/claude-zen-flow/src/database/lancedb-interface.ts",
+			path.join(
+				TEST_PROJECT_PATH,
+				"src/database/lancedb-interface.ts",
+			),
 			"utf8",
 		);
 
@@ -357,7 +356,7 @@ class ComprehensiveRepairValidator {
 	/** Test MCP metrics implementation */
 	testMCPMetrics() {
 		const content = require("node:fs").readFileSync(
-			"/home/mhugo/code/claude-zen-flow/src/mcp/performance-metrics.ts",
+			path.join(TEST_PROJECT_PATH, "src/mcp/performance-metrics.ts"),
 			"utf8",
 		);
 
@@ -382,7 +381,10 @@ class ComprehensiveRepairValidator {
 	/** Test unified dashboard implementation */
 	testUnifiedDashboard() {
 		const content = require("node:fs").readFileSync(
-			"/home/mhugo/code/claude-zen-flow/src/dashboard/unified-performance-dashboard.ts",
+			path.join(
+				TEST_PROJECT_PATH,
+				"src/dashboard/unified-performance-dashboard.ts",
+			),
 			"utf8",
 		);
 
@@ -427,10 +429,7 @@ class ComprehensiveRepairValidator {
 
 		// Test if blessed is available for the performance monitor
 		try {
-			execSync("node -e "require('blessed')"", {
-				cwd: TEST_PROJECT_PATH,
-				stdio: "pipe",
-			});
+			require.resolve("blessed", { paths: [TEST_PROJECT_PATH] });
 			this.recordResult(
 				"Blessed UI Library",
 				true,
@@ -451,13 +450,10 @@ class ComprehensiveRepairValidator {
 
 		// Test SQLite optimizations script
 		try {
-			execSync(
-				"timeout 5s node scripts/validate-sqlite-optimizations.js || true",
-				{
-					cwd: TEST_PROJECT_PATH,
-					stdio: "pipe",
-				},
-			);
+			execSync("timeout 5s node scripts/validate-sqlite-optimizations.js", {
+				cwd: TEST_PROJECT_PATH,
+				stdio: "pipe",
+			});
 			this.recordResult(
 				"SQLite Validation Script",
 				true,
@@ -471,16 +467,10 @@ class ComprehensiveRepairValidator {
 			);
 		}
 
-		// Check if LanceDB is accessible
+		// Check if LanceDB is accessible (resolvable)
 		try {
-			execSync(
-				'node -e "import(\"@lancedb/lancedb\").then(() => logger.info(\"OK\"))"',
-				{
-					cwd: TEST_PROJECT_PATH,
-					stdio: "pipe",
-				},
-			);
-			this.recordResult("LanceDB Library", true, "Import successful");
+			require.resolve("@lancedb/lancedb", { paths: [TEST_PROJECT_PATH] });
+			this.recordResult("LanceDB Library", true, "Resolvable");
 		} catch {
 			this.recordResult(
 				"LanceDB Library",
@@ -601,7 +591,7 @@ class ComprehensiveRepairValidator {
 		};
 
 		require("node:fs").writeFileSync(
-			"/home/mhugo/code/claude-zen-flow/test-results.json",
+			path.join(TEST_PROJECT_PATH, "test-results.json"),
 			JSON.stringify(report, null, 2),
 		);
 
@@ -619,7 +609,7 @@ class ComprehensiveRepairValidator {
 				recommendations.push({
 					category: "Dependencies",
 					issue: "better-sqlite3 NODE_MODULE_VERSION mismatch",
-					action: "Run: npm rebuild better-sqlite3",
+					action: "Run: pnpm rebuild better-sqlite3",
 					priority: "high",
 				});
 			}
@@ -628,7 +618,7 @@ class ComprehensiveRepairValidator {
 				recommendations.push({
 					category: "Dependencies",
 					issue: "LanceDB library not available",
-					action: "Run: npm install @lancedb/lancedb",
+					action: "Run: pnpm add @lancedb/lancedb",
 					priority: "medium",
 				});
 			}
@@ -638,7 +628,7 @@ class ComprehensiveRepairValidator {
 					category: "Dependencies",
 					issue: "Blessed UI library not available",
 					action:
-						"Run: npm install blessed (optional for interactive dashboard)",
+						"Run: pnpm add blessed (optional for interactive dashboard)",
 					priority: "low",
 				});
 			}

@@ -6,16 +6,14 @@
  */
 
 // Re-export memory backend types
-import { ContextError } from '@claude-zen/foundation';
-
-export type { BackendInterface, JSONValue } from './core/memory-system';
+export type { BackendInterface, JSONValue } from '../core/memory-system';
 
 // Define core memory interfaces here (instead of importing from non-existent path)
 export interface StoreOptions {
   readonly ttl?: number;
   readonly compress?: boolean;
   readonly encrypt?: boolean;
-  readonly priority?: 'low' | ' medium' | ' high';
+  readonly priority?: 'low' | 'medium' | 'high';
   readonly metadata?: Record<string, unknown>;
   readonly namespace?: string;
   readonly tags?: string[];
@@ -48,7 +46,7 @@ export interface MemoryStats {
 
 // Memory configuration types
 export interface MemoryConfig {
-  readonly type: 'sqlite' | ' json' | ' lancedb' | ' memory';
+  readonly type: 'sqlite' | 'json' | 'lancedb' | 'memory';
   readonly path?: string;
   readonly maxSize?: number;
   readonly ttl?: number;
@@ -71,7 +69,7 @@ export interface SessionState {
     accessed: number;
     size: number;
     tags?: string[];
-    priority?: 'low' | ' medium' | ' high';
+    priority?: 'low' | 'medium' | 'high';
     ttl?: number;
   };
   vectors?: Map<string, number[]>;
@@ -325,32 +323,17 @@ export interface MemoryHealthCheck {
   readonly uptime: number;
 }
 
-// Re-export foundation error types and create memory-specific errors
-export {
-  ContextError,
-  ValidationError,
-  ConfigurationError,
-  NetworkError,
-  TimeoutError,
-  ResourceError,
-  Result,
-  ok,
-  err,
-  safeAsync,
-  safe,
-  withRetry,
-  withTimeout,
-  withContext,
-} from '@claude-zen/foundation';
+// Re-export available foundation types
+export { Result, ok, err, safeAsync } from '@claude-zen/foundation';
 
-// Memory-specific error types extending foundation's ContextError
-export class MemoryError extends ContextError {
+// Memory-specific error types
+export class MemoryError extends Error {
   constructor(
     message: string,
-    context: Record<string, unknown> = {},
-    code: string = 'MEMORY_ERROR'
+    public context: Record<string, unknown> = {},
+    public code: string = 'MEMORY_ERROR'
   ) {
-    super(message, context, code);
+    super(message);
     this.name = 'MemoryError';
   }
 }

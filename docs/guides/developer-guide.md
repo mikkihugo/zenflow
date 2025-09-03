@@ -7,7 +7,7 @@ _Generated: 2025-08-02T13:55:10.266Z_
 ### Installation
 
 ```bash
-npm install claude-code-zen
+pnpm add claude-code-zen
 ```
 
 ### Basic Usage

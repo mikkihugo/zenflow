@@ -19,7 +19,7 @@ import {
 const logger = getLogger('memory:factory');
 
 // Additional types needed for factory
-export type MemoryBackendType = 'sqlite' | ' json' | ' lancedb' | ' memory';
+export type MemoryBackendType = 'sqlite' | 'json' | 'lancedb' | 'memory';
 
 // Backend registry for dynamic loading
 const backendRegistry = new Map<

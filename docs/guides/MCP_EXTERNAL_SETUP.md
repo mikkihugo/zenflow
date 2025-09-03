@@ -51,7 +51,7 @@ This repository is configured to use external MCP (Model Context Protocol) serve
 ### 1. Validate Configuration
 
 ```bash
-npm run mcp:validate
+pnpm run mcp:validate
 ```
 
 ### 2. Copy Claude Desktop Configuration
@@ -86,13 +86,13 @@ cp claude_desktop_config.json ~/.config/Claude/claude_desktop_config.json
 
 ```bash
 # Start local MCP server
-npm run mcp
+pnpm run mcp
 
 # Validate external MCP configuration
-npm run mcp:validate
+pnpm run mcp:validate
 
 # Test external server connections (simulation)
-npm run mcp:test
+pnpm run mcp:test
 ```
 
 ## 🛠️ Using External MCP Tools
@@ -173,13 +173,13 @@ The configuration includes:
 
 ```bash
 # Validate all configuration files
-npm run mcp:validate
+pnpm run mcp:validate
 
 # Test local MCP server
-npm run mcp
+pnpm run mcp
 
 # Check server connectivity (simulation)
-npm run mcp:test
+pnpm run mcp:test
 ```
 
 ## 📚 References

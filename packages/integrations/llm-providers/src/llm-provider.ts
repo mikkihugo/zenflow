@@ -1,9 +1,10 @@
 import { getLogger } from '@claude-zen/foundation';
-import { GithubModelsSetup } from './registry/github-models-setup.js';
+import { ModelRegistry } from './registry/model-registry.js';
 
 // Import individual LLM provider packages
 import { ClaudeProvider, ClaudeAuth, createClaudeClient } from '@claude-zen/claude-provider';
 import { CopilotProvider } from '@claude-zen/copilot-provider';
+import { GitHubModelsProvider } from '@claude-zen/github-models-provider';
 
 const logger = getLogger('llm-provider');
 

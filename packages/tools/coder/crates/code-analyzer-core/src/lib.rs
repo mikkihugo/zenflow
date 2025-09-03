@@ -54,14 +54,14 @@ pub mod testing_framework;
 pub mod config;
 pub mod ml_patterns;
 pub mod schema_validation;
-pub mod production_types;
+pub mod enterprise_types;
 
 // Public API exports following Google naming conventions
 pub use ast_analysis::{AstAnalyzer, FileAnalysisResult, AnalysisMetrics};
 pub use project_context::{ProjectContextBuilder, CodebaseContext};
 pub use machine_learning::{CodeIntelligenceModel, PredictionResult, ModelInsights};
 pub use data_persistence::{DataManager, StorageConfiguration};
-pub use memory_management::{MemoryManager, CacheManager};
+pub use memory_management::CacheManager;
 pub use sparc_integration::{SparcMethodologyEngine, SparcProject, SparcPhase};
 pub use tsos_integration::{TsosIntegrationEngine, TaskExecution, TaskDefinition};
 pub use testing_framework::{ComprehensiveTestingFramework, TestSuite, TestCase, TestSuiteReport};
@@ -599,14 +599,13 @@ impl CodeIntelligenceEngine {
         let ml_model = CodeIntelligenceModel::initialize(config.ml_model_config.clone())?;
         let data_manager = DataManager::new(config.database_config.clone())
             .map_err(|e| CodeIntelligenceError::DatabaseOperationFailed { message: format!("{:?}", e) })?;
-        let memory_manager = CacheManager::initialize(&crate::memory_management::CacheSystemConfig {
-            l1_cache_size_kb: 256,
-            l2_cache_size_kb: 1024,
-            l3_cache_size_mb: 8,
-            cache_line_size_bytes: 64,
-            prefetch_configuration: Default::default(),
-            coherence_protocol: crate::memory_management::CoherenceProtocol::MESI,
-        }).map_err(|e| CodeIntelligenceError::ConfigurationInvalid { message: format!("Cache manager init failed: {:?}", e) })?;
+        let cache_config = crate::memory_management::CacheConfig {
+            max_size_entries: 10000, // A reasonable default for analysis results
+            default_ttl_seconds: config.cache_retention_hours as u64 * 3600,
+            compression_enabled: false,
+        };
+        let memory_manager = CacheManager::initialize(cache_config)
+            .map_err(|e| CodeIntelligenceError::ConfigurationInvalid { message: format!("Cache manager init failed: {:?}", e) })?;
         
         Ok(Self {
             ast_analyzer,

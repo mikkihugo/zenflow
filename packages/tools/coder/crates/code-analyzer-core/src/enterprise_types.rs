@@ -535,6 +535,16 @@ define_production_types! {
     DashboardRenderer,
     ReportGenerator,
     DataExporter,
+    DataGovernanceConfig,
+    AuditTrailConfig,
+    PrivacyProtectionConfig,
+    WorkflowInstance,
+    QualityCriteria,
+    CustomMetric,
+    DashboardFeed,
+    DatabaseConnection,
+    TokenBucket,
+    PerformanceImpact,
     
     // Complex analysis types
     ComplexityBreakdown,
@@ -661,6 +671,19 @@ pub trait ProductionValidation {
     fn is_production_ready(&self) -> bool {
         self.validate().is_ok()
     }
+}
+
+/// Regulatory compliance adapter trait
+pub trait RegulatoryAdapter {
+    fn validate_compliance(&self) -> Result<(), String>;
+    fn generate_audit_report(&self) -> String;
+}
+
+/// Integration adapter trait for external systems
+pub trait IntegrationAdapter {
+    fn connect(&self) -> Result<(), String>;
+    fn sync_data(&self) -> Result<(), String>;
+    fn health_check(&self) -> bool;
 }
 
 /// Implement ProductionValidation for all generated types

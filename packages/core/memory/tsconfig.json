@@ -5,7 +5,20 @@
     "rootDir": "./src",
     "outDir": "./dist"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"],
+  "include": [
+    "src/types/**/*.ts",
+    "src/core/**/*.ts", 
+    "src/adapters/base-backend.ts",
+    "src/adapters/database-backed-adapter.ts",
+    "src/adapters/index.ts",
+    "src/events/**/*.ts",
+    "src/index.ts"
+  ],
+  "exclude": [
+    "dist", 
+    "node_modules", 
+    "**/*.test.ts", 
+    "**/*.spec.ts"
+  ],
   "references": [{ "path": "../foundation" }, { "path": "../database" }]
 }

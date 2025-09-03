@@ -581,216 +581,322 @@ impl DatabaseManager {
     }
     
     /// Store code analysis results in database
-    pub async fn store_analysis(&self, record: CodeAnalysisRecord) -> Result<DatabaseResult<String>> {
-        let features_json = serde_json::to_string(&record.features).unwrap_or("[]".to_string());
-        let suggestions_json = serde_json::to_string(&record.suggestions).unwrap_or("[]".to_string());
-        
-        let script = format!(
-            r#"
-            import {{ DatabaseProvider }} from '{}/src/index.js';
-            
-            const db = new DatabaseProvider();
-            await db.initialize();
-            
-            const result = await db.insert('code_analysis', {{
-                id: '{}',
-                file_path: '{}',
-                language: '{}',
-                complexity_score: {},
-                quality_score: {},
-                ai_mistake_score: {},
-                littering_score: {},
-                analysis_timestamp: {},
-                features: {},
-                suggestions: {}
-            }});
-            
-            console.log(JSON.stringify({{ success: true, data: result.id }}));
-            "#,
-            self.node_modules_path,
-            record.id,
-            record.file_path,
-            record.language,
-            record.complexity_score,
-            record.quality_score,
-            record.ai_mistake_score,
-            record.littering_score,
-            record.analysis_timestamp.timestamp(),
-            features_json,
-            suggestions_json
+    pub async fn store_analysis(&mut self, record: CodeAnalysisRecord) -> Result<DatabaseResult<String>> {
+        let start_time = std::time::Instant::now();
+        let conn = self.sqlite_connection.as_mut().ok_or_else(|| {
+            FileAwareError::DatabaseError {
+                message: "SQLite connection not initialized".to_string(),
+            }
+        })?;
+
+        let features_json = serde_json::to_string(&record.features)?;
+        let suggestions_json = serde_json::to_string(&record.suggestions)?;
+
+        let result = conn.execute(
+            "INSERT OR REPLACE INTO code_analysis (id, file_path, language, complexity_score, quality_score, ai_mistake_score, littering_score, analysis_timestamp, features, suggestions)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
+            rusqlite::params![
+                record.id,
+                record.file_path,
+                record.language,
+                record.complexity_score,
+                record.quality_score,
+                record.ai_mistake_score,
+                record.littering_score,
+                record.analysis_timestamp,
+                features_json,
+                suggestions_json,
+            ],
         );
-        
-        let result = self.run_typescript_script(&script).await?;
-        self.parse_database_result(&result)
+
+        let execution_time_ms = start_time.elapsed().as_millis() as u64;
+
+        match result {
+            Ok(_) => Ok(DatabaseResult {
+                success: true,
+                data: Some(record.id),
+                error: None,
+                execution_time_ms,
+            }),
+            Err(e) => Ok(DatabaseResult {
+                success: false,
+                data: None,
+                error: Some(e.to_string()),
+                execution_time_ms,
+            }),
+        }
     }
     
     /// Query code analysis records from database
-    pub async fn query_analysis(&self, query: CodeAnalysisQuery) -> Result<DatabaseResult<Vec<CodeAnalysisRecord>>> {
+    pub async fn query_analysis(&mut self, query: CodeAnalysisQuery) -> Result<DatabaseResult<Vec<CodeAnalysisRecord>>> {
+        let start_time = std::time::Instant::now();
+        let conn = self.sqlite_connection.as_mut().ok_or_else(|| {
+            FileAwareError::DatabaseError {
+                message: "SQLite connection not initialized".to_string(),
+            }
+        })?;
+
         let where_clause = self.build_where_clause(&query);
-        
-        let script = format!(
-            r#"
-            import {{ DatabaseProvider }} from '{}/src/index.js';
-            
-            const db = new DatabaseProvider();
-            await db.initialize();
-            
-            const results = await db.query('code_analysis', {{
-                where: {},
-                limit: {},
-                offset: {}
-            }});
-            
-            console.log(JSON.stringify({{ success: true, data: results }}));
-            "#,
-            self.node_modules_path,
+        let sql = format!(
+            "SELECT id, file_path, language, complexity_score, quality_score, ai_mistake_score, littering_score, analysis_timestamp, features, suggestions 
+             FROM code_analysis 
+             WHERE {} 
+             LIMIT {} OFFSET {}",
             where_clause,
             query.limit.unwrap_or(100),
             query.offset.unwrap_or(0)
         );
-        
-        let result = self.run_typescript_script(&script).await?;
-        self.parse_database_result(&result)
+
+        let result = (|| -> rusqlite::Result<Vec<CodeAnalysisRecord>> {
+            let mut stmt = conn.prepare(&sql)?;
+            let records_iter = stmt.query_map([], |row| {
+                let features_str: String = row.get(8)?;
+                let suggestions_str: String = row.get(9)?;
+
+                let features: CodeFeatures = serde_json::from_str(&features_str)
+                    .map_err(|e| rusqlite::Error::FromSqlConversionFailure(8, rusqlite::types::Type::Text, Box::new(e)))?;
+                let suggestions: Vec<String> = serde_json::from_str(&suggestions_str)
+                    .map_err(|e| rusqlite::Error::FromSqlConversionFailure(9, rusqlite::types::Type::Text, Box::new(e)))?;
+
+                Ok(CodeAnalysisRecord {
+                    id: row.get(0)?,
+                    file_path: row.get(1)?,
+                    language: row.get(2)?,
+                    complexity_score: row.get(3)?,
+                    quality_score: row.get(4)?,
+                    ai_mistake_score: row.get(5)?,
+                    littering_score: row.get(6)?,
+                    analysis_timestamp: row.get(7)?,
+                    features,
+                    suggestions,
+                })
+            })?;
+
+            let mut records = Vec::new();
+            for record in records_iter {
+                records.push(record?);
+            }
+            Ok(records)
+        })();
+
+        let execution_time_ms = start_time.elapsed().as_millis() as u64;
+
+        match result {
+            Ok(data) => Ok(DatabaseResult {
+                success: true,
+                data: Some(data),
+                error: None,
+                execution_time_ms,
+            }),
+            Err(e) => Ok(DatabaseResult {
+                success: false,
+                data: None,
+                error: Some(e.to_string()),
+                execution_time_ms,
+            }),
+        }
     }
     
     /// Get code quality statistics from database
-    pub async fn get_quality_stats(&self) -> Result<DatabaseResult<QualityStats>> {
-        let script = format!(
-            r#"
-            import {{ DatabaseProvider }} from '{}/src/index.js';
+    pub async fn get_quality_stats(&mut self) -> Result<DatabaseResult<QualityStats>> {
+        let start_time = std::time::Instant::now();
+        let conn = self.sqlite_connection.as_mut().ok_or_else(|| {
+            FileAwareError::DatabaseError {
+                message: "SQLite connection not initialized".to_string(),
+            }
+        })?;
+
+        let sql = "SELECT language, COUNT(*), AVG(quality_score), AVG(complexity_score), AVG(ai_mistake_score), AVG(littering_score)
+                   FROM code_analysis
+                   GROUP BY language";
+
+        let result = (|| -> rusqlite::Result<QualityStats> {
+            let mut stmt = conn.prepare(sql)?;
+            let mut rows = stmt.query([])?;
             
-            const db = new DatabaseProvider();
-            await db.initialize();
-            
-            const stats = await db.query('code_analysis', {{
-                select: ['AVG(quality_score) as avg_quality', 'AVG(complexity_score) as avg_complexity', 'COUNT(*) as total_files'],
-                groupBy: ['language']
-            }});
-            
-            console.log(JSON.stringify({{ success: true, data: stats }}));
-            "#,
-            self.node_modules_path
-        );
-        
-        let result = self.run_typescript_script(&script).await?;
-        self.parse_database_result(&result)
+            let mut total_files = 0;
+            let mut total_quality_score = 0.0;
+            let mut total_complexity_score = 0.0;
+            let mut language_stats = HashMap::new();
+
+            while let Some(row) = rows.next()? {
+                let language: String = row.get(0)?;
+                let file_count: usize = row.get(1)?;
+                let avg_quality: f64 = row.get(2)?;
+                let avg_complexity: f64 = row.get(3)?;
+                let avg_ai_mistake_score: f64 = row.get(4)?;
+                let avg_littering_score: f64 = row.get(5)?;
+
+                total_files += file_count;
+                total_quality_score += avg_quality * file_count as f64;
+                total_complexity_score += avg_complexity * file_count as f64;
+
+                language_stats.insert(language, LanguageStats {
+                    file_count,
+                    avg_quality: avg_quality as f32,
+                    avg_complexity: avg_complexity as f32,
+                    avg_ai_mistake_score: avg_ai_mistake_score as f32,
+                    avg_littering_score: avg_littering_score as f32,
+                });
+            }
+
+            let avg_quality_score = if total_files > 0 { (total_quality_score / total_files as f64) as f32 } else { 0.0 };
+            let avg_complexity_score = if total_files > 0 { (total_complexity_score / total_files as f64) as f32 } else { 0.0 };
+
+            Ok(QualityStats {
+                total_files,
+                avg_quality_score,
+                avg_complexity_score,
+                language_stats,
+            })
+        })();
+
+        let execution_time_ms = start_time.elapsed().as_millis() as u64;
+
+        match result {
+            Ok(data) => Ok(DatabaseResult {
+                success: true,
+                data: Some(data),
+                error: None,
+                execution_time_ms,
+            }),
+            Err(e) => Ok(DatabaseResult {
+                success: false,
+                data: None,
+                error: Some(e.to_string()),
+                execution_time_ms,
+            }),
+        }
     }
     
     /// Update existing code analysis record
-    pub async fn update_analysis(&self, id: &str, updates: HashMap<String, serde_json::Value>) -> Result<DatabaseResult<bool>> {
-        let updates_json = serde_json::to_string(&updates)?;
+    pub async fn update_analysis(&mut self, id: &str, updates: HashMap<String, serde_json::Value>) -> Result<DatabaseResult<bool>> {
+        let start_time = std::time::Instant::now();
+        let conn = self.sqlite_connection.as_mut().ok_or_else(|| {
+            FileAwareError::DatabaseError {
+                message: "SQLite connection not initialized".to_string(),
+            }
+        })?;
+
+        if updates.is_empty() {
+            return Ok(DatabaseResult {
+                success: true,
+                data: Some(false), // No rows updated
+                error: None,
+                execution_time_ms: 0,
+            });
+        }
+
+        let mut set_clause = String::new();
+        let mut params: Vec<rusqlite::types::Value> = Vec::new();
+
+        for (i, (key, value)) in updates.iter().enumerate() {
+            if i > 0 {
+                set_clause.push_str(", ");
+            }
+            set_clause.push_str(&format!("{} = ?", key));
+            
+            let param = match value {
+                serde_json::Value::Null => rusqlite::types::Value::Null,
+                serde_json::Value::Bool(b) => rusqlite::types::Value::Integer(*b as i64),
+                serde_json::Value::Number(n) => {
+                    if let Some(i) = n.as_i64() {
+                        rusqlite::types::Value::Integer(i)
+                    } else if let Some(f) = n.as_f64() {
+                        rusqlite::types::Value::Real(f)
+                    } else {
+                        rusqlite::types::Value::Text(value.to_string())
+                    }
+                },
+                serde_json::Value::String(s) => rusqlite::types::Value::Text(s.clone()),
+                serde_json::Value::Array(_) | serde_json::Value::Object(_) => rusqlite::types::Value::Text(value.to_string()),
+            };
+            params.push(param);
+        }
+
+        let sql = format!("UPDATE code_analysis SET {} WHERE id = ?", set_clause);
         
-        let script = format!(
-            r#"
-            import {{ DatabaseProvider }} from '{}/src/index.js';
-            
-            const db = new DatabaseProvider();
-            await db.initialize();
-            
-            const result = await db.update('code_analysis', {}, {{
-                where: {{ id: '{}' }}
-            }});
-            
-            console.log(JSON.stringify({{ success: true, data: result.affectedRows > 0 }}));
-            "#,
-            self.node_modules_path,
-            updates_json,
-            id
-        );
-        
-        let result = self.run_typescript_script(&script).await?;
-        self.parse_database_result(&result)
+        let result = (|| -> rusqlite::Result<usize> {
+            let mut all_params: Vec<&dyn rusqlite::ToSql> = params.iter().map(|p| p as &dyn rusqlite::ToSql).collect();
+            all_params.push(&id);
+            conn.execute(&sql, rusqlite::params_from_iter(all_params))
+        })();
+
+        let execution_time_ms = start_time.elapsed().as_millis() as u64;
+
+        match result {
+            Ok(affected_rows) => Ok(DatabaseResult {
+                success: true,
+                data: Some(affected_rows > 0),
+                error: None,
+                execution_time_ms,
+            }),
+            Err(e) => Ok(DatabaseResult {
+                success: false,
+                data: None,
+                error: Some(e.to_string()),
+                execution_time_ms,
+            }),
+        }
     }
     
     /// Delete code analysis record
-    pub async fn delete_analysis(&self, id: &str) -> Result<DatabaseResult<bool>> {
-        let script = format!(
-            r#"
-            import {{ DatabaseProvider }} from '{}/src/index.js';
-            
-            const db = new DatabaseProvider();
-            await db.initialize();
-            
-            const result = await db.delete('code_analysis', {{
-                where: {{ id: '{}' }}
-            }});
-            
-            console.log(JSON.stringify({{ success: true, data: result.affectedRows > 0 }}));
-            "#,
-            self.node_modules_path,
-            id
-        );
-        
-        let result = self.run_typescript_script(&script).await?;
-        self.parse_database_result(&result)
+    pub async fn delete_analysis(&mut self, id: &str) -> Result<DatabaseResult<bool>> {
+        let start_time = std::time::Instant::now();
+        let conn = self.sqlite_connection.as_mut().ok_or_else(|| {
+            FileAwareError::DatabaseError {
+                message: "SQLite connection not initialized".to_string(),
+            }
+        })?;
+
+        let result = conn.execute("DELETE FROM code_analysis WHERE id = ?1", rusqlite::params![id]);
+        let execution_time_ms = start_time.elapsed().as_millis() as u64;
+
+        match result {
+            Ok(affected_rows) => Ok(DatabaseResult {
+                success: true,
+                data: Some(affected_rows > 0),
+                error: None,
+                execution_time_ms,
+            }),
+            Err(e) => Ok(DatabaseResult {
+                success: false,
+                data: None,
+                error: Some(e.to_string()),
+                execution_time_ms,
+            }),
+        }
     }
     
     /// Create database tables if they don't exist
-    pub async fn create_tables(&self) -> Result<()> {
-        let script = format!(
-            r#"
-            import {{ DatabaseProvider }} from '{}/src/index.js';
-            
-            const db = new DatabaseProvider();
-            await db.initialize();
-            
-            // Create code_analysis table
-            await db.execute(`
-                CREATE TABLE IF NOT EXISTS code_analysis (
-                    id TEXT PRIMARY KEY,
-                    file_path TEXT NOT NULL,
-                    language TEXT NOT NULL,
-                    complexity_score REAL,
-                    quality_score REAL,
-                    ai_mistake_score REAL,
-                    littering_score REAL,
-                    analysis_timestamp INTEGER,
-                    features TEXT,
-                    suggestions TEXT
-                )
-            `);
-            
-            // Create indexes
-            await db.execute('CREATE INDEX IF NOT EXISTS idx_file_path ON code_analysis(file_path)');
-            await db.execute('CREATE INDEX IF NOT EXISTS idx_language ON code_analysis(language)');
-            await db.execute('CREATE INDEX IF NOT EXISTS idx_quality_score ON code_analysis(quality_score)');
-            await db.execute('CREATE INDEX IF NOT EXISTS idx_timestamp ON code_analysis(analysis_timestamp)');
-            
-            console.log('Tables created successfully');
-            "#,
-            self.node_modules_path
-        );
-        
-        self.run_typescript_script(&script).await?;
+    pub async fn create_tables(&mut self) -> Result<()> {
+        let conn = self.sqlite_connection.as_mut().ok_or_else(|| {
+            FileAwareError::DatabaseError {
+                message: "SQLite connection not initialized".to_string(),
+            }
+        })?;
+
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS code_analysis (
+                id TEXT PRIMARY KEY,
+                file_path TEXT NOT NULL,
+                language TEXT NOT NULL,
+                complexity_score REAL,
+                quality_score REAL,
+                ai_mistake_score REAL,
+                littering_score REAL,
+                analysis_timestamp INTEGER,
+                features TEXT,
+                suggestions TEXT
+            );
+            CREATE INDEX IF NOT EXISTS idx_file_path ON code_analysis(file_path);
+            CREATE INDEX IF NOT EXISTS idx_language ON code_analysis(language);
+            CREATE INDEX IF NOT EXISTS idx_quality_score ON code_analysis(quality_score);
+            CREATE INDEX IF NOT EXISTS idx_timestamp ON code_analysis(analysis_timestamp);
+            ",
+        ).map_err(|e| FileAwareError::DatabaseError { message: e.to_string() })?;
+
         Ok(())
-    }
-    
-    /// Run TypeScript script through Node.js
-    async fn run_typescript_script(&self, script: &str) -> Result<String> {
-        let temp_file = tempfile::NamedTempFile::new()?;
-        let temp_path = temp_file.path().to_string_lossy().to_string();
-        
-        // Write script to temporary file
-        std::fs::write(&temp_path, script)?;
-        
-        // Run script with Node.js
-        let output = tokio::process::Command::new("node")
-            .arg(&temp_path)
-            .current_dir(&self.ts_database_path)
-            .env("NODE_PATH", &self.node_modules_path)
-            .output()
-            .await?;
-        
-        // Clean up temp file
-        let _ = std::fs::remove_file(&temp_path);
-        
-        if output.status.success() {
-            Ok(String::from_utf8_lossy(&output.stdout).to_string())
-        } else {
-            Err(FileAwareError::DatabaseError {
-                message: String::from_utf8_lossy(&output.stderr).to_string(),
-            })
-        }
     }
     
     /// Build WHERE clause for database queries
@@ -826,26 +932,6 @@ impl DatabaseManager {
         } else {
             conditions.join(" AND ")
         }
-    }
-    
-    /// Parse database result from TypeScript output
-    fn parse_database_result<T>(&self, output: &str) -> Result<DatabaseResult<T>>
-    where
-        T: for<'de> Deserialize<'de>,
-    {
-        // Find JSON output in the script output
-        if let Some(json_start) = output.find('{') {
-            if let Some(json_end) = output.rfind('}') {
-                let json_str = &output[json_start..=json_end];
-                if let Ok(result) = serde_json::from_str::<DatabaseResult<T>>(json_str) {
-                    return Ok(result);
-                }
-            }
-        }
-        
-        Err(FileAwareError::DatabaseError {
-            message: "Failed to parse database result".to_string(),
-        })
     }
 }
 

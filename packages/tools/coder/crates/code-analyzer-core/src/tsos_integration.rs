@@ -26,7 +26,7 @@ use dashmap::DashMap;
 
 use crate::{CodeIntelligenceError, AnalysisResult};
 use crate::sparc_integration::{SparcMethodologyEngine, SparcProject, SparcPhase};
-use crate::production_types::{TaskPriority, TaskStatus, TsosPermissionLevel, ComplianceLevel};
+use crate::enterprise_types::{TaskPriority, TaskStatus, TsosPermissionLevel, ComplianceLevel};
 
 /// Production-grade Task Scheduling Operating System Integration Engine
 #[derive(Debug)]

@@ -11,7 +11,7 @@
  */
 
 import { EventBus } from '@claude-zen/foundation';
-import { v4 as uuid } from 'uuid';
+import { generateUUID as uuid } from '@claude-zen/foundation/src/utilities/ids/index.js';
 
 // Initialize EventBus
 const bus = EventBus.getInstance();
@@ -248,12 +248,7 @@ async function testContext7Tools(results: TestResult[]): Promise<void> {
   });
 }
 
-// Add UUID dependency check
-try {
-  require.resolve('uuid');
-} catch {
-  console.log('Installing uuid dependency...');
-  require('child_process').execSync('npm install uuid @types/uuid');
-}
+// Note: UUID generation should always go through foundation utilities
+// to respect import boundaries. No runtime package installation here.
 
 testEventDrivenProviders().catch(console.error);

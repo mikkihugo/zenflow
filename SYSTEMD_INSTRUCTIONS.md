@@ -169,7 +169,7 @@ sudo journalctl -u claude-zen -n 20
 
 # Check TypeScript compilation
 cd /home/mhugo/code/claude-code-zen
-npx tsc --noEmit
+pnpm dlx tsc --noEmit
 
 # Manual port cleanup
 sudo ss -tlnp | grep :3000 | grep -o "pid=[0-9]*" | cut -d"=" -f2 | xargs -r sudo kill -9

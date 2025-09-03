@@ -6,15 +6,15 @@
 
 ### **Prerequisites**
 
-- Node.js 18+
-- npm or yarn
+- Node.js 22+
+- pnpm 10+
 - Git
 
 ### **Global Installation**
 
 ```bash
 # Install Claude Zen Flow globally
-npm install -g claude-code-zen
+pnpm add -g claude-code-zen
 
 # Verify installation
 claude-zen --version
@@ -25,16 +25,16 @@ claude-zen --version
 ```bash
 # Clone repository
 git clone https://github.com/mikkihugo/claude-code-zen.git
-cd claude-zen-flow
+cd claude-zenflow
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build the project
-npm run build
+pnpm run build
 
 # Run tests
-npm test
+pnpm test
 ```
 
 ## 🎯 **First Steps**
@@ -84,7 +84,7 @@ claude-zen mcp start &
 claude-zen web start --daemon &
 
 # Add Stdio MCP server to Claude Code
-claude mcp add claude-zen-swarm npx claude-zen swarm mcp start
+claude mcp add claude-zen-swarm pnpm dlx claude-zen swarm mcp start
 ```
 
 ### **3. Verify System Status**
@@ -160,7 +160,7 @@ claude-zen tui --mode system-monitor
 {
   "mcpServers": {
     "claude-zen": {
-      "command": "npx",
+  "command": "pnpm dlx",
       "args": ["claude-zen", "mcp", "start"]
     }
   }

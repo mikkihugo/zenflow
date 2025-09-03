@@ -74,21 +74,15 @@ impl KnowledgeType {
     
     /// Check if knowledge is fresh enough
     pub fn is_fresh(&self, max_age_seconds: u64) -> bool {
-        let current_time = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs();
-        
         match self {
-            KnowledgeType::RAG { freshness_requirement, .. } => {
-                if let Some(requirement) = freshness_requirement {
-                    // For RAG, freshness is based on query time, not stored data
-                    true // RAG queries are always fresh
-                } else {
-                    true
-                }
-            }
+            // RAG queries are performed in real-time, so they are always considered fresh.
+            // The `freshness_requirement` field is for the query system to use, not for this check.
+            KnowledgeType::RAG { .. } => true,
             KnowledgeType::FACT { last_verified, .. } => {
+                let current_time = SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .expect("System time is before the UNIX epoch")
+                    .as_secs();
                 current_time - *last_verified <= max_age_seconds
             }
         }

@@ -26,7 +26,7 @@ import type {
  SystemMetrics,
 } from './types';
 import type { BaseMemoryBackend } from '../backends/base-backend';
-import type { JSONValue } from '../core/memory-system';
+import type { JSONValue } from './memory-system';
 
 interface ManagedComponent {
  name:string;

@@ -44,7 +44,7 @@ use crate::sparc_production_types::*;
 use crate::sparc_missing_types::*;
 use crate::config::{ConfigManager, SecurityConfig, SparcConfig};
 use crate::ml_patterns::{MLPatternEngine, PatternMatch};
-use crate::memory_management::PerformanceImpact;
+// use crate::memory_management::PerformanceImpact; // Temporarily commented out
 
 /// Production-grade SPARC Methodology Integration Engine
 /// 

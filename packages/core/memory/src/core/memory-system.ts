@@ -8,7 +8,7 @@
  * @file Memory management:memory-system.
  */
 
-import type { MemoryStats } from '../backends/base-backend';
+import type { MemoryStats } from '../adapters/base-backend';
 
 // Re-export MemoryStats for convenience
 export type { MemoryStats };
@@ -50,10 +50,10 @@ export function memoryStatsToBackendStats(
   memoryStats: MemoryStats
 ): BackendStats {
   return {
-    entries: memoryStats.totalEntries,
-    size: memoryStats.totalSize,
-    lastModified: memoryStats.modified,
-    namespaces: undefined, // Not tracked in MemoryStats
+    entries: memoryStats.totalKeys || memoryStats.entries || 0,
+    size: memoryStats.totalSize || memoryStats.size || 0,
+    lastModified: Date.now(), // Use current time since not directly available
+    namespaces: 0, // Default value
   };
 }
 
@@ -68,13 +68,21 @@ export function backendStatsToMemoryStats(
   backendStats: BackendStats
 ): MemoryStats {
   return {
-    totalEntries: backendStats.entries,
+    totalKeys: backendStats.entries,
     totalSize: backendStats.size,
-    cacheHits: 0, // Not tracked in BackendStats
-    cacheMisses: 0, // Not tracked in BackendStats
-    lastAccessed: backendStats.lastModified,
-    created: Date.now(), // Not tracked in BackendStats
-    modified: backendStats.lastModified,
+    averageKeySize: 0, // Default value
+    averageValueSize: 0, // Default value
+    uptime: 0, // Default value
+    operations: {
+      reads: 0,
+      writes: 0,
+      deletes: 0
+    },
+    performance: {
+      averageReadTime: 0,
+      averageWriteTime: 0,
+      averageDeleteTime: 0
+    }
   };
 }
 

@@ -11,7 +11,7 @@
 npm run monitor:demo
 
 # Or directly:
-npx tsx bin/tui-monitor.ts start --demo
+pnpm dlx tsx bin/tui-monitor.ts start --demo
 ```
 
 ### Production Mode (Real Systems)

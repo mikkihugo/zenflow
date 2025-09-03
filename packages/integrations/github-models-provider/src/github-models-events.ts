@@ -49,7 +49,7 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
         const { GitHubModelsProvider } = await import('./github-models-provider.js');
         
         const provider = new GitHubModelsProvider({ 
-          token,
+          ...(token ? { token } : {}),
           autoInitialize: !!token 
         });
         
@@ -65,21 +65,22 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
   }
 
   // GitHub Models chat completion
-  bus.on('llm:github-models:chat:request', async (request: GitHubModelsRequest) => {
-    if (request.stream) {
+  bus.on('llm:github-models:chat:request', async (request: unknown) => {
+    const req = request as GitHubModelsRequest;
+    if (req.stream) {
       // Handle streaming
       try {
         const provider = await getProvider();
         const stream = await provider.createChatCompletionStream({
-          messages: request.messages,
-          model: request.model || 'gpt-4o-mini',
-          temperature: request.temperature,
-          max_tokens: request.max_tokens
+          messages: req.messages,
+          model: req.model || 'gpt-4o-mini',
+          temperature: req.temperature,
+          max_tokens: req.max_tokens
         });
 
         for await (const chunk of stream) {
           const msg: GitHubModelsStreamChunk = {
-            correlationId: request.correlationId,
+            correlationId: req.correlationId,
             text: chunk.choices?.[0]?.delta?.content || '',
             done: false,
           };
@@ -87,7 +88,7 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
         }
         
         const finalMsg: GitHubModelsStreamChunk = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           text: '', 
           done: true 
         };
@@ -96,7 +97,7 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
         logger.error('GitHub Models chat stream error', { error });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const errorMsg: GitHubModelsStreamChunk = {
-          correlationId: request.correlationId,
+          correlationId: req.correlationId,
           text: '',
           done: true,
           error: errorMessage,
@@ -108,14 +109,14 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
       try {
         const provider = await getProvider();
         const response = await provider.createChatCompletion({
-          messages: request.messages,
-          model: request.model || 'gpt-4o-mini',
-          temperature: request.temperature,
-          max_tokens: request.max_tokens
+          messages: req.messages,
+          model: req.model || 'gpt-4o-mini',
+          temperature: req.temperature,
+          max_tokens: req.max_tokens
         });
 
         const msg: GitHubModelsResponse = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           text: response.choices[0]?.message?.content || '',
           usage: response.usage
         };
@@ -124,7 +125,7 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
         logger.error('GitHub Models chat error', { error });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const msg: GitHubModelsResponse = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           error: errorMessage 
         };
         bus.emit('llm:github-models:chat:response', msg);
@@ -133,21 +134,22 @@ export async function registerGitHubModelsHandlers(bus = EventBus.getInstance())
   });
 
   // GitHub Models listing
-  bus.on('llm:github-models:models:request', async (request: {
-    correlationId: string;
-  }) => {
+  bus.on('llm:github-models:models:request', async (request: unknown) => {
+    const req = request as {
+      correlationId: string;
+    };
     try {
       const provider = await getProvider();
       const models = await provider.listModels();
       bus.emit('llm:github-models:models:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         models
       });
     } catch (error) {
       logger.error('GitHub Models list error', { error });
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       bus.emit('llm:github-models:models:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         error: errorMessage
       });
     }

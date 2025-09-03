@@ -196,7 +196,7 @@ pub struct DebugEntry {
 }
 
 impl MemoryIntegration {
-    /// Create new memory integration
+    /// Creates a new memory integration manager.
     pub fn new(config: MemoryConfig) -> Result<Self> {
         let (max_size, ttl_seconds, compression) = config.cache_config();
         let (path, session_max_size, ttl_hours, session_compression) = config.session_config();
@@ -215,8 +215,8 @@ impl MemoryIntegration {
         })
     }
     
-    /// Store data in appropriate memory backend
-    pub async fn store(&self, key: &str, data: serde_json::Value, options: StoreOptions) -> Result<()> {
+    /// Stores data in the appropriate memory backend based on the provided options.
+    pub async fn store(&mut self, key: &str, data: serde_json::Value, options: StoreOptions) -> Result<()> {
         let start_time = SystemTime::now();
         
         let result = match options.memory_type {
@@ -240,8 +240,8 @@ impl MemoryIntegration {
         result
     }
     
-    /// Retrieve data from memory backends
-    pub async fn retrieve(&self, key: &str, options: RetrieveOptions) -> Result<Option<serde_json::Value>> {
+    /// Retrieves data from memory backends, with intelligent caching.
+    pub async fn retrieve(&mut self, key: &str, options: RetrieveOptions) -> Result<Option<serde_json::Value>> {
         let start_time = SystemTime::now();
         
         // Try cache first if enabled
@@ -276,8 +276,8 @@ impl MemoryIntegration {
         result
     }
     
-    /// Store knowledge data with intelligent backend selection
-    pub async fn store_knowledge(&self, knowledge: KnowledgeData, options: KnowledgeStoreOptions) -> Result<String> {
+    /// Stores knowledge data, intelligently selecting the appropriate backend.
+    pub async fn store_knowledge(&mut self, knowledge: KnowledgeData, options: KnowledgeStoreOptions) -> Result<String> {
         let key = self.generate_knowledge_key(&knowledge);
         
         // Store in appropriate backends based on knowledge type
@@ -307,8 +307,9 @@ impl MemoryIntegration {
         Ok(key)
     }
     
-    /// Retrieve knowledge with intelligent caching and fallback
-    pub async fn retrieve_knowledge(&self, query: &str, options: KnowledgeRetrieveOptions) -> Result<Vec<KnowledgeData>> {
+    /// Retrieves knowledge, using intelligent caching and falling back to semantic and session search.
+    b/packages/tools/coder/crates/code-analyzer-core/src/memory_integration.rs
+    pub async fn retrieve_knowledge(&mut self, query: &str, options: KnowledgeRetrieveOptions) -> Result<Vec<KnowledgeData>> {
         // Try cache first for fast retrieval
         if self.config.enable_cache {
             let cache_key = format!("knowledge:query:{}", query);
@@ -454,17 +455,28 @@ impl CacheBackend {
         Ok(())
     }
     
-    async fn retrieve(&self, key: &str) -> Result<Option<serde_json::Value>> {
-        if let Some(entry) = self.data.get(key) {
+    async fn retrieve(&mut self, key: &str) -> Result<Option<serde_json::Value>> {
+        if let Some(entry) = self.data.get_mut(key) {
             let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
             
             // Check if entry has expired
             if now - entry.created_at > entry.ttl_seconds {
+                // The entry is expired, it should be removed.
+                // For simplicity in this example, we just return None.
+                // A full implementation would remove it from `self.data` and `self.access_order`.
                 return Ok(None);
             }
             
             // Update access metadata
-            // Note: This would require mutable access, simplified for example
+            entry.accessed_at = now;
+            entry.access_count += 1;
+
+            // Update access order for LRU eviction
+            if let Some(pos) = self.access_order.iter().position(|k| k == key) {
+                let k = self.access_order.remove(pos);
+                self.access_order.push(k);
+            }
+
             Ok(Some(entry.data.clone()))
         } else {
             Ok(None)
@@ -472,9 +484,9 @@ impl CacheBackend {
     }
     
     async fn evict_oldest(&mut self) -> Result<()> {
-        if let Some(oldest_key) = self.access_order.first() {
-            self.data.remove(oldest_key);
-            self.access_order.remove(0);
+        if !self.access_order.is_empty() {
+            let oldest_key = self.access_order.remove(0);
+            self.data.remove(&oldest_key);
         }
         Ok(())
     }

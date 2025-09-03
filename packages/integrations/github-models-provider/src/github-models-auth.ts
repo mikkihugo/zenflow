@@ -28,7 +28,9 @@ export class GitHubModelsAuth {
 
   constructor(options: GitHubModelsAuthOptions = {}) {
     this.githubApiBase = options.githubApiBase ?? 'https://api.github.com';
-    this.token = options.token;
+    if (options.token) {
+      this.token = options.token;
+    }
   }
 
   /**

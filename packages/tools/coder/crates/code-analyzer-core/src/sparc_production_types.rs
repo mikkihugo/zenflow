@@ -8,7 +8,7 @@ use std::sync::{Arc, Mutex, RwLock};
 use std::time::{Duration, SystemTime};
 
 use anyhow::Result;
-use crate::production_types::*;
+use crate::enterprise_types::*;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;

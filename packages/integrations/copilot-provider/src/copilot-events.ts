@@ -73,21 +73,22 @@ export async function registerCopilotHandlers(bus = EventBus.getInstance()) {
   }
 
   // Copilot chat completion
-  bus.on('llm:copilot:chat:request', async (request: CopilotRequest) => {
-    if (request.stream) {
+  bus.on('llm:copilot:chat:request', async (request: unknown) => {
+    const req = request as CopilotRequest;
+    if (req.stream) {
       // Handle streaming
       try {
         const client = await getClient();
         const stream = await client.createChatCompletionStream({
-          messages: request.messages,
-          model: request.model,
-          temperature: request.temperature,
-          max_tokens: request.max_tokens
+          messages: req.messages,
+          model: req.model,
+          temperature: req.temperature,
+          max_tokens: req.max_tokens
         });
 
         for await (const chunk of stream) {
           const msg: CopilotStreamChunk = {
-            correlationId: request.correlationId,
+            correlationId: req.correlationId,
             text: chunk.choices?.[0]?.delta?.content || '',
             done: false,
           };
@@ -95,7 +96,7 @@ export async function registerCopilotHandlers(bus = EventBus.getInstance()) {
         }
         
         const finalMsg: CopilotStreamChunk = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           text: '', 
           done: true 
         };
@@ -104,7 +105,7 @@ export async function registerCopilotHandlers(bus = EventBus.getInstance()) {
         logger.error('Copilot chat stream error', { error });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const errorMsg: CopilotStreamChunk = {
-          correlationId: request.correlationId,
+          correlationId: req.correlationId,
           text: '',
           done: true,
           error: errorMessage,
@@ -116,14 +117,14 @@ export async function registerCopilotHandlers(bus = EventBus.getInstance()) {
       try {
         const client = await getClient();
         const response = await client.createChatCompletion({
-          messages: request.messages,
-          model: request.model,
-          temperature: request.temperature,
-          max_tokens: request.max_tokens
+          messages: req.messages,
+          model: req.model,
+          temperature: req.temperature,
+          max_tokens: req.max_tokens
         });
 
         const msg: CopilotResponse = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           text: response.choices[0]?.message?.content || '',
           usage: response.usage
         };
@@ -132,7 +133,7 @@ export async function registerCopilotHandlers(bus = EventBus.getInstance()) {
         logger.error('Copilot chat error', { error });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const msg: CopilotResponse = { 
-          correlationId: request.correlationId, 
+          correlationId: req.correlationId, 
           error: errorMessage 
         };
         bus.emit('llm:copilot:chat:response', msg);
@@ -141,21 +142,22 @@ export async function registerCopilotHandlers(bus = EventBus.getInstance()) {
   });
 
   // Copilot models listing
-  bus.on('llm:copilot:models:request', async (request: {
-    correlationId: string;
-  }) => {
+  bus.on('llm:copilot:models:request', async (request: unknown) => {
+    const req = request as {
+      correlationId: string;
+    };
     try {
       const client = await getClient();
       const models = await client.listModels();
       bus.emit('llm:copilot:models:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         models
       });
     } catch (error) {
       logger.error('Copilot models error', { error });
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       bus.emit('llm:copilot:models:response', {
-        correlationId: request.correlationId,
+        correlationId: req.correlationId,
         error: errorMessage
       });
     }

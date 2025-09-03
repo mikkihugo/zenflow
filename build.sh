@@ -6,7 +6,7 @@ echo "🧹 Cleaning dist directory..."
 rm -rf dist
 
 echo "📝 Updating version..."
-npx tsx scripts/update-bin-version.js
+pnpm dlx tsx scripts/update-bin-version.js
 
 echo "🚀 Building with esbuild (super fast!)..."
 NODE_ENV=production node esbuild.config.js

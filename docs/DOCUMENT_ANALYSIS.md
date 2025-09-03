@@ -83,20 +83,20 @@ The Document Analysis System provides enhanced document scanning with **human-in
 
 ```bash
 # Run full interactive workflow with human approval
-npm run scan:interactive
+pnpm run scan:interactive
 
 # Or use the example script directly
-npm run example:doc-analysis
+pnpm run example:doc-analysis
 ```
 
 ### 2. Quick Demo (Auto-Approve)
 
 ```bash
 # Quick demo with auto-approval for testing
-npm run scan:docs
+pnpm run scan:docs
 
 # Or specify a custom path
-npx tsx src/examples/document-analysis-example.ts --path ./src/core
+pnpm dlx tsx src/examples/document-analysis-example.ts --path ./src/core
 ```
 
 ### 3. Programmatic Usage

@@ -24,7 +24,7 @@ staged_files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(ts
 
 if [ -n "$staged_files" ]; then
     echo "Checking files: $staged_files"
-    npx eslint $staged_files --max-warnings=10
+    pnpm dlx eslint $staged_files --max-warnings=10
 else
     echo "No TypeScript/JavaScript files staged for commit"
 fi

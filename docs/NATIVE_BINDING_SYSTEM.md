@@ -140,10 +140,10 @@ The native binding system includes comprehensive tests:
 
 ```bash
 # Run native binding integration tests
-npm test -- src/__tests__/native-binding-integration.test.ts
+pnpm test -- tests/native-binding-integration.test.ts
 
 # Run with specific timeout for debugging
-npm test -- src/__tests__/native-binding-integration.test.ts --timeout 10000
+pnpm test -- tests/native-binding-integration.test.ts --timeout 10000
 ```
 
 ## Configuration
@@ -224,8 +224,8 @@ To build native bindings for your platform:
 
 ```bash
 cd src/bindings
-npm install
-npm run build
+pnpm install
+pnpm run build
 
 # Verify binding file was created
 ls -la *.node

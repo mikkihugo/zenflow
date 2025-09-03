@@ -91,7 +91,7 @@ async function startTestServices() {
 
   // Start MCP server
   await startService('mcp', [
-    'npx',
+  'pnpm dlx',
     'tsx',
     'src/interfaces/mcp/start-server.ts',
     '--port',
@@ -100,7 +100,7 @@ async function startTestServices() {
 
   // Start Web server
   await startService('web', [
-    'npx',
+  'pnpm dlx',
     'tsx',
     'src/interfaces/web/web-interface.ts',
     '--port',
@@ -110,7 +110,7 @@ async function startTestServices() {
 
   // Start Swarm coordination server
   await startService('swarm', [
-    'npx',
+  'pnpm dlx',
     'tsx',
     'src/coordination/mcp/mcp-server.ts',
   ]);
