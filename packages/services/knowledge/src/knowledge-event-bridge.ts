@@ -267,7 +267,10 @@ export class KnowledgeEventBridge {
 // =============================================================================
 
 /**
- * Create a knowledge event bridge
+ * Create a KnowledgeEventBridge that forwards events from a knowledge event system to the foundation EventBus.
+ *
+ * @param config - Optional partial BridgeConfig to override defaults (e.g., `moduleId`, `heartbeatInterval`, `enableLogging`).
+ * @returns A configured KnowledgeEventBridge instance wired to the provided `knowledgeSystem`.
  */
 export function createKnowledgeEventBridge(
   knowledgeSystem: EventDrivenKnowledgeSystem,
@@ -277,7 +280,12 @@ export function createKnowledgeEventBridge(
 }
 
 /**
- * Get default knowledge event bridge configuration
+ * Returns a shallow copy of the default BridgeConfig used by KnowledgeEventBridge.
+ *
+ * Use this to obtain the baseline configuration (moduleId, heartbeatInterval, enableLogging)
+ * that can be modified without mutating the internal DEFAULT_CONFIG.
+ *
+ * @returns A new BridgeConfig object cloned from the module default.
  */
 export function getDefaultKnowledgeBridgeConfig(): BridgeConfig {
   return { ...DEFAULT_CONFIG };
