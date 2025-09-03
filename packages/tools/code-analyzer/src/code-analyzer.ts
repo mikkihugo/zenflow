@@ -91,24 +91,24 @@ private readonly project:Project; // Used for TypeScript analysis
 
 // Strategic facade systems - real implementations
 private brainSystem?: {
-  createCoordinator: () => { optimizePrompt: (params: any) => Promise<any> };
-  storeEmbedding: (collection: string, id: string, data: { content: string; metadata: Record<string, any> }) => Promise<void>;
+  createCoordinator: () => { optimizePrompt: (params: Record<string, unknown>) => Promise<string> };
+  storeEmbedding: (collection: string, id: string, data: { content: string; metadata: Record<string, unknown> }) => Promise<void>;
 };
 private performanceTracker?: {
   startSession: (id: string) => Promise<{ sessionId: string; startTime: number }>;
   endSession: (id: string) => Promise<{ sessionId: string; endTime: number }>;
 };
 private databaseSystem?: {
-  store: (collection: string, id: string, data: Record<string, any>) => Promise<void>;
-  storeGraph: (nodeType: string, id: string, data: Record<string, any>) => Promise<void>;
+  store: (collection: string, id: string, data: Record<string, unknown>) => Promise<void>;
+  storeGraph: (nodeType: string, id: string, data: Record<string, unknown>) => Promise<void>;
 };
 private eventSystem?: {
-  emit: (event: string, data: Record<string, any>) => Promise<void>;
+  emit: (event: string, data: Record<string, unknown>) => Promise<void>;
   on: (event: string, callback: Function) => void;
 };
 
 // Repository analysis integration
-private repoAnalyzer?: { analyzeDomainBoundaries: () => Promise<any> };
+private repoAnalyzer?: { analyzeDomainBoundaries: () => Promise<Record<string, unknown>> };
 
 constructor(repositoryPath:string) {
 this.repositoryPath = path.resolve(repositoryPath);
