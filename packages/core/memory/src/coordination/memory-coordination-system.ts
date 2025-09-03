@@ -100,8 +100,9 @@ export class MemoryCoordinationSystem extends EventEmitter {
     try {
       await withTrace('memory-coordination-add-node', async (span) => {
         span?.setAttributes({
-          'memory_node_id':id,
-          'memory_node_tier':options.tier || ' warm',});
+          memory_node_id: id,
+          memory_node_tier: options.tier || 'warm',
+        });
 
         // Initialize the backend
         await backend.initialize();
@@ -169,7 +170,8 @@ export class MemoryCoordinationSystem extends EventEmitter {
     try {
       await withTrace('memory-coordination-remove-node', async (span) => {
         span?.setAttributes({
-    'memory_node_id':id});
+          memory_node_id: id,
+        });
 
         // Remove from monitoring and load balancing
         this.healthMonitor.removeNode(id);
@@ -302,12 +304,12 @@ export class MemoryCoordinationSystem extends EventEmitter {
     request:MemoryOperationRequest
   ):Promise<MemoryOperationResult<T>> {
     return await withTrace('memory-coordination-operation', async (span) => {
-      span?.setAttributes({
-        'memory_operation':request.operation,
-        'memory_key':request.key || '',
-        'memory_namespace':request.namespace || 'default',
-        'memory_strategy':this.config.strategy,
-});
+              span?.setAttributes({
+          memory_operation: request.operation,
+          memory_key: request.key || '',
+          memory_namespace: request.namespace || 'default',
+          memory_strategy: this.config.strategy,
+        });
 
       const startTime = Date.now();
 
@@ -710,8 +712,6 @@ export class MemoryCoordinationSystem extends EventEmitter {
       throw error;
     }
   }
-<<<<<<< Current (Your changes)
-=======
 
   /**
    * Get the event system for external integration
@@ -729,5 +729,4 @@ export class MemoryCoordinationSystem extends EventEmitter {
       }
     };
   }
->>>>>>> Incoming (Background Agent changes)
 }

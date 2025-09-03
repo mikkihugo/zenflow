@@ -64,12 +64,34 @@ export {
   shutdownEventDrivenTelemetry,
 } from './telemetry-event-driven.js';
 
-// Direct telemetry creation functions (no facade pattern)
-export function createTelemetryManager(config?: unknown) {
+/**
+ * Creates a new EventDrivenTelemetryManager.
+ *
+ * The optional `config` parameter is accepted for API compatibility but is ignored — this factory always returns the manager produced by `createEventDrivenTelemetryManager`.
+ *
+ * @param config - Optional configuration (not used).
+ * @returns A new EventDrivenTelemetryManager instance.
+ */
+export function createTelemetryManager(): TelemetryManager {
   return createEventDrivenTelemetryManager();
 }
 
-export function createTelemetryAccess(config?:unknown) {
+/**
+ * Returns a small facade exposing telemetry creation and lifecycle helpers.
+ *
+ * The optional `config` value is captured and provided to the returned
+ * `createTelemetryManager` function; callers can use that factory to create
+ * a manager without importing other internals. Note: the underlying manager
+ * implementation may ignore the config.
+ *
+ * @param config - Optional configuration object forwarded to the returned `createTelemetryManager`
+ * @returns An object with:
+ *   - `createTelemetryManager()` — factory that creates a telemetry manager (captures `config`)
+ *   - `getEventDrivenTelemetry` — accessor for the event-driven telemetry API
+ *   - `initializeEventDrivenTelemetry` — initializer for the telemetry subsystem
+ *   - `shutdownEventDrivenTelemetry` — shutdown helper for the telemetry subsystem
+ */
+export function createTelemetryAccess(config?: unknown) {
   return {
     createTelemetryManager: () => createTelemetryManager(config),
     getEventDrivenTelemetry,
@@ -77,8 +99,6 @@ export function createTelemetryAccess(config?:unknown) {
     shutdownEventDrivenTelemetry
   };
 }
-<<<<<<< Current (Your changes)
-=======
 
 // Event bridge exports for foundation integration
 export {
@@ -86,4 +106,3 @@ export {
   createTelemetryEventBridge,
   getDefaultTelemetryBridgeConfig,
 };
->>>>>>> Incoming (Background Agent changes)

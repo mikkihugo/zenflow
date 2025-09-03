@@ -127,9 +127,9 @@ export class TelemetryEventBridge {
   /**
    * Stop the bridge and clean up resources
    */
-  async stop(): Promise<void> {
+  stop(): Promise<void> {
     if (!this.isStarted) {
-      return;
+      return Promise.resolve();
     }
 
     try {
@@ -150,10 +150,12 @@ export class TelemetryEventBridge {
         moduleId: this.config.moduleId
       });
 
+      return Promise.resolve();
     } catch (error) {
       EventLogger.logError('telemetry-bridge:stop-failed', error as Error, {
         component: this.config.moduleId
       });
+      return Promise.reject(error);
     }
   }
 
@@ -186,7 +188,9 @@ export class TelemetryEventBridge {
         'telemetry:shutdown'
       ];
 
-      for (const eventName of eventsToForward) {
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
+      }
         if (isValidEventName(eventName)) {
           const listener = (data: unknown) => {
             this.eventBus.emit(eventName, data);
@@ -195,6 +199,8 @@ export class TelemetryEventBridge {
           eventEmitter.on(eventName, listener);
           this.eventListeners.set(eventName, listener);
         }
+      for (const [event, listener] of this.eventListeners.entries()) {
+        this.eventBus.off(event, listener);
       }
 
       EventLogger.log('telemetry-bridge:event-forwarding-setup', {
@@ -268,19 +274,9 @@ export class TelemetryEventBridge {
 // FACTORY FUNCTIONS
 // =============================================================================
 
-/**
- * Create a telemetry event bridge
- */
 export function createTelemetryEventBridge(
   telemetryManager: EventDrivenTelemetryManager,
   config?: Partial<BridgeConfig>
 ): TelemetryEventBridge {
   return new TelemetryEventBridge(telemetryManager, config);
-}
-
-/**
- * Get default telemetry event bridge configuration
- */
-export function getDefaultTelemetryBridgeConfig(): BridgeConfig {
-  return { ...DEFAULT_CONFIG };
 }

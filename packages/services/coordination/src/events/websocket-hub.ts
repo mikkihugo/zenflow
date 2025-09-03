@@ -386,4 +386,32 @@ export class WebsocketHub {
   async execute(): Promise<void> {
     await this.initialize();
   }
+
+  /**
+   * Get event system metrics from DynamicEventRegistry
+   */
+  async getEventSystemMetrics() {
+    try {
+      const metrics = await dynamicEventRegistry.getEventMetrics();
+      const flows = await dynamicEventRegistry.getEventFlows();
+      const activeModules = await dynamicEventRegistry.getActiveModules();
+      
+      return {
+        metrics,
+        flows,
+        activeModules,
+        websocketStats: this.getStats()
+      };
+    } catch (error) {
+      EventLogger.logError('websocket-hub:metrics-failed', error as Error, {
+        component: WebsocketHub.componentName
+      });
+      return {
+        metrics: null,
+        flows: null,
+        activeModules: null,
+        websocketStats: this.getStats()
+      };
+    }
+  }
 }
