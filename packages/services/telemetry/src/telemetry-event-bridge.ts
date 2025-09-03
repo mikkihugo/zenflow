@@ -269,12 +269,12 @@ export class TelemetryEventBridge {
 // =============================================================================
 
 /**
- * Create and return a TelemetryEventBridge instance wired to the given telemetry manager.
+ * Create a TelemetryEventBridge bound to the given telemetry manager.
  *
- * The returned bridge is constructed with the provided partial configuration merged against the bridge defaults.
+ * Constructs the bridge using the provided partial config merged with the bridge defaults.
  *
- * @param config - Optional partial BridgeConfig to override defaults (e.g., moduleId, heartbeatInterval, enableLogging)
- * @returns A new TelemetryEventBridge bound to the provided telemetry manager
+ * @param config - Optional partial BridgeConfig to override defaults (e.g., `moduleId`, `heartbeatInterval`, `enableLogging`)
+ * @returns The created TelemetryEventBridge instance
  */
 export function createTelemetryEventBridge(
   telemetryManager: EventDrivenTelemetryManager,
