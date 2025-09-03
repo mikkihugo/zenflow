@@ -85,20 +85,37 @@ const getEventSystem = async () => {
     };
   } catch (error) {
     logger.error('Failed to initialize foundation EventBus, falling back to local stub', { error });
-    // TODO: replace top-level EventBus stub with a pure in-memory emitter stub
+    // Pure in-memory emitter stub (no foundation dependency)
+    const listeners = new Map<string, Set<(payload: unknown) => void>>();
     return {
-      emit: async (event: string, data: any) => {
+      emit: async (event: string, data: unknown) => {
         logger.debug('Event emit (local stub)', { event, data });
-        /* stub implementation */
+        const cbs = listeners.get(event);
+        if (!cbs || cbs.size === 0) return;
+        for (const cb of Array.from(cbs)) {
+          try {
+            cb(data);
+          } catch (err) {
+            logger.warn('Local stub listener errored', { event, error: err });
+          }
+        }
       },
       on: (event: string, callback: (payload: unknown) => void) => {
         logger.debug('Event listener (local stub)', { event });
-        /* stub implementation */
+        let set = listeners.get(event);
+        if (!set) {
+          set = new Set();
+          listeners.set(event, set);
+        }
+        set.add(callback);
       },
       off: (event: string, callback: (payload: unknown) => void) => {
         logger.debug('Event listener removal (local stub)', { event });
-        /* stub implementation */
-      }
+        const set = listeners.get(event);
+        if (!set) return;
+        set.delete(callback);
+        if (set.size === 0) listeners.delete(event);
+      },
     };
   }
 };
