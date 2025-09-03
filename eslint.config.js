@@ -76,6 +76,16 @@ export default [
       'object-shorthand': 'error',
       'prefer-destructuring': ['error', { object: true, array: false }],
 
+      // Smart additions for AI code quality (actual problems, not arbitrary limits)
+      '@typescript-eslint/no-floating-promises': 'error',        // Catch unhandled promises
+      '@typescript-eslint/await-thenable': 'error',             // Only await actual promises
+      '@typescript-eslint/no-misused-promises': 'error',        // Proper promise usage
+      'import/no-extraneous-dependencies': 'error',             // Prevent dependency bloat
+      'import/no-mutable-exports': 'error',                     // Immutable exports
+      'import/first': 'error',                                  // Imports at top
+      'no-useless-concat': 'error',                             // String efficiency
+      'no-await-in-loop': 'warn',                               // Sequential vs parallel async
+
       // Complexity & Cognitive Load
       complexity: ['error', { max: 20 }],
       'max-depth': ['error', { max: 4 }],
@@ -98,8 +108,16 @@ export default [
       'sonarjs/prefer-immediate-return': 'error',
       'sonarjs/prefer-single-boolean-return': 'error',
 
-  // Import Organization
+        // Import Organization
   'no-duplicate-imports': 'error',
+
+      // Event System Architecture Enforcement
+      // Custom rules for event-driven patterns (not implemented yet, but patterns to watch for):
+      // - Event names must follow 'domain:action-name' pattern
+      // - Use emitSafe() in async functions instead of emit()
+      // - Event payloads should be properly typed (no 'any')
+      // - No direct cross-package imports (use EventBus)
+      // TODO: Implement custom ESLint plugin for these patterns
 
       // Foundation Exports Enforcement - Use centralized utilities
       'no-restricted-imports': [
