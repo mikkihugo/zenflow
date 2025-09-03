@@ -6,7 +6,6 @@ echo "🚀 APPLYING FULL AUTO DETECTION TO ALL RUST PACKAGES"
 # Find all Rust packages
 RUST_PACKAGES=(
     "packages/implementation/brain/rust/core"
-    # singularity-coder paths removed
     "packages/implementation/taskmaster/src/wasm"
     "packages/private-core/neural-ml/neural-core"
     "packages/private-core/neural-ml/neural-core/claude-zen-neural-core"

@@ -18,6 +18,14 @@
 
 // Export main CodeAnalyzer class and utilities
 export {
+  FileAwareBridge,
+  type FileAwareRequest,
+  type AnalyzedContext,
+  type FileDependency,
+  type SymbolReference,
+} from './file-aware-bridge';
+
+export {
 analyzeFile,
 CodeAnalyzer,
 createCodeAnalyzer,

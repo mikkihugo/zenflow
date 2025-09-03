@@ -117,6 +117,7 @@
 
 // Core modules
 pub mod agent;
+pub mod ai;
 pub mod auth;
 pub mod llm;
 pub mod memory;
@@ -142,6 +143,10 @@ pub mod prompts;
 pub use tool::{
     Tool, ToolContext, ToolResult, ToolRegistry, ToolError,
     ToolDefinition
+};
+pub use ai::{
+    FileAwareEngine, FileAwareRequest, FileAwareResponse,
+    FileChange, AnalyzedContext, ChangeType, ComplexityLevel
 };
 pub use auth::{Auth, AuthCredentials, AuthStorage};
 pub use storage::{Storage, StorageError};

@@ -195,7 +195,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Initialize all application components with WebSocket support
    */
-  private async initializeComponents(): Promise<void> {
+  private initializeComponents(): void {
     try {
       logger.info(' Initializing application components with WebSocket support...');
 
@@ -394,7 +394,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       this.emit(STATUS_CHANGED_EVENT, this.status);
 
       // Initialize all system components
-      await this.initializeComponents();
+      this.initializeComponents();
 
       this.status = 'ready';
       this.initialized = true;
@@ -633,7 +633,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           .filter(([key]) => key !== 'status')
           .map(([key, value]) => `    ${  key  }: ${  value}`)
           .join('\n');
-        return `- **${  name  }**: ${  info.status  }${details}` ? `\n${    details}` : '';
+        return `- **${name}**: ${info.status}${details ? `\n${details}` : ''}`;
       })
       .join('\n');
 

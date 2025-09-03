@@ -47,7 +47,6 @@ for (const dir of packageDirs) {
           console.log(`✅ ${packageDir} - has build script`);
           
           // Check for special packages mentioned in the issue
-          // (singularity-coder removed)
           if (packageDir.includes('llm-providers')) {
             specialPackages.push('llm-providers');
           }

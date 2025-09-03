@@ -145,7 +145,7 @@ export const restAPISchema = {
           },
         ],
         responses: {
-          '200': {
+          200: {
             description: 'List of agents',
             content: {
               'application/json': {
@@ -164,7 +164,7 @@ export const restAPISchema = {
               },
             },
           },
-          '500': {
+          500: {
             description: 'Internal server error',
             content: {
               'application/json': {
@@ -208,7 +208,7 @@ export const restAPISchema = {
           },
         },
         responses: {
-          '201': {
+          201: {
             description: 'Agent created successfully',
             content: {
               'application/json': {
@@ -216,7 +216,7 @@ export const restAPISchema = {
               },
             },
           },
-          '400': {
+          400: {
             description: 'Invalid request',
             content: {
               'application/json': {
@@ -235,7 +235,7 @@ export const restAPISchema = {
         summary: 'System health check',
         description: 'Get overall system health status',
         responses: {
-          '200': {
+          200: {
             description: 'System is healthy',
             content: {
               'application/json': {
@@ -268,7 +268,7 @@ export const restAPISchema = {
         summary: 'Detailed health check',
         description: 'Get detailed system health with all services',
         responses: {
-          '200': {
+          200: {
             description: 'Detailed system health',
             content: {
               'application/json': {

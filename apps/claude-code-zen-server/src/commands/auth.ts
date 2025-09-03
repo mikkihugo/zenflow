@@ -193,9 +193,8 @@ async function initiateDeviceFlow(): Promise<DeviceFlowResponse> {
   const response = await fetch(DEVICE_CODE_URL, {
     method: 'POST',
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'application/json',
-      'Content-Type': ' application/x-www-form-urlencoded',
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
       client_id: GITHUB_CLIENT_ID,
@@ -223,9 +222,8 @@ async function pollForToken(
     const response = await fetch(ACCESS_TOKEN_URL, {
       method: 'POST',
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-        'Content-Type': ' application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
         client_id: GITHUB_CLIENT_ID,
