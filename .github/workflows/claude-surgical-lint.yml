@@ -30,6 +30,8 @@ jobs:
       contents: write
       pull-requests: write
       checks: write
+      actions: write
+      issues: write
 
     steps:
       - name: 📥 Checkout Repository
@@ -69,49 +71,9 @@ jobs:
           sed 's/"node": ">=22.0.0 <24.0.0"/"node": ">=18.0.0 <24.0.0"/' package.json > package.json.tmp
           mv package.json.tmp package.json
 
-      - name: 🔧 Create PR for Push Events
-        if: steps.lint-check.outputs.error-count != '0' && github.event_name == 'push'
-        run: |
-          echo "🔧 Creating PR for Claude surgical linting..."
-          
-          # Create a new branch for the linting fixes
-          BRANCH_NAME="claude/surgical-lint-$(date +%s)"
-          git checkout -b "$BRANCH_NAME"
-          git push origin "$BRANCH_NAME"
-          
-          # Create PR with @claude mention to trigger the action
-          PR_NUMBER=$(gh pr create \
-            --title "🔧 Surgical Linting Fixes Needed" \
-            --body "@claude Please fix the linting errors surgically:
-            
-            You are a surgical code linter. Fix ONLY simple, confident linting errors while preserving ALL functionality.
-
-            SURGICAL REQUIREMENTS:
-            1. Fix ONLY simple, obvious issues: missing semicolons, unused imports, basic formatting
-            2. SKIP complex syntax errors, incomplete code, or anything you're not 100% confident about
-            3. NEVER change business logic or functionality
-            4. Use Edit tool for line-by-line changes only
-
-            CONFIDENCE RULES:
-            - Fix: Missing semicolons, unused variables/imports, basic formatting  
-            - SKIP: Syntax errors in complex expressions, incomplete functions, type conflicts
-            - SKIP: Any error in files with multiple complex syntax issues
-
-            PROCESS: Run \`pnpm lint\` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
-            
-            ---
-            **Auto-merge enabled**: This PR will auto-merge after Claude fixes the linting errors and all checks pass." \
-            --head "$BRANCH_NAME" \
-            --base main | grep -o '[0-9]\+$')
-          
-          # Enable auto-merge for the PR
-          gh pr merge "$PR_NUMBER" --auto --squash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 🔧 Claude Surgical Linting (PR Events)
-        if: steps.lint-check.outputs.error-count != '0' && github.event_name == 'pull_request'
-        uses: anthropics/claude-code-action@v1
+      - name: 🔧 Claude Surgical Linting (Direct Fix)
+        if: steps.lint-check.outputs.error-count != '0'
+        uses: anthropics/claude-code-base-action@beta
         with:
           prompt: |
             You are a surgical code linter. Fix ONLY simple, confident linting errors while preserving ALL functionality.
@@ -128,8 +90,8 @@ jobs:
             - SKIP: Any error in files with multiple complex syntax issues
 
             PROCESS: Run `pnpm lint` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          allowed_tools: "Bash,Edit,Read,Glob,Grep"
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
       - name: 🔧 Restore original Node.js constraint
         if: steps.lint-check.outputs.error-count != '0'
@@ -196,11 +158,11 @@ jobs:
           
           Co-Authored-By: Claude <noreply@anthropic.com>" || exit 0
 
-      - name: 🚀 Push Changes
+      - name: 🚀 Push Changes (Direct to Main)
         if: steps.lint-check.outputs.error-count != '0'
         run: |
-          echo "🚀 Pushing surgical fixes..."
-          git push || echo "Push failed - may be merge conflicts"
+          echo "🚀 Pushing surgical fixes directly to main..."
+          git push origin main || echo "Push failed - may be merge conflicts"
 
       - name: 📊 Update PR Status
         if: github.event_name == 'pull_request' && steps.lint-check.outputs.error-count != '0'

@@ -16,6 +16,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { EventEmitter, getLogger } from '@claude-zen/foundation';
 import { initializeClaudeZen, shutdownClaudeZen } from './index';
+import { getProjectPath } from '../config/env';
 // Fallback functions for missing intelligence facade exports
 const ensureDataDirectories = (projectPath: string): void => {
   // Stub implementation - would ensure data directories exist
@@ -30,7 +31,7 @@ const getCurrentProject = (): {
   name: string;
 } | null => {
   // Stub implementation - would get current project from memory
-  const projectPath = process.env.CLAUDE_ZEN_PROJECT || process.cwd();
+  const projectPath = getProjectPath();
   const projectName = path.basename(projectPath);
   return {
     id: projectName,

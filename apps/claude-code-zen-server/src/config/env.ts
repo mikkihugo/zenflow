@@ -15,7 +15,16 @@ export interface AppEnv {
   NODE_ENV: RuntimeEnvironment;
   PORT: number;
   HOST: string;
+  CLAUDE_ZEN_PROJECT: string;
   EMERGENCY_SHUTDOWN_TOKEN: string;
+  // Interface / mode flags
+  CLAUDE_CODE_MCP: boolean;
+  CLAUDE_FLOW_WEB: boolean;
+  CLAUDE_FLOW_API: boolean;
+  CLAUDE_ADVANCED_CLI: boolean;
+  // Cross-cutting config
+  CORS_ALLOWED_ORIGINS?: string;
+  APP_VERSION: string;
 }
 
 function coerceNodeEnv(value: string | undefined): RuntimeEnvironment {
@@ -36,19 +45,38 @@ function parsePort(raw: string | undefined): number {
   return n;
 }
 
+function flag(value: string | undefined): boolean {
+  if (!value) return false;
+  return value === '1' || value.toLowerCase() === 'true' || value === 'enabled';
+}
+
 function load(): AppEnv {
   const {
     NODE_ENV,
     PORT,
     HOST,
-    EMERGENCY_SHUTDOWN_TOKEN
+    EMERGENCY_SHUTDOWN_TOKEN,
+    CLAUDE_ZEN_PROJECT,
+    CLAUDE_CODE_MCP,
+    CLAUDE_FLOW_WEB,
+    CLAUDE_FLOW_API,
+    CLAUDE_ADVANCED_CLI,
+    CORS_ALLOWED_ORIGINS,
+    npm_package_version
   } = process.env;
 
   return {
     NODE_ENV: coerceNodeEnv(NODE_ENV),
     PORT: parsePort(PORT),
     HOST: HOST || '0.0.0.0',
-    EMERGENCY_SHUTDOWN_TOKEN: EMERGENCY_SHUTDOWN_TOKEN || 'emergency-shutdown-2025'
+    CLAUDE_ZEN_PROJECT: CLAUDE_ZEN_PROJECT || process.cwd(),
+    EMERGENCY_SHUTDOWN_TOKEN: EMERGENCY_SHUTDOWN_TOKEN || 'emergency-shutdown-2025',
+    CLAUDE_CODE_MCP: flag(CLAUDE_CODE_MCP),
+    CLAUDE_FLOW_WEB: flag(CLAUDE_FLOW_WEB),
+    CLAUDE_FLOW_API: flag(CLAUDE_FLOW_API),
+    CLAUDE_ADVANCED_CLI: flag(CLAUDE_ADVANCED_CLI),
+    CORS_ALLOWED_ORIGINS,
+    APP_VERSION: npm_package_version || '1.0.0'
   };
 }
 
@@ -77,11 +105,36 @@ export function getEmergencyShutdownToken(): string {
   return env.EMERGENCY_SHUTDOWN_TOKEN;
 }
 
+export function getProjectPath(): string {
+  return env.CLAUDE_ZEN_PROJECT;
+}
+
+export function getAppVersion(): string {
+  return env.APP_VERSION;
+}
+
+export function getCorsAllowedOriginsRaw(): string | undefined {
+  return env.CORS_ALLOWED_ORIGINS;
+}
+
+// Flag helpers
+export const isMcpEnabled = (): boolean => env.CLAUDE_CODE_MCP;
+export const isWebInterfaceEnabled = (): boolean => env.CLAUDE_FLOW_WEB;
+export const isApiInterfaceEnabled = (): boolean => env.CLAUDE_FLOW_API;
+export const isAdvancedCliFlagEnabled = (): boolean => env.CLAUDE_ADVANCED_CLI;
+
 // Diagnostic log on first import (dev only)
 if (isDev) {
   logger.debug('Loaded environment snapshot', {
     NODE_ENV: env.NODE_ENV,
     PORT: env.PORT,
-    HOST: env.HOST
+    HOST: env.HOST,
+    APP_VERSION: env.APP_VERSION,
+    FLAGS: {
+      MCP: env.CLAUDE_CODE_MCP,
+      WEB: env.CLAUDE_FLOW_WEB,
+      API: env.CLAUDE_FLOW_API,
+      ADV_CLI: env.CLAUDE_ADVANCED_CLI
+    }
   });
 }
