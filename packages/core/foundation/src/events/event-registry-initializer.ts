@@ -82,7 +82,7 @@ export class EventRegistryInitializer {
   /**
    * Initialize the event registry with active modules
    */
-  // eslint-disable-next-line max-lines-per-function
+   
   private initializeModules(): void {
     logger.info('Initializing event registry with active modules...');
 
@@ -314,9 +314,9 @@ export class EventRegistryInitializer {
     if (Math.random() > 0.6) {
       const newFlow: EventFlow = {
         id: `flow-${  Date.now()}`,
-        eventName: eventNames[Math.floor(Math.random() * eventNames.length)]!,
-        source: sources[Math.floor(Math.random() * sources.length)]!,
-        target: targets[Math.floor(Math.random() * targets.length)]!,
+        eventName: eventNames[Math.floor(Math.random() * eventNames.length)] || 'UnknownEvent',
+        source: sources[Math.floor(Math.random() * sources.length)] || 'UnknownSource',
+        target: targets[Math.floor(Math.random() * targets.length)] || 'UnknownTarget',
         timestamp: new Date(),
         latency: Math.random() * 1000 + 50,
         success: Math.random() > 0.1,
@@ -355,8 +355,10 @@ export class EventRegistryInitializer {
       const statuses: ActiveModule['status'][] = ['active', 'idle'];
       const activeModule = this.activeModules[randomIndex];
       if (activeModule) {
-        activeModule.status =
-          statuses[Math.floor(Math.random() * statuses.length)]!;
+        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+        if (randomStatus) {
+          activeModule.status = randomStatus;
+        }
       }
     }
   }

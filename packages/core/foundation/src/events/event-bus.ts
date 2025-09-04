@@ -81,7 +81,7 @@ const safeAsync = async <T>(
 
 export function ensureSingleBusInstance(bus: unknown) {
   if (process.env['NODE_ENV'] !== 'production') {
-    const g = globalThis as any;
+    const g = globalThis as typeof globalThis & { __cz_bus?: unknown };
     if (g.__cz_bus && g.__cz_bus !== bus) {
       logger.warn('[EventBus] Multiple instances detected in development.');
     }
@@ -289,8 +289,8 @@ export class EventBus<
 
  // Listener error isolation: invoke each listener safely and continue
  const raw =
- typeof (this as any).rawListeners === 'function'
- ? (this as any).rawListeners(event)
+ typeof (this as unknown as { rawListeners?: Function }).rawListeners === 'function'
+ ? (this as unknown as { rawListeners: Function }).rawListeners(event)
  : this.listeners(event);
 
  const listeners = (raw || []) as ((...args: unknown[]) => void)[];
@@ -299,16 +299,16 @@ export class EventBus<
  try {
  // Ensure correct 'this' for once wrappers
  (listener as (...args: unknown[]) => void).call(this, payload);
- } catch (err) {
+ } catch (error) {
  if (this.busConfig.enableMetrics) this.busMetrics.errorCount++;
  if (this.busConfig.enableLogging) {
- logger.error(`Listener error for event '${String(event)}':`, err);
+ logger.error(`Listener error for event '${String(event)}':`, error);
  }
  // Avoid throwing when no error listeners are registered
  if (this.listenerCount('error') > 0) {
  try {
  // Use super.emit to avoid re-entering isolation logic
- super.emit('error', err);
+ super.emit('error', error);
  } catch {
  // swallow to preserve isolation contract
  }

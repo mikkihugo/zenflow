@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createContainer } from '../../src/dependency-injection';
 
 describe('Dependency Injection - Working Methods Only', () => {
+  const TEST_SERVICE_NAME = 'test-service';
   let container: ReturnType<typeof createContainer>;
 
   beforeEach(() => {
@@ -17,11 +18,11 @@ describe('Dependency Injection - Working Methods Only', () => {
   describe('Service Registration and Resolution', () => {
     it('should register and resolve instance services', () => {
       const testService = { name: 'test', value: 42, type: 'instance' };
-      container.registerInstance('test-service', testService);
+      container.registerInstance(TEST_SERVICE_NAME, testService);
 
-      expect(container.has('test-service')).toBe(true);
+      expect(container.has(TEST_SERVICE_NAME)).toBe(true);
 
-      const resolved = container.resolve('test-service');
+      const resolved = container.resolve(TEST_SERVICE_NAME);
       expect(resolved).toBe(testService);
       expect(resolved.name).toBe('test');
       expect(resolved.value).toBe(42);
@@ -131,22 +132,22 @@ describe('Dependency Injection - Working Methods Only', () => {
 
       // Register many services
       for (let i = 0; i < serviceCount; i++) {
-        container.registerInstance('service-' + i, {
+        container.registerInstance(`service-${  i}`, {
           id: i,
-          name: 'service-' + i,
-          data: 'data-' + i,
+          name: `service-${  i}`,
+          data: `data-${  i}`,
         });
       }
 
       // Verify all are registered and resolvable
       for (let i = 0; i < serviceCount; i++) {
-        const serviceName = 'service-' + i;
+        const serviceName = `service-${  i}`;
         expect(container.has(serviceName)).toBe(true);
 
         const resolved = container.resolve(serviceName);
         expect(resolved.id).toBe(i);
         expect(resolved.name).toBe(serviceName);
-        expect(resolved.data).toBe('data-' + i);
+        expect(resolved.data).toBe(`data-${  i}`);
       }
     });
   });

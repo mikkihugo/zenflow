@@ -6,12 +6,10 @@
  */
 
 // Foundation re-exports commander - use internal import to avoid circular dependency
-export type { CommanderError, Help, Option } from 'commander';
 import {
   Command as CommanderCommand,
   program as commanderProgram,
 } from 'commander';
-export { CommanderCommand as Command, commanderProgram as program };
 // =============================================================================
 // DATE UTILITIES - Foundation re-exports date-fns internally
 // =============================================================================
@@ -36,6 +34,16 @@ import {
   startOfWeek as dateFnsStartOfWeek,
   subDays as dateFnsSubDays,
 } from 'date-fns';
+// =============================================================================
+// COMMON UTILITIES - Foundation re-exports utilities internally
+// =============================================================================
+import lodashLib from 'lodash';
+import {
+  customAlphabet as nanoidCustomAlphabet,
+  nanoid as nanoidGenerator,
+} from 'nanoid';
+export type { CommanderError, Help, Option } from 'commander';
+export { CommanderCommand as Command, commanderProgram as program };
 
 export const dateFns = dateFnsLib;
 export {
@@ -58,14 +66,6 @@ export {
   dateFnsStartOfWeek as startOfWeek,
   dateFnsSubDays as subDays,
 };
-// =============================================================================
-// COMMON UTILITIES - Foundation re-exports utilities internally
-// =============================================================================
-import lodashLib from 'lodash';
-import {
-  customAlphabet as nanoidCustomAlphabet,
-  nanoid as nanoidGenerator,
-} from 'nanoid';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const _ = lodashLib;

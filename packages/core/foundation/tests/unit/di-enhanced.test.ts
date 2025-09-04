@@ -40,7 +40,7 @@ describe('Enhanced DI Container Features', () => {
 
       const factory = () => {
         callCount++;
-        return { value: 'factory-' + callCount };
+        return { value: `factory-${  callCount}` };
       };
 
       container.registerSingleton('singletonFactory', factory);

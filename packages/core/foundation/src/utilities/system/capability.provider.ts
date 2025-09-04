@@ -43,7 +43,9 @@ function detect(): Record<Capability, boolean> {
   try {
     require('node:fs');
     result.fs = true;
-  } catch {}
+  } catch {
+    // fs not available in browser environment
+  }
 
   // Network (http/https or fetch)
   try {
@@ -52,34 +54,38 @@ function detect(): Record<Capability, boolean> {
     result.network = true;
   } catch {
     // browsers: fetch
-    result.network = typeof (globalThis as any).fetch === 'function';
+    result.network = typeof (globalThis as unknown as { fetch?: Function }).fetch === 'function';
   }
 
   // worker_threads
   try {
     require('node:worker_threads');
     result.worker_threads = true;
-  } catch {}
+  } catch {
+    // worker_threads not available in browser environment
+  }
 
   // WebAssembly
-  result.wasm = typeof (globalThis as any).WebAssembly === 'object';
+  result.wasm = typeof (globalThis as unknown as { WebAssembly?: object }).WebAssembly === 'object';
 
   // crypto/webcrypto
   try {
     require('node:crypto');
     result.crypto = true;
-  } catch {}
-  result.webcrypto = !!(globalThis as any).crypto?.subtle;
+  } catch {
+    // node:crypto not available in browser environment
+  }
+  result.webcrypto = !!(globalThis as unknown as { crypto?: { subtle?: unknown } }).crypto?.subtle;
 
   // sharedArrayBuffer
-  result.sharedarraybuffer = typeof (globalThis as any).SharedArrayBuffer === 'function';
+  result.sharedarraybuffer = typeof (globalThis as unknown as { SharedArrayBuffer?: Function }).SharedArrayBuffer === 'function';
 
   // performance
-  result.performance = typeof (globalThis as any).performance?.now === 'function';
+  result.performance = typeof (globalThis as unknown as { performance?: { now?: Function } }).performance?.now === 'function';
 
   // URL, fetch
-  result.url = typeof (globalThis as any).URL === 'function';
-  result.fetch = result.fetch || typeof (globalThis as any).fetch === 'function';
+  result.url = typeof (globalThis as unknown as { URL?: Function }).URL === 'function';
+  result.fetch = result.fetch || typeof (globalThis as unknown as { fetch?: Function }).fetch === 'function';
 
   return result;
 }
@@ -88,9 +94,7 @@ export function createCapabilityProvider(): CapabilityProvider {
   const cache = detect();
   logger.debug?.('Capabilities detected', cache);
   return {
-    has: (cap: Capability) => {
-      return !!cache[cap];
-    },
+    has: (cap: Capability) => !!cache[cap],
     list: () => Object.keys(cache).filter(k => cache[k as Capability]) as Capability[],
     summary: () => ({ ...cache }),
   };

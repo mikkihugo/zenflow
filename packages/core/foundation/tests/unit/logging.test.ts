@@ -5,8 +5,8 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Logger } from '../../src/core/logging';
 import {
+  type Logger,
   getLogger,
   getLoggingConfig,
   LoggingLevel,
@@ -161,6 +161,7 @@ describe('Logging System - 100% Coverage', () => {
   });
 
   describe('Logger interface implementation', () => {
+    const TEST_MESSAGE = 'test message';
     let logger: Logger;
 
     beforeEach(() => {
@@ -168,7 +169,7 @@ describe('Logging System - 100% Coverage', () => {
     });
 
     it('should implement debug method', () => {
-      expect(() => logger.debug('test message')).not.toThrow();
+      expect(() => logger.debug(TEST_MESSAGE)).not.toThrow();
       expect(() =>
         logger.debug('test with data', { key: 'value' })
       ).not.toThrow();
@@ -228,7 +229,7 @@ describe('Logging System - 100% Coverage', () => {
 
     it('should handle concurrent logger creation', () => {
       const promises = Array.from({ length: 10 }, (_, i) =>
-        Promise.resolve(getLogger('concurrent-' + i))
+        Promise.resolve(getLogger(`concurrent-${  i}`))
       );
 
       expect(() => Promise.all(promises)).not.toThrow();
@@ -240,7 +241,7 @@ describe('Logging System - 100% Coverage', () => {
       const start = performance.now();
 
       for (let i = 0; i < 100; i++) {
-        getLogger('perf-test-' + i);
+        getLogger(`perf-test-${  i}`);
       }
 
       const duration = performance.now() - start;
@@ -252,7 +253,7 @@ describe('Logging System - 100% Coverage', () => {
       const start = performance.now();
 
       for (let i = 0; i < 1000; i++) {
-        logger.info('Performance test message ' + i);
+        logger.info(`Performance test message ${  i}`);
       }
 
       const duration = performance.now() - start;

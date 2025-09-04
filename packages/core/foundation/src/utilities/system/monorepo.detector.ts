@@ -293,7 +293,7 @@ export class WorkspaceDetector {
  }
 
  const languageMap = {
- PACKAGE_JSON_FILE: 'TypeScript', // Default for JS/TS projects
+ "PACKAGE_JSON_FILE": 'TypeScript', // Default for JS/TS projects
  'Cargo.toml': 'Rust',
  'go.mod': 'Go',
  'build.gradle': 'Kotlin',

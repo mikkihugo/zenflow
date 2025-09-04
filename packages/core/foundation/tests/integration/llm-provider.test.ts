@@ -16,6 +16,16 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  type LLMRequest,
+  type LLMResponse,
+  type SwarmAgentRole,
+  getGlobalLLM,
+  LLMProvider,
+  SWARM_AGENT_ROLES,
+  setGlobalLLM,
+} from '../../src/llm-provider';
+
 // Mock the logging system
 vi.mock('@claude-zen/foundation/logging', () => ({
   getLogger: () => ({
@@ -34,18 +44,6 @@ vi.mock('@claude-zen/llm-providers', () => ({
     chat: mockLLMProvider,
   })),
 }));
-
-import type {
-  LLMRequest,
-  LLMResponse,
-  SwarmAgentRole,
-} from '../../src/llm-provider';
-import {
-  getGlobalLLM,
-  LLMProvider,
-  SWARM_AGENT_ROLES,
-  setGlobalLLM,
-} from '../../src/llm-provider';
 
 describe('LLM Provider - Unit Tests (Vitest)', () => {
   let llmProvider: LLMProvider;
@@ -484,7 +482,7 @@ describe('LLM Provider - Integration Tests (Real API)', () => {
         const promises = Array(3)
           .fill(0)
           .map((_, i) =>
-            llmProvider.complete('Count to ' + i + 1, {
+            llmProvider.complete(`Count to ${  i  }${1}`, {
               model: 'sonnet',
               maxTokens: 50,
             })
@@ -705,7 +703,7 @@ describe('LLM Provider - Advanced Features', () => {
 
     // Add messages until context is full
     for (let i = 0; i < 100; i++) {
-      conversation.addMessage('user', 'Message ' + i.repeat(10));
+      conversation.addMessage('user', `Message ${  i.repeat(10)}`);
     }
 
     const messages = conversation.getMessages();

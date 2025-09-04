@@ -28,6 +28,7 @@ import * as path from 'node:path';
 
 import { type Config, getConfig } from '../../core/config/index.js';
 import { getLogger } from '../../core/logging/index.js';
+import type { UnknownRecord } from '../../types/primitives';
 
 // Constants for duplicate string literals
 const PROJECT_TYPES = {
@@ -37,7 +38,6 @@ const PROJECT_TYPES = {
 const BUILD_FILES = {
   BUILD_GRADLE: 'build.gradle' as const,
 } as const;
-import type { UnknownRecord } from '../../types/primitives';
 
 const logger = getLogger('project-manager');
 

@@ -39,6 +39,9 @@ import type {
  UnknownRecord,
 } from '../../types/primitives';
 
+// Foundation provides validation via zod - use internal import to avoid circular dependency
+import { z as zodInstance, ZodError, type ZodSchema } from 'zod';
+
 // Node.js fetch polyfill for older versions
 declare const fetch: (url: string) => Promise<{
  ok: boolean;
@@ -491,9 +494,6 @@ export function createJsonSchemaManager(
 ): JsonSchemaManager {
  return new JsonSchemaManager(logger, schemasPath);
 }
-
-// Foundation provides validation via zod - use internal import to avoid circular dependency
-import { z as zodInstance, ZodError, type ZodSchema } from 'zod';
 
 // Export Zod for foundation integration
 export { zodInstance as z };

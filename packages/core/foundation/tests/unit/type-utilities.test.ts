@@ -331,7 +331,7 @@ describe('Foundation Type Utilities - 100% Coverage', () => {
     it('should handle branding/unbranding efficiently', () => {
       const start = performance.now();
 
-      const values = Array.from({ length: 1000 }, (_, i) => 'value-' + i);
+      const values = Array.from({ length: 1000 }, (_, i) => `value-${  i}`);
 
       const branded = values.map((val) => brand<string, 'Test'>(val));
       const unbranded = branded.map((val) => unbrand(val));

@@ -622,8 +622,7 @@ export function withTimeoutLegacy<T>(
  // Use Promise.race with timeout
  Promise.race([
  fn(),
- new Promise<never>((resolve, reject) => {
- resolve; // Mark as used for linter
+ new Promise<never>((_, reject) => {
  signal.addEventListener('abort', () => {
  reject(new TaskCancelledError());
  });

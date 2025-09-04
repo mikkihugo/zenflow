@@ -48,11 +48,11 @@ describe('Foundation Events', () => {
       const results: string[] = [];
 
       eventBus.on('test', (data) => {
-        results.push('listener1:' + data.value);
+        results.push(`listener1:${  data.value}`);
       });
 
       eventBus.on('test', (data) => {
-        results.push('listener2:' + data.value);
+        results.push(`listener2:${  data.value}`);
       });
 
       eventBus.emit('test', { value: 'test' });
@@ -87,6 +87,7 @@ describe('Foundation Events', () => {
 
     it('should handle event configuration', async () => {
       const { EventBus } = await import('../../src/events');
+      const CONFIG_TEST_EVENT = 'config-test';
 
       interface TestEvents {
         'config-test': { data: string };
@@ -100,13 +101,13 @@ describe('Foundation Events', () => {
       expect(eventBus).toBeDefined();
 
       // Should accept multiple listeners up to limit
-      eventBus.on('config-test', () => {});
-      eventBus.on('config-test', () => {});
-      eventBus.on('config-test', () => {});
+      eventBus.on(CONFIG_TEST_EVENT, () => {});
+      eventBus.on(CONFIG_TEST_EVENT, () => {});
+      eventBus.on(CONFIG_TEST_EVENT, () => {});
 
       // Should not throw for normal usage
       expect(() => {
-        eventBus.emit('config-test', { data: 'test' });
+        eventBus.emit(CONFIG_TEST_EVENT, { data: 'test' });
       }).not.toThrow();
     });
   });

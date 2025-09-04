@@ -443,14 +443,14 @@ export class DynamicEventRegistry extends EventBus {
    */
   private inferModuleType(moduleType: string): ActiveModule['type'] {
     const typeMap: Record<string, ActiveModule['type']> = {
-      sparc: 'sparc',
-      brain: 'brain',
-      dspy: 'dspy',
-      teamwork: 'teamwork',
-      llm: 'llm',
-      git: 'git',
-      system: 'system',
-      safe: 'safe',
+      "sparc": 'sparc',
+      "brain": 'brain',
+      "dspy": 'dspy',
+      "teamwork": 'teamwork',
+      "llm": 'llm',
+      "git": 'git',
+      "system": 'system',
+      "safe": 'safe',
       'claude-code': 'claude-code',
     };
 

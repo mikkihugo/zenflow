@@ -99,7 +99,7 @@ export class CircuitBreaker<T extends unknown[], R> {
  failureThreshold: 5,
  resetTimeout: 60000,
  shouldTrack: () => true,
- onStateChange: () => {},
+ onStateChange: () => { /* Default no-op callback */ },
  ...config,
  };
  }

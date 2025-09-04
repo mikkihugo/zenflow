@@ -33,3 +33,6 @@ export {
   getWorkspaceDetector as getWorkspaceDetectorFromMonorepo,
   WorkspaceDetector,
 } from './monorepo.detector';
+
+// Capability provider exports
+export { capabilities, createCapabilityProvider } from './capability.provider';

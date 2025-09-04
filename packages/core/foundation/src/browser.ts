@@ -71,8 +71,10 @@ export const getLogger = (name: string): Logger => ({
 });
 
 export const getLogEntries = () => [];
-export const setLogBroadcaster = () => {};
-export const clearLogBroadcaster = () => {};
+// Browser stub - log broadcasting not implemented in browser environment
+export const setLogBroadcaster = () => { /* Browser stub */ };
+// Browser stub - log broadcasting not implemented in browser environment
+export const clearLogBroadcaster = () => { /* Browser stub */ };
 
 // DEPENDENCY INJECTION - Service container and patterns (browser-compatible)
 // =============================================================================
@@ -192,8 +194,7 @@ export const safeAsync = async <T>(
 export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> =>
   Promise.race([
     promise,
-    new Promise<T>((resolve, reject) => {
-      resolve; // Mark as used for linter
+    new Promise<T>((_, reject) => {
       setTimeout(
         () => reject(new TimeoutError(`Operation timed out after ${  String(ms)  }ms`)),
         ms
@@ -448,7 +449,8 @@ export const fallback =
   };
 export const retry = withRetry;
 export const timeout = withTimeout;
-export const noop = () => {};
+// Intentionally empty function for use as a no-operation callback
+export const noop = () => { /* No operation */ };
 
 // Simple policy implementation
 // eslint-disable-next-line @typescript-eslint/naming-convention

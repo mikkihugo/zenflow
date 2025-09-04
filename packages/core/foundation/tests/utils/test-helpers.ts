@@ -21,7 +21,7 @@ export const mockLogger: Logger = {
 // Test data generators
 export const generators = {
   uuid: () =>
-    'test-uuid-' + (Date.now()) + '-' + Math.random().toString(36).substr(2, 9),
+    `test-uuid-${  Date.now()  }-${  Math.random().toString(36).substr(2, 9)}`,
 
   timestamp: () => Date.now(),
 
@@ -50,7 +50,7 @@ export const asyncUtils = {
       if (await condition()) return true;
       await asyncUtils.waitFor(50);
     }
-    throw new Error(`Condition not met within ${timeout}ms`
+    throw new Error(`Condition not met within ${timeout}ms`);
   },
 
   timeout: (ms: number) =>

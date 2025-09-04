@@ -4,6 +4,9 @@
  * Common utility functions organized by functional domain.
  */
 
+// Export specific functions to avoid conflicts
+// Temporary direct export to bypass module resolution issues
+import { z } from 'zod';
 export {
   concurrent,
   pTimeout,
@@ -50,9 +53,6 @@ export {
   parseISO,
   timestampFromDate,
 } from './time';
-// Export specific functions to avoid conflicts
-// Temporary direct export to bypass module resolution issues
-import { z } from 'zod';
 export const emailSchema = z.string().email();
 
 // Temporarily comment out validation exports to fix circular import issue

@@ -26,6 +26,30 @@
  *
  * @interface ServiceInfo
  */
+/**
+ * Creates a new dependency injection container with full service lifecycle management.
+ * Provides registration, resolution, health monitoring, and service discovery.
+ *
+ * @returns A fully configured DI container instance
+ *
+ * @example
+ * '''typescript'
+ * const container = createContainer();
+ *
+ * // Register services
+ * container.register('logger', Logger, { capabilities:[' logging'], tags:[' core']});
+ *
+ * // Start health monitoring
+ * container.startHealthMonitoring(5000);
+ *
+ * // Listen to events
+ * container.on('serviceRegistered', (event) => {
+ *   logger.info(`Service ${event.name} registered`
+ *});
+ * '
+ */
+import { ContainerImpl } from './container-impl.js';
+
 export interface ServiceInfo {
   name: string;
   type: 'class' | 'factory' | 'instance' | 'singleton' | 'async-factory';
@@ -164,30 +188,6 @@ export interface Container {
   };
   getName?(): string;
 }
-
-/**
- * Creates a new dependency injection container with full service lifecycle management.
- * Provides registration, resolution, health monitoring, and service discovery.
- *
- * @returns A fully configured DI container instance
- *
- * @example
- * '''typescript'
- * const container = createContainer();
- *
- * // Register services
- * container.register('logger', Logger, { capabilities:[' logging'], tags:[' core']});
- *
- * // Start health monitoring
- * container.startHealthMonitoring(5000);
- *
- * // Listen to events
- * container.on('serviceRegistered', (event) => {
- *   logger.info(`Service ${event.name} registered`
- *});
- * '
- */
-import { ContainerImpl } from './container-impl.js';
 
 export const createContainer = (): Container => new ContainerImpl();
 

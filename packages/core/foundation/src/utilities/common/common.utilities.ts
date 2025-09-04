@@ -79,6 +79,13 @@ import { type ZodType, z } from 'zod';
 import { err, ok, type Result } from '../../error-handling/index.js';
 import { getLogger } from '../../core/logging/logging.service.js';
 
+// =============================================================================
+// FILE OPERATIONS FORCING PATTERNS - Safe async file operations
+// =============================================================================
+
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+
 // Logger for utility functions
 const logger = getLogger('CommonUtilities');
 
@@ -464,13 +471,6 @@ export function safeGet<T>(
  );
  }
 }
-
-// =============================================================================
-// FILE OPERATIONS FORCING PATTERNS - Safe async file operations
-// =============================================================================
-
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
 
 /**
  * Safe file reading with Result pattern

@@ -151,7 +151,7 @@ describe('Foundation Integration Tests', () => {
           if (attempts < 2) {
             throw new Error('Simulated failure');
           }
-          return 'Success on attempt ' + attempts;
+          return `Success on attempt ${  attempts}`;
         },
         {
           maxRetries: 3,
@@ -342,9 +342,9 @@ describe('Foundation Integration Tests', () => {
 
         for (const [index, result] of results.entries()) {
           if (result.status === 'fulfilled') {
-            logger.info('Operation ' + index + 1 + ' succeeded');
+            logger.info(`Operation ${  index  }${1  } succeeded`);
           } else {
-            logger.warn('Operation ' + index + 1 + ' failed', {
+            logger.warn(`Operation ${  index  }${1  } failed`, {
               error: result.reason,
             });
           }
@@ -367,7 +367,7 @@ describe('Foundation Integration Tests', () => {
         // Create multiple concurrent LLM requests
         const requests = Array(5)
           .fill(0)
-          .map((_, i) => llm.complete('Count to ' + i + 1, { maxTokens: 50 }));
+          .map((_, i) => llm.complete(`Count to ${  i  }${1}`, { maxTokens: 50 }));
 
         const startTime = Date.now();
         const results = await Promise.all(requests);
