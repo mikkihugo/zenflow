@@ -265,18 +265,22 @@ export class OTLPExporter implements BaseExporter {
     if (spans.length === 0) return 0;
 
     return new Promise<number>((resolve, reject) => {
-      this.traceExporter!.export(spans, (result) => {
-        if (result.code === 0) {
-          resolve(spans.length);
-} else {
-          reject(
-            new Error(
-              `OTLP trace export failed: ${  result.error || 'Unknown error'}`
-            )
-          );
-}
-});
-});
+      if (this.traceExporter) {
+        this.traceExporter.export(spans, (result) => {
+          if (result.code === 0) {
+            resolve(spans.length);
+          } else {
+            reject(
+              new Error(
+                `OTLP trace export failed: ${result.error || 'Unknown error'}`
+              )
+            );
+          }
+        });
+      } else {
+        reject(new Error('Trace exporter not initialized'));
+      }
+    });
 }
 
   /**

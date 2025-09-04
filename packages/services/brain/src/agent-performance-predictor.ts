@@ -317,7 +317,7 @@ resourceUsage?: number;
 errorCount?: number;
 }): Promise<void> {
 try {
-logger.debug(`Updating performance data for agent ${data.agentId}`
+logger.debug(`Updating performance data for agent ${data.agentId}`);
 
 // Convert to AgentPerformanceData format
 const performanceData:AgentPerformanceData = {

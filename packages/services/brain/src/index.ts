@@ -762,8 +762,8 @@ BrainJsNetworkInstance,
 // =============================================================================
 // COORDINATION SYSTEMS - Advanced coordination components
 // =============================================================================
-export { DSPyLLMBridge} from './coordination/dspy-llm-bridge';
-export { RetrainingMonitor} from './coordination/retraining-monitor';
+export { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
+export { RetrainingMonitor } from './coordination/retraining-monitor';
 // ===== MEETING INTELLIGENCE - Neural-Powered Collaborative Decision Making =====
 export {
 createMeetingIntelligence,

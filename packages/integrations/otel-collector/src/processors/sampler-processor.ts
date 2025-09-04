@@ -278,13 +278,9 @@ export class SamplerProcessor implements BaseProcessor {
 
     const attributeValue = this.getFieldValue(data, rule.attribute);
 
-    if (rule.value !== undefined) {
-      // Sample only if attribute matches value
-      return attributeValue === rule.value;
-} else {
-      // Sample if attribute exists
-      return attributeValue !== undefined;
-}
+    return rule.value !== undefined
+      ? attributeValue === rule.value
+      : attributeValue !== undefined;
 }
 
   /**

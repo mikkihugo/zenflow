@@ -57,7 +57,7 @@ export class PrometheusExporter implements BaseExporter {
           exported:1,
           backend:this.config.name,
           duration:0,
-};
+        };
 }
 
       // Skip non-metric data
@@ -92,7 +92,7 @@ export class PrometheusExporter implements BaseExporter {
       for (const data of metricItems) {
         await this.processMetricData(data);
         processedCount++;
-}
+      }
 
       this.exportCount += processedCount;
       this.lastExportTime = Date.now();
@@ -123,10 +123,10 @@ export class PrometheusExporter implements BaseExporter {
     // Stop HTTP server
     if (this.httpServer) {
       await new Promise<void>((resolve) => {
-        this.httpServer!.close(() => resolve())();
-});
+        this.httpServer.close(() => resolve());
+      });
       this.httpServer = null;
-}
+    }
 
     // Clear metrics
     this.metrics.clear();
@@ -198,12 +198,16 @@ export class PrometheusExporter implements BaseExporter {
     this.httpServer = createServer(app);
 
     await new Promise<void>((resolve, reject) => {
-      this.httpServer!.listen(port, () => {
-        this.logger.info(`Prometheus metrics server listening on port ${  port}`);
-        resolve();
-      });
+      if (this.httpServer) {
+        this.httpServer.listen(port, () => {
+          this.logger.info(`Prometheus metrics server listening on port ${port}`);
+          resolve();
+        });
 
-      this.httpServer!.on('error', reject);
+        this.httpServer.on('error', reject);
+      } else {
+        reject(new Error('HTTP server not initialized'));
+      }
     });
 }
 

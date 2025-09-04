@@ -143,10 +143,10 @@ export class FileExporter implements BaseExporter {
     // Close write stream
     if (this.writeStream) {
       await new Promise<void>((resolve) => {
-        this.writeStream!.end(() => resolve());
-});
+        this.writeStream.end(() => resolve());
+      });
       this.writeStream = null;
-}
+    }
 
     this.logger.info('File exporter shut down', {
       totalExported:this.exportCount,
@@ -193,25 +193,24 @@ export class FileExporter implements BaseExporter {
 }
 
     // Format data based on configured format
-    let output:string;
-    if (this.format === 'jsonl') {
-      // JSON Lines format - one JSON object per line
-      output = `${JSON.stringify(data)  }\n`
-} else {
-      // JSON format - array of objects (requires more complex handling)
-      output = `${JSON.stringify(data, null, 2)  }\n`
-}
+    const output = this.format === 'jsonl'
+      ? `${JSON.stringify(data)}\n`
+      : `${JSON.stringify(data, null, 2)}\n`;
 
     // Write to file
     return new Promise<void>((resolve, reject) => {
-      this.writeStream!.write(output, (error) => {
-        if (error) {
-          reject(error);
-} else {
-          resolve();
-}
-});
-});
+      if (this.writeStream) {
+        this.writeStream.write(output, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      } else {
+        reject(new Error('Write stream not initialized'));
+      }
+    });
 }
 
   /**
@@ -221,9 +220,9 @@ export class FileExporter implements BaseExporter {
     // Close existing stream
     if (this.writeStream) {
       await new Promise<void>((resolve) => {
-        this.writeStream!.end(() => resolve());
-});
-}
+        this.writeStream.end(() => resolve());
+      });
+    }
 
     // Generate new file path
     const timestamp = new Date().toISOString().replace(/[.:]/g, '-');

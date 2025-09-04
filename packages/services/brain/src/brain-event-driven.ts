@@ -1352,10 +1352,10 @@ return adjustment;
 
 private identifyInfluencingFactors(context:any, complexity:number): string[] {
 const factors = [];
-if (complexity > 0.7) factors.push('High task complexity').
-if (context.workload === 'heavy; factors.push(' Heavy workload').
-if (context.urgency === 'high; factors.push(' Time pressure').
-if (context.collaboration === true) factors.push(`Collaborative environment`
+if (complexity > 0.7) factors.push('High task complexity');
+if (context.workload === 'heavy') factors.push('Heavy workload');
+if (context.urgency === 'high') factors.push('Time pressure');
+if (context.collaboration === true) factors.push('Collaborative environment');
 return factors;
 }
 

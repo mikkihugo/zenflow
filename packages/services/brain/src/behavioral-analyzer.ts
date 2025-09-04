@@ -1,7 +1,7 @@
 /**
  * @fileoverview Behavioral Intelligence for Claude Code Zen
  *
- * Focused agent behavioral intelligence using brain.js neural networks.
+ * Focused agent behavioral intelligence using Rust/WASM neural networks.
  * Provides real-time agent behavior learning, performance prediction,
  * and behavioral optimization for the claude-code-zen swarm system.
  *
@@ -26,26 +26,32 @@
  */
 
 import { getLogger} from '@claude-zen/foundation';
-import { kmeans} from 'ml-kmeans';
-import { sma} from 'moving-averages';
+import type { 
+  NeuralMLEngine, 
+  MLModelConfig,
+  TrainingData,
+  PredictionResult 
+} from '@claude-zen/neural-ml';
 
-// Note: BrainJs functionality moved to @claude-zen/neural-ml WASM gateway
+// Using @claude-zen/neural-ml WASM gateway for high-performance neural processing
 import { ActivationFunction } from './types/index';
 
-// 🧠 Enhanced ML Imports - Using validated API patterns
+// 🧠 Neural ML Engine - Rust/WASM powered
+let neuralEngine: NeuralMLEngine | null = null;
 
-const brain = require('brain.js');
-// Validate brain.js availability and capabilities
-const brainCapabilities = {
-  neuralNetworks: typeof brain.NeuralNetwork === 'function',
-  recurrentNetworks: typeof brain.recurrent?.LSTM === 'function',
-  feedForward: typeof brain.FeedForward === 'function',
-  version: brain.version || 'unknown',
-};
-
-// Optional ML packages (API compatibility issues - available for future enhancement)
-// import { RandomForestClassifier} from 'ml-random-forest';
-// import * as trendyways from 'trendyways';
+// Initialize neural ML engine
+async function initializeNeuralEngine(): Promise<NeuralMLEngine | null> {
+  try {
+    const { createMLEngine } = await import('@claude-zen/neural-ml');
+    return createMLEngine({
+      backend: 'rust-wasm',
+      capabilities: ['lstm', 'classification', 'clustering']
+    });
+  } catch (error) {
+    logger.warn('Neural ML engine not available, using fallback', { error });
+    return null;
+  }
+}
 
 // Foundation-optimized logging
 const logger = getLogger('BehavioralIntelligence');
@@ -108,13 +114,13 @@ export interface AgentBehavioralProfile {
 /**
  * Behavioral Intelligence System
  *
- * Focused behavioral intelligence for claude-code-zen agents using brain.js.
+ * Focused behavioral intelligence for claude-code-zen agents using Rust/WASM neural ML.
  * Learns how individual agents behave and provides predictions for optimal
  * task assignment and swarm coordination.
  *
  * @example Basic Usage
  * ```typescript`
- * const behavioral = new BehavioralIntelligence(brainJsBridge);
+ * const behavioral = new BehavioralIntelligence();
  * await behavioral.initialize();
  *
  * // Learn from agent execution

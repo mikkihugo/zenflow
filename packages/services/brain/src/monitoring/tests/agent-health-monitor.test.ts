@@ -36,18 +36,18 @@ createAgentLearningSystem,
 
 // Mock the logging system
 vi.mock('../../../config/logging-config', () => ({
-; getLogger:() => ({
-info:vi.fn(),
-debug:vi.fn(),
-warn:vi.fn(),
-error:vi.fn(),
+  getLogger: () => ({
+    info: vi.fn(),
+    debug: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
 }),
 }));
 
 describe('AgentHealthMonitor', () => {
-; let healthMonitor:AgentHealthMonitor;
-let learningSystem:AgentLearningSystem;
-let mockConfig:any;
+  let healthMonitor: AgentHealthMonitor;
+  let learningSystem: AgentLearningSystem;
+  let mockConfig: any;
 
 beforeAll(() => {
 // Set up test environment
@@ -77,9 +77,9 @@ learningSystem.shutdown();
 vi.clearAllTimers();
 });
 
-describe('Constructor and Initialization', () => {
-; it('should initialize with default configuration', () => {
-; const monitor = createAgentHealthMonitor();
+  describe('Constructor and Initialization', () => {
+    it('should initialize with default configuration', () => {
+      const monitor = createAgentHealthMonitor();
 expect(monitor).toBeInstanceOf(AgentHealthMonitor);
 monitor.shutdown();
 });

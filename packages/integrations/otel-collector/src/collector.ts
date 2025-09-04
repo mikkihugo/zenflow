@@ -320,15 +320,19 @@ export class InternalOTELCollector {
     this.httpServer = createServer(app);
 
     await new Promise<void>((resolve, reject) => {
-      this.httpServer?.listen(port, () => {
-        this.logger.info(
-          `OTEL Collector HTTP server listening on port ${  port}`
-        );
-        resolve();
-});
+      if (this.httpServer) {
+        this.httpServer.listen(port, () => {
+          this.logger.info(
+            `OTEL Collector HTTP server listening on port ${port}`
+          );
+          resolve();
+        });
 
-      this.httpServer!.on('error', reject);
-});
+        this.httpServer.on('error', reject);
+      } else {
+        reject(new Error('HTTP server not initialized'));
+      }
+    });
 }
 
   /**

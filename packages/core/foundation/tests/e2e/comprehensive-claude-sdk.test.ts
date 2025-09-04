@@ -173,8 +173,9 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(resultMessage).toBeTruthy();
 					expect((resultMessage as any).iserror).toBeFalsy();
 
-					logger.info(` Model ${model} working correctly`
-}
+					logger.info(` Model ${model} working correctly`);
+				}
+			}
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -200,13 +201,13 @@ describe("Comprehensive Claude SDK Tests", () => {
 					// All modes should work (or fail safely)
 					if (result.success) {
 						expect(result.data).toBeTruthy();
-						logger.info(` Permission mode ${permissionMode} working`
-} else {
+						logger.info(` Permission mode ${permissionMode} working`);
+					} else {
 						logger.info(
 							` Permission mode ${permissionMode} failed safely:` + result.error.message,
 						);
-}
-}
+					}
+				}
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);

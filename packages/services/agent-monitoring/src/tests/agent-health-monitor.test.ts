@@ -63,14 +63,14 @@ describe('AgentHealthMonitor', () => {
 });
 
   describe('Constructor and Initialization', () => {
-    ')    it('should initialize with default configuration', () => {
-    ')      const monitor = createAgentHealthMonitor();
+    it('should initialize with default configuration', () => {
+      const monitor = createAgentHealthMonitor();
       expect(monitor).toBeInstanceOf(AgentHealthMonitor);
       monitor.shutdown();
 });
 
     it('should initialize with custom configuration', () => {
-    ')      const customConfig = {
+      const customConfig = {
         healthCheckInterval:5000,
         alertThresholds:{
           cpu:0.9,
@@ -89,7 +89,7 @@ describe('AgentHealthMonitor', () => {
 });
 
     it('should initialize with learning system integration', () => {
-    ')      const learning = createAgentLearningSystem();
+      const learning = createAgentLearningSystem();
       const monitor = new AgentHealthMonitor({}, learning);
       expect(monitor).toBeInstanceOf(AgentHealthMonitor);
       monitor.shutdown();
@@ -98,8 +98,8 @@ describe('AgentHealthMonitor', () => {
 });
 
   describe('Health Metrics Update', () => {
-    ')    it('should update agent health metrics correctly', () => {
-    ')      const agentId = 'test-agent-1';
+    it('should update agent health metrics correctly', () => {
+      const agentId = 'test-agent-1';
       const metrics = {
         cpuUsage:0.65,
         memoryUsage:0.45,
@@ -123,7 +123,7 @@ describe('AgentHealthMonitor', () => {
 });
 
     it('should calculate health score correctly', () => {
-    ')      const agentId = 'test-agent-score';
+      const agentId = 'test-agent-score';
 
       // Test healthy metrics
       healthMonitor.updateAgentHealth(agentId, {

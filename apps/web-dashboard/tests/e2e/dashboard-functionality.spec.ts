@@ -190,9 +190,7 @@ test.describe('Claude Code Zen Web Dashboard', () => {
     // This is more of a smoke test - actual implementation would check specific animations
     if (elementsCount > 0) {
       const firstElement = elements.first();
-      const transitionDuration = await firstElement.evaluate((el) => {
-        return window.getComputedStyle(el).transitionDuration;
-      });
+      const transitionDuration = await firstElement.evaluate((el) => window.getComputedStyle(el).transitionDuration);
       
       // Should either be 0s or very short for reduced motion
       expect(typeof transitionDuration).toBe('string');

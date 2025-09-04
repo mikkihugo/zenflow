@@ -19,13 +19,20 @@ export interface ErrorBoundaryConfig {
   onError?: (errorInfo: ErrorInfo) => void;
   enableTaskMasterReporting?: boolean;
   enableTelemetry?: boolean;
+  announceErrors?: boolean; // Screen reader announcements
+  focusManagement?: boolean; // Automatic focus management
+  keyboardNavigation?: boolean; // Enhanced keyboard navigation
 }
 
 class ErrorBoundaryManager {
   private static instance: ErrorBoundaryManager;
   private errorCount = 0;
   private lastError: ErrorInfo | null = null;
-  private config: ErrorBoundaryConfig = {};
+  private config: ErrorBoundaryConfig = {
+    announceErrors: true,
+    focusManagement: true,
+    keyboardNavigation: true
+  };
 
   static getInstance(): ErrorBoundaryManager {
     if (!ErrorBoundaryManager.instance) {
@@ -63,6 +70,11 @@ class ErrorBoundaryManager {
     // Send telemetry if enabled
     if (this.config.enableTelemetry) {
       this.sendTelemetry(errorInfo);
+    }
+
+    // Accessibility: Announce errors to screen readers
+    if (this.config.announceErrors && typeof window !== 'undefined') {
+      this.announceError(errorInfo);
     }
 
     // Log to console in development
@@ -109,6 +121,31 @@ class ErrorBoundaryManager {
     }
   }
 
+  private announceError(errorInfo: ErrorInfo): void {
+    // Create a live region for screen reader announcements
+    const announcement = document.createElement('div');
+    announcement.setAttribute('aria-live', 'assertive');
+    announcement.setAttribute('aria-atomic', 'true');
+    announcement.setAttribute('class', 'sr-only');
+    announcement.style.position = 'absolute';
+    announcement.style.left = '-10000px';
+    announcement.style.width = '1px';
+    announcement.style.height = '1px';
+    announcement.style.overflow = 'hidden';
+    
+    const message = `Application error occurred: ${errorInfo.error.message}. Error recovery options are available.`;
+    announcement.textContent = message;
+    
+    document.body.appendChild(announcement);
+    
+    // Remove the announcement after screen readers have processed it
+    setTimeout(() => {
+      if (document.body.contains(announcement)) {
+        document.body.removeChild(announcement);
+      }
+    }, 1000);
+  }
+
   private async sendTelemetry(errorInfo: ErrorInfo): Promise<void> {
     try {
       // Send to monitoring/telemetry service
@@ -149,6 +186,58 @@ class ErrorBoundaryManager {
     this.errorCount = 0;
     this.lastError = null;
   }
+
+  /**
+   * Focus management utility for accessibility
+   * Moves focus to the error boundary fallback component
+   */
+  focusErrorFallback(elementId = 'error-boundary-fallback'): void {
+    if (!this.config.focusManagement) return;
+    
+    setTimeout(() => {
+      const errorElement = document.getElementById(elementId) ||
+                          document.querySelector('[role="alert"]') ||
+                          document.querySelector('.error-boundary-fallback');
+      
+      if (errorElement && errorElement instanceof HTMLElement) {
+        errorElement.focus();
+        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
+
+  /**
+   * Keyboard navigation enhancement
+   * Sets up global keyboard handlers for error recovery
+   */
+  setupKeyboardNavigation(): () => void {
+    if (!this.config.keyboardNavigation) return () => {};
+    
+    const handleKeydown = (event: KeyboardEvent) => {
+      // Global keyboard shortcuts for error recovery
+      if (event.ctrlKey || event.metaKey) {
+        switch (event.key) {
+          case 'r':
+            // Ctrl/Cmd + R: Reload page (but let default behavior handle it)
+            break;
+          case 'Escape':
+            // Escape: Clear error state if configured
+            if (this.config.onError) {
+              event.preventDefault();
+              this.reset();
+            }
+            break;
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeydown);
+    
+    // Return cleanup function
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }
 }
 
 /**
@@ -170,6 +259,47 @@ export function createErrorHandler(componentName: string) {
   
   return (error: Error): void => {
     errorBoundary.handleError(error, componentName);
+  };
+}
+
+/**
+ * Accessibility-enhanced error handler for Svelte components
+ * Includes screen reader announcements and focus management
+ */
+export function createAccessibleErrorHandler(componentName: string, options: {
+  announceError?: boolean;
+  focusOnError?: boolean;
+  retryCallback?: () => void;
+} = {}) {
+  const errorBoundary = ErrorBoundaryManager.getInstance();
+  const { announceError = true, focusOnError = true, retryCallback } = options;
+  
+  return (error: Error): void => {
+    const errorInfo = errorBoundary.handleError(error, componentName);
+    
+    // Accessibility enhancements
+    if (focusOnError) {
+      errorBoundary.focusErrorFallback();
+    }
+    
+    if (announceError) {
+      errorBoundary.announceError(errorInfo);
+    }
+    
+    // Set up retry callback if provided
+    if (retryCallback) {
+      const retryHandler = () => {
+        try {
+          retryCallback();
+          errorBoundary.reset();
+        } catch (retryError) {
+          errorBoundary.handleError(retryError as Error, `${componentName}:Retry`);
+        }
+      };
+      
+      // Store retry handler for use by fallback component
+      (errorInfo as any).retryHandler = retryHandler;
+    }
   };
 }
 

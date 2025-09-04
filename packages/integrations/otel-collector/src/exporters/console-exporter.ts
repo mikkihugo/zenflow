@@ -17,13 +17,13 @@ export class ConsoleExporter implements BaseExporter {
  private config:ExporterConfig;
  private logger:Logger;
  private exportCount = 0;
- private lastExportTime: 'number' | 'null' = null;
- private lastError: 'string' | 'null' = null;
+ private lastExportTime: number | null = null;
+ private lastError: string | null = null;
 
  constructor(config:ExporterConfig) {
- this.config = config;
- this.logger = getLogger(`ConsoleExporter:${config.name}`
-}
+   this.config = config;
+   this.logger = getLogger(`ConsoleExporter:${config.name}`);
+ }
 
  async initialize():Promise<void> {
  this.logger.info('Console exporter initialized', {

@@ -27,7 +27,7 @@ export class JaegerExporter implements BaseExporter {
   private queue:QueueItem[] = [];
   private batchTimer:NodeJS.Timeout  |  null = null;
   private exportCount = 0;
-  private lastExportTime: 'number' | 'null' = null;
+  private lastExportTime: number | null = null;
   private lastError: 'string' | 'null' = null;
   private isShuttingDown = false;
   
@@ -49,10 +49,11 @@ export class JaegerExporter implements BaseExporter {
     try {
       // Create Jaeger exporter
       this.jaegerExporter = new OTELJaegerExporter({
-        endpoint:this.config.endpoint   ||   'http://localhost:14268/api/traces',        headers:this.config.headers   ||   {},
+        endpoint:this.config.endpoint   ||   'http://localhost:14268/api/traces',
+        headers:this.config.headers   ||   {},
         // Add timeout if specified
         ...(this.config.timeout  &&  { timeout:this.config.timeout}),
-});
+      });
 
       // Start batch processing timer
       this.startBatchTimer();
@@ -62,7 +63,7 @@ export class JaegerExporter implements BaseExporter {
         maxQueueSize:this.maxQueueSize,
         batchTimeout:this.batchTimeout,
         maxBatchSize:this.maxBatchSize,
-});
+      });
 } catch (error) {
       this.logger.error('Failed to initialize Jaeger exporter', error);
       throw error;
@@ -74,10 +75,11 @@ export class JaegerExporter implements BaseExporter {
       return {
         success:false,
         exported:0,
-        error: 'Exporter is shutting down',        backend:this.config.name,
+        error: 'Exporter is shutting down',
+        backend:this.config.name,
         duration:0,
-};
-}
+      };
+    }
 
     try {
       // Add to queue for batch processing
@@ -85,24 +87,24 @@ export class JaegerExporter implements BaseExporter {
         // Remove oldest item to make room
         this.queue.shift();
         this.logger.warn('Queue full, dropping oldest item');
-}
+      }
 
       this.queue.push({
         data,
         timestamp:Date.now(),
-});
+      });
 
       // If queue is getting full, trigger immediate batch processing
       if (this.queue.length >= this.maxBatchSize) {
         await this.processBatch();
-}
+      }
 
       return {
         success:true,
         exported:1,
         backend:this.config.name,
         duration:0,
-};
+      };
 } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
@@ -114,7 +116,7 @@ export class JaegerExporter implements BaseExporter {
         error:errorMessage,
         backend:this.config.name,
         duration:0,
-};
+      };
 }
 }
 
@@ -123,10 +125,11 @@ export class JaegerExporter implements BaseExporter {
       return {
         success:false,
         exported:0,
-        error: 'Exporter is shutting down',        backend:this.config.name,
+        error: 'Exporter is shutting down',
+        backend:this.config.name,
         duration:0,
-};
-}
+      };
+    }
 
     try {
       const startTime = Date.now();
@@ -140,7 +143,7 @@ export class JaegerExporter implements BaseExporter {
           exported:0,
           backend:this.config.name,
           duration:Date.now() - startTime,
-};
+        };
 }
 
       // Convert to Jaeger format and export
@@ -155,8 +158,8 @@ export class JaegerExporter implements BaseExporter {
         exported:traceItems.length,
         backend:this.config.name,
         duration:Date.now() - startTime,
-};
-} catch (error) {
+      };
+    } catch (error) {
       const errorMessage = String(error);
       this.lastError = errorMessage;
       this.logger.error('Jaeger batch export failed', error);

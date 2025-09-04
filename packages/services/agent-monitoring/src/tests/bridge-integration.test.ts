@@ -51,7 +51,7 @@ async function testBridgeIntegration() {
 }
 
 // Run test if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}); {
+if (import.meta.url === `file://${process.argv[1]}`) {
   testBridgeIntegration().catch(console.error);
 }
 

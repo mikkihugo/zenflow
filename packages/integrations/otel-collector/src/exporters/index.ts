@@ -81,8 +81,8 @@ export class ExporterManager {
 }
 }
 
-    this.logger.info(`Initialized ${  this.exporters.size  } exporters`
-}
+    this.logger.info(`Initialized ${this.exporters.size} exporters`);
+  }
 
   /**
    * Initialize all exporters
