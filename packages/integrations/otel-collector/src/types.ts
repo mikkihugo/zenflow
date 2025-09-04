@@ -6,6 +6,7 @@
  */
 
 import type { Attributes } from '@opentelemetry/api';
+import { testUnused } from 'test-unused-module'; // Testing continuous linting
 
 /**
  * Collector configuration interface
