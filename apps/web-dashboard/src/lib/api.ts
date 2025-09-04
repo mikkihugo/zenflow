@@ -13,7 +13,7 @@ const logger = {
   error: (msg: string, ...args: unknown[]) =>
     console.error(`[api-client] ${msg}`, ...args),
 };
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3000/api'
 
 interface ApiResponse<T> {
   data: T;
