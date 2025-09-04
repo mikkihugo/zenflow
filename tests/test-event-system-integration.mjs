@@ -11,7 +11,7 @@
  * - Web dashboard service
  */
 
-import { EventBus, DynamicEventRegistry, dynamicEventRegistry } from './packages/core/foundation/src/events/index.js';
+import { EventBus, dynamicEventRegistry } from './packages/core/foundation/src/events/index.js';
 
 console.log('🚀 Testing Event System Integration...\n');
 

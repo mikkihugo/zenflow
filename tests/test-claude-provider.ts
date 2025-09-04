@@ -6,9 +6,6 @@
  * Tests the Claude Code SDK integration
  */
 
-import { promises as fs } from 'node:fs';
-import { join } from 'node:path';
-import { homedir } from 'node:os';
 
 async function testClaudeProvider() {
   try {

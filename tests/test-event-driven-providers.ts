@@ -126,19 +126,19 @@ async function testEventDrivenProviders() {
   
   if (successful.length > 0) {
     console.log('\n🎉 Working Providers:');
-    successful.forEach(result => {
+    for (const result of successful) {
       console.log(`  • ${result.provider} (${result.timeMs}ms)`);
       if (result.response) {
         console.log(`    Response: "${result.response.trim()}"`);
       }
-    });
+    }
   }
   
   if (failed.length > 0) {
     console.log('\n❌ Failed Providers:');
-    failed.forEach(result => {
+    for (const result of failed) {
       console.log(`  • ${result.provider}: ${result.error}`);
-    });
+    }
   }
 
   console.log('\n🔄 Event-Driven Architecture Benefits:');

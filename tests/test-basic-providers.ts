@@ -164,20 +164,20 @@ async function testBasicProviders() {
   
   if (successful.length > 0) {
     console.log('\n🎉 Working Providers:');
-    successful.forEach(result => {
+    for (const result of successful) {
       console.log(`  • ${result.provider}`);
       if (result.details) {
         const features = Object.keys(result.details).join(', ');
         console.log(`    Features: ${features}`);
       }
-    });
+    }
   }
   
   if (failed.length > 0) {
     console.log('\n❌ Failed Providers:');
-    failed.forEach(result => {
+    for (const result of failed) {
       console.log(`  • ${result.provider}: ${result.error}`);
-    });
+    }
   }
 
   console.log('\n🔧 Provider Architecture Status:');

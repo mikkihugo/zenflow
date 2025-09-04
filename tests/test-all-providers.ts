@@ -188,7 +188,7 @@ async function testAllProviders() {
     
     if (successful.length > 0) {
       console.log('\\n🎉 Working Providers:');
-      successful.forEach(result => {
+      for (const result of successful) {
         console.log(`  • ${result.provider}`);
         if (result.details?.models) {
           console.log(`    Models: ${result.details.models.length} available`);
@@ -196,14 +196,14 @@ async function testAllProviders() {
         if (result.details?.response) {
           console.log(`    Test response: \"${result.details.response.trim()}\"`);
         }
-      });
+      }
     }
     
     if (failed.length > 0) {
       console.log('\\n❌ Failed Providers:');
-      failed.forEach(result => {
+      for (const result of failed) {
         console.log(`  • ${result.provider}: ${result.error}`);
-      });
+      }
     }
 
     console.log('\\n🔧 LLM Provider System Status:');

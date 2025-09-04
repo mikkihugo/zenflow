@@ -224,7 +224,7 @@ async function testProviderArchitecture() {
   
   if (successful.length > 0) {
     console.log('\n🎉 Working Architecture Components:');
-    successful.forEach(result => {
+    for (const result of successful) {
       console.log(`  • ${result.provider}`);
       if (result.details) {
         const features = Object.entries(result.details)
@@ -234,14 +234,14 @@ async function testProviderArchitecture() {
           console.log(`    Features: ${features.join(', ')}`);
         }
       }
-    });
+    }
   }
   
   if (failed.length > 0) {
     console.log('\n❌ Architecture Issues:');
-    failed.forEach(result => {
+    for (const result of failed) {
       console.log(`  • ${result.provider}: ${result.error}`);
-    });
+    }
   }
 
   console.log('\n🏗️ Architecture Summary:');
