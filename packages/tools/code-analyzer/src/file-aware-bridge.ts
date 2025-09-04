@@ -7,7 +7,7 @@
 
 import { promises as fs } from 'fs';
 import * as path from 'node:path';
-import { Project, SourceFile } from 'ts-morph';
+import { Project } from 'ts-morph';
 import { getLogger, Result, ok, err } from '@claude-zen/foundation';
 
 const logger = getLogger('FileAwareBridge');

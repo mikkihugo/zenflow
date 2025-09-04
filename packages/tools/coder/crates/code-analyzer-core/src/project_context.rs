@@ -7,7 +7,27 @@ use crate::{CodeIntelligenceError, AnalysisResult, AnalysisRequest, ComplexityLe
 use crate::ast_analysis::{AstAnalyzer, FileAnalysisResult};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use glob::Pattern;
 use std::path::{Path, PathBuf};
+use anyhow::Result;
+
+/// Project context for tracking project state
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectContext {
+    pub name: String,
+    pub path: PathBuf,
+    pub metadata: HashMap<String, String>,
+}
+
+impl ProjectContext {
+    pub fn new(name: &str) -> Result<Self> {
+        Ok(Self {
+            name: name.to_string(),
+            path: PathBuf::from("."),
+            metadata: HashMap::new(),
+        })
+    }
+}
 
 /// Project context builder for comprehensive codebase analysis
 pub struct ProjectContextBuilder {
@@ -605,79 +625,61 @@ impl ProjectContextBuilder {
     fn discover_project_files(
         &self,
         root_path: &Path,
-        request: &AnalysisRequest,
+        _request: &AnalysisRequest,
     ) -> AnalysisResult<Vec<String>> {
         let mut discovered_files = Vec::new();
-        let mut file_count = 0;
+
+        let include_patterns: Vec<_> = self.file_discovery.include_patterns.iter()
+            .map(|p| Pattern::new(p).map_err(|e| CodeIntelligenceError::ConfigurationInvalid { message: format!("Invalid include pattern '{}': {}", p, e) }))
+            .collect::<AnalysisResult<_>>()?;
+
+        let exclude_patterns: Vec<_> = self.file_discovery.exclude_patterns.iter()
+            .map(|p| Pattern::new(p).map_err(|e| CodeIntelligenceError::ConfigurationInvalid { message: format!("Invalid exclude pattern '{}': {}", p, e) }))
+            .collect::<AnalysisResult<_>>()?;
         
-        // Get exclusion patterns from request or use defaults
-        let exclusion_patterns = request.analysis_options
-            .as_ref()
-            .and_then(|opts| opts.exclusion_patterns.as_ref())
-            .cloned()
-            .unwrap_or_else(|| self.file_discovery.exclude_directories.clone());
-        
+        let exclude_dirs = self.file_discovery.exclude_directories.clone();
+
         // Use walkdir for directory traversal
-        for entry in walkdir::WalkDir::new(root_path)
+        let walker = walkdir::WalkDir::new(root_path)
             .max_depth(self.config.max_directory_depth)
             .follow_links(self.file_discovery.follow_symbolic_links)
-        {
-            if file_count >= self.config.max_files_to_analyze {
+            .into_iter()
+            .filter_entry(move |e| {
+                !e.path()
+                 .components()
+                 .any(|c| exclude_dirs.contains(&c.as_os_str().to_string_lossy().to_string()))
+            });
+
+        for entry in walker {
+            if discovered_files.len() >= self.config.max_files_to_analyze {
                 break;
             }
-            
+
             let entry = entry.map_err(|e| CodeIntelligenceError::IoOperationFailed {
                 message: format!("Directory traversal failed: {}", e),
             })?;
             
             let path = entry.path();
             
-            // Skip directories
             if path.is_dir() {
                 continue;
             }
             
-            // Check exclusion patterns
-            let path_str = path.to_string_lossy();
-            if exclusion_patterns.iter().any(|pattern| path_str.contains(pattern)) {
-                continue;
-            }
-            
-            // Check file size
             if let Ok(metadata) = entry.metadata() {
                 if metadata.len() > self.config.max_file_size_bytes {
                     continue;
                 }
             }
             
-            // Check if it's a source file we can analyze
-            if self.is_analyzable_source_file(path) {
+            let file_name = path.file_name().unwrap_or_default().to_string_lossy();
+
+            if !exclude_patterns.iter().any(|p| p.matches(&file_name)) 
+                && include_patterns.iter().any(|p| p.matches(&file_name)) {
                 discovered_files.push(path.to_string_lossy().to_string());
-                file_count += 1;
             }
         }
         
         Ok(discovered_files)
-    }
-    
-    /// Check if a file is analyzable source code
-    fn is_analyzable_source_file(&self, path: &Path) -> bool {
-        if let Some(extension) = path.extension().and_then(|ext| ext.to_str()) {
-            // Check include patterns
-            for pattern in &self.file_discovery.include_patterns {
-                if pattern.ends_with(extension) || pattern.contains(extension) {
-                    return true;
-                }
-            }
-            
-            // Check exclude patterns
-            for pattern in &self.file_discovery.exclude_patterns {
-                if pattern.ends_with(extension) {
-                    return false;
-                }
-            }
-        }
-        false
     }
     
     /// Validate that target files exist and are accessible

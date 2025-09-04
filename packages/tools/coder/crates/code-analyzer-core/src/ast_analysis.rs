@@ -3,7 +3,7 @@
 //! Provides comprehensive Abstract Syntax Tree analysis using tree-sitter
 //! for multi-language code parsing and analysis following Google standards.
 
-use crate::{CodeIntelligenceError, AnalysisResult};
+use crate::{CodeIntelligenceError, AnalysisResult, CodeAnalysisResult};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tree_sitter::{Language, Parser, Query, QueryCursor, Tree};
@@ -296,12 +296,12 @@ impl Default for AnalyzerConfiguration {
 
 impl AstAnalyzer {
     /// Create a new AST analyzer with default configuration
-    pub fn new() -> AnalysisResult<Self> {
+    pub fn new() -> CodeAnalysisResult<Self> {
         Self::with_config(AnalyzerConfiguration::default())
     }
     
     /// Create AST analyzer with custom configuration
-    pub fn with_config(config: AnalyzerConfiguration) -> AnalysisResult<Self> {
+    pub fn with_config(config: AnalyzerConfiguration) -> CodeAnalysisResult<Self> {
         let mut analyzer = Self {
             parsers: HashMap::new(),
             languages: HashMap::new(),

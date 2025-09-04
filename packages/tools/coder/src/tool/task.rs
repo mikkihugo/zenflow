@@ -137,41 +137,36 @@ impl TaskTool {
         }
     }
 
-    /// Queue a task for execution
-    pub async fn queue_task(&self, params: TaskParams, context: Value) -> std::result::Result<String, ToolError> {
+    /// Queue a new task for execution
+    pub async fn queue_task(&self, params: TaskParams, context: Value) -> Result<String> {
         let task_id = Uuid::new_v4().to_string();
-        let priority = self.parse_priority(params.priority.as_deref().unwrap_or("medium"))?;
         
-        let queued_task = QueuedTask {
+        let task = Task {
             id: task_id.clone(),
             description: params.description,
             prompt: params.prompt,
-            capabilities: params.capabilities.unwrap_or_default(),
-            priority,
-            dependencies: params.dependencies.unwrap_or_default(),
-            max_agents: params.max_agents.unwrap_or(1),
-            timeout: std::time::Duration::from_secs(params.timeout.unwrap_or(300)),
-            parallel: params.parallel.unwrap_or(false),
+            capabilities: params.capabilities,
+            priority: params.priority,
+            dependencies: params.dependencies,
+            max_agents: params.max_agents,
+            timeout: params.timeout,
+            parallel: params.parallel,
             context,
+            created_at: Utc::now(),
+            status: TaskStatus::Pending,
         };
 
-        let mut queue = self.task_queue.lock().await;
+        // TODO: COORDINATION - Check task dependencies before queuing
+        // TODO: COORDINATION - Validate team capacity for task requirements
+        // TODO: COORDINATION - Route task to appropriate team based on capabilities
+        // TODO: COORDINATION - Update team Kanban board with new task
         
-        // Add to dependency graph
-        for dep in &queued_task.dependencies {
-            queue.dependencies.entry(dep.clone())
-                .or_insert_with(Vec::new)
-                .push(task_id.clone());
-        }
-
-        // Add to queue (simple FIFO for now, can be enhanced with priority)
-        queue.pending.push_back(queued_task);
-
-        drop(queue); // Release lock
-
-        // Try to execute the task immediately
-        self.try_execute_next_task().await?;
-
+        self.pending_tasks.write().await.push_back(task);
+        
+        // TODO: COORDINATION - Trigger agent spawning based on task requirements
+        // TODO: COORDINATION - Notify relevant teams about new task
+        // TODO: COORDINATION - Start dependency resolution if needed
+        
         Ok(task_id)
     }
 

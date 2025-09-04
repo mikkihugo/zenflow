@@ -9,9 +9,9 @@ use tokio::fs;
 use tokio::sync::Mutex;
 
 use crate::ast_analysis::{AstAnalyzer, AnalysisMetrics};
-use crate::machine_learning::{CodeIntelligenceModel, AnalysisResult};
-use crate::{AnalysisRequest};
-use crate::sparc_integration::{SparcMethodologyEngine, SparcProject};
+use crate::machine_learning::CodeIntelligenceModel;
+use crate::{AnalysisRequest, AnalysisResult};
+use crate::sparc_integration::SPARCIntegration;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TestSuite {

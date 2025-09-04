@@ -14,7 +14,7 @@ pub enum MemoryManagementError {
     #[error("Memory allocation failed: {size_requested} bytes - {reason}")]
     AllocationError { size_requested: usize, reason: String },
     
-    #[error("Memory deallocation failed: {allocation_id} - {error_details}")]
+    #[error("Memory deallocation failed: {0}")]
     CacheError(String),
     #[error("Serialization error: {0}")]
     SerializationError(#[from] serde_json::Error),

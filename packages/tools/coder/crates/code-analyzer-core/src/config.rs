@@ -7,7 +7,7 @@ use notify::{Watcher, RecursiveMode, Event, EventKind};
 use std::sync::mpsc;
 use std::time::Duration;
 use anyhow::{Result, Context};
-use crate::sparc_types::{DeliverableType, QualityGateType};
+use crate::types::{DeliverableType, QualityGateType};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityConfig {

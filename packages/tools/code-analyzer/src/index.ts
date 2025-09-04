@@ -17,6 +17,8 @@
 */
 
 // Export main CodeAnalyzer class and utilities
+import { CodeAnalyzer } from './code-analyzer';
+
 export {
   FileAwareBridge,
   type FileAwareRequest,
@@ -31,8 +33,6 @@ CodeAnalyzer,
 createCodeAnalyzer,
 DependencyRelationshipMapper,
 } from './code-analyzer';
-
-import { CodeAnalyzer } from './code-analyzer';
 
 // Export all types
 export type * from './types/code-analysis';

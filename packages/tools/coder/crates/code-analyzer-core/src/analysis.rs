@@ -1,6 +1,7 @@
 //! File analysis implementation using tree-sitter
 
-use crate::{Result, FileAwareError};
+use anyhow::Result;
+use crate::FileAwareError;
 use std::collections::HashMap;
 use std::path::Path;
 use tree_sitter::{Language, Parser, Query, QueryCursor, Tree};

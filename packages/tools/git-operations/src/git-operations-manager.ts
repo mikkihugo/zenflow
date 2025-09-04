@@ -22,9 +22,8 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as cron from 'node-cron';
-import { EventEmitter } from '@claude-zen/foundation';
+import { EventEmitter, getLogger } from '@claude-zen/foundation';
 import type { SimpleGit, BranchSummary } from 'simple-git';
-import { getLogger } from '@claude-zen/foundation';
 import {
 	EVENT_CONFLICT_RESOLVED,
 	EVENT_MAINTENANCE_COMPLETED,

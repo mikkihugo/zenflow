@@ -25,8 +25,9 @@ use uuid::Uuid;
 use dashmap::DashMap;
 
 use crate::{CodeIntelligenceError, AnalysisResult};
-use crate::sparc_integration::{SparcMethodologyEngine, SparcProject, SparcPhase};
+use crate::sparc_integration::{SPARCIntegration, SparcEngine};
 use crate::enterprise_types::{TaskPriority, TaskStatus, TsosPermissionLevel, ComplianceLevel};
+use crate::types::{SparcPhase, SparcMethodologyEngine, SystemResourceUtilization, TenantOperationalStatus, UserTsosPermissions, TenantResourceCheck, TenantRestriction, IssueSeverity, ComplianceIssue, AuditTrailStatus, SecurityComplianceCheck, DataComplianceCheck, OperationalComplianceCheck, PerformanceThresholds, ProjectPriority, SecurityIssue};
 
 /// Production-grade Task Scheduling Operating System Integration Engine
 #[derive(Debug)]
@@ -1339,6 +1340,9 @@ impl ResourceManager {
             sufficient: true,
             available_resources: AvailableResources::default(),
             estimated_availability_time: None,
+            can_schedule: true,
+            reason: "Resources available".to_string(),
+            estimated_wait_time_seconds: None,
         })
     }
     async fn get_task_resource_utilization(&self, _task_id: &str) -> Result<ResourceUtilization, TsosError> {
@@ -1819,4 +1823,8 @@ pub struct ResourceAvailabilityCheck {
     pub sufficient: bool,
     pub available_resources: AvailableResources,
     pub estimated_availability_time: Option<DateTime<Utc>>,
+    // Additional fields used in the code
+    pub can_schedule: bool,
+    pub reason: String,
+    pub estimated_wait_time_seconds: Option<u64>,
 }

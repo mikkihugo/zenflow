@@ -172,7 +172,7 @@ function withTrace<T>(
   name: string,
   fn:(span: Span) => Promise<T>,
 ):Promise<T> {
-  const span: Span = { setAttributes: () => {}, end:() => {}};
+  const span: Span = { setAttributes: () => { /* Mock span */ }, end:() => { /* Mock span */ } };
   return fn(span);
 }
 
@@ -664,21 +664,21 @@ export class NeuralMLEngine {
         }
 
         // Import and initialize neural-ml Rust module with circuit breaker protection
-        const neuralMLResult = await this.cpuCircuitBreaker.execute(
-          async () => {
-            const retryResult = await withRetry(
-              () => this.loadNeuralMLModule(),
-              {
-                retries: this.config.retryAttempts!,
-                minTimeout: 1000,
-              }
-            );
-            if (retryResult.isErr()) {
-              throw retryResult.error;
+        const loadWithRetry = async () => {
+          const retryResult = await withRetry(
+            () => this.loadNeuralMLModule(),
+            {
+              retries: this.config.retryAttempts!,
+              minTimeout: 1000,
             }
-            return retryResult.value;
+          );
+          if (retryResult.isErr()) {
+            throw retryResult.error;
           }
-        );
+          return retryResult.value;
+        };
+
+        const neuralMLResult = await this.cpuCircuitBreaker.execute(loadWithRetry);
 
         if (neuralMLResult.isErr()) {
           throw neuralMLResult.error;
@@ -948,40 +948,46 @@ export class NeuralMLEngine {
             : this.cpuCircuitBreaker;
 
         // Execute with circuit breaker protection and timeout
+        const matrixMultiplyOperation = async () => {
+          const neuralML = await this.loadNeuralMLModule();
+          return neuralML.adaptiveMatrixMultiply(
+            optimizerId,
+            a,
+            b,
+            m,
+            n,
+            k
+          );
+        };
+
+        const retryWithCircuitBreaker = async () => {
+          const retryResult = await withRetry(
+            matrixMultiplyOperation,
+            {
+              retries: this.config.retryAttempts!,
+              minTimeout: 100,
+              maxTimeout: 5000,
+            }
+          );
+
+          if (retryResult.isErr()) {
+            throw retryResult.error;
+          }
+          return retryResult.value;
+        };
+
+        const executeWithCircuitBreaker = async () => {
+          const cbResult = await circuitBreaker.execute(retryWithCircuitBreaker);
+          if (cbResult.isErr()) {
+            throw cbResult.error;
+          }
+          return cbResult.value;
+        };
+
         const timeoutResult = await withTimeout(
           this.config.operationTimeoutMs!,
-          (async () => {
-            const cbResult = await circuitBreaker.execute(async () => {
-              const retryResult = await withRetry(
-                async () => {
-                  const neuralML = await this.loadNeuralMLModule();
-                  return neuralML.adaptiveMatrixMultiply(
-                    optimizerId,
-                    a,
-                    b,
-                    m,
-                    n,
-                    k
-                  );
-                },
-                {
-                  retries: this.config.retryAttempts!,
-                  minTimeout: 100,
-                  maxTimeout: 5000,
-                }
-              );
-
-              if (retryResult.isErr()) {
-                throw retryResult.error;
-              }
-              return retryResult.value;
-            });
-
-            if (cbResult.isErr()) {
-              throw cbResult.error;
-            }
-            return cbResult.value;
-          })()
+          executeWithCircuitBreaker
+        )
         );
 
         if (timeoutResult.isErr()) {

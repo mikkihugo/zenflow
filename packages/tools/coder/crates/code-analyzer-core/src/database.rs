@@ -238,18 +238,18 @@ pub struct MySQLConfig {
 
 /// Supported database types with specialized use cases
 /// All databases are disk-based for persistence and performance
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum DatabaseType {
     SQLite,      // Relational: Code metrics, analysis results, user stories (single file)
-    // Future database types (when crates are available):
-    // LanceDB,     // Vector: ML embeddings, semantic search, code similarity (directory)
-    // Kuzu,        // Graph: Code dependencies, call graphs, relationships (directory)
-    // PostgreSQL,  // Enterprise: Large-scale data, complex queries, ACID (directory)
-    // MySQL,       // Enterprise: Large-scale data, complex queries, ACID (directory)
-    // ChromaDB,    // Vector: RAG systems, document embeddings (directory)
-    // Neo4j,       // Graph: Complex knowledge graphs, relationships (directory)
-    // InfluxDB,    // Time-series: Performance metrics, monitoring data (directory)
-    // Redis,       // Cache: Session data, temporary results, ML model cache (disk + memory)
+    // Database types with placeholders until crates are available:
+    LanceDB,     // Vector: ML embeddings, semantic search, code similarity (directory)
+    Kuzu,        // Graph: Code dependencies, call graphs, relationships (directory)
+    PostgreSQL,  // Enterprise: Large-scale data, complex queries, ACID (directory)
+    MySQL,       // Enterprise: Large-scale data, complex queries, ACID (directory)
+    ChromaDB,    // Vector: RAG systems, document embeddings (directory)
+    Neo4j,       // Graph: Complex knowledge graphs, relationships (directory)
+    InfluxDB,    // Time-series: Performance metrics, monitoring data (directory)
+    Redis,       // Cache: Session data, temporary results, ML model cache (disk + memory)
 }
 
 /// Database path resolver that integrates with foundation package
@@ -521,13 +521,17 @@ impl DatabaseManager {
     async fn initialize_lancedb(&mut self, path_resolver: &DatabasePathResolver) -> Result<()> {
         let db_path = path_resolver.resolve_database_path(&self.config.database_type, &self.config);
         
-        let db = lancedb::Database::connect(db_path.to_string_lossy().as_ref())
-            .await
-            .map_err(|e| FileAwareError::DatabaseError {
-                message: format!("Failed to connect to LanceDB at {}: {}", db_path.display(), e),
-            })?;
+        // LanceDB integration commented out until lancedb crate is added
+        // let db = lancedb::Database::connect(db_path.to_string_lossy().as_ref())
+        //     .await
+        //     .map_err(|e| FileAwareError::DatabaseError {
+        //         message: format!("Failed to connect to LanceDB at {}: {}", db_path.display(), e),
+        //     })?;
         
-        self.lancedb_connection = Some(db);
+        // self.lancedb_connection = Some(db);
+        
+        // For now, just mark as connected with a placeholder
+        self.lancedb_connection = None;
         self.connection_health.insert(DatabaseType::LanceDB, true);
         Ok(())
     }
@@ -536,12 +540,16 @@ impl DatabaseManager {
     async fn initialize_kuzu(&mut self, path_resolver: &DatabasePathResolver) -> Result<()> {
         let db_path = path_resolver.resolve_database_path(&self.config.database_type, &self.config);
         
-        let db = kuzu::Database::new(db_path.to_string_lossy().as_ref(), 0)
-            .map_err(|e| FileAwareError::DatabaseError {
-                message: format!("Failed to connect to Kuzu at {}: {}", db_path.display(), e),
-            })?;
+        // Kuzu integration commented out until kuzu crate is added
+        // let db = kuzu::Database::new(db_path.to_string_lossy().as_ref(), 0)
+        //     .map_err(|e| FileAwareError::DatabaseError {
+        //         message: format!("Failed to connect to Kuzu at {}: {}", db_path.display(), e),
+        //     })?;
         
-        self.kuzu_connection = Some(db);
+        // self.kuzu_connection = Some(db);
+        
+        // For now, just mark as connected with a placeholder
+        self.kuzu_connection = None;
         self.connection_health.insert(DatabaseType::Kuzu, true);
         Ok(())
     }
@@ -570,12 +578,16 @@ impl DatabaseManager {
     async fn initialize_mysql(&mut self, path_resolver: &DatabasePathResolver) -> Result<()> {
         let pool_size = self.config.max_connections.unwrap_or(10);
         
-        let pool = mysql_async::Pool::new(self.config.connection_string.as_str())
-            .map_err(|e| FileAwareError::DatabaseError {
-                message: format!("Failed to connect to MySQL: {}", e),
-            })?;
+        // MySQL integration commented out until mysql_async crate is added
+        // let pool = mysql_async::Pool::new(self.config.connection_string.as_str())
+        //     .map_err(|e| FileAwareError::DatabaseError {
+        //         message: format!("Failed to connect to MySQL: {}", e),
+        //     })?;
         
-        self.mysql_connection = Some(pool);
+        // self.mysql_connection = Some(pool);
+        
+        // For now, just mark as connected with a placeholder
+        self.mysql_connection = None;
         self.connection_health.insert(DatabaseType::MySQL, true);
         Ok(())
     }

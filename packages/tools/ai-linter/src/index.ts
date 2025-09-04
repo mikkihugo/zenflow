@@ -4,6 +4,16 @@
 */
 
 // Basic console-backed logger (replace with foundation when available)
+import type {
+AILinterConfig,
+BatchResult,
+FileDiscoveryOptions,
+ProcessingResult,
+} from './types.js';
+import * as fs from 'node:fs';
+import { spawn } from 'node:child_process';
+import { glob } from 'glob';
+
 function createLogger(name: string) {
 return {
 info: (msg: string, data?: unknown) =>
@@ -27,13 +37,6 @@ export type Result<T, E> =
 
 const ok = <T>(data: T): Result<T, never> => ({ success: true, data });
 const err = <E>(error: E): Result<never, E> => ({ success: false, error });
-
-import type {
-AILinterConfig,
-BatchResult,
-FileDiscoveryOptions,
-ProcessingResult,
-} from './types.js';
 // Event-driven policy: avoid direct import from other internal packages
 // Provide a minimal local shim; real provider should be accessed via events
 class GitHubCopilotAPI {
@@ -42,9 +45,6 @@ class GitHubCopilotAPI {
 		return { text: '' };
 	}
 }
-import * as fs from 'node:fs';
-import { spawn } from 'node:child_process';
-import { glob } from 'glob';
 
 const logger = createLogger('ai-linter');
 

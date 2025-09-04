@@ -308,7 +308,6 @@ impl MemoryIntegration {
     }
     
     /// Retrieves knowledge, using intelligent caching and falling back to semantic and session search.
-    b/packages/tools/coder/crates/code-analyzer-core/src/memory_integration.rs
     pub async fn retrieve_knowledge(&mut self, query: &str, options: KnowledgeRetrieveOptions) -> Result<Vec<KnowledgeData>> {
         // Try cache first for fast retrieval
         if self.config.enable_cache {

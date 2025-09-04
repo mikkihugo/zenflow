@@ -289,6 +289,11 @@ impl SafeSparcIntegration {
         // Update story status
         story.status = StoryStatus::InProgress;
         
+        // TODO: COORDINATION - Assign story to appropriate team based on capabilities
+        // TODO: COORDINATION - Update team Kanban board (move to "In Progress")
+        // TODO: COORDINATION - Notify team members about new story assignment
+        // TODO: COORDINATION - Check team capacity and adjust if needed
+        
         // Get current SPARC phase
         if let Some(sparc_project) = &mut story.sparc_project {
             let current_phase = sparc_project.current_phase.clone();

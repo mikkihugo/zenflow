@@ -3,6 +3,12 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
+// TODO: COORDINATION - Implement agent registry for dynamic agent discovery
+// TODO: COORDINATION - Add agent capability matching and task routing
+// TODO: COORDINATION - Implement agent communication and coordination protocols
+// TODO: COORDINATION - Add agent health monitoring and failover
+// TODO: COORDINATION - Implement agent load balancing and resource management
+
 /// Agent trait for AI agents
 #[async_trait]
 pub trait Agent: Send + Sync {
@@ -17,6 +23,10 @@ pub trait Agent: Send + Sync {
     
     /// Execute a task
     async fn execute(&self, task: Task) -> crate::Result<TaskResult>;
+    
+    // TODO: COORDINATION - Add agent status and health reporting
+    // TODO: COORDINATION - Add agent resource usage monitoring
+    // TODO: COORDINATION - Add agent communication with other agents
 }
 
 /// Task for an agent to execute

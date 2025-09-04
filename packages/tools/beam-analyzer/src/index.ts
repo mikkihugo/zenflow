@@ -18,17 +18,17 @@ export function detectBeamLanguage(filePath: string): string | null {
 
   const languageMap: Record<string, string> =
     {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       '.erl': 'erlang',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       '.hrl': 'erlang',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       '.ex': 'elixir',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       '.exs': 'elixir',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       '.gleam': 'gleam',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+       
       '.lfe': 'lfe',
     };
 

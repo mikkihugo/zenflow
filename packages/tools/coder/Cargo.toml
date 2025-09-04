@@ -49,6 +49,13 @@ chrono = { version = "0.4", features = ["serde"] }
 levenshtein = "1.0"
 md5 = "0.7"
 
+# ML Dependencies - Production Ready
+burn = { version = "0.13", features = ["train", "autodiff", "std"] }
+linfa = "0.8"
+linfa-clustering = "0.8"
+linfa-preprocessing = "0.8"
+statrs = "0.17"
+
 # Development dependencies
 criterion = "0.5"
 tokio-test = "0.4"

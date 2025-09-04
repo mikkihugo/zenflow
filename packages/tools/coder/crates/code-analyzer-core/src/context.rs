@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use std::path::Path;
 
 use crate::{
-    AnalyzedContext, SymbolReference, ComplexityLevel,
+    AnalyzedContext, SymbolReference, ComplexityLevel, FileAwareError,
     FileAwareRequest, Result, analysis::FileAnalyzer
 };
 

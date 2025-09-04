@@ -1,9 +1,9 @@
 [package]
 name = "code-analyzer-core"
 version = "0.1.0"
+authors = ["claude-code-zen Team"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-authors = ["claude-code-zen Team"]
 description = "Core code analysis and intelligence engine"
 
 [dependencies]
@@ -16,13 +16,13 @@ tokio = { workspace = true, features = ["fs", "io-util", "process"] }
 
 # File system and path handling
 walkdir = { workspace = true }
-ignore = "0.4"
-glob = "0.3"
+ignore = { workspace = true }
+glob = { workspace = true }
 
 # Text processing
 regex = { workspace = true }
-aho-corasick = "1.1"
-memchr = "2.7"
+aho-corasick = { workspace = true }
+memchr = { workspace = true }
 
 # AST parsing
 tree-sitter = { workspace = true }
@@ -44,24 +44,35 @@ rusqlite = { workspace = true }
 tempfile = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
 
-# Core code analysis
+# ML and analysis
 levenshtein = { workspace = true }
 md5 = "0.7"
+num_cpus = "1.16"
 
-# Configuration and serialization
-serde_yaml = { workspace = true }
-notify = { workspace = true }
-uuid = { workspace = true }
+# Logging and tracing
 tracing = { workspace = true }
-metrics = { workspace = true }
-num_cpus = { workspace = true }
+uuid = { workspace = true }
+
+# File system watching
+notify = "6.1"
+
+# Metrics and monitoring
+metrics = "0.21"
+parking_lot = "0.12"
+
+# ML Dependencies - Production Ready (optional, lightweight for compatibility)
+linfa = { version = "0.7", optional = true }
+linfa-clustering = { version = "0.7", optional = true }
+linfa-preprocessing = { version = "0.7", optional = true }
+statrs = { version = "0.17", optional = true }
 
 # Quality gates integration
 quality-gates = { path = "../quality-gates" }
 
 [features]
-default = ["sqlite"]
+default = ["sqlite", "ml"]
 sqlite = []
+ml = ["linfa", "linfa-clustering", "linfa-preprocessing", "statrs"]
 
 [lib]
 name = "code_analyzer_core"
@@ -70,4 +81,3 @@ crate-type = ["rlib"]
 [dev-dependencies]
 criterion = { workspace = true }
 tokio-test = { workspace = true }
-num_cpus = "1.16"
