@@ -71,7 +71,7 @@ jobs:
 
       - name: 🔧 Claude Surgical Linting
         if: steps.lint-check.outputs.error-count != '0'
-        uses: anthropics/claude-code-base-action@beta
+        uses: anthropics/claude-code-action@v1
         with:
           prompt: |
             You are a surgical code linter. Fix ONLY simple, confident linting errors while preserving ALL functionality.
@@ -88,8 +88,8 @@ jobs:
             - SKIP: Any error in files with multiple complex syntax issues
 
             PROCESS: Run `pnpm lint` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
-          allowed_tools: "Bash,Edit,Read,Glob,Grep"
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
       - name: 🔧 Restore original Node.js constraint
         if: steps.lint-check.outputs.error-count != '0'
