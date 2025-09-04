@@ -27,7 +27,7 @@ interface Agent {
   status: string;
   capabilities: string[];
   created: string;
-  lastActivity: string
+  lastActivity: string;
 }
 
 interface Task {
