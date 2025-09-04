@@ -245,4 +245,4 @@ export interface ExportResult {
   /** Export duration in milliseconds */
   duration:number;
 }
-// Test auto-sync
+// Trigger extensive linting fix across entire repository
