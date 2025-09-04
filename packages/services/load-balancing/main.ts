@@ -61,6 +61,37 @@ import {
   withRetry,
 } from '@claude-zen/foundation';
 
+import * as stats from 'simple-statistics';
+
+import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
+import { LeastConnectionsAlgorithm } from './algorithms/least-connections';
+import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
+import { ResourceAwareAlgorithm } from './algorithms/resource-aware';
+import { WeightedRoundRobinAlgorithm } from './algorithms/weighted-round-robin';
+import { AgentCapacityManager } from './capacity/agent-capacity-manager';
+import type {
+  AutoScaler,
+  CapacityManager,
+  EmergencyHandler,
+  LoadBalancingAlgorithm,
+  LoadBalancingObserver,
+  RoutingEngine,
+} from './interfaces';
+import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler';
+import { HealthChecker } from './routing/health-checker';
+import { IntelligentRoutingEngine } from './routing/intelligent-routing-engine';
+import { AutoScalingStrategy } from './strategies/auto-scaling-strategy';
+import {
+  type Agent,
+  AgentStatus,
+  LoadBalancingAlgorithmType,
+  type LoadBalancingConfig,
+  type LoadMetrics,
+  type RoutingResult,
+  type Task,
+  TaskPriority,
+} from './types';
+
 // Optional imports with fallbacks for ML features
 let consistentHashing: any = null;
 let hashRing: any = null;
@@ -134,37 +165,6 @@ const _metered =
   (name: string) =>
   (target: any, propertyKey: string, descriptor: PropertyDescriptor) =>
     descriptor;
-
-import * as stats from 'simple-statistics';
-
-import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
-import { LeastConnectionsAlgorithm } from './algorithms/least-connections';
-import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
-import { ResourceAwareAlgorithm } from './algorithms/resource-aware';
-import { WeightedRoundRobinAlgorithm } from './algorithms/weighted-round-robin';
-import { AgentCapacityManager } from './capacity/agent-capacity-manager';
-import type {
-  AutoScaler,
-  CapacityManager,
-  EmergencyHandler,
-  LoadBalancingAlgorithm,
-  LoadBalancingObserver,
-  RoutingEngine,
-} from './interfaces';
-import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler';
-import { HealthChecker } from './routing/health-checker';
-import { IntelligentRoutingEngine } from './routing/intelligent-routing-engine';
-import { AutoScalingStrategy } from './strategies/auto-scaling-strategy';
-import {
-  type Agent,
-  AgentStatus,
-  LoadBalancingAlgorithmType,
-  type LoadBalancingConfig,
-  type LoadMetrics,
-  type RoutingResult,
-  type Task,
-  TaskPriority,
-} from './types';
 
 export class LoadBalancer extends EventEmitter {
   private agents: Map<string, Agent> = new Map();

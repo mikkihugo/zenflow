@@ -153,7 +153,9 @@ export interface SOC2ComplianceReport {
 export class SOC2AuditService {
   private readonly logger = getLogger('SOC2AuditService');
 
-  constructor() {}
+  constructor() {
+    // SOC2 audit service initialization - currently no setup required
+  }
 
   /**
    * Initialize SOC2 audit service

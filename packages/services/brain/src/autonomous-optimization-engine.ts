@@ -244,10 +244,10 @@ export class TaskAnalyzer extends EventBus<TaskAnalysisEvents> {
     // Higher confidence for clearer task types
     const taskLower = task.toLowerCase();
     const typeKeywords = {
-      'ml': ['model', 'train', 'predict', 'dspy', 'optimize'],
-      'coordination': ['coordinate', 'agents', 'workflow', 'manage'],
-      'computation': ['calculate', 'compute', 'process', 'execute'],
-      'prompt': ['write', 'generate', 'create', 'explain']
+      ml: ['model', 'train', 'predict', 'dspy', 'optimize'],
+      coordination: ['coordinate', 'agents', 'workflow', 'manage'],
+      computation: ['calculate', 'compute', 'process', 'execute'],
+      prompt: ['write', 'generate', 'create', 'explain']
     };
 
     const relevantKeywords = typeKeywords[taskType as keyof typeof typeKeywords] || [];
@@ -320,10 +320,10 @@ export class TaskAnalyzer extends EventBus<TaskAnalysisEvents> {
    */
   private estimateDuration(taskType: string, complexity: number): number {
     const baseDurations = {
-      'prompt': 2000,
-      'ml': 5000,
-      'coordination': 3000,
-      'computation': 4000,
+      prompt: 2000,
+      ml: 5000,
+      coordination: 3000,
+      computation: 4000,
     };
 
     const baseDuration = baseDurations[taskType as keyof typeof baseDurations] || 3000;

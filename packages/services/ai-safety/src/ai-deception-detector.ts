@@ -278,11 +278,11 @@ export class AIDeceptionDetector {
    */
   private getThreshold(category: string): number {
     const categoryMap: Record<string, keyof DetectionConfig['thresholds']> = {
-      'capabilityInflation': 'capability',
-      'knowledgeHallucination': 'knowledge',
-      'verificationAvoidance': 'verification',
-      'confidenceInflation': 'confidence',
-      'contextConfusion': 'context'
+      capabilityInflation: 'capability',
+      knowledgeHallucination: 'knowledge',
+      verificationAvoidance: 'verification',
+      confidenceInflation: 'confidence',
+      contextConfusion: 'context'
     };
     const thresholdKey = categoryMap[category];
     return thresholdKey ? this.config.thresholds[thresholdKey] : 0.5;
@@ -291,11 +291,11 @@ export class AIDeceptionDetector {
    */
   private getCategoryMultiplier(category: string): number {
     const multipliers: Record<string, number> = {
-      'capabilityInflation':1.2,
-      'knowledgeHallucination':1.1,
-      'verificationAvoidance':1.3,
-      'confidenceInflation':1.0,
-      'contextConfusion':0.9
+      capabilityInflation:1.2,
+      knowledgeHallucination:1.1,
+      verificationAvoidance:1.3,
+      confidenceInflation:1.0,
+      contextConfusion:0.9
 };
     
     return multipliers[category] || 1.0;
@@ -345,11 +345,11 @@ export class AIDeceptionDetector {
    */
   private mapCategoryToType(category: string): DeceptionAlert['type'] {
     const typeMap: Record<string, DeceptionAlert['type']> = {
-      'capabilityInflation': 'CAPABILITY_OVERREACH',
-      'knowledgeHallucination': 'DOCUMENTATION_FABRICATION',
-      'verificationAvoidance': 'ANALYSIS_CLAIMS',
-      'confidenceInflation': 'CERTAINTY_OVERREACH',
-      'contextConfusion': 'PROJECT_CONFLATION'
+      capabilityInflation: 'CAPABILITY_OVERREACH',
+      knowledgeHallucination: 'DOCUMENTATION_FABRICATION',
+      verificationAvoidance: 'ANALYSIS_CLAIMS',
+      confidenceInflation: 'CERTAINTY_OVERREACH',
+      contextConfusion: 'PROJECT_CONFLATION'
     };
     return typeMap[category] || 'CAPABILITY_OVERREACH';
 }
@@ -359,11 +359,11 @@ export class AIDeceptionDetector {
    */
   private mapCategoryToAlertCategory(category: string): DeceptionAlert['category'] {
     const categoryMap: Record<string, DeceptionAlert['category']> = {
-      'capabilityInflation': 'CAPABILITY_INFLATION',
-      'knowledgeHallucination': 'KNOWLEDGE_HALLUCINATION',
-      'verificationAvoidance': 'VERIFICATION_AVOIDANCE',
-      'confidenceInflation': 'CONFIDENCE_INFLATION',
-      'contextConfusion': 'CONTEXT_CONFUSION'
+      capabilityInflation: 'CAPABILITY_INFLATION',
+      knowledgeHallucination: 'KNOWLEDGE_HALLUCINATION',
+      verificationAvoidance: 'VERIFICATION_AVOIDANCE',
+      confidenceInflation: 'CONFIDENCE_INFLATION',
+      contextConfusion: 'CONTEXT_CONFUSION'
     };
     return categoryMap[category] || 'CAPABILITY_INFLATION';
 }
@@ -373,11 +373,11 @@ export class AIDeceptionDetector {
    */
   private getIntervention(type: DeceptionAlert['type'], severity: DeceptionAlert['severity']): string {
     const interventions: Record<string, string> = {
-      'CAPABILITY_OVERREACH': 'Require tool verification before capability claims',
-      'DOCUMENTATION_FABRICATION': 'Request evidence or tool-based verification',
-      'ANALYSIS_CLAIMS': 'Require actual tool usage for verification',
-      'CERTAINTY_OVERREACH': 'Request qualification of confidence levels',
-      'PROJECT_CONFLATION': 'Clarify project context and boundaries',
+      CAPABILITY_OVERREACH: 'Require tool verification before capability claims',
+      DOCUMENTATION_FABRICATION: 'Request evidence or tool-based verification',
+      ANALYSIS_CLAIMS: 'Require actual tool usage for verification',
+      CERTAINTY_OVERREACH: 'Request qualification of confidence levels',
+      PROJECT_CONFLATION: 'Clarify project context and boundaries',
     };
     
     const baseIntervention = interventions[type] || 'General deception intervention';
@@ -394,11 +394,11 @@ export class AIDeceptionDetector {
    */
   private getRequiredToolCalls(type: DeceptionAlert['type']): string[] {
     const toolMap: Record<string, string[]> = {
-      'CAPABILITY_OVERREACH': ['read', 'bash'],
-      'DOCUMENTATION_FABRICATION': ['read', 'grep'],
-      'ANALYSIS_CLAIMS': ['read', 'bash', 'grep'],
-      'CERTAINTY_OVERREACH': ['read'],
-      'PROJECT_CONFLATION': ['ls', 'read']
+      CAPABILITY_OVERREACH: ['read', 'bash'],
+      DOCUMENTATION_FABRICATION: ['read', 'grep'],
+      ANALYSIS_CLAIMS: ['read', 'bash', 'grep'],
+      CERTAINTY_OVERREACH: ['read'],
+      PROJECT_CONFLATION: ['ls', 'read']
     };
     
     return toolMap[type] || ['read'];

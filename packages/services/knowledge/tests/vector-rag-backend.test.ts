@@ -6,7 +6,7 @@
  * integration with existing vector storage systems.
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VectorRAGBackend, type VectorRAGConfig, type VectorKnowledgeEntry } from '../knowledge-cache-backends/vector-rag-backend';
 
 describe('VectorRAGBackend', () => {
@@ -172,9 +172,9 @@ describe('VectorRAGBackend', () => {
 
       for (const [index, knowledgeType] of knowledgeTypes.entries()) {
         const entry: VectorKnowledgeEntry = {
-          id: 'type-test-' + index,
-          query: 'Test query for ' + knowledgeType,
-          result: { answer: 'Answer for ' + knowledgeType },
+          id: `type-test-${  index}`,
+          query: `Test query for ${  knowledgeType}`,
+          result: { answer: `Answer for ${  knowledgeType}` },
           source: 'test',
           timestamp: Date.now(),
           ttl: 86400000,
@@ -192,7 +192,7 @@ describe('VectorRAGBackend', () => {
 
       // Verify all types were stored
       for (const [index] of knowledgeTypes.entries()) {
-        const retrieved = await backend.get('type-test-' + index);
+        const retrieved = await backend.get(`type-test-${  index}`);
         expect(retrieved).toBeDefined();
       }
     });
@@ -380,8 +380,8 @@ describe('VectorRAGBackend', () => {
       // Store multiple entries
       for (let i = 0; i < 3; i++) {
         const entry: VectorKnowledgeEntry = {
-          id: 'clear-test-' + i,
-          query: 'test query ' + i,
+          id: `clear-test-${  i}`,
+          query: `test query ${  i}`,
           result: { index: i },
           source: 'test',
           timestamp: Date.now(),
@@ -402,7 +402,7 @@ describe('VectorRAGBackend', () => {
 
       // Verify all are gone
       for (let i = 0; i < 3; i++) {
-        expect(await backend.get('clear-test-' + i)).toBeNull();
+        expect(await backend.get(`clear-test-${  i}`)).toBeNull();
       }
     });
 
@@ -464,8 +464,8 @@ describe('VectorRAGBackend', () => {
       // Store some test entries
       for (let i = 0; i < 5; i++) {
         const entry: VectorKnowledgeEntry = {
-          id: 'stats-test-' + i,
-          query: 'test query ' + i,
+          id: `stats-test-${  i}`,
+          query: `test query ${  i}`,
           result: { index: i },
           source: 'test',
           timestamp: Date.now(),

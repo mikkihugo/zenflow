@@ -10,15 +10,15 @@ import { getLogger } from '@claude-zen/foundation';
  */
 
 import type { LoadBalancingAlgorithm, PredictionEngine } from '../interfaces';
-import type {
-  Agent,
-  HistoricalData,
-  LoadMetrics,
-  PredictionModel,
-  RoutingResult,
-  Task,
+import {
+  type Agent,
+  type HistoricalData,
+  type LoadMetrics,
+  type PredictionModel,
+  type RoutingResult,
+  type Task,
+  taskPriorityToNumber
 } from '../types';
-import { taskPriorityToNumber } from '../types';
 
 // Direct brain.js import for practical neural networks
 let brain: any = null;

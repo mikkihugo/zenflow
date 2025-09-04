@@ -39,6 +39,9 @@
  */
 
 // Export algorithm implementations
+// Import LoadBalancer class
+import { LoadBalancer } from './main';
+
 export * from './algorithms/adaptive-learning';
 export * from './algorithms/least-connections';
 export * from './algorithms/ml-predictive';
@@ -73,9 +76,6 @@ export * from './strategies/auto-scaling-strategy';
 export * from './src/traffic-controller';
 
 export * from './types';
-
-// Import LoadBalancer class
-import { LoadBalancer } from './main';
 
 // Factory functions expected by infrastructure facade
 export function createLoadBalancer(config?: any) {

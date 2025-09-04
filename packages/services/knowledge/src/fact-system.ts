@@ -9,7 +9,12 @@
  * through the knowledge package's public API.
  */
 
-import { z } from '@claude-zen/foundation';
+import {
+  z,
+  getLogger,
+  EventBus,
+  generateUUID
+} from '@claude-zen/foundation';
 
 // Import the high-performance Rust fact bridge from the fact-system package
 // Note: FactBridge is placeholder for future Rust integration
@@ -32,13 +37,7 @@ class FactBridge {
   getGitHubFacts(): Promise<unknown> {
     return Promise.resolve(null);
   }
-}
-
-import {
-  getLogger,
-  EventBus,
-  generateUUID
-} from '@claude-zen/foundation';// Note:Database imports commented out until foundation exports are properly configured
+}// Note:Database imports commented out until foundation exports are properly configured
 // import { createDatabaseAdapter, DatabaseConnection} from '@claude-zen/foundation';
 
 // Temporary type definitions for testing

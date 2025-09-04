@@ -28,8 +28,7 @@
 
 import { cpus, freemem, loadavg, totalmem} from 'node:os';
 import { cpuUsage, memoryUsage} from 'node:process';
-import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation';
+import { type Logger, getLogger } from '@claude-zen/foundation';
 
 // ============================================================================
 // FOUNDATION-INTEGRATED SYSTEM METRICS TYPES

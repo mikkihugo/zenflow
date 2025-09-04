@@ -7,14 +7,14 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type {
-  Agent,
-  LoadMetrics,
-  ResourceConstraint,
-  RoutingResult,
-  Task,
+import {
+  type Agent,
+  type LoadMetrics,
+  type ResourceConstraint,
+  type RoutingResult,
+  type Task,
+  taskPriorityToNumber
 } from '../types';
-import { taskPriorityToNumber } from '../types';
 
 interface ResourceProfile {
   agentId: string;

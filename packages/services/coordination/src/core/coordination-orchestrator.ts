@@ -9,6 +9,7 @@
  */
 
 import {
+  EventBus,
   getLogger,
   ok,
   err,
@@ -18,7 +19,6 @@ import {
   type Logger,
   type UUID
 } from '@claude-zen/foundation';
-import { EventBus } from '@claude-zen/foundation';
 
 import type {
   AgentId,

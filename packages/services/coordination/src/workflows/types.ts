@@ -3,6 +3,9 @@
 * Unified types for all workflow operations across the system
 */
 // Re-export all workflow-related types from the base types (avoids circular dependency)
+// Import WorkflowDefinition directly
+import type { WorkflowDefinition } from './workflow-base-types.ts';
+
 export type {
 DocumentContent,
 StepExecutionResult,
@@ -12,9 +15,6 @@ WorkflowEngineConfig,
 WorkflowState,
 WorkflowStep,
 } from './workflow-base-types.ts';
-
-// Import WorkflowDefinition directly
-import type { WorkflowDefinition } from './workflow-base-types.ts';
 // Additional workflow types for advanced functionality
 export interface WorkflowTemplate {
   id: string;

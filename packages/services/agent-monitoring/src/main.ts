@@ -40,6 +40,29 @@
 // =============================================================================
 // PRIMARY EVENT-DRIVEN EXPORTS (ZERO IMPORTS)
 // =============================================================================
+// Import implementations
+import { CompleteIntelligenceSystem } from './intelligence-system';
+import {
+  SimpleTaskPredictor,
+  TaskPredictorConfig,
+  isHighConfidencePrediction as highConfidencePrediction,
+  getPredictionSummary as predictionSummary,
+} from './task-predictor';
+import {
+  PerformanceTracker,
+  PerformanceTrackerConfig,
+} from './performance-tracker';
+import type {
+  IntelligenceSystemConfig,
+  AgentId,
+  AgentHealth,
+} from './types';
+import {
+  createIntelligenceSystem,
+  createBasicIntelligenceSystem,
+  createProductionIntelligenceSystem,
+} from './intelligence-factory';
+
 export {
   createEventDrivenIntelligenceSystem,
   EventDrivenIntelligenceSystem,
@@ -146,29 +169,6 @@ export type {
   TaskPredictorConfig,
   TrendType,
 } from './types';
-
-// Import implementations
-import { CompleteIntelligenceSystem } from './intelligence-system';
-import {
-  SimpleTaskPredictor,
-  TaskPredictorConfig,
-  isHighConfidencePrediction as highConfidencePrediction,
-  getPredictionSummary as predictionSummary,
-} from './task-predictor';
-import {
-  PerformanceTracker,
-  PerformanceTrackerConfig,
-} from './performance-tracker';
-import type {
-  IntelligenceSystemConfig,
-  AgentId,
-  AgentHealth,
-} from './types';
-import {
-  createIntelligenceSystem,
-  createBasicIntelligenceSystem,
-  createProductionIntelligenceSystem,
-} from './intelligence-factory';
 
 // Factory functions for missing exports
 function createTaskPredictor(config?: TaskPredictorConfig) {

@@ -5,7 +5,7 @@
  * to ensure it properly emits events instead of returning values directly.
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TaskComplexityEstimator } from '../task-complexity-estimator';
 
 describe('TaskComplexityEstimator - Event-Driven', () => {

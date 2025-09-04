@@ -5,8 +5,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-
-const logger = getLogger('agent-monitoring-intelligence-system');
 import type {
   AdaptiveLearningUpdate,
   AgentHealth,
@@ -23,6 +21,8 @@ import type {
   SystemHealthSummary,
   TaskPrediction,
 } from './types';
+
+const logger = getLogger('agent-monitoring-intelligence-system');
 
 const logger = getLogger('agent-monitoring-intelligence-system');
 
