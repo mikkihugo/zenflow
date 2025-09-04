@@ -61,9 +61,20 @@ jobs:
 
       - name: 🤖 Setup Claude Code
         if: steps.lint-check.outputs.error-count != '0'
-        uses: anthropics/claude-code@v1
-        with:
-          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          echo "🤖 Setting up Claude Code..."
+          # Install Claude CLI
+          curl -fsSL https://claude.ai/install.sh | bash
+          
+          # Try to authenticate - use API key if available, otherwise skip auth
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "🔐 Using API key authentication"
+            export ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY"
+          else
+            echo "🔐 No API key - attempting to run without explicit auth"
+          fi
 
       - name: 🔧 Claude Surgical Linting
         if: steps.lint-check.outputs.error-count != '0'
