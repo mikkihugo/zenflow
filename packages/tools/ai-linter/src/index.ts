@@ -198,12 +198,13 @@ if (result.status === 'fulfilled' && result.value.success) {
 results.push(result.value.data);
 } else {
 results.push({
-filePath: filePaths[i],
+filePath: filePaths[i] || 'unknown',
 success: false,
 originalErrors: 0,
 fixedErrors: 0,
 timeTaken: 0,
 aiModel: this.config.aiMode,
+backupPath: undefined,
 error:
 result.status === 'rejected'
 ? result.reason
@@ -356,20 +357,20 @@ promptLength: prompt.length,
 });
 
 // Use real GitHub Copilot API with GPT-4.1
-const token = process.env.GITHUB_COPILOT_TOKEN || '';
+const token = process.env['GITHUB_COPILOT_TOKEN'] || '';
 const copilot = new GitHubCopilotAPI({
 model: this.config.aiMode,
 temperature: this.config.temperature,
 token,
 });
 
-const response = await copilot.execute({
+const response = await copilot.chat({
 messages: [{ role: 'user', content: prompt }],
 });
 
-if (response.success && response.content) {
+if (response.text) {
 // Extract fixed code from AI response
-const fixedCode = this.extractCodeFromResponse(response.content);
+const fixedCode = this.extractCodeFromResponse(response.text);
 
 if (fixedCode && fixedCode !== content) {
 logger.info('Real GPT-4.1 successfully applied intelligent fixes', {

@@ -3,6 +3,7 @@
 * Minimal CLI for @claude-zen/ai-linter
 */
 import { createAILinter } from './index.js';
+import type { AIMode } from './types.js';
 
 /* eslint-disable no-console */
 const log = {
@@ -16,10 +17,12 @@ const args: Record<string, string | boolean> = {};
 const files: string[] = [];
 for (let i = 2; i < argv.length; i++) {
 const a = argv[i];
-if (a.startsWith('--')) {
+if (a && a.startsWith('--')) {
 const [k, v] = a.slice(2).split('=');
+if (k) {
 args[k] = v ?? true;
-} else {
+}
+} else if (a) {
 files.push(a);
 }
 }
@@ -70,8 +73,8 @@ artifactLocation: { uri: r.filePath },
 
 async function main() {
 const { args, files } = parseArgs(process.argv);
-const format = (args.format as string) || `json`
-const aiMode = (args.model as string) || 'gpt-4.1';
+const format = (args['format'] as string) || 'json';
+const aiMode = (args['model'] as AIMode) || 'gpt-4.1';
 
 const linter = createAILinter({ aiMode });
 

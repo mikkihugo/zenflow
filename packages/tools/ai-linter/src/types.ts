@@ -45,7 +45,7 @@ originalErrors: number;
 fixedErrors: number;
 timeTaken: number;
 aiModel: AIMode;
-backupPath?: string;
+backupPath?: string | undefined;
 error?: string;
 }
 

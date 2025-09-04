@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/llm-providers": "workspace:*",
     "glob": "^10.3.12"
   },
   "devDependencies": {
