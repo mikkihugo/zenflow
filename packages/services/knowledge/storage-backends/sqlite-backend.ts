@@ -224,7 +224,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 }
 
  if (query.minConfidence !== undefined) {
- conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?``;
+ conditions.push(`JSON_EXTRACT(metadata, '$.confidence') >= ?`);
  params?.push(query.minConfidence);
 }
 
@@ -256,7 +256,8 @@ export class SQLiteBackend implements FACTStorageBackend {
  lastAccessed:row.last_accessed,
 }));
 } catch (error) {
- logger.error('Failed to search FACT entries:', error);') return [];
+ logger.error('Failed to search FACT entries:', error);
+ return [];
 }
 }
 
@@ -523,15 +524,18 @@ export class SQLiteBackend implements FACTStorageBackend {
 }
 
  return {
- memoryEntries:0, // SQLite backend doesn't use memory cache') persistentEntries:totalEntries,
- totalMemorySize:0, // SQLite backend doesn't use memory cache') cacheHitRate:0, // Not applicable for persistent-only storage
+ memoryEntries:0, // SQLite backend doesn't use memory cache
+ persistentEntries:totalEntries,
+ totalMemorySize:0, // SQLite backend doesn't use memory cache
+ cacheHitRate:0, // Not applicable for persistent-only storage
  oldestEntry:basicStats?.oldest_timestamp||0,
  newestEntry:basicStats?.newest_timestamp||0,
  topDomains,
  storageHealth,
 };
 } catch (error) {
- logger.error('Failed to get storage stats:', error);') return {
+ logger.error('Failed to get storage stats:', error);
+ return {
  memoryEntries:0,
  persistentEntries:0,
  totalMemorySize:0,
@@ -539,7 +543,7 @@ export class SQLiteBackend implements FACTStorageBackend {
  oldestEntry:0,
  newestEntry:0,
  topDomains:[],
- storageHealth: 'poor',};
+ storageHealth: 'poor'};
 }
 }
 
@@ -547,32 +551,32 @@ export class SQLiteBackend implements FACTStorageBackend {
  if (!this.dalAdapter) return;
 
  // Main table
- await this.dalAdapter.execute(``
- CREATE TABLE F NOT EXISTS ${this.config.tableName} (
+ await this.dalAdapter.execute(`
+ CREATE TABLE IF NOT EXISTS ${this.config.tableName} (
  id TEXT PRIMARY KEY,
  query TEXT NOT NULL,
  response TEXT NOT NULL,
- metadata TEXT NOT NULL, -- JSON column
- timestamp NTEGER NOT NULL,
- ttl NTEGER NOT NULL,
- access_count NTEGER DEFAULT 0,
- last_accessed NTEGER NOT NULL,
- expires_at NTEGER NOT NULL
+ metadata TEXT NOT NULL,
+ timestamp INTEGER NOT NULL,
+ ttl INTEGER NOT NULL,
+ access_count INTEGER DEFAULT 0,
+ last_accessed INTEGER NOT NULL,
+ expires_at INTEGER NOT NULL
  )
- ``;
+ `);
 
  // Full-text search table
  if (this.config.enableFullTextSearch) {
- await this.dalAdapter.execute(``
- CREATE VIRTUAL TABLE F NOT EXISTS ${this.config.tableName}fts USING fts5(
+ await this.dalAdapter.execute(`
+ CREATE VIRTUAL TABLE IF NOT EXISTS ${this.config.tableName}_fts USING fts5(
  id UNINDEXED,
  query,
  response,
  domains,
  type,
- content=${this.config.tableName}
+ content='${this.config.tableName}'
  )
- ``;
+ `);
 }
 }
 
@@ -591,7 +595,8 @@ export class SQLiteBackend implements FACTStorageBackend {
  try {
  await this.dalAdapter.execute(indexSQL);
 } catch (error) {
- logger.warn('Failed to create index:', indexSQL, error);')}
+ logger.warn('Failed to create index:', indexSQL, error);
+}
 }
 }
 }

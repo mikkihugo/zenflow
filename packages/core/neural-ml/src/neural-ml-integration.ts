@@ -56,10 +56,10 @@ export interface MLTrainingProgressEvent {
  timestamp: number;
  sparc_phase:
  | 'specification'
- | ' pseudocode'
- | ' architecture'
- | ' refinement'
- | ' completion';
+ | 'pseudocode'
+ | 'architecture'
+ | 'refinement'
+ | 'completion';
 }
 
 export interface MLInferenceResultEvent {
@@ -77,18 +77,18 @@ export interface MLWorkflowStateEvent {
  workflowId: string;
  state:
  | 'initiated'
- | ' training'
- | ' validating'
- | ' optimizing'
- | ' deploying'
- | ' completed'
- | ' failed';
+ | 'training'
+ | 'validating'
+ | 'optimizing'
+ | 'deploying'
+ | 'completed'
+ | 'failed';
  sparc_phase:
  | 'specification'
- | ' pseudocode'
- | ' architecture'
- | ' refinement'
- | ' completion';
+ | 'pseudocode'
+ | 'architecture'
+ | 'refinement'
+ | 'completion';
  taskmaster_approval_required: boolean;
  timestamp: number;
  metadata: any;
@@ -109,30 +109,30 @@ export interface MLModelValidationEvent {
  modelId: string;
  validation_type:
  | 'unit_test'
- | ' integration_test'
- | ' performance_test'
- | ' a_b_test';
- status: 'passed' | ' failed' | ' warning';
+ | 'integration_test'
+ | 'performance_test'
+ | 'a_b_test';
+ status: 'passed' | 'failed' | 'warning';
  metrics: Record<string, number>;
  thresholds: Record<string, number>;
  sparc_phase:
  | 'specification'
- | ' pseudocode'
- | ' architecture'
- | ' refinement'
- | ' completion';
+ | 'pseudocode'
+ | 'architecture'
+ | 'refinement'
+ | 'completion';
  timestamp: number;
 }
 
 // DSPy Integration Types
 export interface DSPyOptimizationConfig {
- teleprompter_type: 'mipro|copro|grpo';
+ teleprompter_type: 'mipro' | 'copro' | 'grpo';
  use_ml_enhancement: boolean;
  max_iterations: number;
  population_size?: number;
  learning_rate?: number;
  gradient_steps?: number;
- bayesian_acquisition: 'ei|pi|ucb|poi';
+ bayesian_acquisition: 'ei' | 'pi' | 'ucb' | 'poi';
  multi_objective_weights?: number[];
  drift_detection: boolean;
  pattern_analysis: boolean;
@@ -162,8 +162,8 @@ export interface NeuralCoordinationConfig {
  enable_learning: boolean;
  enable_adaptation: boolean;
  enable_prediction: boolean;
- coordination_strategy: 'centralized|distributed|hierarchical';
- ml_backend: 'rust_wasm|fallback_js';
+ coordination_strategy: 'centralized' | 'distributed' | 'hierarchical';
+ ml_backend: 'rust_wasm' | 'fallback_js';
  performance_tracking: boolean;
  real_time_optimization: boolean;
 }
@@ -184,10 +184,11 @@ export interface CoordinationMetrics {
  * Integrates Rust-based ML algorithms with the neural coordination system
  * to provide intelligent optimization, learning, and adaptation capabilities.
  */
-export class MLNeuralCoordinator extends TypedEventBase {
+export class MLNeuralCoordinator {
  private logger: Logger;
  private config: NeuralCoordinationConfig;
  private initialized: boolean = false;
+ private eventListeners: Map<string, Function[]> = new Map();
 
  // ML Algorithm Instances
  private bayesianOptimizer: BayesianOptimizer;
@@ -236,6 +237,14 @@ export class MLNeuralCoordinator extends TypedEventBase {
  resource_utilization: 0,
  bottleneck_detection: [],
  };
+ }
+
+ // Basic event emitter functionality
+ private emit(event: string, data?: any): void {
+ const listeners = this.eventListeners.get(event);
+ if (listeners) {
+ listeners.forEach(listener => listener(data));
+ }
  }
 
  /**
@@ -311,7 +320,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  `Optimizing ${teleprompter_config.teleprompter_type} teleprompter with ML enhancement`
  );
 
- const optimizationId = `dspy_${teleprompter_config.teleprompter_type}_${Date.now()}`
+ const optimizationId = `dspy_${teleprompter_config.teleprompter_type}_${Date.now()}`;
  this.activeOptimizations.set(optimizationId, {
  type: 'dspy_optimization',
  config: teleprompter_config,
@@ -344,7 +353,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  break;
  default:
  throw new Error(
- `Unsupported teleprompter type:${teleprompter_config.teleprompter_type}`
+ `Unsupported teleprompter type: ${teleprompter_config.teleprompter_type}`
  );
  }
 
@@ -393,7 +402,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
  if (!optimizationResult.success) {
  throw new Error(
- `Multi-objective optimization failed:${optimizationResult.error}`
+ `Multi-objective optimization failed: ${optimizationResult.error}`
  );
  }
 
@@ -636,7 +645,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  }
 
  const bestPoint = optimizationHistory.reduce((best, current) =>
- current.objective > best.objective ? current: best
+ current.objective > best.objective ? current : best
  );
 
  return {
@@ -711,7 +720,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const prediction = await this.bayesianOptimizer.predict(paramVector);
 
  if (!prediction.success) {
- throw new Error(`Prediction failed:${prediction.error}`)
+ throw new Error(`Prediction failed: ${prediction.error}`);
  }
 
  const { mean, variance } = prediction.data!;
@@ -851,7 +860,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  if (!weights || weights.length !== solutions[0].objectives.length) {
  // Default:select solution with highest first objective (usually accuracy)
  return solutions.reduce((best, current) =>
- current.objectives[0] > best.objectives[0] ? current: best
+ current.objectives[0] > best.objectives[0] ? current : best
  );
  }
 
@@ -865,7 +874,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  (sum, obj, i) => sum + obj * weights[i],
  0
  );
- return currentScore > bestScore ? current: best;
+ return currentScore > bestScore ? current : best;
  });
  }
 
@@ -921,7 +930,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const recommendations: string[] = [];
 
  recommendations.push(
- `Optimal learning rate found:${bestPoint.parameters[0].toFixed(4)}`
+ `Optimal learning rate found: ${bestPoint.parameters[0].toFixed(4)}`
  );
 
  if (driftAlerts.length > 0) {
@@ -940,7 +949,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const recommendations: string[] = [];
 
  recommendations.push(
- `Gradient optimization converged with parameters:${bestPoint.parameters.map((p) => p.toFixed(4)).join(', ')}`
+ `Gradient optimization converged with parameters: ${bestPoint.parameters.map((p) => p.toFixed(4)).join(', ')}`
  );
 
  if (patterns.some((p) => p.pattern_type === 'optimization')) {
@@ -954,7 +963,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
 
  private extractFeaturesFromData(data: any): number[] {
  // Mock feature extraction - replace with actual implementation
- return Array.from({ length: 10 }, () => Math.random())();
+ return Array.from({ length: 10 }, () => Math.random());
  }
 
  private extractTargetFromData(data: any): number {
@@ -1067,7 +1076,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  | 'refinement'
  | 'completion' = 'refinement'
  ): Promise<string> {
- const trainingId = `train_${modelId}_${Date.now()}`
+ const trainingId = `train_${modelId}_${Date.now()}`;
 
  // Create workflow state event
  const workflowEvent: MLWorkflowStateEvent = {
@@ -1100,7 +1109,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  this.emit('training_started', trainingEvent);
 
  this.logger.info(
- `Started training job ${trainingId} in SPARC phase:${sparc_phase}`
+ `Started training job ${trainingId} in SPARC phase: ${sparc_phase}`
  );
 
  return trainingId;
@@ -1119,7 +1128,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  ): void {
  const existingJob = this.activeTrainingJobs.get(trainingId);
  if (!existingJob) {
- this.logger.warn(`Training job ${trainingId} not found`
+ this.logger.warn(`Training job ${trainingId} not found`);
  return;
  }
 
@@ -1152,7 +1161,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  input: any,
  options: { timeout?: number; confidence_threshold?: number } = {}
  ): Promise<MLInferenceResultEvent> {
- const inferenceId = `infer_${modelId}_${Date.now()}`
+ const inferenceId = `infer_${modelId}_${Date.now()}`;
  const startTime = Date.now();
 
  try {
@@ -1194,18 +1203,18 @@ export class MLNeuralCoordinator extends TypedEventBase {
  modelId: string,
  validationType:
  | 'unit_test'
- | ' integration_test'
- | ' performance_test'
- | ' a_b_test',
+ | 'integration_test'
+ | 'performance_test'
+ | 'a_b_test',
  sparc_phase:
  | 'specification'
- | ' pseudocode'
- | ' architecture'
- | ' refinement'
- | ' completion',
+ | 'pseudocode'
+ | 'architecture'
+ | 'refinement'
+ | 'completion',
  testData: any[]
  ): Promise<MLModelValidationEvent> {
- const validationId = `val_${modelId}_${Date.now()}`
+ const validationId = `val_${modelId}_${Date.now()}`;
 
  try {
  // Run validation based on type
@@ -1218,7 +1227,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  const validationEvent: MLModelValidationEvent = {
  modelId,
  validation_type: validationType,
- status: validationResult.passed ? 'passed': ' failed',
+ status: validationResult.passed ? 'passed' : 'failed',
  metrics: validationResult.metrics,
  thresholds: this.getValidationThresholds(sparc_phase),
  sparc_phase,
@@ -1311,7 +1320,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  recentMetrics.reduce((sum, m) => sum + m.error_rate, 0) /
  recentMetrics.length,
  }
-: {};
+ : {};
 
  return {
  active_training_jobs: this.activeTrainingJobs.size,
@@ -1397,7 +1406,7 @@ export class MLNeuralCoordinator extends TypedEventBase {
  // Clean up
  this.activeTrainingJobs.delete(trainingId);
 
- this.logger.info(`Training job ${trainingId} completed successfully`
+ this.logger.info(`Training job ${trainingId} completed successfully`);
  }
 
  private async performInference(
@@ -1479,7 +1488,7 @@ export function createMLNeuralCoordinator(
  * Utility function to create DSPy optimization configuration with ML enhancement
  */
 export function createDSPyMLConfig(
- teleprompter_type: 'mipro|copro|grpo',
+ teleprompter_type: 'mipro' | 'copro' | 'grpo',
  overrides?: Partial<DSPyOptimizationConfig>
 ): DSPyOptimizationConfig {
  const baseConfig: DSPyOptimizationConfig = {

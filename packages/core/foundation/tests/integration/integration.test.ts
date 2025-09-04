@@ -33,7 +33,7 @@ import { cleanupGlobalInstances } from '../claude-sdk';
 import { createToken } from '../di/tokens/token-factory';
 
 describe('Foundation Integration Tests', () => {
-  const runIntegration = process.env['RUN_INTEGRATION'] === 'true';
+  const runIntegration = process.env.RUN_INTEGRATION === 'true';
   const itIntegration = runIntegration ? it : it.skip;
 
   afterAll(() => {
@@ -119,7 +119,7 @@ describe('Foundation Integration Tests', () => {
         const logger = getLogger('error-test');
 
         // Test error handling with LLM system
-        const result = await safeAsync(async () =>
+        const result = await safeAsync(() =>
           executeClaudeTask('This is a test', {
             maxTurns: 1,
             timeoutMs: 5000, // Short timeout to potentially trigger error
@@ -146,12 +146,12 @@ describe('Foundation Integration Tests', () => {
 
       let attempts = 0;
       const result = await withRetry(
-        async () => {
+        () => {
           attempts++;
           if (attempts < 2) {
             throw new Error('Simulated failure');
           }
-          return `Success on attempt ${  attempts}`;
+          return `Success on attempt ${attempts}`;
         },
         {
           maxRetries: 3,
@@ -173,8 +173,8 @@ describe('Foundation Integration Tests', () => {
       const container = new DIContainer();
 
       // Register services using proper DI tokens
-      const loggerToken = createToken<any>('logger');
-      const configToken = createToken<any>('config');
+      const loggerToken = createToken<Logger>('logger');
+      const configToken = createToken<Record<string, unknown>>('config');
 
       container.register(loggerToken, {
         type: 'transient',
@@ -195,8 +195,8 @@ describe('Foundation Integration Tests', () => {
 
     it('should support function-based service creation', () => {
       const container = new DIContainer();
-      const loggerToken = createToken<any>('logger');
-      const serviceToken = createToken<any>('testService');
+      const loggerToken = createToken<Logger>('logger');
+      const serviceToken = createToken<{name: string; version: string}>('testService');
 
       // Register logger
       container.register(loggerToken, {
@@ -253,7 +253,7 @@ describe('Foundation Integration Tests', () => {
 
         logger.info('Swarm coordination completed', {
           messageCount: messages.length,
-          success: !(resultMessage as any)?.iserror,
+          success: !(resultMessage as {iserror?: boolean})?.iserror,
         });
       },
       120000
@@ -309,12 +309,12 @@ describe('Foundation Integration Tests', () => {
           async () => {
             const llm = getGlobalLLM();
             llm.setRole('assistant');
-            return llm.complete('Say hello', { maxTokens: 20 });
+            return await llm.complete('Say hello', { maxTokens: 20 });
           },
 
           // Operation 2:Might fail
           async () =>
-            executeClaudeTask('Test task', {
+            await executeClaudeTask('Test task', {
               maxTurns: 1,
               timeoutMs: 10000,
               allowedTools: [],
@@ -355,7 +355,7 @@ describe('Foundation Integration Tests', () => {
   });
 
   describe('Performance and Scalability', () => {
-    const runPerformance = process.env['RUN_PERFORMANCE'] === 'true';
+    const runPerformance = process.env.RUN_PERFORMANCE === 'true';
     const itPerformance = runPerformance ? it : it.skip;
 
     itPerformance(
@@ -374,7 +374,9 @@ describe('Foundation Integration Tests', () => {
         const duration = Date.now() - startTime;
 
         expect(results).toHaveLength(5);
-        results.forEach((result) => expect(result).toBeTruthy())();
+        for (const result of results) {
+          expect(result).toBeTruthy();
+        }
 
         logger.info('Concurrent operations completed', {
           requests: 5,
@@ -395,7 +397,7 @@ describe('Foundation Integration Tests', () => {
         await llm.complete('Test 1', { maxTokens: 30 });
         await llm.complete('Test 2', { maxTokens: 30 });
 
-        const _stats = llm.getUsageStats();
+        const stats = llm.getUsageStats();
         expect(stats.requestCount).toBeGreaterThan(0);
 
         logger.info('System metrics tracked', stats);

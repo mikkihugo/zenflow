@@ -482,7 +482,7 @@ const patterns = Array.isArray(patternResult)
 ? patternResult
 : patternResult.patterns || [];
 
-this.logger.info(`Detected ${patterns.length} optimization patterns`
+this.logger.info(`Detected ${patterns.length} optimization patterns`);
 
 return patterns;
 }
@@ -546,7 +546,7 @@ regression.rSquared + 0.05,
 });
 }
 
-this.logger.info(`Completed ${tests.length} statistical tests`
+this.logger.info(`Completed ${tests.length} statistical tests`);
 
 return tests;
 }

@@ -259,7 +259,7 @@ export class GRPO extends FinetuneTeleprompter {
 					for (const t of sample.trace) {
 						const hash_val = this.hash_signature(t[0].signature);
 						if (!pred_signature_hash_to_ind.has(hash_val)) {
-							throw new Error(`Unknown signature hash:${hash_val}`
+							throw new Error(`Unknown signature hash:${hash_val}`);
 }
 }
 }

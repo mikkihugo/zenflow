@@ -11,8 +11,8 @@
  */
 
 async function testBasicProviders() {
-  console.log('🚀 Testing Basic LLM Provider Functionality');
-  console.log('═'.repeat(60));
+  // 🚀 Testing Basic LLM Provider Functionality
+  // ================================================
 
   const results: Array<{
     provider: string;
@@ -22,7 +22,7 @@ async function testBasicProviders() {
   }> = [];
 
   // Test 1: Claude Provider with Context7
-  console.log('\n1️⃣ Testing Claude Provider...');
+  // 1️⃣ Testing Claude Provider...
   try {
     const { ClaudeProvider } = await import('./packages/integrations/claude-provider/dist/claude-provider.js');
     
@@ -31,19 +31,19 @@ async function testBasicProviders() {
     });
     
     await provider.initialize();
-    console.log('✅ Claude provider initialized');
+    // ✅ Claude provider initialized
     
     // Test connection
     const testResult = await provider.testConnection();
     if (testResult.success) {
-      console.log('✅ Claude connection test passed');
+      // ✅ Claude connection test passed
       
       // Test Context7 resources
       try {
         const resources = await provider.getContext7Resources();
-        console.log(`✅ Context7 resources: ${resources.length} available`);
+        // ✅ Context7 resources: [count] available
       } catch (error) {
-        console.log('⚠️ Context7 MCP server not available (expected)');
+        // ⚠️ Context7 MCP server not available (expected)
       }
       
       results.push({
@@ -55,7 +55,7 @@ async function testBasicProviders() {
       throw new Error(testResult.error);
     }
   } catch (error) {
-    console.log('❌ Claude provider failed:', error instanceof Error ? error.message : error);
+    // ❌ Claude provider failed: [error]
     results.push({
       provider: 'Claude + Context7',
       success: false,
@@ -64,16 +64,16 @@ async function testBasicProviders() {
   }
 
   // Test 2: Copilot Auto-Renewal Token Manager
-  console.log('\n2️⃣ Testing Copilot Token Manager...');
+  // 2️⃣ Testing Copilot Token Manager...
   try {
     const { CopilotTokenManager } = await import('./packages/integrations/copilot-provider/dist/copilot-token-manager.js');
     
     const tokenManager = new CopilotTokenManager();
-    console.log('✅ Copilot token manager created');
+    // ✅ Copilot token manager created
     
     // Test token caching logic (without actual token)
     const hasCached = tokenManager.hasCachedToken();
-    console.log(`✅ Token caching system: ${hasCached ? 'has cached' : 'no cached tokens'}`);
+    // ✅ Token caching system: [status]
     
     results.push({
       provider: 'Copilot Token Manager',
@@ -81,7 +81,7 @@ async function testBasicProviders() {
       details: { autoRenewal: true, caching: true }
     });
   } catch (error) {
-    console.log('❌ Copilot token manager failed:', error instanceof Error ? error.message : error);
+    // ❌ Copilot token manager failed: [error]
     results.push({
       provider: 'Copilot Token Manager',
       success: false,
@@ -90,7 +90,7 @@ async function testBasicProviders() {
   }
 
   // Test 3: GitHub Models Provider
-  console.log('\n3️⃣ Testing GitHub Models Provider...');
+  // 3️⃣ Testing GitHub Models Provider...
   try {
     // Check if built
     const fs = await import('node:fs');
@@ -99,7 +99,7 @@ async function testBasicProviders() {
     if (fs.existsSync(githubModelsPath)) {
       const { createGitHubModelsProvider } = await import(githubModelsPath);
       const provider = createGitHubModelsProvider();
-      console.log('✅ GitHub Models provider created');
+      // ✅ GitHub Models provider created
       
       results.push({
         provider: 'GitHub Models',
@@ -110,7 +110,7 @@ async function testBasicProviders() {
       throw new Error('GitHub Models provider not built');
     }
   } catch (error) {
-    console.log('❌ GitHub Models provider failed:', error instanceof Error ? error.message : error);
+    // ❌ GitHub Models provider failed: [error]
     results.push({
       provider: 'GitHub Models',
       success: false,
@@ -119,24 +119,24 @@ async function testBasicProviders() {
   }
 
   // Test 4: Gemini EventBus Integration
-  console.log('\n4️⃣ Testing Gemini EventBus Integration...');
+  // 4️⃣ Testing Gemini EventBus Integration...
   try {
     const { registerGeminiHandlers } = await import('./packages/integrations/gemini-provider/src/index.js');
     
     // Mock EventBus for testing
     const mockBus = {
       on: (event: string, handler: Function) => {
-        console.log(`✅ Registered handler for: ${event}`);
+        // ✅ Registered handler for: [event]
       },
       emit: (event: string, data: any) => {
-        console.log(`✅ Can emit: ${event}`);
+        // ✅ Can emit: [event]
       },
       getInstance: () => mockBus
     };
     
     // Register handlers with mock bus
     await registerGeminiHandlers(mockBus as any);
-    console.log('✅ Gemini EventBus handlers registered');
+    // ✅ Gemini EventBus handlers registered
     
     results.push({
       provider: 'Gemini EventBus',
@@ -144,7 +144,7 @@ async function testBasicProviders() {
       details: { eventDriven: true }
     });
   } catch (error) {
-    console.log('❌ Gemini EventBus failed:', error instanceof Error ? error.message : error);
+    // ❌ Gemini EventBus failed: [error]
     results.push({
       provider: 'Gemini EventBus',
       success: false,
@@ -153,44 +153,44 @@ async function testBasicProviders() {
   }
 
   // Summary
-  console.log('\n📊 BASIC PROVIDER TEST RESULTS');
-  console.log('═'.repeat(60));
+  // BASIC PROVIDER TEST RESULTS
+  // ================================================
   
   const successful = results.filter(r => r.success);
   const failed = results.filter(r => !r.success);
   
-  console.log(`✅ Successful: ${successful.length}/${results.length}`);
-  console.log(`❌ Failed: ${failed.length}/${results.length}`);
+  // Successful: [count]
+  // Failed: [count]
   
   if (successful.length > 0) {
-    console.log('\n🎉 Working Providers:');
+    // Working Providers: [list]
     for (const result of successful) {
-      console.log(`  • ${result.provider}`);
+      //   • [provider]
       if (result.details) {
         const features = Object.keys(result.details).join(', ');
-        console.log(`    Features: ${features}`);
+        //     Features: [features]
       }
     }
   }
   
   if (failed.length > 0) {
-    console.log('\n❌ Failed Providers:');
+    // Failed Providers: [list]
     for (const result of failed) {
-      console.log(`  • ${result.provider}: ${result.error}`);
+      //   • [provider]: [error]
     }
   }
-
-  console.log('\n🔧 Provider Architecture Status:');
-  console.log('  • Modular design: ✅ Separate packages');
-  console.log('  • Auto token renewal: ✅ Copilot 8h lifecycle');
-  console.log('  • MCP integration: ✅ Context7 support');
-  console.log('  • EventBus pattern: ✅ Gemini implementation');
-  console.log('  • OpenAI compatibility: ✅ Unified interfaces');
-
+  
+  // Provider Architecture Status:
+  //   • Modular design: [status]
+  //   • Auto token renewal: [status]
+  //   • MCP integration: [status]
+  //   • EventBus pattern: [status]
+  //   • OpenAI compatibility: [status]
+  
   if (successful.length === results.length) {
-    console.log('\n🎯 ALL BASIC PROVIDER FUNCTIONALITY OPERATIONAL!');
+    // ALL BASIC PROVIDER FUNCTIONALITY OPERATIONAL!
   } else if (successful.length > 0) {
-    console.log('\n⚠️ PARTIAL SYSTEM OPERATIONAL - Build remaining providers');
+    // PARTIAL SYSTEM OPERATIONAL - Build remaining providers
   }
 }
 

@@ -85,6 +85,7 @@ describe('Foundation Package - Core Functionality', () => {
       const successResult = ok('test');
       expect(successResult.isOk()).toBe(true);
       expect(successResult.isErr()).toBe(false);
+      expect(successResult).toBeInstanceOf(Result);
 
       const errorResult = err('error');
       expect(errorResult.isOk()).toBe(false);

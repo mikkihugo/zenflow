@@ -136,11 +136,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 					if (result.success) {
 						expect(result.data).toBeTruthy();
 						logger.info(
-							'️ Safely handled prompt:"' + prompt.substring(0, 20) + '..."',
+							`️ Safely handled prompt:"${  prompt.substring(0, 20)  }..."`,
 						);
 } else {
 						logger.info(
-							'️ Safely rejected prompt:"' + prompt.substring(0, 20) + '..."',
+							`️ Safely rejected prompt:"${  prompt.substring(0, 20)  }..."`,
 						);
 }
 }
@@ -156,7 +156,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const models = ["sonnet", "haiku"];
 
 				for (const model of models) {
-					logger.info('Testing model:' + model);
+					logger.info(`Testing model:${  model}`);
 
 					const messages = await executeClaudeTask(TEST_CONFIG.SIMPLE_PROMPT, {
 						model,
@@ -189,7 +189,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 ];
 
 				for (const permissionMode of permissionModes) {
-					logger.info('Testing permission mode:' + permissionMode);
+					logger.info(`Testing permission mode:${  permissionMode}`);
 
 					const result = await safeAsync(async () => executeClaudeTask("Create a simple test file", {
 							permissionMode,
@@ -203,7 +203,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 						logger.info(` Permission mode ${permissionMode} working`);
 					} else {
 						logger.info(
-							` Permission mode ${permissionMode} failed safely:` + result.error.message,
+							` Permission mode ${permissionMode} failed safely:${  result.error.message}`,
 						);
 					}
 				}
@@ -278,7 +278,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 		itIntegration(
 			"should handle session tracking",
 			async () => {
-				const sessionId = 'test-session-' + Date.now();
+				const sessionId = `test-session-${  Date.now()}`;
 
 				const messages = await executeClaudeTask("This is a session test", {
 					sessionId,
@@ -297,7 +297,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				);
 				expect(sessionTask).toBeTruthy();
 
-				logger.info(' Session tracking working:' + sessionId);
+				logger.info(` Session tracking working:${  sessionId}`);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -359,7 +359,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(message).toBeTruthy();
 					expect(message.type).toBeTruthy();
 
-					logger.debug(`Streamed message ${messageCount}:` + message.type);
+					logger.debug(`Streamed message ${messageCount}:${  message.type}`);
 
 					// Limit iterations to prevent infinite loops
 					if (messageCount > 10) break;
@@ -368,7 +368,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(hasData).toBe(true);
 				expect(messageCount).toBeGreaterThan(0);
 
-				logger.info(` Streaming working:${messageCount} messages received`
+				logger.info(` Streaming working:${messageCount} messages received`);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -399,11 +399,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				try {
 					for await (const message of streamGenerator) {
 						messageCount++;
-						logger.debug(`Streamed message ${messageCount}:` + message.type);
+						logger.debug(`Streamed message ${messageCount}:${  message.type}`);
 
 						if (messageCount > 10) break; // Safety limit
 }
-					logger.info(` Stream completed normally:${messageCount} messages`
+					logger.info(` Stream completed normally:${messageCount} messages`);
 } catch (error) {
 					if (error instanceof Error && error.message.includes("abort")) {
 						logger.info(
@@ -454,13 +454,13 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(result.messages).toBeTruthy();
 					expect(result.messages.length).toBeGreaterThan(0);
 					logger.info(
-						'Task ' + index + 1 + ':' + result.success ? "Success" : "Failed",
+						`Task ${  index  }${1  }:${  result.success}` ? "Success" : "Failed",
 					);
 }
 
 				const successful = results.filter((r) => r.success).length;
 				logger.info(
-					` Parallel execution:${successful}/` + tasks.length + ` succeeded in ${duration}ms`,
+					` Parallel execution:${successful}/${  tasks.length  } succeeded in ${duration}ms`,
 				);
 
 				// At least most tasks should succeed
@@ -498,15 +498,15 @@ describe("Comprehensive Claude SDK Tests", () => {
 				for (const [index, result] of results.entries()) {
 					if (result.success) {
 						successes++;
-						logger.info('Task ' + index + 1 + ':Success');
+						logger.info(`Task ${  index  }${1  }:Success`);
 } else {
 						failures++;
-						logger.info('Task ' + index + 1 + ':Failed - ' + result.error);
+						logger.info(`Task ${  index  }${1  }:Failed - ${  result.error}`);
 }
 }
 
 				logger.info(
-					` Parallel failure handling:${successes} succeeded, ` + failures + ' failed',
+					` Parallel failure handling:${successes} succeeded, ${  failures  } failed`,
 				);
 
 				// Should have both successes and failures
@@ -540,7 +540,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(resultMessage).toBeTruthy();
 
 				logger.info(
-					` Swarm coordination:${messages.length} messages, ` + agents.length + ' agents',
+					` Swarm coordination:${messages.length} messages, ${  agents.length  } agents`,
 				);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
@@ -549,13 +549,13 @@ describe("Comprehensive Claude SDK Tests", () => {
 		itIntegration(
 			"should handle complex swarm scenarios",
 			async () => {
-				const complexTask = '
+				const complexTask = `
         Plan a TypeScript project structure with:
         1. Frontend (React/Vite)
         2. Backend (Node.js/Express)  
         3. Shared types package
         4. Testing setup
-      ';
+      `;
 				const agents = ["architect", "frontend", "backend", "tester"];
 
 				const messages = await executeSwarmCoordinationTask(
@@ -573,7 +573,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(messages.length).toBeGreaterThan(0);
 
 				logger.info(
-					` Complex swarm:${messages.length} messages, ` + agents.length + ' agents',
+					` Complex swarm:${messages.length} messages, ${  agents.length  } agents`,
 				);
 },
 			TEST_CONFIG.LONG_TIMEOUT,
@@ -610,7 +610,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 ];
 
 				for (const scenario of errorScenarios) {
-					logger.info('Testing error scenario:' + scenario.name);
+					logger.info(`Testing error scenario:${  scenario.name}`);
 
 					const result = await safeAsync(async () => executeClaudeTask(scenario.prompt, {
 							maxTurns:1,
@@ -640,10 +640,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const result = await withRetry(
 					async () => {
 						attemptCount++;
-						logger.info('Retry attempt ' + attemptCount);
+						logger.info(`Retry attempt ${  attemptCount}`);
 
 						if (attemptCount < 3) {
-							throw new Error('Simulated failure ' + attemptCount);
+							throw new Error(`Simulated failure ${  attemptCount}`);
 }
 
 						// Succeed on third attempt
@@ -686,7 +686,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 						maxTurns:1,
 						timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
 						allowedTools:[],
-						sessionId:'perf-test-' + Date.now(),
+						sessionId:`perf-test-${  Date.now()}`,
 });
 }
 
@@ -718,11 +718,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const concurrentTasks = Array(taskCount)
 					.fill(0)
 					.map((_, i) =>
-						executeClaudeTask('Load test task ' + i + 1, {
+						executeClaudeTask(`Load test task ${  i  }${1}`, {
 							maxTurns:1,
 							timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
 							allowedTools:[],
-							sessionId:'load-test-' + i,
+							sessionId:`load-test-${  i}`,
 }),
 					);
 
@@ -736,12 +736,12 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const failures = results.filter((r) => r.status === "rejected").length;
 
 				logger.info(
-					` High-load test:${successes}/` + taskCount + ` succeeded in ${duration}ms`,
+					` High-load test:${successes}/${  taskCount  } succeeded in ${duration}ms`,
 				);
 				logger.info(
-					'   Average:' + Math.round(duration / taskCount) + 'ms per task',
+					`   Average:${  Math.round(duration / taskCount)  }ms per task`,
 				);
-				logger.info('   Failures:' + failures);
+				logger.info(`   Failures:${  failures}`);
 
 				// At least half should succeed under load
 				expect(successes).toBeGreaterThanOrEqual(taskCount / 2);
@@ -764,17 +764,17 @@ describe("Comprehensive Claude SDK Tests", () => {
 },
 ];
 
-				const errorPrompt = '
+				const errorPrompt = `
         Fix the following TypeScript error:
-        File:' + typescriptErrors[0].file + '
-        Error:' + typescriptErrors[0].error + '
-        Code:' + typescriptErrors[0].code + '
+        File: ${typescriptErrors[0].file}
+        Error: ${typescriptErrors[0].error}
+        Code: ${typescriptErrors[0].code}
         
         Original code:
         let x:number = "string";
         
         Please provide the corrected TypeScript code.
-      ';
+      `;
 
 				const messages = await executeClaudeTask(errorPrompt, {
 					maxTurns:3,

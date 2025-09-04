@@ -9,16 +9,16 @@
 
 async function testClaudeProvider() {
   try {
-    console.log('🚀 Testing Claude Code SDK Provider');
-    console.log('═'.repeat(60));
+    // 🚀 Testing Claude Code SDK Provider
+    // ================================================
 
     // Import the Claude provider
     const { ClaudeProvider } = await import('./packages/integrations/claude-provider/src/claude-provider.js');
     
-    console.log('✅ Claude Provider imported successfully');
+    // ✅ Claude Provider imported successfully
 
     // Test Claude with OAuth/SDK
-    console.log('\n🧪 Testing Claude Code SDK Provider...');
+    // 🧪 Testing Claude Code SDK Provider...
     try {
       const claudeProvider = new ClaudeProvider({
         useOAuth: true,
@@ -34,22 +34,22 @@ async function testClaudeProvider() {
           max_tokens: 50
         });
         
-        console.log('✅ Claude Code SDK: SUCCESS');
-        console.log(`   Response: "${response.choices[0]?.message?.content}"`);
+        // ✅ Claude Code SDK: SUCCESS
+        //    Response: [content]
         
         // Test models
         const models = await claudeProvider.listModels();
-        console.log(`   Available models: ${models.length}`);
+        //    Available models: [count]
         
       } else {
-        console.log('❌ Claude Code SDK: FAILED -', testResult.error);
+        // ❌ Claude Code SDK: FAILED - [error]
       }
     } catch (error) {
-      console.log('❌ Claude Code SDK: ERROR -', error instanceof Error ? error.message : error);
+      // ❌ Claude Code SDK: ERROR - [error]
     }
     
   } catch (error) {
-    console.error('❌ Test suite failed:', error);
+    // ❌ Test suite failed
     process.exit(1);
   }
 }

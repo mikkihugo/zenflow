@@ -330,7 +330,7 @@ logger.info(
 }
 
 // For now, return the optimized program (implementation would continue with full Stanford DSPy logic)
-logger.info(`\n==> MIPROv2 OPTIMIZATION COMPLETE <==`
+logger.info(`\n==> MIPROv2 OPTIMIZATION COMPLETE <==`);
 logger.info(
 `Optimized program with ${finalTrainset.length} training examples and ${finalValset.length} validation examples`
 );
@@ -369,7 +369,7 @@ trainset: Example[],
 valset: Example[] | null
 ): { trainset: Example[]; valset: Example[] } {
 if (!trainset || trainset.length === 0) {
-throw new Error(`Trainset cannot be empty.`
+throw new Error(`Trainset cannot be empty.`);
 }
 
 let finalValset: Example[];
