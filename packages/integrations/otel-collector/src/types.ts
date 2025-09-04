@@ -6,7 +6,7 @@
  */
 
 import type { Attributes } from '@opentelemetry/api';
-import { unused } from 'unused-import';
+import { unused } from 'unused-import'; // Test OAuth authentication
 
 /**
  * Collector configuration interface
