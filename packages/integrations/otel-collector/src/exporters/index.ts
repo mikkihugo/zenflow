@@ -10,13 +10,12 @@ import type {
   ExportResult,
   TelemetryData,
 } from '../types.js';
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-import { ConsoleExporter} from './console-exporter.js';
-import { FileExporter} from './file-exporter.js';
-import { JaegerExporter} from './jaeger-exporter.js';
-import { OTLPExporter} from './otlp-exporter.js';
-import { PrometheusExporter} from './prometheus-exporter.js';
+import { getLogger, type Logger } from '@claude-zen/foundation';
+import { ConsoleExporter } from './console-exporter.js';
+import { FileExporter } from './file-exporter.js';
+import { JaegerExporter } from './jaeger-exporter.js';
+import { OTLPExporter } from './otlp-exporter.js';
+import { PrometheusExporter } from './prometheus-exporter.js';
 
 /**
  * Base exporter interface

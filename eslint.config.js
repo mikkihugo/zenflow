@@ -3,7 +3,9 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
 import sonarjs from 'eslint-plugin-sonarjs';
-import unicorn from 'eslint-plugin-unicorn';
+// Node 18 compatibility - unicorn plugin requires Node 20+ for toReversed()
+const nodeVersion = process.version;
+const unicorn = nodeVersion >= 'v20.0.0' ? await import('eslint-plugin-unicorn').then(m => m.default) : null;
 import unusedImports from 'eslint-plugin-unused-imports';
 
 export default [
@@ -46,7 +48,7 @@ export default [
       import: importPlugin,
       sonarjs,
       'unused-imports': unusedImports,
-      unicorn,
+      ...(unicorn ? { unicorn } : {}),
     },
     rules: {
   // Production rules (strict for release readiness)
@@ -172,19 +174,21 @@ export default [
         },
       ],
 
-      // Unicorn - Modern JavaScript Excellence
-      'unicorn/better-regex': 'error',
-      'unicorn/catch-error-name': 'error',
-  'unicorn/consistent-destructuring': 'error',
-      'unicorn/no-array-for-each': 'error', // Prefer for-of
-      'unicorn/no-console-spaces': 'error',
-      'unicorn/no-for-loop': 'error', // Prefer for-of/map/filter
-      'unicorn/no-lonely-if': 'error',
-      'unicorn/no-useless-undefined': 'error',
-      'unicorn/prefer-array-some': 'error',
-      'unicorn/prefer-includes': 'error',
-      'unicorn/prefer-string-starts-ends-with': 'error',
-  'unicorn/prefer-ternary': 'error',
+      // Unicorn - Modern JavaScript Excellence (conditional on Node 20+)
+      ...(process.version >= 'v20.0.0' ? {
+        'unicorn/better-regex': 'error',
+        'unicorn/catch-error-name': 'error',
+        'unicorn/consistent-destructuring': 'error',
+        'unicorn/no-array-for-each': 'error', // Prefer for-of
+        'unicorn/no-console-spaces': 'error',
+        'unicorn/no-for-loop': 'error', // Prefer for-of/map/filter
+        'unicorn/no-lonely-if': 'error',
+        'unicorn/no-useless-undefined': 'error',
+        'unicorn/prefer-array-some': 'error',
+        'unicorn/prefer-includes': 'error',
+        'unicorn/prefer-string-starts-ends-with': 'error',
+        'unicorn/prefer-ternary': 'error',
+      } : {}),
 
       // Safety rule that's noisy on optional chaining in defensive code
       'no-unsafe-optional-chaining': 'warn',
@@ -301,7 +305,7 @@ export default [
       '@typescript-eslint': tseslint,
       import: importPlugin,
       sonarjs,
-      unicorn,
+      ...(unicorn ? { unicorn } : {}),
       'unused-imports': unusedImports,
     },
     rules: {
@@ -352,7 +356,7 @@ export default [
     plugins: {
       import: importPlugin,
       sonarjs,
-      unicorn,
+      ...(unicorn ? { unicorn } : {}),
       'unused-imports': unusedImports,
     },
     rules: {
@@ -388,7 +392,7 @@ export default [
       '@typescript-eslint': tseslint,
       import: importPlugin,
       sonarjs,
-      unicorn,
+      ...(unicorn ? { unicorn } : {}),
       'unused-imports': unusedImports,
     },
     rules: {
@@ -447,7 +451,7 @@ export default [
       import: importPlugin,
       sonarjs,
       'unused-imports': unusedImports,
-      unicorn,
+      ...(unicorn ? { unicorn } : {}),
     },
     rules: {
       // Basic quality rules for JS files (NO TypeScript rules)
@@ -537,7 +541,7 @@ export default [
       import: importPlugin,
       sonarjs,
       'unused-imports': unusedImports,
-      unicorn,
+      ...(unicorn ? { unicorn } : {}),
     },
     rules: {
       // Relax rules for test files but keep sonarjs/complexity working

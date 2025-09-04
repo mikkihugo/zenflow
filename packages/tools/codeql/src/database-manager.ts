@@ -49,7 +49,7 @@ async createDatabase(
  if (!options.languages || options.languages.length === 0) {
   throw new Error('At least one language required to create a CodeQL database');
  }
- const tempDir = this.config.tempDir;
+ const {tempDir} = this.config;
  const absolutePath = path.resolve(repositoryPath);
  const databaseId = this.generateDatabaseId(absolutePath, options.languages);
  const _databasePath = path.join(tempDir, `${databaseId}.db`);
@@ -331,7 +331,7 @@ args:string[],
 options:{ cwd?: string; env?: NodeJS.ProcessEnv} = {}
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
 return new Promise((resolve, reject) => {
-const codeqlPath = this.config.codeqlPath;
+const {codeqlPath} = this.config;
 if (!codeqlPath) {
   reject(new Error('CodeQL codeqlPath not configured'));
   return;

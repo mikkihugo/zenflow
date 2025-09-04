@@ -77,10 +77,10 @@ export const mockNetworkError = () => vi.fn(() => Promise.reject(new Error('Netw
 
 export class MockWebSocket {
   public readyState = WebSocket.CONNECTING;
-  public onopen: ((event: Event) => void) | null = null;
-  public onclose: ((event: CloseEvent) => void) | null = null;
-  public onmessage: ((event: MessageEvent) => void) | null = null;
-  public onerror: ((event: Event) => void) | null = null;
+  public onopen: ((_event: Event) => void) | null = null;
+  public onclose: ((_event: CloseEvent) => void) | null = null;
+  public onmessage: ((_event: MessageEvent) => void) | null = null;
+  public onerror: ((_event: Event) => void) | null = null;
 
   private listeners: Map<string, Function[]> = new Map();
 
@@ -120,7 +120,10 @@ export class MockWebSocket {
     if (!this.listeners.has(type)) {
       this.listeners.set(type, []);
     }
-    this.listeners.get(type)!.push(listener);
+    const listeners = this.listeners.get(type);
+    if (listeners) {
+      listeners.push(listener);
+    }
   }
 
   removeEventListener(type: string, listener: Function) {
@@ -273,7 +276,7 @@ export const triggerError = (component: any, error: Error) => {
   try {
     component.$set({ shouldError: true });
     throw error;
-  } catch (error_) {
+  } catch {
     // Expected error
   } finally {
     console.error = originalConsoleError;
@@ -370,17 +373,31 @@ export const setupTestEnvironment = () => {
   
   // Mock ResizeObserver
   global.ResizeObserver = class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe(_target: Element, _options?: ResizeObserverOptions): void {
+      // Mock implementation
+    }
+    unobserve(_target: Element): void {
+      // Mock implementation
+    }
+    disconnect(): void {
+      // Mock implementation
+    }
   };
   
   // Mock IntersectionObserver
   global.IntersectionObserver = class IntersectionObserver {
-    constructor() {}
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    constructor(_callback: IntersectionObserverCallback, _options?: IntersectionObserverInit) {
+      // Mock implementation
+    }
+    observe(_target: Element): void {
+      // Mock implementation
+    }
+    unobserve(_target: Element): void {
+      // Mock implementation
+    }
+    disconnect(): void {
+      // Mock implementation
+    }
   };
   
   // Suppress console warnings during tests

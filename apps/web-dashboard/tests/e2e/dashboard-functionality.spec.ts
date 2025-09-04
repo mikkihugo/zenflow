@@ -64,7 +64,9 @@ test.describe('Claude Code Zen Web Dashboard', () => {
     if (interactiveCount > 0) {
       // At least some interactive elements should have accessible names
       const elementsWithLabels = page.locator('button[aria-label], [role="button"][aria-label], a[aria-label], input[aria-label], button:has-text("")');
-      // This is a basic check - in a real app we'd be more specific
+      // Basic check - ensure at least one element has labels
+      const labeledCount = await elementsWithLabels.count();
+      expect(labeledCount).toBeGreaterThan(0);
     }
   });
 
@@ -277,5 +279,6 @@ test.describe('Error Handling', () => {
     );
     
     expect(criticalErrors.length).toBe(0);
+    expect(consoleErrors.length).toBe(0);
   });
 });
