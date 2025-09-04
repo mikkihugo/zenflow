@@ -5,7 +5,7 @@
  * Supports multiple backends, data processing, and centralized configuration.
  */
 
-import type { Attributes} from '@opentelemetry/api';
+import type { Attributes, Context } from '@opentelemetry/api';
 
 /**
  * Collector configuration interface
