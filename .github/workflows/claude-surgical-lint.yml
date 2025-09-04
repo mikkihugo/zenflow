@@ -60,6 +60,15 @@ jobs:
           echo "error-count=$ERROR_COUNT" >> $GITHUB_OUTPUT
           echo "Found $ERROR_COUNT linting errors"
 
+      - name: 🔧 Temporarily relax Node.js constraint for Claude Action
+        if: steps.lint-check.outputs.error-count != '0'
+        run: |
+          # Backup original package.json
+          cp package.json package.json.backup
+          # Temporarily allow Node 18+ for the action
+          sed 's/"node": ">=22.0.0 <24.0.0"/"node": ">=18.0.0 <24.0.0"/' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
       - name: 🔧 Claude Surgical Linting
         if: steps.lint-check.outputs.error-count != '0'
         uses: anthropics/claude-code-base-action@beta
@@ -81,6 +90,15 @@ jobs:
             PROCESS: Run `pnpm lint` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
           allowed_tools: "Bash,Edit,Read,Glob,Grep"
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+      - name: 🔧 Restore original Node.js constraint
+        if: steps.lint-check.outputs.error-count != '0'
+        run: |
+          # Restore original package.json
+          if [ -f package.json.backup ]; then
+            mv package.json.backup package.json
+            echo "Restored original package.json with Node.js >=22.0.0 constraint"
+          fi
 
       - name: 🔍 Verify Fixes
         if: steps.lint-check.outputs.error-count != '0'
