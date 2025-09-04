@@ -214,11 +214,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 		itIntegration(
 			"should handle custom system prompts",
 			async () => {
-				const customSystemPrompt = '
+				const customSystemPrompt = `
         You are a TypeScript expert assistant.
         Always respond with clear, concise explanations.
         Focus on best practices and type safety.
-      ';
+      `;
 
 				const messages = await executeClaudeTask(
 					TEST_CONFIG.TYPESCRIPT_ERROR_PROMPT,
@@ -622,10 +622,10 @@ describe("Comprehensive Claude SDK Tests", () => {
 					if (scenario.expectError) {
 						expect(result.success).toBe(false);
 						expect(result.error).toBeInstanceOf(Error);
-						logger.info(` ${scenario.name}:Failed as expected`
+						logger.info(` ${scenario.name}:Failed as expected`);
 } else {
 						expect(result.success).toBe(true);
-						logger.info(` ${scenario.name}:Succeeded as expected`
+						logger.info(` ${scenario.name}:Succeeded as expected`);
 }
 }
 },
@@ -706,7 +706,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(task.sessionId).toBeTruthy();
 });
 
-				logger.info(` Performance tracking:${newTasks} tasks monitored`
+				logger.info(` Performance tracking:${newTasks} tasks monitored`);
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -799,7 +799,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 		itIntegration(
 			"should handle multiple file TypeScript fixes",
 			async () => {
-				const multiFilePrompt = '
+				const multiFilePrompt = `
         Analyze and suggest fixes for these TypeScript issues:
         
         File 1:utils.ts
@@ -811,7 +811,7 @@ describe("Comprehensive Claude SDK Tests", () => {
         - Import statement errors
         
         Provide systematic approach to fix all issues.
-      `
+      `;
 
 				const messages = await executeClaudeTask(multiFilePrompt, {
 					maxTurns:5,

@@ -99,7 +99,7 @@ describe('MemoryManager', () => {
       const result = await manager.registerBackend(backendId, config);
       expect(result.isOk()).toBe(true);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Backend '' + backendId + '' registered')'
+        expect.stringContaining('Backend ' + backendId + ' registered')
       );
 });
 
@@ -125,7 +125,7 @@ describe('MemoryManager', () => {
 
       expect(result.isOk()).toBe(true);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Backend '' + backendId + '' unregistered')'
+        expect.stringContaining('Backend ' + backendId + ' unregistered')
       );
 });
 
@@ -154,7 +154,7 @@ describe('MemoryManager', () => {
   describe('Memory Operations', () => {
     beforeEach(async () => {
       manager = new MemoryManager();
-      await manager.registerBackend('default', createMockMemoryConfig())();
+      await manager.registerBackend('default', createMockMemoryConfig());
 });
 
     it('should store data across backends', async () => {
@@ -213,7 +213,7 @@ describe('MemoryManager', () => {
       manager = new MemoryManager();
       await manager.registerBackend(
         'batch-backend',        createMockMemoryConfig()
-      )();
+      );
 });
 
     it('should handle batch store operations', async () => {

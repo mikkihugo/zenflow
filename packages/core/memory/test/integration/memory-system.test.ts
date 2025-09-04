@@ -118,7 +118,9 @@ describe('Memory System Integration', () => {
 
       // Migrate to session storage
       const migrationResult = await memorySystem.migrate(
-        'cache:temp:user:123',        'session:user:123')      );
+        'cache:temp:user:123',
+        'session:user:123'
+      );
 
       expect(migrationResult.success).toBe(true);
       expect(mockBackends.cache.retrieve).toHaveBeenCalledWith(
