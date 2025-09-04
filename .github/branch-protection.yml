@@ -1,0 +1,25 @@
+# Branch Protection Configuration
+# Use GitHub CLI to apply: gh api repos/:owner/:repo/branches/main/protection
+
+branch_protection:
+  main:
+    protection:
+      # Require status checks to pass before merging
+      required_status_checks:
+        strict: true  # Require branches to be up to date before merging
+        contexts:
+          - "claude-surgical-lint"  # Our Claude linting action
+      
+      # Require pull request reviews before merging
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+        require_code_owner_reviews: false
+        
+      # Additional protections
+      enforce_admins: false  # Allow admins to bypass rules in emergencies
+      allow_force_pushes: false
+      allow_deletions: false
+      
+      # Auto-merge when requirements met
+      # Note: This requires repo settings to enable auto-merge

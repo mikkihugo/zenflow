@@ -1,0 +1,26 @@
+#!/bin/bash
+# Auto-sync hook: Pull latest changes after merge to reduce conflicts
+
+echo "🔄 Auto-sync: Pulling latest changes after merge..."
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Not in a git repository, skipping auto-sync"
+    exit 0
+fi
+
+# Check if remote exists
+if ! git remote get-url origin > /dev/null 2>&1; then
+    echo "No origin remote found, skipping auto-sync"
+    exit 0
+fi
+
+# Pull with rebase to avoid merge commits
+echo "📥 Pulling with rebase to keep history clean..."
+if git pull --rebase origin main; then
+    echo "✅ Auto-sync completed successfully"
+else
+    echo "⚠️ Auto-sync failed - may need manual resolution"
+    echo "Run: git pull --rebase origin main"
+    exit 1
+fi

@@ -1,0 +1,33 @@
+#!/bin/bash
+# Auto-sync hook: Pull before push to reduce conflicts
+
+echo "🔄 Auto-sync: Pulling latest changes before push..."
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Not in a git repository, skipping auto-sync"
+    exit 0
+fi
+
+# Check if remote exists
+if ! git remote get-url origin > /dev/null 2>&1; then
+    echo "No origin remote found, skipping auto-sync"
+    exit 0
+fi
+
+# Check if there are any commits to push
+if git diff --quiet HEAD @{upstream} 2>/dev/null; then
+    echo "No new commits to push, skipping auto-sync"
+    exit 0
+fi
+
+# Pull with rebase before pushing
+echo "📥 Pulling with rebase before push to avoid conflicts..."
+if git pull --rebase origin main; then
+    echo "✅ Auto-sync completed successfully, proceeding with push"
+    exit 0
+else
+    echo "❌ Auto-sync failed - resolve conflicts before pushing"
+    echo "Fix conflicts and run: git rebase --continue"
+    exit 1
+fi
