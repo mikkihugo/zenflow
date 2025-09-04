@@ -128,7 +128,7 @@ export class WebProcessManager {
 
     this.isShuttingDown = true;
     this.logger.info(
-      `Starting graceful shutdown${  signal}` ? ` (${signal})` : ''
+      `Starting graceful shutdown${signal ? ` (${signal})` : ''}`
     );
 
     try {

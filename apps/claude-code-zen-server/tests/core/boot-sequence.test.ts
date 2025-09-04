@@ -5,7 +5,7 @@
  * Validates that the server can start and stop without errors.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { System } from '../../src/core/core-system';
 import { ApplicationCoordinator } from '../../src/core/application-coordinator';
 

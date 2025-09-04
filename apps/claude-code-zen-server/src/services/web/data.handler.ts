@@ -146,8 +146,8 @@ export class WebDataService {
           updated_at TEXT NOT NULL
         )`
       );
-    } catch (err) {
-      logger.warn('ensureTasksTable failed (continuing):', err);
+    } catch (error) {
+      logger.warn('ensureTasksTable failed (continuing):', error);
     }
   }
 
@@ -168,8 +168,8 @@ export class WebDataService {
         if (s in counts) counts[s] = c;
       }
       return counts;
-    } catch (err) {
-      logger.warn('getTaskStatistics fallback due to DB error:', err);
+    } catch (error) {
+      logger.warn('getTaskStatistics fallback due to DB error:', error);
       return { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 };
     }
   }
@@ -196,16 +196,14 @@ export class WebDataService {
   }
 
   private async getSwarmStatistics() {
-  const swarmStats = {
+  // Note: Real swarm stats should come from brain via events.
+    return {
       active: 1,
       total: 4,
       queens: 1,
       commanders: 2,
       agents: 12,
     };
-
-  // Note: Real swarm stats should come from brain via events.
-    return swarmStats;
   }
 
   private buildSystemHealthStatus(
@@ -530,8 +528,8 @@ export class WebDataService {
         recommendations: [],
       };
       return metrics;
-    } catch (err) {
-      logger.warn('getTaskMasterFlowData failed, returning null:', err);
+    } catch (error) {
+      logger.warn('getTaskMasterFlowData failed, returning null:', error);
       return null;
     }
   }

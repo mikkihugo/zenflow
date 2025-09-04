@@ -279,7 +279,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     );
     logger.info(` Refresh interval:${this.configuration.refreshInterval}ms`);
     logger.info(
-      ` Real-time monitoring:${  this.configuration.enableRealtime}` ? 'enabled' : ' disabled'
+      ` Real-time monitoring: ${this.configuration.enableRealtime ? 'enabled' : 'disabled'}`
     );
   }
 

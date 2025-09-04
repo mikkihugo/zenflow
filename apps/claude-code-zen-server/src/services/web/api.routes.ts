@@ -41,12 +41,6 @@ import {
 } from '@claude-zen/foundation';
 
 // Allowed internal package: database (avoid other cross-package imports)
-import { DatabaseProvider } from '@claude-zen/database';
-
-// Constants to avoid string duplication
-const ERROR_MESSAGES = {
-  healthMonitorNotInitialized: 'Health monitor not initialized',
-} as const;
 
 // External dependencies
 import type { Express, Request, Response } from 'express';
@@ -54,6 +48,11 @@ import type { Express, Request, Response } from 'express';
 import { getEventBus } from '../events/event-bus';
 import { WebDataService } from './data.handler';
 import type { WebConfig } from './web-config';
+
+// Constants to avoid string duplication
+const ERROR_MESSAGES = {
+  healthMonitorNotInitialized: 'Health monitor not initialized',
+} as const;
 
 // TaskMaster interface type (without importing restricted package)
 interface TaskMasterGUIInterface {

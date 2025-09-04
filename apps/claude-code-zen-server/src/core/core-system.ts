@@ -107,12 +107,12 @@ export interface SystemStatus {
 interface CoreSystemEventMap extends EventMap {
   'error': [Error];
   'shutdown': [];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+   
   'status-changed': [string];
   'initialized': [{ timestamp: string; config: SystemConfig }];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+   
   WEBSOCKET_CONNECTED_EVENT: [string];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+   
   WEBSOCKET_DISCONNECTED_EVENT: [string];
 }
 

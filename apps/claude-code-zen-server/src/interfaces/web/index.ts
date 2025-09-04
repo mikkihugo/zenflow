@@ -1,9 +1,9 @@
 // Core web functionality
-export * from './core';
-
 // Direct package imports
 import { DatabaseProvider } from '@claude-zen/database';
 import { EventBus } from '@claude-zen/foundation';
+
+export * from './core';
 
 export { DatabaseProvider, EventBus };
 

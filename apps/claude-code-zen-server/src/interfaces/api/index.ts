@@ -16,13 +16,13 @@
 // Direct package imports - no facades
 
 // Utility function to replace facade
+// Import WebSocketClient for internal use in this file
+import { WebSocketClient } from './websocket/client';
+
 function getWebDashboardURL(options?: { protocol?: string }): string {
   const protocol = options?.protocol || 'http';
   return `${protocol  }://localhost:3002`;
 }
-
-// Import WebSocketClient for internal use in this file
-import { WebSocketClient } from './websocket/client';
 
 // HTTP API removed - using WebSocket-only architecture
 
@@ -117,12 +117,16 @@ export class APIClientFactory {
     url: string,
     instanceKey = 'default'
   ): WebSocketClient {
-    const key = `ws:${  instanceKey}`;
+    const key = `ws:${instanceKey}`;
     if (!APIClientFactory.instances.has(key)) {
       const client = new WebSocketClient(url);
       APIClientFactory.instances.set(key, client);
     }
-    return APIClientFactory.instances.get(key)!;
+    const instance = APIClientFactory.instances.get(key);
+    if (!instance) {
+      throw new Error(`Failed to create WebSocket client for key: ${key}`);
+    }
+    return instance;
   }
 
   /**

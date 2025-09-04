@@ -5,6 +5,16 @@
  * Foundation-style organization with clean, focused modules.
  */
 
+// Note:Only import types that are actually available and needed
+// Removed imports for packages that may not exist or aren't being used
+
+// ============================================================================
+// Legacy Compatibility (Temporary)
+// ============================================================================
+// Import the types we need for aliases
+import type { SwarmAgent, SwarmConfig } from './coordination';
+import type { SystemHealth } from './core';
+
 export type {
   ApiError,
   ApiResponse,
@@ -115,16 +125,6 @@ export {
   SERVICE_STATUSES,
   success,
 } from './shared';
-
-// Note:Only import types that are actually available and needed
-// Removed imports for packages that may not exist or aren't being used
-
-// ============================================================================
-// Legacy Compatibility (Temporary)
-// ============================================================================
-// Import the types we need for aliases
-import type { SwarmAgent, SwarmConfig } from './coordination';
-import type { SystemHealth } from './core';
 
 // These aliases maintain backward compatibility during migration
 export type Agent = SwarmAgent;

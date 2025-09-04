@@ -1,5 +1,4 @@
-import { getLogger } from '@claude-zen/foundation';
-import type { EventBus } from '@claude-zen/foundation';
+import { getLogger, type EventBus } from '@claude-zen/foundation';
 
 // Use facade patterns instead of direct coordination imports
 // import type { CoordinationManager} from "../coordination/coordination-manager";

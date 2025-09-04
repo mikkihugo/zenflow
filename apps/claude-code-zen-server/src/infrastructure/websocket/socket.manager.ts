@@ -488,22 +488,17 @@ export class WebSocketManager {
   /**
    * Get package information from the system
    */
-  private async getPackageInformation(): Promise<Record<string, any>> {
-    try {
-      // Check which packages are actually available in the system
-      // This would normally scan node_modules or package.json
-      return {
-        '@claude-zen/foundation': { available: true, version: '1.1.1' },
-        '@claude-zen/database': { available: false, version: null },
-        // Event system is now part of foundation
-        '@claude-zen/brain': { available: false, version: null },
-        '@claude-zen/coordination': { available: true, version: '1.0.0' },
-        // Add other packages as they're implemented
-      };
-    } catch (error) {
-      this.logger.error('Failed to get package information: ', error);
-      return {};
-    }
+  private getPackageInformation(): Record<string, any> {
+    // Check which packages are actually available in the system
+    // This would normally scan node_modules or package.json
+    return {
+      '@claude-zen/foundation': { available: true, version: '1.1.1' },
+      '@claude-zen/database': { available: false, version: null },
+      // Event system is now part of foundation
+      '@claude-zen/brain': { available: false, version: null },
+      '@claude-zen/coordination': { available: true, version: '1.0.0' },
+      // Add other packages as they're implemented
+    };
   }
 
   /**

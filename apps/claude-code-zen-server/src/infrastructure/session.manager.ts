@@ -40,8 +40,10 @@ export class WebSessionManager {
       req.sessionId = sessionId;
 
       if (this.sessions.has(sessionId)) {
-        const session = this.sessions.get(sessionId)!;
-        session.lastActivity = new Date();
+        const session = this.sessions.get(sessionId);
+        if (session) {
+          session.lastActivity = new Date();
+        }
       } else {
         this.sessions.set(sessionId, {
           id: sessionId,

@@ -21,6 +21,13 @@ import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
 import { WebDataService } from './data.handler';
 import { ApiRouteHandler } from './api.handler';
 import { EventGateway } from '../events/event-gateway';
+// Production web service type definitions are now implemented above
+import {
+  createDashboardRedirect,
+  createSvelteHealthCheck,
+  createSvelteProxyRoute,
+  type SvelteProxyConfig,
+} from './svelte-proxy-route';
 
 // Real WebConfig implementation with proper validation
 class WebConfig {
@@ -64,7 +71,11 @@ class DIContainer {
       return this.services.get(name) as T;
     }
     if (this.factories.has(name)) {
-      const instance = this.factories.get(name)!();
+      const factory = this.factories.get(name);
+      if (!factory) {
+        throw new Error(`Factory for service ${name} is unexpectedly null`);
+      }
+      const instance = factory();
       this.services.set(name, instance);
       return instance as T;
     }
@@ -464,13 +475,6 @@ class WebProcessManager {
     };
   }
 }
-// Production web service type definitions are now implemented above
-import {
-  createDashboardRedirect,
-  createSvelteHealthCheck,
-  createSvelteProxyRoute,
-  type SvelteProxyConfig,
-} from './svelte-proxy-route';
 
 const { getVersion } = (global as { foundation?: { getVersion: () => string } })
   .foundation || { getVersion: () => '1.0.0' };
@@ -755,8 +759,8 @@ export class WebInterface {
             send?: (content: unknown) => void;
           }
         ) => {
-          if (existsSync(this.config.staticDir!)) {
-            res.sendFile(join(this.config.staticDir!, 'index.html'));
+          if (this.config.staticDir && existsSync(this.config.staticDir)) {
+            res.sendFile(join(this.config.staticDir, 'index.html'));
           } else {
             res.send(this.htmlGenerator?.generateDashboardHtml());
           }
@@ -781,8 +785,8 @@ export class WebInterface {
           send?: (content: unknown) => void;
         }
       ) => {
-        if (existsSync(this.config.staticDir!)) {
-          res.sendFile(join(this.config.staticDir!, 'index.html'));
+        if (this.config.staticDir && existsSync(this.config.staticDir)) {
+          res.sendFile(join(this.config.staticDir, 'index.html'));
         } else {
           res.send(this.htmlGenerator?.generateDashboardHtml());
         }

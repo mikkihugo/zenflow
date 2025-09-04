@@ -137,7 +137,9 @@ class TaskMasterManager {
             try {
               // @ts-expect-error foundation bus supports off
               bus.off(resTopic as any, onMessage as any);
-            } catch {}
+            } catch {
+              // Ignore cleanup errors during timeout
+            }
             reject(new Error(`Event response timeout for ${resTopic}`));
           }, timeoutMs);
 
@@ -147,7 +149,9 @@ class TaskMasterManager {
             try {
               // @ts-expect-error foundation bus supports off
               bus.off(resTopic as any, onMessage as any);
-            } catch {}
+            } catch {
+              // Ignore cleanup errors
+            }
             resolve(msg as TResp);
           };
 
@@ -177,8 +181,8 @@ class TaskMasterManager {
               blockedTasks,
               completedTasks,
             } as FlowMetrics;
-          } catch (err) {
-            logger.warn('Flow metrics via EventBus failed, returning baseline', { err });
+          } catch (error) {
+            logger.warn('Flow metrics via EventBus failed, returning baseline', { err: error });
             return {
               cycleTime: 0,
               leadTime: 0,
@@ -201,8 +205,8 @@ class TaskMasterManager {
               queueHealth: 0.85,
               lastUpdated: new Date().toISOString(),
             } as SystemHealth;
-          } catch (err) {
-            logger.warn('System health via EventBus failed, returning baseline', { err });
+          } catch (error) {
+            logger.warn('System health via EventBus failed, returning baseline', { err: error });
             return {
               overallHealth: 0.8,
               databaseHealth: 0.8,
@@ -228,8 +232,8 @@ class TaskMasterManager {
               createdAt: String(t.createdAt ?? new Date().toISOString()),
               updatedAt: String(t.updatedAt ?? new Date().toISOString()),
             } as TaskMasterTask;
-          } catch (err) {
-            logger.warn('Task creation via EventBus failed, returning placeholder', { err });
+          } catch (error) {
+            logger.warn('Task creation via EventBus failed, returning placeholder', { err: error });
             return {
               id: generateUUID(),
               title: data.title ?? 'New Task',

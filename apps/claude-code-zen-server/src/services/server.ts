@@ -765,7 +765,7 @@ export class ClaudeZenServerFactory implements ServerFactory {
       await Promise.all([
         server.registerHttpAdapter(await createHttpAdapter(prodConfig)),
         server.registerDatabaseAdapter(
-          await createDatabaseAdapter(prodConfig.database!)
+          await createDatabaseAdapter(prodConfig.database || {})
         ),
         server.registerEventAdapter(await createEventAdapter(prodConfig)),
       ]);

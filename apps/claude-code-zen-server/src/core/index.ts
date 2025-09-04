@@ -11,6 +11,8 @@
  */
 
 // Fallback types for missing foundation exports
+import { getLogger } from '@claude-zen/foundation';
+
 export interface ExporterDefinition {
   id: string;
   name: string;
@@ -120,8 +122,6 @@ export {
 // InterfaceModeDetector not available - using facade pattern
 // export { InterfaceModeDetector} from "@claude-zen/interfaces";
 export { Orchestrator } from './orchestrator';
-
-import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('core-index');
 

@@ -15,6 +15,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { EventEmitter, getLogger } from '@claude-zen/foundation';
+import { initializeClaudeZen, shutdownClaudeZen } from './index';
 // Fallback functions for missing intelligence facade exports
 const ensureDataDirectories = (projectPath: string): void => {
   // Stub implementation - would ensure data directories exist
@@ -45,7 +46,6 @@ const getRegisteredProjects = (): {
 }[] =>
   // Stub implementation - would get registered projects from memory
   [];
-import { initializeClaudeZen, shutdownClaudeZen } from './index';
 
 const logger = getLogger('ProjectSwitcher');
 

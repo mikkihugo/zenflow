@@ -10,6 +10,8 @@ import * as path from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
 import type { Express, Request, Response } from 'express';
 
+import * as fs from 'fs-extra';
+
 // Constants to avoid string duplication
 const WORKSPACE_ERROR_MESSAGES = {
   accessDenied: 'Access denied',
@@ -17,8 +19,6 @@ const WORKSPACE_ERROR_MESSAGES = {
   operationFailed: 'Operation failed',
   filePathRequired: 'File path is required',
 } as const;
-
-import * as fs from 'fs-extra';
 
 const WORKSPACE_PATHS = {
   basePath: '/workspace',
