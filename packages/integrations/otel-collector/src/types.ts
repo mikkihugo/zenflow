@@ -6,6 +6,7 @@
  */
 
 import type { Attributes } from '@opentelemetry/api';
+import { unused } from 'unused-import';
 
 /**
  * Collector configuration interface
