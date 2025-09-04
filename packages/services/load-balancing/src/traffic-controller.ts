@@ -452,12 +452,17 @@ export class TrafficController extends EventBus<TrafficEvents> {
  private async handleEmergencyProtocols(
  metrics: SystemMetrics
  ): Promise<TrafficDecision | null> {
+ const thresholds = this.config.emergencyThresholds;
+ if (!thresholds) {
+   // No emergency thresholds configured; nothing to evaluate
+   return null;
+ }
  const {
  cpuCritical,
  memoryCritical,
  responseTimeCritical,
  errorRateCritical,
- } = this.config.emergencyThresholds!;
+ } = thresholds;
 
  if (
  metrics.cpuUsage >= cpuCritical ||
@@ -636,8 +641,17 @@ export class TrafficController extends EventBus<TrafficEvents> {
  private async calculateScalingDecision(
  metrics: SystemMetrics
  ): Promise<ScalingDecision> {
- const { scaleUpThreshold, scaleDownThreshold, maxAgents, minAgents } =
- this.config.scalingPolicy!;
+ const policy = this.config.scalingPolicy;
+ if (!policy) {
+   return {
+     action: 'maintain',
+     targetAgents: metrics.activeAgents,
+     confidence: 0.5,
+     reasoning: 'No scaling policy configured',
+     urgency: 'low',
+   };
+ }
+ const { scaleUpThreshold, scaleDownThreshold, maxAgents, minAgents } = policy;
 
  // Calculate system pressure
  const cpuPressure = metrics.cpuUsage;
@@ -690,7 +704,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  }
 }
 
-// Export for backward compatibility with existing code
-export const AutonomousCoordinator = TrafficController;
+// Export for backward compatibility with existing code (re-export without creating a PascalCase variable)
+export { TrafficController as AutonomousCoordinator };
 
 export default TrafficController;

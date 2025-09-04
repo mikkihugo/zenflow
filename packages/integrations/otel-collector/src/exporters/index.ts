@@ -10,8 +10,8 @@ import type {
   ExportResult,
   TelemetryData,
 } from '../types.js';
-import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import { ConsoleExporter} from './console-exporter.js';
 import { FileExporter} from './file-exporter.js';
 import { JaegerExporter} from './jaeger-exporter.js';
@@ -109,7 +109,10 @@ export class ExporterManager {
   async export(data:TelemetryData): Promise<ExportResult[]> {
     const exportPromises = Array.from(this.exporters.entries()).map(
       async ([name, exporter]) => {
-        const config = this.configs.get(name)!;
+        const config = this.configs.get(name);
+        if (!config) {
+          throw new Error(`Configuration not found for exporter ${name}`);
+        }
 
         // Check if this exporter handles this signal type
         if (config.signals && !config.signals.includes(data.type)) {
@@ -150,7 +153,10 @@ export class ExporterManager {
   async exportBatch(dataItems:TelemetryData[]): Promise<ExportResult[]> {
     const exportPromises = Array.from(this.exporters.entries()).map(
       async ([name, exporter]) => {
-        const config = this.configs.get(name)!;
+        const config = this.configs.get(name);
+        if (!config) {
+          throw new Error(`Configuration not found for exporter ${name}`);
+        }
 
         // Filter items by signal type if exporter has signal restrictions
         let filteredItems = dataItems;
@@ -158,7 +164,7 @@ export class ExporterManager {
           filteredItems = dataItems.filter((item) =>
             config.signals?.includes(item.type)
           );
-}
+        }
 
         if (filteredItems.length === 0) {
           return {
@@ -309,11 +315,11 @@ export class ExporterManager {
       this.exporters.delete(name);
       this.configs.delete(name);
 
-      this.logger.info(`Removed exporter ${  name}`
-} catch (error) {
-      this.logger.error(`Failed to remove exporter ${  name}`, error);
+      this.logger.info(`Removed exporter ${name}`);
+    } catch (error) {
+      this.logger.error(`Failed to remove exporter ${name}`, error);
       throw error;
-}
+    }
 }
 }
 

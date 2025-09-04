@@ -8,7 +8,7 @@
 * learning and adaptation capabilities. Built with Rust/WASM acceleration for maximum
 * performance and enterprise-scale neural coordination.
 *
-* **⚠️ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
+* **⚠ RECOMMENDED USAGE:Access via @claude-zen/foundation Package**
 *
 * While this package can be used directly, it is recommended to access brain
 * functionality through `@claude-zen/foundation` which provides integrated neural`
@@ -709,7 +709,7 @@ export { SmartNeuralCoordinator} from './smart-neural-coordinator';
 */
 export { AgentPerformancePredictor} from './agent-performance-predictor';
 /**
-* ️ AutonomousCoordinator - Self-governing system management
+*  AutonomousCoordinator - Self-governing system management
 *
 * Comprehensive autonomous system coordination and resource management:
 * - Automatic resource allocation
@@ -834,7 +834,7 @@ export { TaskComplexityEstimator} from './task-complexity-estimator';
 * 4. PERFORMANCE MONITORING
 * AgentPerformancePredictor → Behavioral analysis and prediction
 * ↓
-* 5. ️ SYSTEM COORDINATION
+* 5.  SYSTEM COORDINATION
 * AutonomousCoordinator → Resource allocation and scaling
 * ↓
 * 6. CONTINUOUS LEARNING
@@ -1219,7 +1219,7 @@ export type { TaskPredictor} from './monitoring/task-predictor';
 //} from './monitoring/types';
 
 // =============================================================================
-// LOAD BALANCING SYSTEM - ⚠️ DEPRECATED (formerly @claude-zen/load-balancing)
+// LOAD BALANCING SYSTEM - ⚠ DEPRECATED (formerly @claude-zen/load-balancing)
 // =============================================================================
 //
 // DEPRECATED - DO NOT USE

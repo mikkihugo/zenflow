@@ -16,7 +16,7 @@ MultiHorizonTaskPrediction,
 TaskPrediction,
 } from './types';
 
-const logger = getLogger('agent-monitoring-intelligence-system').
+const logger = getLogger('agent-monitoring-intelligence-system');
 
 /**
 * Complete Intelligence System - Main implementation

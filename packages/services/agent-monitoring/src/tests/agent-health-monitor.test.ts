@@ -137,7 +137,7 @@ describe('AgentHealthMonitor', () => {
 
       let health = healthMonitor.getAgentHealth(agentId);
       expect(health?.healthScore).toBeGreaterThan(0.8);
-      expect(health?.status).toBe('healthy');')
+      expect(health?.status).toBe('healthy');
       // Test unhealthy metrics
       healthMonitor.updateAgentHealth(agentId, 
         cpuUsage:0.95,

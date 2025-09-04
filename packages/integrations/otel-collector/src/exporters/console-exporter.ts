@@ -202,11 +202,8 @@ export class ConsoleExporter implements BaseExporter {
    if (data.data.metrics.length > 5) {
      logger.info(` └─ ... and ${data.data.metrics.length - 5} more`);
    }
- } else {
- logger.info(` Data:`, JSON.stringify(data.data, null, 2));
- }
  } catch (error) {
- logger.info(` Invalid metric data:`, data.data);
+   logger.info(` Invalid metric data:`, data.data);
  }
 }
 
@@ -215,28 +212,27 @@ export class ConsoleExporter implements BaseExporter {
  */
  private logLogData(data:TelemetryData): void {
  try {
- if (data.data && data.data.logs) {
- logger.info(` Logs:${data.data.logs.length}`
- for (const log of data.data.logs.slice(0, 3)) {
- // Show first 3 logs
- const level = log.level || 'INFO';
- const message = (log.message || log.body || 'no message').substring(
- 0,
- 100
- );
- logger.info(
- ` ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`
- );
- }
- if (data.data.logs.length > 3) {
- logger.info(` └─ ... and ${data.data.logs.length - 3} more`
- }
+   logger.info(` Logs:${data.data.logs.length}`);
+   for (const log of data.data.logs.slice(0, 3)) {
+     // Show first 3 logs
+     const level = log.level || 'INFO';
+     const message = (log.message || log.body || 'no message').substring(
+       0,
+       100
+     );
+     logger.info(
+       ` ├─ [${level}] ${message}${message.length === 100 ? '...' : ''}`
+     );
+   }
+   if (data.data.logs.length > 3) {
+     logger.info(` └─ ... and ${data.data.logs.length - 3} more`);
+   }
  } else if (typeof data.data === 'string') {
- logger.info(
- ` LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`
- );
+   logger.info(
+     ` LOGS Message: ${data.data.substring(0, 200)}${data.data.length > 200 ? '...' : ''}`
+   );
  } else {
- logger.info(` DATA:`, JSON.stringify(data.data, null, 2));
+   logger.info(` DATA:`, JSON.stringify(data.data, null, 2));
  }
  } catch (error) {
  logger.info(` ERROR Invalid log data:`, data.data);

@@ -207,7 +207,10 @@ export class EventDrivenSystemMonitor {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
-    this.eventListeners.get(event)!.push(listener);
+    const listeners = this.eventListeners.get(event);
+    if (listeners) {
+      listeners.push(listener);
+    }
   }
 
   private emitEvent<K extends keyof SystemMonitoringEvents>(

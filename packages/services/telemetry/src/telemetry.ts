@@ -163,9 +163,12 @@ export class TelemetryManager {
         throw error;
       }
     } else {
+      if (typeof fn !== 'function') {
+        throw new Error('withTrace(name, fn) requires a function callback');
+      }
       const span = this.startTrace(nameOrFn);
       try {
-        const result = fn!();
+        const result = fn();
         span.end();
         return result;
       } catch (error) {
@@ -195,9 +198,12 @@ export class TelemetryManager {
         throw error;
       }
     } else {
+      if (typeof fn !== 'function') {
+        throw new Error('withAsyncTrace(name, fn) requires a function callback');
+      }
       const span = this.startTrace(nameOrFn);
       try {
-        const result = await fn!();
+        const result = await fn();
         span.end();
         return result;
       } catch (error) {
@@ -287,7 +293,12 @@ export function withTrace<T>(nameOrFn: string | (() => T), fn?: () => T): T {
   // Forward to global telemetry instance
   return typeof nameOrFn === 'function'
     ? getTelemetry().withTrace(nameOrFn as () => T)
-    : getTelemetry().withTrace(nameOrFn as string, fn!);
+    : ((): T => {
+        if (typeof fn !== 'function') {
+          throw new Error('withTrace(name, fn) requires a function callback');
+        }
+        return getTelemetry().withTrace(nameOrFn as string, fn);
+      })();
 }
 
 export async function withAsyncTrace<T>(nameOrFn: string | (() => Promise<T>), fn?: () => Promise<T>): Promise<T> {
@@ -295,7 +306,10 @@ export async function withAsyncTrace<T>(nameOrFn: string | (() => Promise<T>), f
   if (typeof nameOrFn === 'function') {
     return await getTelemetry().withAsyncTrace(nameOrFn as () => Promise<T>);
   }
-  return await getTelemetry().withAsyncTrace(nameOrFn as string, fn!);
+  if (typeof fn !== 'function') {
+    throw new Error('withAsyncTrace(name, fn) requires a function callback');
+  }
+  return await getTelemetry().withAsyncTrace(nameOrFn as string, fn);
 }
 
 // =============================================================================

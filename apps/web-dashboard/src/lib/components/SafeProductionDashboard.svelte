@@ -619,6 +619,74 @@ $: metrics = $dashboardState.performanceMetrics;
 $: recentEvents = $eventLog.slice(0, 5);
 </script>
 
+<script lang="ts">
+/**
+ * Progressive widget loader for dashboard grid.
+ * Dynamically imports the correct widget component based on widget.type.
+ * Shows a loading spinner and error fallback.
+ */
+import { onMount } from "svelte";
+import { writable } from "svelte/store";
+
+const widgetTypeToImport: Record<string, () => Promise<any>> = {
+  visualization: () => import("./SafeVisualizationWidget.svelte"),
+  coaching: () => import("./SafeCoachingWidget.svelte"),
+  gamification: () => import("./SafeGamificationWidget.svelte"),
+  prediction: () => import("./SafePredictionWidget.svelte"),
+  integration: () => import("./SafeIntegrationWidget.svelte"),
+};
+
+export let userRole: string;
+export let immersionLevel: "basic" | "enhanced" | "production";
+
+export let widget: any;
+
+let loadedComponent: any = null;
+let error: string | null = null;
+let loading = true;
+
+onMount(async () => {
+  loading = true;
+  error = null;
+  loadedComponent = null;
+  const importFn = widgetTypeToImport[widget.type];
+  if (!importFn) {
+    error = `Unknown widget type: ${widget.type}`;
+    loading = false;
+    return;
+  }
+  try {
+    const mod = await importFn();
+    loadedComponent = mod.default;
+  } catch (e) {
+    error = "Failed to load widget: " + (e?.message || e);
+  }
+  loading = false;
+});
+</script>
+
+<!-- WidgetLoader component -->
+<svelte:component
+  this={loadedComponent}
+  data={widget.data}
+  userRole={userRole}
+  immersionLevel={immersionLevel}
+  {...$$restProps}
+  style="width: 100%; min-height: 120px;"
+  />
+{#if loading}
+  <div style="background: rgba(15,23,42,0.5); border-radius: 8px; padding: 1rem; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+    <div style="color: #94a3b8; font-size: 0.875rem;">Loading widget...</div>
+  </div>
+{/if}
+{#if error}
+  <div style="background: rgba(220,38,38,0.2); border-radius: 8px; padding: 1rem; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
+    <div style="color: #ef4444; font-size: 0.875rem;">{error}</div>
+  </div>
+{/if}
+
 <!-- Main Dashboard Container -->
 <div style="min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%); color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <!-- Header -->
@@ -667,32 +735,10 @@ $: recentEvents = $eventLog.slice(0, 5);
             <div style="width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite;"></div>
           </div>
           
-          <!-- Widget Content Placeholder -->
-          <div style="background: rgba(15, 23, 42, 0.5); border-radius: 8px; padding: 1rem; min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">
-              {#if widget.type === 'visualization'}
-                📊
-              {:else if widget.type === 'coaching'}
-                🧠
-              {:else if widget.type === 'gamification'}
-                🏆
-              {:else if widget.type === 'prediction'}
-                🔮
-              {:else if widget.type === 'integration'}
-                🔗
-              {/if}
-            </div>
-            <div style="color: #94a3b8; font-size: 0.875rem;">
-              {widget.type === 'visualization' ? 'Real-time 3D SAFe visualizations with interactive charts and data exploration' : ''}
-              {widget.type === 'coaching' ? 'AI-powered coaching with personalized guidance and skill development tracking' : ''}
-              {widget.type === 'gamification' ? 'Achievement system with points, badges, levels and team competitions' : ''}
-              {widget.type === 'prediction' ? 'Machine learning predictions for team performance and project outcomes' : ''}
-              {widget.type === 'integration' ? 'Tool integrations with JIRA, Confluence, Azure DevOps and workflow automation' : ''}
-            </div>
-            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #64748b;">
-              Last updated: {widget.data.lastUpdate ? new Date(widget.data.lastUpdate).toLocaleTimeString() : 'Never'}
-            </div>
-          </div>
+          <!-- Progressive Widget Loader -->
+          {#key widget.id}
+            <WidgetLoader {widget} {userRole} {immersionLevel} />
+          {/key}
         </div>
       {/each}
     </div>

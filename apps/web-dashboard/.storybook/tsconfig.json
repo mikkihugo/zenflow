@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "types": ["storybook__svelte"]
+  },
+  "include": [
+    "../src/lib/components/**/*.stories.ts",
+    "../.storybook/*"
+  ]
+}

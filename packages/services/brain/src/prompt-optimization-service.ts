@@ -70,7 +70,7 @@ export class PromptOptimizationService {
  private optimizationPatterns = new Map<string, OptimizationPattern>();
 
  constructor() {
-	 logger.info('🧠 Prompt Optimization Service created');
+	 logger.info(' Prompt Optimization Service created');
  }
 
  /**
@@ -80,14 +80,14 @@ export class PromptOptimizationService {
  if (this.initialized) return;
 
  try {
- logger.info('🚀 Initializing Prompt Optimization Service...');
+ logger.info(' Initializing Prompt Optimization Service...');
  // Initialize with some baseline optimization patterns
  await this.initializeBaselinePatterns();
 
  this.initialized = true;
- logger.info('✅ Prompt Optimization Service initialized successfully');
+ logger.info(' Prompt Optimization Service initialized successfully');
  } catch (error) {
- logger.error(`❌ Failed to initialize Prompt Optimization Service:`, error);
+ logger.error(` Failed to initialize Prompt Optimization Service:`, error);
  throw error;
  }
  }
@@ -110,7 +110,7 @@ export class PromptOptimizationService {
 
  try {
  logger.info(
- `🔍 Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
+ ` Analyzing prompt for optimization: "${originalPrompt.substring(0, 50)}..."`
  );
 
  // Analyze prompt characteristics
@@ -165,12 +165,12 @@ export class PromptOptimizationService {
  };
 
  logger.info(
- `✅ Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
+ ` Prompt optimization complete - confidence: ${confidence.toFixed(2)}, improvement: ${improvementFactor.toFixed(2)}x`
  );
 
  return result;
  } catch (error) {
- logger.error(`❌ Prompt optimization failed:`, error);
+ logger.error(` Prompt optimization failed:`, error);
  throw error;
  }
  }
@@ -181,7 +181,7 @@ export class PromptOptimizationService {
  async learnFromPerformance(analysisData: PromptAnalysisData): Promise<void> {
  try {
  logger.debug(
-	 `📊 Learning from prompt performance: success rate ${analysisData.successRate.toFixed(2)}`
+	 ` Learning from prompt performance: success rate ${analysisData.successRate.toFixed(2)}`
  );
 
  // Add to performance history
@@ -206,7 +206,7 @@ export class PromptOptimizationService {
  );
 }
 } catch (error) {
- logger.error(`❌ Failed to learn from performance:`, error);
+ logger.error(` Failed to learn from performance:`, error);
 }
 
  /**
@@ -555,7 +555,7 @@ export class PromptOptimizationService {
  logger.debug(`Updated optimization patterns based on performance feedback`
  // For now, just log the learning event
  logger.debug(
- `🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
+ ` Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`
  );
 }
 

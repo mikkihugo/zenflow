@@ -163,7 +163,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 						maxTurns:1,
 						timeoutMs:TEST_CONFIG.QUICK_TIMEOUT,
 						allowedTools:[],
-});
+					});
 
 					expect(messages).toBeTruthy();
 					expect(messages.length).toBeGreaterThan(0);
@@ -175,8 +175,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 					logger.info(` Model ${model} working correctly`);
 				}
-			}
-},
+			},
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
 

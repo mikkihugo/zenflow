@@ -105,7 +105,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
       enableMiddleware: false,
       maxListeners: 50
     });
-    logger.info('🎯 Task Complexity Estimator created');
+    logger.info(' Task Complexity Estimator created');
   }
 
   /**
@@ -115,7 +115,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
     return safeAsync(async () => {
       if (this.initialized) return;
 
-      logger.info('🚀 Initializing Task Complexity Estimation System...');
+      logger.info(' Initializing Task Complexity Estimation System...');
       // Initialize complexity patterns based on domain knowledge
       await this.initializeComplexityPatterns();
 
@@ -123,7 +123,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
       await this.initializeKeywordWeights();
 
       this.initialized = true;
-      logger.info('✅ Task Complexity Estimator initialized successfully');
+      logger.info(' Task Complexity Estimator initialized successfully');
     });
   }
 
@@ -223,7 +223,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
       };
 
       logger.info(
-        `🎯 Complexity estimated: ${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel})`
+        ` Complexity estimated: ${(finalComplexity * 100).toFixed(1)}% (${difficultyLevel})`
       );
 
       // Emit estimation completed event
@@ -233,7 +233,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
         timestamp
       });
     } catch (error) {
-      logger.error(`❌ Complexity estimation failed:`, error);
+      logger.error(` Complexity estimation failed:`, error);
       
       // Emit estimation error event
       this.emit('complexity:estimation_error', {
@@ -259,7 +259,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
     if (!this.initialized) {
       const initResult = await this.initialize();
       if (initResult.isErr()) {
-        logger.error('❌ Failed to initialize for learning outcome:', initResult.error);
+        logger.error(' Failed to initialize for learning outcome:', initResult.error);
         return;
       }
     }
@@ -305,7 +305,7 @@ export class TaskComplexityEstimator extends EventBus<ComplexityEvents> {
         timestamp: Date.now()
       });
     } catch (error) {
-      logger.error('❌ Failed to learn from outcome:', error);
+      logger.error(' Failed to learn from outcome:', error);
     }
   }
 

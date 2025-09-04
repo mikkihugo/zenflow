@@ -484,7 +484,7 @@ export class VectorEmbeddingService {
 
         try {
           this.logger.info(
-            '🧠 Initializing SmartNeuralCoordinator with intelligent backend loading...'
+            ' Initializing SmartNeuralCoordinator with intelligent backend loading...'
           );
 
           span.setAttributes({

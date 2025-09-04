@@ -9,6 +9,12 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "alwaysStrict": true,
     "moduleResolution": "bundler"
   },
   "include": [
