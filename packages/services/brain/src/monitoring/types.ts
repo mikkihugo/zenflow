@@ -8,7 +8,7 @@
 // Basic Agent Types
 export interface AgentId {
 id: string;
-swarmId: string;
+teamworkSessionId: string;
 type: AgentType;
 instance: number;
 }
@@ -140,7 +140,7 @@ stability: number;
 }
 
 // Swarm Types
-export type SwarmId = string;
+export type TeamworkSessionId = string;
 export type ForecastHorizon = '1h|6h|24h|7d|30d';
 
 // System Health Types
@@ -285,13 +285,13 @@ metadata?: Record<string, unknown>
 getAgentHealth(agentId: AgentId): AgentHealth|null;
 
 forecastPerformanceOptimization(
-swarmId: SwarmId,
+teamworkSessionId: SwarmId,
 horizon?: ForecastHorizon
 ): Promise<PerformanceOptimizationForecast>;
 
 predictKnowledgeTransferSuccess(
-sourceSwarm: SwarmId,
-targetSwarm: SwarmId,
+sourceTeamworkSession: TeamworkSessionId,
+targetTeamworkSession: TeamworkSessionId,
 patterns: unknown[]
 ): Promise<KnowledgeTransferPrediction>;
 

@@ -203,30 +203,26 @@ await session.updateContext({
 });
 ```
 
-## Integration with Swarm Systems
+## Integration with SPARC Methodology
 
-The conversation framework integrates seamlessly with swarm coordination:
+The conversation framework integrates seamlessly with SPARC methodology:
 
 ```typescript
-import { EnhancedSwarmCommander } from '../coordination/agents/swarm-commander-enhanced';
+import { SPARCCompletionExtractor } from '../sparc/completion/sparc-completion-extractor';
 
-const swarmCommander = new EnhancedSwarmCommander(
-  {
-    conversationMode: {
-      enabled: true,
-      useForTaskAssignment: true,
-      useForArchitectureReviews: true,
-      fallbackToDirectExecution: true,
-    },
-  },
-  eventBus,
-  memoryCoordinator
-);
+const sparcExtractor = new SPARCCompletionExtractor();
 
-// Task assignment will now use conversation framework
-const task = await swarmCommander.assignTask({
-  title: 'Implement user authentication',
-  requirements: ['oauth2', 'jwt', 'rate-limiting'],
+// Knowledge extraction during SPARC completion phase
+const knowledge = await sparcExtractor.extractKnowledge({
+  sessionId: 'session-123',
+  executionId: 'exec-456',
+  phase: 'completion',
+  startTime: Date.now(),
+  endTime: Date.now(),
+  participants: teamworkParticipants,
+  decisions: teamworkDecisions,
+  collaborationPatterns: [],
+  artifacts: []
 });
 ```
 

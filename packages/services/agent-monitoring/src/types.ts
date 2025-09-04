@@ -144,7 +144,7 @@ export interface EmergentBehavior {
 }
 
 // Swarm Types
-export type SwarmId = string;
+export type TeamworkSessionId = string;
 export type ForecastHorizon = '1h' | '6h' | '24h' | '7d' | '30d';
 
 // System Health Types

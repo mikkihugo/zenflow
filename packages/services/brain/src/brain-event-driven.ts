@@ -1342,11 +1342,11 @@ return { expectedQuality, confidence, influencingFactors};
 
 private calculateContextAdjustments(context:any): number {
 let adjustment = 0;
-if (context.timeOfDay === 'morning; adjustment += 0.05;
-if (context.workload === 'light; adjustment += 0.1;
-if (context.workload === 'heavy; adjustment -= 0.15;
+if (context.timeOfDay === 'morning') adjustment += 0.05;
+if (context.workload === 'light') adjustment += 0.1;
+if (context.workload === 'heavy') adjustment -= 0.15;
 if (context.collaboration === true) adjustment += 0.08;
-if (context.urgency === 'high; adjustment -= 0.1;
+if (context.urgency === 'high') adjustment -= 0.1;
 return adjustment;
 }
 

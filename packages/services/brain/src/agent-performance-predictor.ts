@@ -101,7 +101,7 @@ await this.initializePredictionModels();
 await this.setupPerformanceMonitoring();
 
 this.initialized = true;
-logger.info('Agent Performance Predictor initialized successfully').
+logger.info('Agent Performance Predictor initialized successfully');
 } catch (error) {
 logger.error(
 `Failed to initialize Agent Performance Predictor: `,

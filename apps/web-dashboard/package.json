@@ -8,9 +8,13 @@
     "preview": "vite preview",
     "type-check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "type-check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "TEST_PORT=3333 playwright test",
+    "test:e2e:ui": "TEST_PORT=3333 playwright test --ui",
+    "test:e2e:debug": "TEST_PORT=3333 playwright test --debug"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
     "@sveltejs/adapter-auto": "^6.1.0",
     "@sveltejs/kit": "^2.36.2",
     "@sveltejs/vite-plugin-svelte": "^6.1.3",

@@ -757,10 +757,8 @@ export type {
 BrainJsConfig,
 BrainJsNetworkConfig,
 BrainJsNetworkInstance,
-BrainJsPredictionResult,
-BrainJsTrainingData,
-BrainJsTrainingOptions,
-} from './brain-js-bridge';
+// Note: BrainJs types moved to @claude-zen/neural-ml WASM gateway
+// BrainJsPredictionResult, BrainJsTrainingData, BrainJsTrainingOptions
 // =============================================================================
 // COORDINATION SYSTEMS - Advanced coordination components
 // =============================================================================

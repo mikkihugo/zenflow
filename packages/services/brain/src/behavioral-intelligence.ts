@@ -29,7 +29,7 @@ import { getLogger} from '@claude-zen/foundation';
 import { kmeans} from 'ml-kmeans';
 import { sma} from 'moving-averages';
 
-import type { BrainJsBridge} from './brain-js-bridge';
+// Note: BrainJs functionality moved to @claude-zen/neural-ml WASM gateway
 import { ActivationFunction } from './types/index';
 
 // 🧠 Enhanced ML Imports - Using validated API patterns
@@ -1719,7 +1719,7 @@ export async function demoBehavioralIntelligence(
     logger.info('   • Intelligent task-agent matching');
     logger.info('   • Behavioral pattern learning and adaptation');
     logger.info('   • Task complexity estimation for better routing');
-    logger.info('   • Data-driven swarm optimization');
+    logger.info('   • Data-driven teamwork optimization');
   } catch (error) {
     logger.error('❌ Demo failed:', error);
   }

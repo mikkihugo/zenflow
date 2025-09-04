@@ -630,7 +630,7 @@ export type {
   SwarmResult,
 } from './src/knowledge-swarm';
 // Existing Knowledge Systems (for integration)
-export { KnowledgeSwarm} from './src/knowledge-swarm';
+// Note: KnowledgeSwarm removed - use Teamwork + SPARC coordination instead
 // Performance Optimization Types
 export type {
   CacheOptimizationResult,
@@ -693,7 +693,7 @@ export async function createKnowledgeSharingSystem(
  * @param vectorDb
  * @example
  */
-export async function createKnowledgeSwarm(config?:unknown): Promise<unknown> {
+export async function createKnowledgeCoordination(config?:unknown): Promise<unknown> {
   const { initializeFACTSwarm} = await import('./knowledge-swarm');
   return initializeFACTSwarm(config);
 }
@@ -946,9 +946,9 @@ export async function getPerformanceOptimizer(config?:any): Promise<any> {
   return new PerformanceOptimizationSystem(config);
 }
 
-export async function getKnowledgeSwarm(config?:any): Promise<any> {
-  const { KnowledgeSwarm} = await import('./src/knowledge-swarm');
-  return new KnowledgeSwarm(config);
+export async function getKnowledgeCoordination(config?:any): Promise<any> {
+  // Note: Use Teamwork + SPARC coordination instead of separate swarm concept
+  throw new Error('Use @claude-zen/coordination/teamwork and @claude-zen/coordination/sparc instead');
 }
 
 export async function getReasoningEngine(config?:any): Promise<any> {
@@ -966,7 +966,7 @@ export const knowledgeSystem = {
   getDistributedLearning:getDistributedLearningSystem,
   getValidator:getKnowledgeValidator,
   getPerformanceOptimizer,
-  getSwarm:getKnowledgeSwarm,
+  getCoordination: getKnowledgeCoordination,
   getReasoningEngine,
 };
 

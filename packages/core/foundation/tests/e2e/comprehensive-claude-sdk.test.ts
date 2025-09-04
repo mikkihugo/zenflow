@@ -94,17 +94,17 @@ describe("Comprehensive Claude SDK Tests", () => {
 });
 
 		it("should filter Claude output correctly", () => {
-			const rawOutput = '
+			const rawOutput = `
         Here's my analysis of the request:
         
         Let me fix this TypeScript error for you.
         
-        \'\'\'typescript'
+        \`\`\`typescript
         let x:number = 42; // Fixed: changed string to number
-        \'\'\'
+        \`\`\`
         
         I hope this helps! Let me know if you need anything else.
-      ';
+      `;
 
 			const filteredOutput = filterClaudeOutput(rawOutput);
 

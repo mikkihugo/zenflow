@@ -30,7 +30,7 @@ vi.mock('../../../config/logging-config', () => ({
 }));
 
 describe('AgentHealthMonitor', () => {
-    ')  let healthMonitor: AgentHealthMonitor;
+  let healthMonitor: AgentHealthMonitor;
   let learningSystem: AgentLearningSystem;
   let mockConfig: any;
 
