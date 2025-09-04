@@ -13,15 +13,16 @@ import {
   err,
   getConfig,
 } from '@claude-zen/foundation';
+import { getPort, getHost, getEmergencyShutdownToken, isProd } from './config/env';
 
-// Initialize foundation config early
+ // Initialize foundation config early
 getConfig();
 
 const logger = getLogger('claude-zen-server');
 
 class ClaudeZenServer {
-  private port: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  private host: string = process.env.HOST || '0.0.0.0';
+  private port: number = getPort();
+  private host: string = getHost();
   private server: HTTPServer | null = null;
   private io: SocketIOServer | null = null;
   private isShuttingDown = false;
@@ -85,7 +86,7 @@ class ClaudeZenServer {
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
     // Request logging middleware
-    if (process.env.NODE_ENV !== 'production') {
+    if (!isProd) {
       const morgan = (await import('morgan')).default;
       app.use(morgan('combined'));
     }
@@ -126,7 +127,7 @@ class ClaudeZenServer {
     // Emergency shutdown endpoint (protected)
     app.post('/api/v1/admin/emergency-shutdown', (req: Request, res: Response) => {
       const authToken = req.headers.authorization;
-      const expectedToken = process.env.EMERGENCY_SHUTDOWN_TOKEN || 'emergency-shutdown-2025';
+      const expectedToken = getEmergencyShutdownToken();
 
       if (!authToken || authToken !== `Bearer ${expectedToken}`) {
         return res.status(401).json({
@@ -281,7 +282,7 @@ class ClaudeZenServer {
 
     // Emergency shutdown request from client (admin only)
     socket.on('request-emergency-shutdown', (data: { token: string }) => {
-      const expectedToken = process.env.EMERGENCY_SHUTDOWN_TOKEN || 'emergency-shutdown-2025';
+      const expectedToken = getEmergencyShutdownToken();
 
       if (data.token === expectedToken) {
         logger.warn(`🚨 Emergency shutdown requested by client ${socket.id}`);

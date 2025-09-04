@@ -54,7 +54,7 @@ async function testAllProviders() {
         if (testResult.success) {
           // Test chat completion
           const response = await copilotProvider.createChatCompletion({
-            messages: [{ role: 'user', content: 'Say \"Hello from Copilot!\" and nothing else.' }],
+            messages: [{ role: 'user', content: 'Say "Hello from Copilot!" and nothing else.' }],
             max_tokens: 50
           });
           
@@ -100,7 +100,7 @@ async function testAllProviders() {
         if (testResult.success) {
           // Test chat completion
           const response = await modelsProvider.createChatCompletion({
-            messages: [{ role: 'user', content: 'Say \"Hello from GitHub Models!\" and nothing else.' }],
+            messages: [{ role: 'user', content: 'Say "Hello from GitHub Models!" and nothing else.' }],
             model: 'gpt-4o-mini',
             max_tokens: 50
           });
@@ -146,7 +146,7 @@ async function testAllProviders() {
       if (testResult.success) {
         // Test chat completion
         const response = await claudeProvider.createChatCompletion({
-          messages: [{ role: 'user', content: 'Say \"Hello from Claude!\" and nothing else.' }],
+          messages: [{ role: 'user', content: 'Say "Hello from Claude!" and nothing else.' }],
           max_tokens: 50
         });
         
@@ -194,7 +194,7 @@ async function testAllProviders() {
           console.log(`    Models: ${result.details.models.length} available`);
         }
         if (result.details?.response) {
-          console.log(`    Test response: \"${result.details.response.trim()}\"`);
+          console.log(`    Test response: "${result.details.response.trim()}"`);
         }
       }
     }

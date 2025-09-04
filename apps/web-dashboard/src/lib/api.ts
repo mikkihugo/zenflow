@@ -27,7 +27,7 @@ interface Agent {
   status: string;
   capabilities: string[];
   created: string;
-  lastActivity: string;
+  lastActivity: string
 }
 
 interface Task {
@@ -38,7 +38,7 @@ interface Task {
   progress: number;
   priority: string;
   created: string;
-  assignedTo?: string;
+  assignedTo?: string
 }
 
 interface SwarmConfig {

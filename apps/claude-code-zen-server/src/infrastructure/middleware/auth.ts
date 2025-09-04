@@ -5,6 +5,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type { NextFunction, Request, Response } from 'express';
+import { isDev } from '../../config/env';
 
 const logger = getLogger('auth-middleware');
 
@@ -64,7 +65,7 @@ export const authMiddleware = (
   req.auth = authContext;
 
   // Log authentication status (only in development)
-  if (process.env['NODE_ENV'] === 'development') {
+  if (isDev) {
     logger.debug('Authentication:No auth required - allowing request', {
       authStatus: 'no_auth_required',
       userType: 'anonymous',
@@ -108,7 +109,7 @@ export const optionalAuthMiddleware = (
       isAuthenticated: false,
     };
 
-    if (process.env['NODE_ENV'] === 'development') {
+    if (isDev) {
       logger.debug('Optional auth:Token provided but not validated', {
         hasAuthHeader: !!authHeader,
         hasApiKey: !!apiKey,
