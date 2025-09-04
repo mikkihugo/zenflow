@@ -36,7 +36,7 @@ expect.extend({
   },
 
   toBeCalledWith: (received: any, ...expected: any[]) => {
-    const calls = received.mock.calls;
+    const {calls} = received.mock;
     const pass = calls.some((call: any[]) =>
       call.length === expected.length &&
       call.every((arg, index) => arg === expected[index])

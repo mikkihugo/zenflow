@@ -58,7 +58,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
       forceSuccess?: boolean;
     } = {}
   ) => ({
-    id: config.id || 'agent-' + Math.random().toString(36).substr(2, 9),
+    id: config.id || `agent-${  Math.random().toString(36).substr(2, 9)}`,
     type: config.type || 'worker',
     capabilities: config.capabilities || ['read', 'write', 'analyze'],
     performance: config.performance || { success: 0.85, speed: 0.75 },
@@ -80,8 +80,8 @@ const DEFAULT_AGENT_ID = 'mock-agent';
         task,
         success,
         result: success
-          ? 'Completed: ' + typeof task === 'string' ? task : task.name || 'task'
-          : 'Failed: ' + typeof task === 'string' ? task : task.name || 'task',
+          ? `Completed: ${  typeof task}` === 'string' ? task : task.name || 'task'
+          : `Failed: ${  typeof task}` === 'string' ? task : task.name || 'task',
         duration: Math.random() * 1000 + 200,
         confidence: success
           ? 0.8 + Math.random() * 0.2
@@ -129,13 +129,13 @@ const DEFAULT_AGENT_ID = 'mock-agent';
           createMockAgent: (config: { id: string; type: string }) => unknown;
         }
       ).createMockAgent({
-        id: 'swarm-agent-' + i,
+        id: `swarm-agent-${  i}`,
         type: i === 0 ? 'coordinator' : 'worker',
       })
     );
 
     return {
-      id: 'swarm-' + Math.random().toString(36).substr(2, 9),
+      id: `swarm-${  Math.random().toString(36).substr(2, 9)}`,
       topology: config.topology || 'hierarchical',
       agents,
       size: agents.length,
@@ -192,7 +192,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
                   }) => unknown;
                 }
               ).createMockAgent({
-                id: 'swarm-agent-' + i,
+                id: `swarm-agent-${  i}`,
                 type: 'worker',
               })
             );
@@ -222,7 +222,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
       trainingData?: unknown[];
     } = {}
   ) => ({
-    id: 'neural-' + Math.random().toString(36).substr(2, 9),
+    id: `neural-${  Math.random().toString(36).substr(2, 9)}`,
     layers: config.layers || 3,
     nodes: config.nodes || [10, 5, 2],
     accuracy: config.accuracy || 0.85,
@@ -261,7 +261,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
 
       return {
         input,
-        prediction: 'prediction-' + Math.random().toString(36).substr(2, 5),
+        prediction: `prediction-${  Math.random().toString(36).substr(2, 5)}`,
         confidence: Math.max(0.1, Math.min(0.99, confidence)),
         reasoning: ['feature_1: 0.8', 'feature_2: 0.3', 'feature_3: 0.95'],
         duration: Math.random() * 100 + 20,
@@ -373,7 +373,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
             setTimeout(resolve, Math.random() * 100 + 50)
           );
           yield {
-            text: word + ' ',
+            text: `${word  } `,
             confidence: response.confidence,
             isComplete: false,
           };
@@ -410,7 +410,7 @@ const DEFAULT_AGENT_ID = 'mock-agent';
           step.execute(),
           new Promise((_, reject) => {
             const timeoutId = setTimeout(
-              () => reject(new Error('Step timeout: ' + step.name)),
+              () => reject(new Error(`Step timeout: ${  step.name}`)),
               workflow.timeout || 30000
             );
             // Store timeout for cleanup
