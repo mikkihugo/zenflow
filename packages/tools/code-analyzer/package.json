@@ -11,8 +11,7 @@
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "prepare": "husky"
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
