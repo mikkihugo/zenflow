@@ -59,24 +59,11 @@ jobs:
           echo "error-count=$ERROR_COUNT" >> $GITHUB_OUTPUT
           echo "Found $ERROR_COUNT linting errors"
 
-      - name: 🤖 Setup Claude CLI
+      - name: 🤖 Setup Claude Code
         if: steps.lint-check.outputs.error-count != '0'
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          echo "🤖 Setting up Claude CLI..."
-          # Install Claude CLI
-          curl -fsSL https://claude.ai/install.sh | bash
-          
-          # If no API key in secrets, try OAuth login
-          if [ -z "$ANTHROPIC_API_KEY" ]; then
-            echo "🔐 No API key found in secrets, attempting OAuth..."
-            # Force OAuth by unsetting any existing API key
-            export ANTHROPIC_API_KEY=""
-            claude login --non-interactive || echo "OAuth login failed, will try with limited access"
-          else
-            echo "🔐 Using API key from GitHub secrets"
-          fi
+        uses: anthropics/claude-code@v1
+        with:
+          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
 
       - name: 🔧 Claude Surgical Linting
         if: steps.lint-check.outputs.error-count != '0'
@@ -112,10 +99,10 @@ jobs:
           Process: Run `pnpm lint` first, then fix ONLY simple, obvious errors surgically using Edit tool.
           EOF
 
-          # Run Claude with surgical linting
-          timeout 1800 claude --system-prompt-file /tmp/claude-surgical-prompt.txt \
-            --prompt "Fix linting errors surgically. Run pnpm lint first to see errors, then fix them one by one preserving all functionality." \
-            --max-turns 50 \
+          # Run Claude with surgical linting using proper CLI syntax
+          timeout 1800 claude --print \
+            --append-system-prompt "$(cat /tmp/claude-surgical-prompt.txt)" \
+            "Fix linting errors surgically. Run pnpm lint first to see errors, then fix them one by one preserving all functionality. Work systematically through the issues." \
             || echo "Claude linting completed (may have timed out)"
 
       - name: 🔍 Verify Fixes
