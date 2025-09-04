@@ -45,7 +45,7 @@ interface SwarmConfig {
   topology: string;
   maxAgents: number;
   strategy: string;
-  created: string;
+  created: string
 }
 
 interface HealthStatus {
@@ -66,7 +66,7 @@ interface PerformanceMetrics {
   memory: number;
   requestsPerMin: number;
   avgResponse: number;
-  timestamp: string;
+  timestamp: string
 }
 
 interface Project {
