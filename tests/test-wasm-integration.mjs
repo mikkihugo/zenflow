@@ -3,6 +3,7 @@
  * Tests the high-performance WASM-powered knowledge gathering system
  */
 
+import { performance } from 'node:perf_hooks';
 import init, { FastCache, QueryProcessor, CognitiveEngine } from './dist/wasm/claude-zen-fact.js';
 
 async function testWASMIntegration() {
