@@ -105,9 +105,9 @@ jobs:
           EOF
 
           # Run Claude with surgical linting
-          timeout 600 claude --system-prompt-file /tmp/claude-surgical-prompt.txt \
+          timeout 1800 claude --system-prompt-file /tmp/claude-surgical-prompt.txt \
             --prompt "Fix linting errors surgically. Run pnpm lint first to see errors, then fix them one by one preserving all functionality." \
-            --max-turns 5 \
+            --max-turns 50 \
             || echo "Claude linting completed (may have timed out)"
 
       - name: 🔍 Verify Fixes
