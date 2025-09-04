@@ -6,21 +6,13 @@
  */
 
 import { createServer} from 'node:http';
-import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation';
+import { type Logger, getLogger } from '@claude-zen/foundation';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
 import { configManager} from './config/index.js';
-
-/**
- * Get default configuration
- */
-function getDefaultConfig() {
-  return configManager.loadConfig();
-}
 import { ExporterManager} from './exporters/index.js';
 import { ProcessorManager} from './processors/index.js';
 import type {
@@ -30,6 +22,13 @@ import type {
   SignalType,
   TelemetryData,
 } from './types.js';
+
+/**
+ * Get default configuration
+ */
+function getDefaultConfig() {
+  return configManager.loadConfig();
+}
 
 /**
  * Internal OpenTelemetry Collector

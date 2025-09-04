@@ -5,8 +5,7 @@
  */
 
 import { EventBus, getLogger } from '@claude-zen/foundation';
-import { ClaudeProvider } from './claude-provider.js';
-import type { ClaudeCompletionRequest } from './claude-provider.js';
+import { ClaudeProvider, type ClaudeCompletionRequest } from './claude-provider.js';
 
 const logger = getLogger('claude-events');
 

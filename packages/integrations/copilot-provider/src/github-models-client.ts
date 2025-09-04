@@ -179,7 +179,7 @@ export class GitHubModelsClient {
             try {
               const data = JSON.parse(line.slice(6));
               yield data;
-            } catch (e) {
+            } catch (error) {
               logger.warn('Failed to parse SSE data:', line);
             }
           }

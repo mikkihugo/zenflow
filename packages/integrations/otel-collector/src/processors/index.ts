@@ -5,8 +5,7 @@
  * telemetry data before it's sent to exporters.
  */
 
-import type { Logger} from '@claude-zen/foundation';
-import { getLogger, TypedEventBase} from '@claude-zen/foundation';
+import { type Logger, getLogger, TypedEventBase } from '@claude-zen/foundation';
 
 import type { ProcessorConfig, TelemetryData} from '../types.js';
 

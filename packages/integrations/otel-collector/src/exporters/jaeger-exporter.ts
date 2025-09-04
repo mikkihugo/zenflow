@@ -5,8 +5,7 @@
  * Primarily handles trace data but can also export logs and metrics.
  */
 
-import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation';
+import { type Logger, getLogger } from '@claude-zen/foundation';
 import type { JaegerExporter as OTELJaegerExporter} from '@opentelemetry/exporter-jaeger';
 import type { ExporterConfig, ExportResult, TelemetryData} from '../types.js';
 import type { BaseExporter} from './index.js';
@@ -286,7 +285,7 @@ export class JaegerExporter implements BaseExporter {
 } else {
           reject(
             new Error(
-              `Jaeger export failed:${  result.error}`   ||   'Unknown error'
+              `Jaeger export failed: ${result.error || 'Unknown error'}`
             )
           );
 }

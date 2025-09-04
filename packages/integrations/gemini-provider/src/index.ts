@@ -1,9 +1,8 @@
 import { EventBus, getLogger } from '@claude-zen/foundation'
-import { DEFAULT_GEMINI_MODEL } from '@google/gemini-cli-core'
+import { DEFAULT_GEMINI_MODEL, createContentGenerator, createContentGeneratorConfig, type Config, AuthType } from '@google/gemini-cli-core'
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
-import { createContentGenerator, createContentGeneratorConfig, Config, AuthType } from '@google/gemini-cli-core'
 
 const logger = getLogger('@claude-zen/gemini-provider')
 

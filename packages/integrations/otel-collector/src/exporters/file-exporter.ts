@@ -8,8 +8,7 @@
 import { createWriteStream, promises as fs, type WriteStream} from 'node:fs';
 import { dirname, join} from 'node:path';
 import { createGzip} from 'node:zlib';
-import type { Logger} from '@claude-zen/foundation';
-import { getLogger} from '@claude-zen/foundation';
+import { type Logger, getLogger } from '@claude-zen/foundation';
 import type { ExporterConfig, TelemetryData, ExportResult} from '../types.js';
 import type { BaseExporter} from './index.js';
 

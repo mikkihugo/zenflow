@@ -1,10 +1,10 @@
 import { getLogger } from '@claude-zen/foundation';
-import { ModelRegistry } from './registry/model-registry.js';
 
 // Import individual LLM provider packages
-import { ClaudeProvider, ClaudeAuth, createClaudeClient } from '@claude-zen/claude-provider';
+import { ClaudeProvider } from '@claude-zen/claude-provider';
 import { CopilotProvider } from '@claude-zen/copilot-provider';
 import { GitHubModelsProvider } from '@claude-zen/github-models-provider';
+// import { GeminiProvider } from '@claude-zen/gemini-provider'; // TODO: Import when available
 
 const logger = getLogger('llm-provider');
 
@@ -58,9 +58,10 @@ export interface ChatCompletionResponse {
 
 export class LlmProvider {
   private config: LLMProviderConfig;
-  private githubSetup?: GithubModelsSetup;
+  private githubModelsProvider?: GitHubModelsProvider;
   private claudeProvider?: ClaudeProvider;
   private copilotProvider?: CopilotProvider;
+  // private geminiProvider?: GeminiProvider; // TODO: Add when available
 
   constructor(config: LLMProviderConfig) {
     this.config = config;
@@ -81,8 +82,11 @@ export class LlmProvider {
         break;
       
       case LLMProviderType.GITHUB_MODELS:
-        this.githubSetup = new GithubModelsSetup(this.config.token);
-        await this.githubSetup.initialize();
+        this.githubModelsProvider = new GitHubModelsProvider({
+          token: this.config.token,
+          autoInitialize: true
+        });
+        await this.githubModelsProvider.initialize();
         break;
       
       case LLMProviderType.CLAUDE:
@@ -119,14 +123,22 @@ export class LlmProvider {
 
     switch (this.config.type) {
       case LLMProviderType.GITHUB_COPILOT:
-        return await this.copilotProvider!.createChatCompletion(request);
+        if (!this.copilotProvider) {
+          throw new Error('GitHub Copilot provider not initialized');
+        }
+        return await this.copilotProvider.createChatCompletion(request);
       
       case LLMProviderType.GITHUB_MODELS:
-        const modelsClient = this.githubSetup!.getModelsClient();
-        return await modelsClient.createChatCompletion(request);
+        if (!this.githubModelsProvider) {
+          throw new Error('GitHub Models provider not initialized');
+        }
+        return await this.githubModelsProvider.createChatCompletion(request);
       
       case LLMProviderType.CLAUDE:
-        return await this.claudeProvider!.createChatCompletion(request);
+        if (!this.claudeProvider) {
+          throw new Error('Claude provider not initialized');
+        }
+        return await this.claudeProvider.createChatCompletion(request);
       
       default:
         throw new Error(`Chat completion not implemented for provider: ${this.config.type}`);
@@ -143,12 +155,24 @@ export class LlmProvider {
 
     switch (this.config.type) {
       case LLMProviderType.GITHUB_COPILOT:
-        yield* this.copilotProvider!.createChatCompletionStream(request);
+        if (!this.copilotProvider) {
+          throw new Error('GitHub Copilot provider not initialized');
+        }
+        yield* this.copilotProvider.createChatCompletionStream(request);
         break;
       
       case LLMProviderType.GITHUB_MODELS:
-        const modelsClient = this.githubSetup!.getModelsClient();
-        yield* modelsClient.createChatCompletionStream(request);
+        if (!this.githubModelsProvider) {
+          throw new Error('GitHub Models provider not initialized');
+        }
+        yield* this.githubModelsProvider.createChatCompletionStream(request);
+        break;
+      
+      case LLMProviderType.CLAUDE:
+        if (!this.claudeProvider) {
+          throw new Error('Claude provider not initialized');
+        }
+        yield* this.claudeProvider.createChatCompletionStream(request);
         break;
       
       default:
@@ -165,14 +189,29 @@ export class LlmProvider {
     }
 
     switch (this.config.type) {
-      case LLMProviderType.GITHUB_COPILOT:
-        const copilotModels = await this.copilotProvider!.listModels();
+      case LLMProviderType.GITHUB_COPILOT: {
+        if (!this.copilotProvider) {
+          throw new Error('GitHub Copilot provider not initialized');
+        }
+        const copilotModels = await this.copilotProvider.listModels();
         return copilotModels.map(m => ({ id: m.id, name: m.name || m.id }));
+      }
       
-      case LLMProviderType.GITHUB_MODELS:
-        const modelsClient = this.githubSetup!.getModelsClient();
-        const githubModels = await modelsClient.listModels();
+      case LLMProviderType.GITHUB_MODELS: {
+        if (!this.githubModelsProvider) {
+          throw new Error('GitHub Models provider not initialized');
+        }
+        const githubModels = await this.githubModelsProvider.listModels();
         return githubModels.map(m => ({ id: m.id, name: m.friendly_name, description: m.summary }));
+      }
+      
+      case LLMProviderType.CLAUDE: {
+        if (!this.claudeProvider) {
+          throw new Error('Claude provider not initialized');
+        }
+        const claudeModels = await this.claudeProvider.listModels();
+        return claudeModels.map(m => ({ id: m.id, name: m.name || m.id }));
+      }
       
       default:
         throw new Error(`List models not implemented for provider: ${this.config.type}`);
@@ -190,11 +229,22 @@ export class LlmProvider {
     try {
       switch (this.config.type) {
         case LLMProviderType.GITHUB_COPILOT:
-          return await this.copilotProvider!.testConnection();
+          if (!this.copilotProvider) {
+            return { success: false, error: 'GitHub Copilot provider not initialized' };
+          }
+          return await this.copilotProvider.testConnection();
         
         case LLMProviderType.GITHUB_MODELS:
-          const testResults = await this.githubSetup!.testConnection();
-          return { success: testResults.models.success, error: testResults.models.error };
+          if (!this.githubModelsProvider) {
+            return { success: false, error: 'GitHub Models provider not initialized' };
+          }
+          return await this.githubModelsProvider.testConnection();
+        
+        case LLMProviderType.CLAUDE:
+          if (!this.claudeProvider) {
+            return { success: false, error: 'Claude provider not initialized' };
+          }
+          return await this.claudeProvider.testConnection();
         
         default:
           return { success: false, error: `Test connection not implemented for provider: ${this.config.type}` };
@@ -212,7 +262,7 @@ export class LlmProvider {
       case LLMProviderType.GITHUB_COPILOT:
         return !!this.copilotProvider;
       case LLMProviderType.GITHUB_MODELS:
-        return !!this.githubSetup;
+        return !!this.githubModelsProvider;
       case LLMProviderType.CLAUDE:
         return !!this.claudeProvider;
       default:

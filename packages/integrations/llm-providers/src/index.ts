@@ -6,6 +6,9 @@
  */
 
 // Main provider orchestrator
+// Convenience factory functions
+import { LlmProvider, LLMProviderConfig, LLMProviderType } from './llm-provider.js';
+
 export { LlmProvider, LLMProviderType } from './llm-provider.js';
 export type { 
   LLMProviderConfig, 
@@ -18,7 +21,6 @@ export type {
 export { GithubModelsSetup } from './registry/github-models-setup.js';
 export { ModelRegistry } from './registry/model-registry.js';
 
-// Convenience factory functions
 export function createLLMProvider(config: LLMProviderConfig): LlmProvider {
   return new LlmProvider(config);
 }

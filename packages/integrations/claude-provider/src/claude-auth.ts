@@ -28,13 +28,9 @@ export class ClaudeAuth {
    * Get the OAuth token from Claude Code SDK (if available)
    */
   async getOAuthToken(): Promise<string | null> {
-    try {
-      // Claude Code SDK may handle authentication internally
-      // Return null as the SDK manages its own authentication
-      return null;
-    } catch {
-      return null;
-    }
+    // Claude Code SDK may handle authentication internally
+    // Return null as the SDK manages its own authentication
+    return null;
   }
 
   /**

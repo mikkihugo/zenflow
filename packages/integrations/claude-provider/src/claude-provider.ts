@@ -6,8 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { ClaudeMcpClient } from './mcp-client.js';
-import type { McpServerConfig } from './mcp-client.js';
+import { ClaudeMcpClient, type McpServerConfig } from './mcp-client.js';
 
 const logger = getLogger('claude-provider');
 
@@ -186,7 +185,7 @@ export class ClaudeProvider {
         command: 'npx',
         args: ['context7-mcp-server'],
         env: {
-          'CONTEXT_MODE': '7'
+          CONTEXT_MODE: '7'
         }
       };
       

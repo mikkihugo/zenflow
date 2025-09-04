@@ -6,6 +6,9 @@
  */
 
 // Main Provider
+// Convenience factory function
+import { GitHubModelsProvider } from './github-models-provider.js';
+
 export { GitHubModelsProvider } from './github-models-provider.js';
 export type { GitHubModelsProviderOptions } from './github-models-provider.js';
 
@@ -24,9 +27,6 @@ export type {
 // Authentication
 export { GitHubModelsAuth } from './github-models-auth.js';
 export type { GitHubModelsAuthOptions } from './github-models-auth.js';
-
-// Convenience factory function
-import { GitHubModelsProvider } from './github-models-provider.js';
 export function createGitHubModelsProvider(token?: string): GitHubModelsProvider {
   return new GitHubModelsProvider({ 
     ...(token ? { token } : {}),
