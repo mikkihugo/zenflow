@@ -331,9 +331,10 @@ const DEFAULT_AGENT_ID = 'mock-agent';
 
         // Find matching response pattern
         const matchedResponse = responses.find((r) => r.pattern.test(prompt));
-        const response =
-          matchedResponse ||
-          responses[Math.floor(Math.random() * responses.length)]!;
+        if (responses.length === 0) {
+          throw new Error('No mock LLM responses configured');
+        }
+        const response = matchedResponse ?? responses[Math.floor(Math.random() * responses.length)];
 
         return {
           text: response.response,
@@ -362,9 +363,10 @@ const DEFAULT_AGENT_ID = 'mock-agent';
         prompt: string
       ) {
         const matchedResponse = responses.find((r) => r.pattern.test(prompt));
-        const response =
-          matchedResponse ||
-          responses[Math.floor(Math.random() * responses.length)]!;
+        if (responses.length === 0) {
+          throw new Error('No mock LLM responses configured');
+        }
+        const response = matchedResponse ?? responses[Math.floor(Math.random() * responses.length)];
 
         // Stream response word by word
         const words = response.response.split(' ');

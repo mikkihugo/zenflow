@@ -80,7 +80,7 @@ jobs:
           git push origin "$BRANCH_NAME"
           
           # Create PR with @claude mention to trigger the action
-          gh pr create \
+          PR_NUMBER=$(gh pr create \
             --title "🔧 Surgical Linting Fixes Needed" \
             --body "@claude Please fix the linting errors surgically:
             
@@ -97,9 +97,15 @@ jobs:
             - SKIP: Syntax errors in complex expressions, incomplete functions, type conflicts
             - SKIP: Any error in files with multiple complex syntax issues
 
-            PROCESS: Run \`pnpm lint\` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues." \
+            PROCESS: Run \`pnpm lint\` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
+            
+            ---
+            **Auto-merge enabled**: This PR will auto-merge after Claude fixes the linting errors and all checks pass." \
             --head "$BRANCH_NAME" \
-            --base main
+            --base main | grep -o '[0-9]\+$')
+          
+          # Enable auto-merge for the PR
+          gh pr merge "$PR_NUMBER" --auto --squash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -36,12 +36,23 @@ this.logger = logger.child({ component: 'DatabaseManager' });
 * Create a new CodeQL database
 */
 async createDatabase(
-repositoryPath:string,
-options:DatabaseCreationOptions
-):Promise<CodeQLDatabase> {
-const absolutePath = path.resolve(repositoryPath);
-const databaseId = this.generateDatabaseId(absolutePath, options.languages);
-const _databasePath = path.join(this.config.tempDir!, `${databaseId}.db`);
+ repositoryPath:string,
+ options:DatabaseCreationOptions
+ ):Promise<CodeQLDatabase> {
+ // Configuration and input validation (replaces non-null assertions)
+ if (!this.config.tempDir) {
+  throw new Error('CodeQL tempDir not configured');
+ }
+ if (!this.config.codeqlPath) {
+  throw new Error('CodeQL codeqlPath not configured');
+ }
+ if (!options.languages || options.languages.length === 0) {
+  throw new Error('At least one language required to create a CodeQL database');
+ }
+ const tempDir = this.config.tempDir;
+ const absolutePath = path.resolve(repositoryPath);
+ const databaseId = this.generateDatabaseId(absolutePath, options.languages);
+ const _databasePath = path.join(tempDir, `${databaseId}.db`);
 
 this.logger.info(`Creating CodeQL database`, {
   databaseId,
@@ -51,7 +62,7 @@ this.logger.info(`Creating CodeQL database`, {
 });
 
 // Ensure temp directory exists
-await fs.mkdir(this.config.tempDir!, { recursive:true});
+await fs.mkdir(tempDir, { recursive:true});
 
 // Remove existing database if overwrite is enabled
 if (options.overwrite && (await this.databaseExists(databasePath))) {
@@ -79,7 +90,7 @@ args.push('--additional-sources', source);
 if (options.excludePatterns && options.excludePatterns.length > 0) {
 // Create exclude file
 const excludeFile = path.join(
-  this.config.tempDir!,
+  tempDir,
   `${databaseId}.exclude`
 );
 await fs.writeFile(excludeFile, options.excludePatterns.join('\n'));
@@ -114,7 +125,7 @@ const databaseSize = await this.calculateDatabaseSize(databasePath);
 const database: CodeQLDatabase = {
   id: databaseId,
   path: databasePath,
-  language: options.languages[0]!, // Primary language - we know it exists
+  language: options.languages[0], // Primary language - validated above
   additionalLanguages: options.languages.slice(1),
   sourceRoot: absolutePath,
   createdAt: new Date(),
@@ -242,7 +253,7 @@ async cleanup(): Promise<void> {
 
   // Clean up temp directory
   try {
-    await fs.rmdir(this.config.tempDir!, { recursive: true });
+    if (this.config.tempDir) { await fs.rmdir(this.config.tempDir, { recursive: true }); }
   } catch (error) {
     this.logger.warn('Failed to clean temp directory', {
       tempDir: this.config.tempDir,
@@ -320,7 +331,12 @@ args:string[],
 options:{ cwd?: string; env?: NodeJS.ProcessEnv} = {}
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
 return new Promise((resolve, reject) => {
-const child = spawn(this.config.codeqlPath!, args, {
+const codeqlPath = this.config.codeqlPath;
+if (!codeqlPath) {
+  reject(new Error('CodeQL codeqlPath not configured'));
+  return;
+}
+const child = spawn(codeqlPath, args, {
 cwd:options.cwd||process.cwd(),
 stdio:['pipe', 'pipe', 'pipe'],
 env:options.env||process.env,
