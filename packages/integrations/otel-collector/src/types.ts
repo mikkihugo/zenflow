@@ -245,3 +245,4 @@ export interface ExportResult {
   /** Export duration in milliseconds */
   duration:number;
 }
+// Test auto-sync
