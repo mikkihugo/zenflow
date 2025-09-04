@@ -71,23 +71,31 @@ jobs:
 
       - name: 🔧 Claude Surgical Linting
         if: steps.lint-check.outputs.error-count != '0'
-        uses: anthropics/claude-code-action@v1
-        with:
-          prompt: |
-            You are a surgical code linter. Fix ONLY simple, confident linting errors while preserving ALL functionality.
+        run: |
+          echo "🔧 Running Claude Code CLI for surgical linting..."
+          
+          # Install Claude Code CLI if not available
+          if ! command -v claude-code &> /dev/null; then
+            echo "Installing Claude Code CLI..."
+            curl -fsSL https://raw.githubusercontent.com/anthropics/claude-code/main/install.sh | bash
+            export PATH="$HOME/.local/bin:$PATH"
+          fi
+          
+          # Run Claude Code with surgical linting prompt
+          claude-code -p "You are a surgical code linter. Fix ONLY simple, confident linting errors while preserving ALL functionality.
 
-            SURGICAL REQUIREMENTS:
-            1. Fix ONLY simple, obvious issues: missing semicolons, unused imports, basic formatting
-            2. SKIP complex syntax errors, incomplete code, or anything you're not 100% confident about
-            3. NEVER change business logic or functionality
-            4. Use Edit tool for line-by-line changes only
+          SURGICAL REQUIREMENTS:
+          1. Fix ONLY simple, obvious issues: missing semicolons, unused imports, basic formatting
+          2. SKIP complex syntax errors, incomplete code, or anything you're not 100% confident about
+          3. NEVER change business logic or functionality
+          4. Use Edit tool for line-by-line changes only
 
-            CONFIDENCE RULES:
-            - Fix: Missing semicolons, unused variables/imports, basic formatting  
-            - SKIP: Syntax errors in complex expressions, incomplete functions, type conflicts
-            - SKIP: Any error in files with multiple complex syntax issues
+          CONFIDENCE RULES:
+          - Fix: Missing semicolons, unused variables/imports, basic formatting  
+          - SKIP: Syntax errors in complex expressions, incomplete functions, type conflicts
+          - SKIP: Any error in files with multiple complex syntax issues
 
-            PROCESS: Run `pnpm lint` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
+          PROCESS: Run 'pnpm lint' first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues."
         env:
           ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
