@@ -30,9 +30,9 @@ createIntelligenceSystem,
 createProductionIntelligenceSystem,
 } from './intelligence-factory';
 // =============================================================================
-// PRIMARY INTELLIGENCE SYSTEM - Main implementation
+// PRIMARY ANALYSIS ENGINE - Main implementation
 // =============================================================================
-export { CompleteIntelligenceSystem } from './intelligence-system';
+export { CompleteIntelligenceSystem } from './analysis-engine';
 export type {
 PerformanceSnapshot,
 PerformanceStats,

@@ -22,7 +22,7 @@ import { getLogger} from '@claude-zen/foundation';
 import * as ss from 'simple-statistics';
 
 import type { AutonomousOptimizationEngine} from './autonomous-optimization-engine';
-import type { BehavioralIntelligence} from './behavioral-intelligence';
+import type { BehavioralIntelligence} from './behavioral-analyzer';
 
 const logger = getLogger('AutonomousCoordinator');
 

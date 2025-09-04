@@ -92,11 +92,11 @@ export class ExporterManager {
       async ([name, exporter]) => {
         try {
           await exporter.initialize();
-          this.logger.info(`Exporter ${  name  } initialized`
-} catch (error) {
-          this.logger.error(`Failed to initialize exporter ${  name}`, error);
+          this.logger.info(`Exporter ${name} initialized`);
+        } catch (error) {
+          this.logger.error(`Failed to initialize exporter ${name}`, error);
           // Don't throw - allow other exporters to initialize
-}
+        }
 }
     );
 
@@ -200,10 +200,10 @@ export class ExporterManager {
       async ([name, exporter]) => {
         try {
           await exporter.shutdown();
-          this.logger.info(`Exporter ${  name  } shut down`
-} catch (error) {
-          this.logger.error(`Failed to shutdown exporter ${  name}`, error);
-}
+          this.logger.info(`Exporter ${name} shut down`);
+        } catch (error) {
+          this.logger.error(`Failed to shutdown exporter ${name}`, error);
+        }
 }
     );
 
@@ -277,8 +277,8 @@ export class ExporterManager {
    */
   async addExporter(config:ExporterConfig): Promise<void> {
     if (this.exporters.has(config.name)) {
-      throw new Error(`Exporter ${  config.name  } already exists`
-}
+      throw new Error(`Exporter ${config.name} already exists`);
+    }
 
     try {
       const exporter = ExporterFactory.create(config);
@@ -287,7 +287,7 @@ export class ExporterManager {
       this.exporters.set(config.name, exporter);
       this.configs.set(config.name, config);
 
-      this.logger.info(`Added exporter ${  config.name}`
+      this.logger.info(`Added exporter ${config.name}`);
 } catch (error) {
       this.logger.error(`Failed to add exporter ${  config.name}`, error);
       throw error;
@@ -300,9 +300,9 @@ export class ExporterManager {
   async removeExporter(name:string): Promise<void> {
     const exporter = this.exporters.get(name);
     if (!exporter) {
-      this.logger.warn(`Exporter ${  name  } not found`
+      this.logger.warn(`Exporter ${name} not found`);
       return;
-}
+    }
 
     try {
       await exporter.shutdown();

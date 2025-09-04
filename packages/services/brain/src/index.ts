@@ -741,7 +741,7 @@ AgentBehavioralProfile,
 AgentExecutionData,
 BehavioralPrediction,
 TaskComplexityAnalysis,
-} from './behavioral-intelligence';
+} from './behavioral-analyzer';
 // =============================================================================
 // TYPE DEFINITIONS - Interfaces and types (tree-shakable)
 // =============================================================================
@@ -774,7 +774,7 @@ type MeetingStructureRecommendation,
 type NeuralParticipantProfile,
 type ParticipantSelectionRecommendation,
 type ParticipantSelectionRequest,
-} from './meeting-intelligence';
+} from './meeting-analyzer';
 // =============================================================================
 // NEURAL MODELS - Pre-built neural network models
 // =============================================================================

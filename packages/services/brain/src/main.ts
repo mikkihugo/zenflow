@@ -50,16 +50,13 @@ import {
 // DEVELOPMENT:SAFe 6.0 Development Manager integration via facades (optional)
 // import { getSafe6DevelopmentManager, createSafe6SolutionTrainManager} from '@claude-zen/development';
 
-import type { BrainConfig } from './artificial-intelligence-service';
+import type { BrainConfig } from './ai-orchestrator';
 import type {
-  NeuralData,
-  NeuralResult,
-  NeuralTask,
-} from './neural-orchestrator';
-import {
-  NeuralOrchestrator,
-  TaskComplexity,
-} from './neural-orchestrator';
+  NeuralMLEngine,
+  MLModelConfig,
+  TrainingData,
+  PredictionResult,
+} from '@claude-zen/neural-ml';
 
 // Utility functions - strategic facades would provide these eventually
 const _generateUUID = () => crypto.randomUUID();
@@ -97,7 +94,7 @@ export class BrainError extends ContextError {
   }
 }
 
-export type { BrainConfig } from './artificial-intelligence-service';
+export type { BrainConfig } from './ai-orchestrator';
 
 // =============================================================================
 // FOUNDATION BRAIN COORDINATOR - Enterprise Implementation

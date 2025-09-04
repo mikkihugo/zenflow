@@ -96,8 +96,8 @@
       "import": "./dist/brain-js-bridge.js"
     },
     "./behavioral": {
-      "types": "./dist/behavioral-intelligence.d.ts",
-      "import": "./dist/behavioral-intelligence.js"
+      "types": "./dist/behavioral-analyzer.d.ts",
+      "import": "./dist/behavioral-analyzer.js"
     },
     "./adaptive": {
       "types": "./dist/adaptive-learning.d.ts",

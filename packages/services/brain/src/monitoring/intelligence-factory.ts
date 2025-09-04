@@ -6,7 +6,7 @@
 
 import { getLogger} from '@claude-zen/foundation';
 
-import { CompleteIntelligenceSystem} from './intelligence-system';
+import { CompleteIntelligenceSystem} from './analysis-engine';
 import type { IntelligenceSystemConfig} from './types';
 
 const logger = getLogger('agent-monitoring-intelligence-factory');

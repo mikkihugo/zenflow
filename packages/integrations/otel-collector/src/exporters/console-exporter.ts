@@ -173,23 +173,19 @@ export class ConsoleExporter implements BaseExporter {
  */
  private logTraceData(data:TelemetryData): void {
  try {
- if (data.data && data.data.spans) {
- logger.info(` Spans:${data.data.spans.length}`
- for (const span of data.data.spans.slice(0, 3)) {
- // Show first 3 spans
- logger.info(
- ` ├─ ${span.name || 'unnamed'} (${span.duration || ' unknown'}ms)`
- );
-}
- if (data.data.spans.length > 3) {
- logger.info(` └─ ... and ${data.data.spans.length - 3} more`
-}
-} else {
- logger.info(` DATA Data:`, JSON.stringify(data.data, null, 2));
-}
-} catch (error) {
- logger.info(` ERROR Invalid trace data:`, data.data);
-}
+   logger.info(` Spans:${data.data.spans.length}`);
+   for (const span of data.data.spans.slice(0, 3)) {
+     // Show first 3 spans
+     logger.info(
+       ` ├─ ${span.name || 'unnamed'} (${span.duration || 'unknown'}ms)`
+     );
+   }
+   if (data.data.spans.length > 3) {
+     logger.info(` └─ ... and ${data.data.spans.length - 3} more`);
+   }
+ } catch (error) {
+   logger.info(` ERROR Invalid trace data:`, data.data);
+ }
 }
 
  /**
@@ -197,16 +193,15 @@ export class ConsoleExporter implements BaseExporter {
  */
  private logMetricData(data:TelemetryData): void {
  try {
- if (data.data && data.data.metrics) {
- logger.info(` Metrics:${data.data.metrics.length}`
- for (const metric of data.data.metrics.slice(0, 5)) {
- // Show first 5 metrics
- const value = metric.value || metric.count || metric.sum || 'N/A';
- logger.info(` ├─ ${metric.name}: ${value} ${metric.unit || ''}`
- }
- if (data.data.metrics.length > 5) {
- logger.info(` └─ ... and ${data.data.metrics.length - 5} more`
- }
+   logger.info(` Metrics:${data.data.metrics.length}`);
+   for (const metric of data.data.metrics.slice(0, 5)) {
+     // Show first 5 metrics
+     const value = metric.value || metric.count || metric.sum || 'N/A';
+     logger.info(` ├─ ${metric.name}: ${value} ${metric.unit || ''}`);
+   }
+   if (data.data.metrics.length > 5) {
+     logger.info(` └─ ... and ${data.data.metrics.length - 5} more`);
+   }
  } else {
  logger.info(` Data:`, JSON.stringify(data.data, null, 2));
  }
