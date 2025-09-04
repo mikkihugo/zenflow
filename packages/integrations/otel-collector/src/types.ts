@@ -245,4 +245,4 @@ export interface ExportResult {
   /** Export duration in milliseconds */
   duration:number;
 }
-// Trigger extensive linting fix across entire repository
+// Trigger extensive linting with fixed Claude CLI authentication
