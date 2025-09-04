@@ -404,8 +404,7 @@ export class GEPA extends Teleprompter {
 
 		this.reflection_lm = (x:string) =>
 			// Simplified reflection LM interface - in production would call actual LM
-			 `Reflected analysis:${x}`
-`
+			 `Reflected analysis:${x}`;
 
 		this.skip_perfect_score = config.skip_perfect_score ?? true;
 		this.add_format_failure_as_feedback =
@@ -431,7 +430,7 @@ export class GEPA extends Teleprompter {
 			throw new Error(
 				"track_stats must be True if track_best_outputs is True.",
 			);
-}
+		}
 		this.track_best_outputs = config.track_best_outputs ?? false;
 
 		// Reproducibility
@@ -457,10 +456,10 @@ export class GEPA extends Teleprompter {
 			throw new Error(
 				"num_trials, valset_size, and minibatch_size must be >= 0.",
 			);
-}
+		}
 		if (full_eval_steps < 1) {
 			throw new Error("full_eval_steps must be >= 1.");
-}
+		}
 
 		const V = valset_size;
 		const N = Math.floor(num_trials);
@@ -518,13 +517,13 @@ export class GEPA extends Teleprompter {
 				AUTO_RUN_SETTINGS[this.auto].n,
 				valset ? valset.length : trainset.length,
 			);
-} else if (
+		} else if (
 			this.max_full_evals !== null &&
 			this.max_full_evals !== undefined
 		) {
 			this.max_metric_calls =
 				this.max_full_evals * (trainset.length + (valset ? valset.length : 0));
-} else if (
+		} else if (
 			this.max_metric_calls === null ||
 			this.max_metric_calls === undefined
 		) {
@@ -771,7 +770,7 @@ export class GEPA extends Teleprompter {
 			config.max_metric_calls / config.valset.length,
 		);
 
-		logger.info(` Running for up to ${max_generations} generations`
+		logger.info(` Running for up to ${max_generations} generations`);
 
 		// Evolution loop
 		while (
@@ -779,7 +778,7 @@ export class GEPA extends Teleprompter {
 			generation < max_generations
 		) {
 			generation++;
-			logger.info(`\n Generation ${generation}`
+			logger.info(`\n Generation ${generation}`);
 
 			// Generate new candidates through reflection
 			const new_candidates = await this.generateCandidates(
@@ -833,13 +832,13 @@ export class GEPA extends Teleprompter {
 
 			// Report best score
 			const best_score = Math.max(...val_aggregate_scores);
-			logger.info(` Best score so far:${best_score.toFixed(3)}`
+			logger.info(` Best score so far:${best_score.toFixed(3)}`);
 
 			// Early stopping if perfect score achieved
 			if (best_score >= config.perfect_score && config.skip_perfect_score) {
 				logger.info(" Perfect score achieved, stopping early");
 				break;
-}
+			}
 }
 
 		// Find best candidate

@@ -173,24 +173,26 @@ export class SQLiteBackend implements FACTStorageBackend {
  lastAccessed:row.last_accessed,
 };
 } catch (error) {
- logger.error('Failed to get FACT entry:', error);') return null;
+ logger.error('Failed to get FACT entry:', error);
+ return null;
 }
 }
 
  async search(query:FACTSearchQuery): Promise<FACTKnowledgeEntry[]> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  let sql = '';
- let params: unknown = {};
+ let params: unknown[] = [];
 
  if (query.query && this.config.enableFullTextSearch) {
  // Use full-text search
  sql = `
    SELECT f.* FROM ${this.config.tableName} f
-   JOIN ${this.config.tableName}fts fts ON f.id = fts.id
-   WHERE fts.${this.config.tableName}fts MATCH ?
+   JOIN ${this.config.tableName}_fts fts ON f.id = fts.id
+   WHERE fts.${this.config.tableName}_fts MATCH ?
    AND f.expires_at > ?
  `;
  params = [query.query, Date.now()];
@@ -200,12 +202,13 @@ export class SQLiteBackend implements FACTStorageBackend {
  params = [Date.now()];
 
  if (query.query) {
- conditions.push('(query LIKE ? OR response LIKE ?)');') const searchTerm = `%${query}.query%`;`;
+ conditions.push('(query LIKE ? OR response LIKE ?)');
+ const searchTerm = `%${query.query}%`;
  params?.push(searchTerm, searchTerm);
 }
 
  if (query.type) {
- conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?``;
+ conditions.push(`JSON_EXTRACT(metadata, '$.type') = ?`);
  params?.push(query.type);
 }
 
@@ -213,9 +216,10 @@ export class SQLiteBackend implements FACTStorageBackend {
  const domainConditions = query.domains
  .map(
  () =>
- `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)``
+ `EXISTS (SELECT 1 FROM JSON_EACH(JSON_EXTRACT(metadata, '$.domains')) WHERE value = ?)`
  )
- .join(' OR ');') conditions.push(`(${domainConditions})``;
+ .join(' OR ');
+ conditions.push(`(${domainConditions})`);
  params?.push(...query.domains);
 }
 
@@ -225,15 +229,16 @@ export class SQLiteBackend implements FACTStorageBackend {
 }
 
  if (query.maxAge !== undefined) {
- conditions.push(`timestamp >= ?``;
+ conditions.push(`timestamp >= ?`);
  params?.push(Date.now() - query.maxAge);
 }
 
- sql = `;
+ sql = `
  SELECT * FROM ${this.config.tableName}
- WHERE ${conditions.join(' AND ')}') ORDER BY timestamp DESC, access_count DESC
+ WHERE ${conditions.join(' AND ')}
+ ORDER BY timestamp DESC, access_count DESC
  LIMIT ?
- `;`;
+ `;
  params?.push(query.limit||50);
 }
 
@@ -257,18 +262,19 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async delete(id:string): Promise<boolean> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const result = await this.dalAdapter.execute(
- `DELETE FROM ${this}.config.tableNameWHERE id = ?`,
+ `DELETE FROM ${this.config.tableName} WHERE id = ?`,
  [id]
  );
 
  // Delete from FTS table if enabled
  if (this.config.enableFullTextSearch) {
  await this.dalAdapter.execute(
- `DELETE FROM ${this.config.tableName}fts WHERE id = ?`,
+ `DELETE FROM ${this.config.tableName}_fts WHERE id = ?`,
  [id]
  );
 }
@@ -281,7 +287,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async cleanup(maxAge:number): Promise<number> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const cutoffTime = Date.now() - maxAge;
@@ -305,7 +312,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async getStats():Promise<Partial<FACTStorageStats>> 
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const result = await this.dalAdapter.query(
@@ -328,7 +336,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async clear():Promise<void> 
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  await this.dalAdapter.execute(`DELETE FROM ${this.config.tableName}``;
@@ -359,7 +368,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async clearByQuality(minQuality:number): Promise<number> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const result = await this.dalAdapter.execute(
@@ -381,7 +391,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async clearByAge(maxAgeMs:number): Promise<number> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const _cutoffTime = Date.now() - maxAgeMs;
@@ -411,7 +422,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async clearAll():Promise<number> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const countResult = await this.dalAdapter.query(
@@ -429,7 +441,8 @@ export class SQLiteBackend implements FACTStorageBackend {
  async optimize(
  strategy:'aggressive|balanced|conservative' = ' balanced') ):Promise<{ optimized: boolean; details: string}> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  const operations = [];
@@ -464,7 +477,8 @@ export class SQLiteBackend implements FACTStorageBackend {
 
  async getStorageStats():Promise<FACTStorageStats> {
  if (!this.dalAdapter) {
- throw new Error('SQLite backend not initialized');')}
+ throw new Error('SQLite backend not initialized');
+}
 
  try {
  // Get basic counts and timestamps

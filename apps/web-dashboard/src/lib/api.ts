@@ -38,14 +38,14 @@ interface Task {
   progress: number;
   priority: string;
   created: string;
-  assignedTo?: string
+  assignedTo?: string;
 }
 
 interface SwarmConfig {
   topology: string;
   maxAgents: number;
   strategy: string;
-  created: string
+  created: string;
 }
 
 interface HealthStatus {

@@ -327,8 +327,9 @@ pnpm --filter @claude-zen/coordination test
 - **Type errors**: Many pre-existing, but build still succeeds
 - **Primary interface**: Web dashboard at http://localhost:3000/
 - **Secondary interfaces**: MCP/CLI are limited and partially functional
-- **Domain boundaries**: Respect strict separation between coordination, neural, interfaces, memory, database
-- **WASM performance**: All heavy compute must route through Rust/WASM gateway
+- **Domain boundaries**: Respect strict separation between coordination, neural, interfaces, memory, databas
+
+All heavy compute must route through Rust/WASM gateway
 - **Enterprise scale**: Platform supports 1000+ agents, 10,000+ tasks/minute
 - **Binary size**: Cross-platform executables are 116MB each (self-contained)
 
