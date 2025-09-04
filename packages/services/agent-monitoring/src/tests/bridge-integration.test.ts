@@ -4,8 +4,8 @@
  * Simple test to demonstrate the bridge functionality without relying on complex test infrastructure.
  */
 
-import { EventDrivenIntelligenceSystem, createEventDrivenIntelligenceSystem } from '../intelligence-system-event-driven.js';
-import { AgentMonitoringBridge, createAgentMonitoringBridge } from '../intelligence-system-bridge.js';
+import { createEventDrivenIntelligenceSystem } from '../intelligence-system-event-driven.js';
+import { createAgentMonitoringBridge } from '../intelligence-system-bridge.js';
 
 /**
  * Simple demonstration of the bridge working
