@@ -59,62 +59,27 @@ jobs:
           echo "error-count=$ERROR_COUNT" >> $GITHUB_OUTPUT
           echo "Found $ERROR_COUNT linting errors"
 
-      - name: 🤖 Setup Claude Code
-        if: steps.lint-check.outputs.error-count != '0'
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          echo "🤖 Setting up Claude Code..."
-          # Install Claude CLI
-          curl -fsSL https://claude.ai/install.sh | bash
-          
-          # Try to authenticate - use API key if available, otherwise skip auth
-          if [ -n "$ANTHROPIC_API_KEY" ]; then
-            echo "🔐 Using API key authentication"
-            export ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY"
-          else
-            echo "🔐 No API key - attempting to run without explicit auth"
-          fi
-
       - name: 🔧 Claude Surgical Linting
         if: steps.lint-check.outputs.error-count != '0'
-        run: |
-          echo "🔧 Running Claude surgical linting..."
-          
-          # Create surgical linting prompt
-          cat > /tmp/claude-surgical-prompt.txt << 'EOF'
-          You are a surgical code linter. Your task is to fix ONLY simple, confident linting errors while preserving ALL functionality.
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          prompt: |
+            You are a surgical code linter. Fix ONLY simple, confident linting errors while preserving ALL functionality.
 
-          SURGICAL REQUIREMENTS:
-          1. Fix ONLY simple, obvious issues: missing semicolons, unused imports, basic formatting
-          2. SKIP complex syntax errors, incomplete code, or anything you're not 100% confident about
-          3. NEVER change business logic or functionality
-          4. NEVER remove error handling
-          5. NEVER change return types without updating callers
-          6. Use Edit tool for line-by-line changes only
-          7. Preserve all existing behavior
+            SURGICAL REQUIREMENTS:
+            1. Fix ONLY simple, obvious issues: missing semicolons, unused imports, basic formatting
+            2. SKIP complex syntax errors, incomplete code, or anything you're not 100% confident about
+            3. NEVER change business logic or functionality
+            4. Use Edit tool for line-by-line changes only
 
-          CONFIDENCE RULES:
-          - Fix: Missing semicolons, unused variables/imports, basic formatting
-          - SKIP: Syntax errors in complex expressions, incomplete functions, type conflicts
-          - SKIP: Any error in files with multiple complex syntax issues
-          - SKIP: Anything you're not completely certain about
+            CONFIDENCE RULES:
+            - Fix: Missing semicolons, unused variables/imports, basic formatting  
+            - SKIP: Syntax errors in complex expressions, incomplete functions, type conflicts
+            - SKIP: Any error in files with multiple complex syntax issues
 
-          FORBIDDEN:
-          - Bulk file replacements
-          - Removing error handling
-          - Changing API contracts
-          - Modifying functionality
-          - Fixing anything you're not 100% confident about
-
-          Process: Run `pnpm lint` first, then fix ONLY simple, obvious errors surgically using Edit tool.
-          EOF
-
-          # Run Claude with surgical linting using proper CLI syntax
-          timeout 1800 claude --print \
-            --append-system-prompt "$(cat /tmp/claude-surgical-prompt.txt)" \
-            "Fix linting errors surgically. Run pnpm lint first to see errors, then fix them one by one preserving all functionality. Work systematically through the issues." \
-            || echo "Claude linting completed (may have timed out)"
+            PROCESS: Run `pnpm lint` first to see errors, then fix ONLY simple, obvious errors surgically using Edit tool. Work systematically through the issues.
+          allowed_tools: "Bash,Edit,Read,Glob,Grep"
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
       - name: 🔍 Verify Fixes
         if: steps.lint-check.outputs.error-count != '0'
