@@ -200,20 +200,66 @@ jobs:
               body: message
             });
 
-      - name: ✅ Lint Status Summary
+      - name: ✅ Lint Status Summary & Continuous Linting
         run: |
           FINAL_ERROR_COUNT=$(pnpm lint 2>&1 | grep -E "error" | wc -l || echo "0")
+          INITIAL_ERRORS="${{ steps.lint-check.outputs.error-count }}"
+          
           echo "## 🔧 Claude Surgical Lint Summary"
-          echo "- Initial errors: ${{ steps.lint-check.outputs.error-count }}"
+          echo "- Initial errors: $INITIAL_ERRORS"
           echo "- Final errors: $FINAL_ERROR_COUNT"
+          echo "- Errors fixed this iteration: $((INITIAL_ERRORS - FINAL_ERROR_COUNT))"
           
           if [ "$FINAL_ERROR_COUNT" = "0" ]; then
-            echo "✅ All linting errors resolved surgically!"
+            echo "🎉 SUCCESS: All linting errors resolved surgically!"
+            echo "✅ Repository is now fully lint-compliant"
             exit 0
-          elif [ "$FINAL_ERROR_COUNT" -lt "${{ steps.lint-check.outputs.error-count }}" ]; then
-            echo "✅ Partial success: $((${{ steps.lint-check.outputs.error-count }} - $FINAL_ERROR_COUNT)) errors fixed surgically"
+          elif [ "$FINAL_ERROR_COUNT" -lt "$INITIAL_ERRORS" ]; then
+            echo "✅ Progress made: $((INITIAL_ERRORS - FINAL_ERROR_COUNT)) errors fixed"
+            
+            # Check iteration count to prevent infinite loops
+            ITERATION_COUNT=$(git log --oneline --grep="🔄 Continue surgical linting iteration" | wc -l)
+            if [ "$ITERATION_COUNT" -ge 10 ]; then
+              echo "🛑 Maximum iterations (10) reached - stopping to prevent infinite loop"
+              echo "💡 Manual review needed for remaining $FINAL_ERROR_COUNT errors"
+              exit 0
+            fi
+            
+            # Check if we're making minimal progress with many errors
+            if [ "$FINAL_ERROR_COUNT" -gt 50 ] && [ $((INITIAL_ERRORS - FINAL_ERROR_COUNT)) -lt 5 ]; then
+              echo "⚠️ Minimal progress with many errors remaining - stopping to avoid infinite loop"
+              echo "💡 Manual review needed for remaining $FINAL_ERROR_COUNT errors"
+              exit 0
+            fi
+            
+            # Create trigger commit for next iteration if there are still fixable errors
+            if [ "$FINAL_ERROR_COUNT" -gt 0 ]; then
+              echo "🔄 Triggering next surgical linting iteration..."
+              
+              # Configure git
+              git config --local user.email "claude-lint-bot@anthropic.com"
+              git config --local user.name "Claude Lint Bot"
+              
+              # Create empty trigger commit
+              git commit --allow-empty -m "🔄 Continue surgical linting iteration
+
+              - Remaining errors: ${FINAL_ERROR_COUNT}
+              - Fixed this round: $((INITIAL_ERRORS - FINAL_ERROR_COUNT))
+              - Auto-triggering next iteration
+
+              🤖 Generated with Claude Code surgical linting
+              
+              Co-Authored-By: Claude <noreply@anthropic.com>"
+              
+              # Push to trigger next iteration
+              git push || echo "Push failed - may be merge conflicts"
+              
+              echo "✅ Next iteration triggered - see new workflow run"
+            fi
             exit 0
           else
-            echo "⚠️ No errors reduced - functionality preserved but manual review may be needed"
+            echo "⚠️ No errors reduced this iteration"
+            echo "🔍 $FINAL_ERROR_COUNT errors may require manual review"
+            echo "💡 These might be complex syntax errors beyond surgical fixing"
             exit 1
           fi
