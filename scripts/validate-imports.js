@@ -105,7 +105,7 @@ function findSourceFiles(dir, files = []) {
 				files.push(fullPath);
 			}
 		}
-	} catch (_error) {
+	} catch {
 		// Skip inaccessible directories
 	}
 
@@ -225,7 +225,7 @@ function checkFile(filePath) {
 				}
 			}
 		}
-	} catch (_error) {
+	} catch {
 		logger.warn(` Could not read file: ${filePath}`);
 	}
 }
