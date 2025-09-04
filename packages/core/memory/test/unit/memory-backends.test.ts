@@ -71,12 +71,12 @@ describe('Memory Backends', () => {
     it('should handle large data sets efficiently', async () => {
       const largeData = Array.from({ length: 1000 }, (_, i) => ({
         id: i,
-        data: 'test-data-' + i,
+        data: `test-data-${  i}`,
         timestamp: Date.now(),
       }));
 
       for (const [i, largeDatum] of largeData.entries()) {
-        await backend.store('key-' + i, largeDatum);
+        await backend.store(`key-${  i}`, largeDatum);
       }
 
       backend.size.mockResolvedValue(largeData.length);
@@ -90,7 +90,7 @@ describe('Memory Backends', () => {
 
       // Simulate storing beyond limit
       for (let i = 0; i < 10; i++) {
-        await backend.store('limit-key-' + i, 'value-' + i);
+        await backend.store(`limit-key-${  i}`, `value-${  i}`);
       }
 
       backend.size.mockResolvedValue(5); // Should not exceed maxSize
@@ -434,7 +434,7 @@ describe('Memory Backends', () => {
       const factory = {
         createBackend: vi.fn().mockImplementation((config: unknown) => {
           if (!['memory', 'sqlite', 'lancedb', 'json'].includes(config.type)) {
-            throw new Error('Unknown backend type:' + config.type);
+            throw new Error(`Unknown backend type:${  config.type}`);
           }
           return { type: config.type };
         }),

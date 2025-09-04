@@ -148,11 +148,21 @@ export abstract class BaseMemoryBackend {
       throw listResult.error;
     }
     
-    const results: Record<string, JSONValue> = {};
-    for (const key of listResult.value) {
+    // Fetch all values in parallel for better performance
+    const getPromises = listResult.value.map(async (key) => {
       const getResult = await this.get(key);
-      if (getResult.isOk() && getResult.value) {
-        results[key] = getResult.value.value;
+      return { key, result: getResult };
+    });
+
+    const getResults = await Promise.allSettled(getPromises);
+    
+    const results: Record<string, JSONValue> = {};
+    for (const promiseResult of getResults) {
+      if (promiseResult.status === 'fulfilled') {
+        const { key, result } = promiseResult.value;
+        if (result.isOk() && result.value) {
+          results[key] = result.value.value;
+        }
       }
     }
     return results;

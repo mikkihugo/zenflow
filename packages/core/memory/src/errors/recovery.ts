@@ -261,7 +261,13 @@ export class RecoveryStrategyManager extends EventEmitter {
           };
         }
 
-        const backend = context.backends.get(backendId)!;
+        const backend = context.backends.get(backendId);
+        if (!backend) {
+          return {
+            success: false,
+            error: 'Backend not found for reconnection',
+          };
+        }
 
         try {
           // Attempt to reinitialize the backend

@@ -359,8 +359,8 @@ export function createMemoryContainer(
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: () => {},
-      info: () => {},
+      debug: () => { /* Debug logging disabled in stub */ },
+      info: () => { /* Info logging disabled in stub */ },
       warn: (msg: string) => logger.warn(`[MEMORY WARN] ${  msg}`),
       error: (msg: string) => logger.error(`[MEMORY ERROR] ${  msg}`),
     }),
@@ -370,7 +370,7 @@ export function createMemoryContainer(
     type: 'singleton',
     create: () => ({
       get: (key: string, defaultValue?: unknown) => defaultValue,
-      set: () => {},
+      set: () => { /* Config setting disabled in stub */ },
       has: () => false,
     }),
   });

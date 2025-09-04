@@ -75,7 +75,11 @@ export class MemoryBackendFactory {
 
     // Check if backend is already created
     if (this.backends.has(id)) {
-      return this.backends.get(id)!;
+      const existingBackend = this.backends.get(id);
+      if (!existingBackend) {
+        throw new Error(`Backend ${id} exists in map but is null`);
+      }
+      return existingBackend;
     }
 
     // Get backend constructor
@@ -112,7 +116,10 @@ export class MemoryBackendFactory {
 
     // Check if backend is already created
     if (this.backends.has(id)) {
-      const existing = this.backends.get(id)!;
+      const existing = this.backends.get(id);
+      if (!existing) {
+        throw new Error(`Database backend ${id} exists in map but is null`);
+      }
       if (existing instanceof DatabaseBackedAdapter) {
         return existing;
       }
@@ -274,19 +281,40 @@ export class MemoryBackendFactory {
   }
 
   /**
-   * Health check all active backends.
+   * Health check all active backends in parallel for better performance.
    */
   public async healthCheckAll(): Promise<Record<string, unknown>> {
     const results: Record<string, unknown> = {};
-
-    for (const [id, backend] of Array.from(this.backends.entries())) {
+    
+    // Create parallel health check promises
+    const healthCheckPromises = Array.from(this.backends.entries()).map(async ([id, backend]) => {
       try {
-        results[id] = await backend.healthCheck();
+        const healthResult = await backend.healthCheck();
+        return { id, result: healthResult };
       } catch (error) {
-        results[id] = {
+        return {
+          id,
+          result: {
+            healthy: false,
+            error: (error as Error).message,
+            backend: backend.constructor.name,
+          }
+        };
+      }
+    });
+
+    // Wait for all health checks to complete
+    const healthResults = await Promise.allSettled(healthCheckPromises);
+
+    // Process results
+    for (const promiseResult of healthResults) {
+      if (promiseResult.status === 'fulfilled') {
+        results[promiseResult.value.id] = promiseResult.value.result;
+      } else {
+        // This should rarely happen since we're handling errors above
+        results[`unknown-${Date.now()}`] = {
           healthy: false,
-          error: (error as Error).message,
-          backend: backend.constructor.name,
+          error: promiseResult.reason?.message || 'Unknown error',
         };
       }
     }

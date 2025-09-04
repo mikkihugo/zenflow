@@ -422,13 +422,11 @@ export async function createKeyValueStorage(
   options: { enableCache?: boolean; maxCacheSize?: number } = {}
 ): Promise<KeyValueStorageImpl> {
   const adapter = await createDatabase('sqlite', database);
-  const storage = new KeyValueStorageImpl(adapter, {
+  return new KeyValueStorageImpl(adapter, {
     enableCache: true,
     maxCacheSize: 1000,
     ...options,
   });
-  
-  return storage;
 }
 
 // =============================================================================

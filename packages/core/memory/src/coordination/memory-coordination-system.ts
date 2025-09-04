@@ -468,23 +468,32 @@ export class MemoryCoordinationSystem extends EventEmitter {
 
       switch (request.operation) {
         case 'store':
+          if (!request.key) {
+            throw new Error('Key is required for store operation');
+          }
           await node.backend.store(
-            request.key!,
+            request.key,
             request.value as JSONValue,
             request.namespace
           );
           break;
 
         case 'retrieve':
+          if (!request.key) {
+            throw new Error('Key is required for retrieve operation');
+          }
           data = await node.backend.retrieve<T>(
-            request.key!,
+            request.key,
             request.namespace
           );
           break;
 
         case 'delete':
+          if (!request.key) {
+            throw new Error('Key is required for delete operation');
+          }
           data = (await node.backend.delete(
-            request.key!,
+            request.key,
             request.namespace
           )) as T;
           break;
@@ -494,6 +503,9 @@ export class MemoryCoordinationSystem extends EventEmitter {
           break;
 
         case 'search':
+          if (!request.key) {
+            throw new Error('Key is required for search operation');
+          }
           data = (await (
             node.backend as unknown as {
               search: (
@@ -501,7 +513,7 @@ export class MemoryCoordinationSystem extends EventEmitter {
                 namespace?: string
               ) => Promise<Record<string, JSONValue>>;
             }
-          ).search(request.key!, request.namespace)) as T;
+          ).search(request.key, request.namespace)) as T;
           break;
 
         case 'clear':

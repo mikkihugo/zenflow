@@ -342,7 +342,7 @@ describe('Database Package Integration Tests - Performance', () => {
 
  // Test bulk reads
  const readResult = await adapter.query(
- 'SELECT * FROM perf_test ORDER BY id LIMIT 100') );
+ 'SELECT * FROM perf_test ORDER BY id LIMIT 100');
  expect(readResult.rows).toHaveLength(100);
 } finally {
  await adapter.disconnect();

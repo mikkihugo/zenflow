@@ -78,8 +78,8 @@ export class MemorySystemManager extends EventEmitter {
  try {
  await withTrace('memory-system-manager-init', async (span) => {
  span?.setAttributes({
- 'system_name':this.config.name,
- 'system_mode':this.config.mode,
+ system_name:this.config.name,
+ system_mode:this.config.mode,
 });
 
  await this.telemetry.initialize();
@@ -153,7 +153,7 @@ export class MemorySystemManager extends EventEmitter {
 }
 
  return await this.circuitBreaker.execute(async () => {
- await this.coordination!.addNode(id, backend, options);
+ await this.coordination.addNode(id, backend, options);
 
  this.emit('nodeAdded', { id, options });
  recordMetric('memory_system_node_added', 1, {
@@ -169,7 +169,7 @@ export class MemorySystemManager extends EventEmitter {
 }
 
  return await this.circuitBreaker.execute(async () => {
- await this.coordination!.removeNode(id);
+ await this.coordination.removeNode(id);
 
  this.emit('nodeRemoved', { id });
  recordMetric('memory_system_node_removed', 1, {
@@ -197,12 +197,12 @@ export class MemorySystemManager extends EventEmitter {
 
  return await withTrace('memory-system-store', async (span) => {
  span?.setAttributes({
- 'memory_key':key,
- 'memory_namespace':namespace,
- 'memory_tier':options?.tier || ' warm',});
+ memory_key:key,
+ memory_namespace:namespace,
+ memory_tier:options?.tier || ' warm',});
 
  // Store via coordination system
- const result = await this.coordination!.store(key, value, namespace, {
+ const result = await this.coordination.store(key, value, namespace, {
  consistency: options?.consistency,
  tier: options?.tier,
  replicate: this.config.coordination.strategy === 'replicated',
@@ -242,8 +242,8 @@ export class MemorySystemManager extends EventEmitter {
 
  return await withTrace('memory-system-retrieve', async (span) => {
  span?.setAttributes({
- 'memory_key':key,
- 'memory_namespace':namespace,
+ memory_key:key,
+ memory_namespace:namespace,
 });
 
  // Try lifecycle manager first if enabled
@@ -260,7 +260,7 @@ export class MemorySystemManager extends EventEmitter {
  }
 
  // Fall back to coordination system
- const result = await this.coordination!.retrieve<T>(
+ const result = await this.coordination.retrieve<T>(
  key,
  namespace,
  options
@@ -284,8 +284,8 @@ export class MemorySystemManager extends EventEmitter {
 
  return await withTrace('memory-system-delete', async (span) => {
  span?.setAttributes({
- 'memory_key':key,
- 'memory_namespace':namespace,
+ memory_key:key,
+ memory_namespace:namespace,
 });
 
  // Delete from lifecycle manager if enabled
@@ -294,7 +294,7 @@ export class MemorySystemManager extends EventEmitter {
  }
 
  // Delete from coordination system
- const result = await this.coordination!.delete(key, namespace);
+ const result = await this.coordination.delete(key, namespace);
 
  recordMetric('memory_system_delete', 1, {
  systemName: this.config.name,
@@ -313,7 +313,7 @@ export class MemorySystemManager extends EventEmitter {
 
  return await withTrace('memory-system-clear', async (span) => {
  span?.setAttributes({
- 'memory_namespace':namespace || ' all',});
+ memory_namespace:namespace || ' all',});
 
  // Clear cache eviction if enabled
  if (this.cacheEviction) {
@@ -321,7 +321,7 @@ export class MemorySystemManager extends EventEmitter {
  }
 
  // Clear coordination system
- await this.coordination!.clear(namespace);
+ await this.coordination.clear(namespace);
 
  recordMetric('memory_system_clear', 1, {
  systemName: this.config.name,

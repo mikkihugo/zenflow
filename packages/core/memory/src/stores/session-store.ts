@@ -495,7 +495,10 @@ export class SessionMemoryStore extends EventEmitter implements MemoryStore {
     this.ensureInitialized();
 
     if (this.sessions.has(sessionId)) {
-      return this.sessions.get(sessionId)!;
+      const session = this.sessions.get(sessionId);
+      if (session) {
+        return session;
+      }
     }
 
     if (this.storage) {

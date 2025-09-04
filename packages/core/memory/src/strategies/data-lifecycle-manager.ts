@@ -507,8 +507,8 @@ export class DataLifecycleManager extends EventEmitter {
 
     const entries = Array.from(stageMap.keys())
       .map((key) => this.entries.get(key))
-      .filter((entry) => entry !== undefined)
-      .sort((a, b) => a!.lastAccessed - b!.lastAccessed); // Oldest first
+      .filter((entry): entry is NonNullable<typeof entry> => entry !== undefined)
+      .sort((a, b) => a.lastAccessed - b.lastAccessed); // Oldest first
 
     const cleanupCount = Math.min(
       entries.length,

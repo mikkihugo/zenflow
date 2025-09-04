@@ -587,7 +587,10 @@ export class SwarmKnowledgeExtractor extends EventEmitter {
         if (!failureGroups.has(context)) {
           failureGroups.set(context, []);
         }
-        failureGroups.get(context)!.push(failure);
+        const contextFailures = failureGroups.get(context);
+        if (contextFailures) {
+          contextFailures.push(failure);
+        }
       }
 
       for (const [context, failureList] of failureGroups.entries()) {

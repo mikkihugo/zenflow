@@ -337,7 +337,7 @@ export class CacheEvictionStrategy extends EventEmitter {
     const now = Date.now();
     return Array.from(this.cache.values())
       .filter((entry) => entry.expiresAt)
-      .sort((a, b) => a.expiresAt! - now - (b.expiresAt! - now)) // Sort by time to expiration
+      .sort((a, b) => (a.expiresAt || 0) - now - ((b.expiresAt || 0) - now)) // Sort by time to expiration
       .map((entry) => entry.key);
   }
 
