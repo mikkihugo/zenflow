@@ -1,5 +1,4 @@
-/* eslint-env node */
-/* global window, document */
+/* eslint-env node, browser */
 const logger = console;
 
 const puppeteer = require('puppeteer');

@@ -6,17 +6,8 @@
         "-y",
         "@modelcontextprotocol/server-memory"
       ],
-      "disabled": true,
+      "disabled": false,
       "alwaysAllow": []
-    },
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp@latest",
-        "--port=",
-        "--extension"
-      ]
     }
   }
 }

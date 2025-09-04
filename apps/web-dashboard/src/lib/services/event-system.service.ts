@@ -114,7 +114,10 @@ class EventSystemService {
       this.eventListeners.set(event, new Set());
     }
     
-    this.eventListeners.get(event)!.add(callback);
+    const listeners = this.eventListeners.get(event);
+    if (listeners) {
+      listeners.add(callback);
+    }
     
     // Return unsubscribe function
     return () => {

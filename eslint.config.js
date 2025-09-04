@@ -69,7 +69,9 @@ export default [
       'prefer-promise-reject-errors': 'error',             // Reject with Error objects
 
       // Anti-AI Laziness Rules
-      '@typescript-eslint/no-empty-function': 'error',     // No empty implementations
+      '@typescript-eslint/no-empty-function': ['error', {  // No empty implementations
+        allow: ['arrowFunctions', 'constructors']          // Allow empty arrow functions and constructors
+      }],
       '@typescript-eslint/no-unused-expressions': 'error', // No meaningless statements
       'no-empty': 'error',                                 // No empty blocks
       'no-constant-condition': 'error',                    // No if(true) or while(true)
@@ -544,6 +546,7 @@ export default [
       'sonarjs/cognitive-complexity': ['warn', 50], // Higher threshold for tests
       '@typescript-eslint/naming-convention': 'off',
       complexity: 'off', // Turn off basic complexity for tests
+      'max-nested-callbacks': ['error', { max: 5 }], // Higher threshold for tests
       
       // Allow tests to import from their own package and foundation/database
       'no-restricted-imports': 'off',

@@ -459,13 +459,13 @@ export class WebSocketHubManager {
     reconnectAttempts: number;
   } {
     const state = this.connectionState;
-    let currentState: ConnectionState;
+    let currentState: ConnectionState | undefined;
     state.subscribe((s) => (currentState = s))(); // Get current value
 
     return {
       connected: this.isConnected(),
-      availableServices: currentState!.availableServices,
-      activeSubscriptions: currentState!.subscriptions.length,
+      availableServices: currentState?.availableServices || [],
+      activeSubscriptions: currentState?.subscriptions.length || 0,
       reconnectAttempts: this.reconnectAttempts,
     };
   }
@@ -474,9 +474,9 @@ export class WebSocketHubManager {
    * Send ping for health check
    */
   ping(): void {
-    if (!this.isConnected()) return;
+    if (!this.isConnected() || !this.ws) return;
 
-    this.ws!.send(
+    this.ws.send(
       JSON.stringify({
         type: 'ping',
         timestamp: Date.now(),
