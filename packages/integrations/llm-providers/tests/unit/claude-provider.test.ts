@@ -1,4 +1,4 @@
-export class ClaudeProvider.Test {
+export class ClaudeProviderTest {
   constructor() {
     // TODO: Implement constructor
   }

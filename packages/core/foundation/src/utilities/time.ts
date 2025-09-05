@@ -32,6 +32,7 @@
  */
 
 import { setTimeout as nodeSetTimeout } from 'node:timers/promises';
+import { FOUNDATION_ERRORS } from '../constants/errors';
 // Foundation re-exports date-fns internally to avoid circular dependency
 import { format } from 'date-fns';
 import * as dateFnsLib from 'date-fns';
@@ -231,7 +232,7 @@ export function delay(ms: number): Promise<void> {
  */
 export function timeout(
   ms: number,
-  message: string = 'Operation timed out'
+  message: string = FOUNDATION_ERRORS.OPERATION_TIMED_OUT
 ): Promise<never> {
   return new Promise((_, reject) => {
     setTimeout(() => reject(new Error(message)), ms);
@@ -337,7 +338,8 @@ export function createTimer() {
 
     stop(): number {
       if (startTime === null) {
-        throw new Error('Timer not started');
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        throw new Error(FOUNDATION_ERRORS.TIMER_NOT_STARTED);
       }
       endTime = highResTime();
       return Number(endTime - startTime) / 1_000_000;
@@ -345,7 +347,8 @@ export function createTimer() {
 
     elapsed(): number {
       if (startTime === null) {
-        throw new Error('Timer not started');
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        throw new Error(FOUNDATION_ERRORS.TIMER_NOT_STARTED);
       }
       const currentTime = endTime || highResTime();
       return Number(currentTime - startTime) / 1_000_000;

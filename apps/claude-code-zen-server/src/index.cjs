@@ -10,7 +10,7 @@ const cors = require('cors');
 const { createServer } = require('http');
 
 const logger = console;
-const { Server: SocketIOServer } = require('socket.io');
+const { Server: socketIOServer } = require('socket.io');
 const path = require('path');
 
 const app = express();
@@ -82,7 +82,7 @@ app.get(/^(?!\/api).*$/, (req, res) => {
 const server = createServer(app);
 
 // Initialize Socket.IO
-const io = new SocketIOServer(server, {
+const io = new socketIOServer(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
@@ -97,7 +97,7 @@ io.on('connection', (socket) => {
 
   // Send initial connection data
   socket.emit('connected', {
-    sessionId: socket.id,
+    sessionId: socket.handshake.headers['x-session-id'] || socket.id,
     timestamp: new Date().toISOString(),
     serverVersion: '1.0.0'
   });

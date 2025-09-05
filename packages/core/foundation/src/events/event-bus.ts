@@ -10,6 +10,7 @@
  */
 
 import { EventEmitter } from './event-emitter.js';
+import { SYSTEM_EVENTS } from '../constants/events';
 
 // Simple logger for event system to avoid circular dependency
 // Production-ready:Use structured logging instead of direct console
@@ -217,14 +218,14 @@ export class EventBus<
  if (this.busConfig.enableMetrics) {
  this.resetMetrics();
  // Emit initialization event
- this.emit('eventbus:initialized', { timestamp: Date.now() });
+ this.emit(SYSTEM_EVENTS.EVENTBUS_INITIALIZED, { timestamp: Date.now() });
  }
 
  // Minimal async operation to satisfy lint
  await new Promise((resolve) => setTimeout(resolve, 0));
 
  // Set up error handling
- this.on('error', (error) => {
+ this.on(SYSTEM_EVENTS.ERROR, (error) => {
  if (this.busConfig.enableLogging) {
  logger.error('EventBus error', error);
  }
@@ -308,7 +309,7 @@ export class EventBus<
  if (this.listenerCount('error') > 0) {
  try {
  // Use super.emit to avoid re-entering isolation logic
- super.emit('error', error);
+ super.emit(SYSTEM_EVENTS.ERROR, error);
  } catch {
  // swallow to preserve isolation contract
  }

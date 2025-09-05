@@ -9,7 +9,7 @@ import { createSystemMonitoringBridge } from './packages/services/system-monitor
 import { EventBus } from './packages/core/foundation/dist/src/index.js';
 
 async function testEventFlow() {
-  console.log('🧪 Starting EventBus Integration Test...');
+  // Removed console.log('🧪 Starting EventBus Integration Test...');
   
   // Create EventBus instance
   const eventBus = EventBus.getInstance();
@@ -31,15 +31,15 @@ async function testEventFlow() {
   
   eventTypes.forEach(eventType => {
     eventBus.on(eventType, (payload) => {
-      console.log(`📨 EventBus received: ${eventType}`, payload);
+      // Removed console.log(`📨 EventBus received: ${eventType}`, payload);
       eventsReceived.push({ eventType, payload, timestamp: Date.now() });
     });
   });
 
-  console.log('👂 Listening for events:', eventTypes);
+  // Removed console.log('👂 Listening for events:', eventTypes);
 
   // Create monitor and bridge
-  console.log('🏗️  Creating monitor and bridge...');
+  // Removed console.log('🏗️  Creating monitor and bridge...');
   const monitor = createEventDrivenSystemMonitor();
   
   const bridge = await createSystemMonitoringBridge(monitor, {
@@ -48,49 +48,49 @@ async function testEventFlow() {
     enableLogging: true
   });
 
-  console.log('✅ Bridge created and started');
-  console.log('📊 Bridge Status:', bridge.getStatus());
+  // Removed console.log('✅ Bridge created and started');
+  // Removed console.log('📊 Bridge Status:', bridge.getStatus());
 
   // Initialize monitor
   await monitor.initialize();
-  console.log('✅ Monitor initialized');
+  // Removed console.log('✅ Monitor initialized');
 
   // Simulate some brain events to trigger system monitoring responses
-  console.log('🧠 Simulating brain events...');
+  // Removed console.log('🧠 Simulating brain events...');
   
   // Trigger metrics request
   monitor.addEventListener('brain:system-monitoring:get-metrics', (data) => {
-    console.log('🔄 Monitor received brain request:', data);
+    // Removed console.log('🔄 Monitor received brain request:', data);
   });
 
   // Wait for events to flow
-  console.log('⏳ Waiting 10 seconds for events to flow...');
+  // Removed console.log('⏳ Waiting 10 seconds for events to flow...');
   await new Promise(resolve => setTimeout(resolve, 10000));
 
   // Summary
-  console.log('\n📈 Test Results:');
-  console.log(`Events received: ${eventsReceived.length}`);
+  // Removed console.log('\n📈 Test Results:');
+  // Removed console.log(`Events received: ${eventsReceived.length}`);
   
   const eventCounts = eventsReceived.reduce((acc, event) => {
     acc[event.eventType] = (acc[event.eventType] || 0) + 1;
     return acc;
   }, {});
   
-  console.log('Event breakdown:', eventCounts);
+  // Removed console.log('Event breakdown:', eventCounts);
 
   // Check for expected events
   const hasModuleRegister = eventsReceived.some(e => e.eventType === 'registry:module-register');
   const hasHeartbeat = eventsReceived.some(e => e.eventType === 'registry:heartbeat');
   
-  console.log(`✅ Module registration event: ${hasModuleRegister ? 'Yes' : 'No'}`);
-  console.log(`💓 Heartbeat events: ${hasHeartbeat ? 'Yes' : 'No'}`);
+  // Removed console.log(`✅ Module registration event: ${hasModuleRegister ? 'Yes' : 'No'}`);
+  // Removed console.log(`💓 Heartbeat events: ${hasHeartbeat ? 'Yes' : 'No'}`);
 
   // Cleanup
-  console.log('\n🧹 Cleaning up...');
+  // Removed console.log('\n🧹 Cleaning up...');
   bridge.stop();
   await monitor.shutdown();
   
-  console.log('🎉 Integration test completed!');
+  // Removed console.log('🎉 Integration test completed!');
   
   // Return results for validation
   return {
@@ -105,12 +105,12 @@ async function testEventFlow() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   testEventFlow()
     .then(results => {
-      console.log('\n✅ Test Results:', results);
+      // Removed console.log('\n✅ Test Results:', results);
       if (results.eventsReceived > 0) {
-        console.log('🎉 SUCCESS: Events are flowing through EventBus!');
+        // Removed console.log('🎉 SUCCESS: Events are flowing through EventBus!');
         process.exit(0);
       } else {
-        console.log('❌ FAILURE: No events received');
+        // Removed console.log('❌ FAILURE: No events received');
         process.exit(1);
       }
     })

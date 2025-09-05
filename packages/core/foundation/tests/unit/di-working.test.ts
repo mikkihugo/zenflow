@@ -9,6 +9,8 @@ import { createContainer } from '../../src/dependency-injection';
 
 describe('Dependency Injection - Working Methods Only', () => {
   const TEST_SERVICE_NAME = 'test-service';
+  const META_SERVICE_NAME = META_SERVICE_NAME;
+  const FACTORY_SERVICE_NAME = FACTORY_SERVICE_NAME;
   let container: ReturnType<typeof createContainer>;
 
   beforeEach(() => {
@@ -35,10 +37,10 @@ describe('Dependency Injection - Working Methods Only', () => {
         tags: ['unit-test', 'core'],
       };
 
-      container.registerInstance('meta-service', service, metadata);
+      container.registerInstance(META_SERVICE_NAME, service, metadata);
 
-      expect(container.has('meta-service')).toBe(true);
-      const resolved = container.resolve('meta-service');
+      expect(container.has(META_SERVICE_NAME)).toBe(true);
+      const resolved = container.resolve(META_SERVICE_NAME);
       expect(resolved).toBe(service);
     });
 
@@ -49,12 +51,12 @@ describe('Dependency Injection - Working Methods Only', () => {
         return { created: Date.now(), callCount, type: 'factory' };
       };
 
-      container.registerFunction('factory-service', factory);
+      container.registerFunction(FACTORY_SERVICE_NAME, factory);
 
-      expect(container.has('factory-service')).toBe(true);
+      expect(container.has(FACTORY_SERVICE_NAME)).toBe(true);
 
-      const resolved1 = container.resolve('factory-service');
-      const resolved2 = container.resolve('factory-service');
+      const resolved1 = container.resolve(FACTORY_SERVICE_NAME);
+      const resolved2 = container.resolve(FACTORY_SERVICE_NAME);
 
       // Function should be called each time
       expect(resolved1.callCount).toBe(1);

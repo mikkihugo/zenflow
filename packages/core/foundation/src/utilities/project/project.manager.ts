@@ -30,7 +30,10 @@ import { type Config, getConfig } from '../../core/config/index.js';
 import { getLogger } from '../../core/logging/index.js';
 import type { UnknownRecord } from '../../types/primitives';
 
-// Constants for duplicate string literals
+/**
+ * @description
+ * Naming convention fix: PascalCase constants changed to SCREAMING_SNAKE_CASE.
+ */
 const PROJECT_TYPES = {
   MONOREPO: 'monorepo' as const,
 } as const;

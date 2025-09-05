@@ -62,7 +62,7 @@ function load(): AppEnv {
     CLAUDE_FLOW_API,
     CLAUDE_ADVANCED_CLI,
     CORS_ALLOWED_ORIGINS,
-    npm_package_version
+    npm_package_version: NPM_PACKAGE_VERSION
   } = process.env;
 
   return {
@@ -76,7 +76,7 @@ function load(): AppEnv {
     CLAUDE_FLOW_API: flag(CLAUDE_FLOW_API),
     CLAUDE_ADVANCED_CLI: flag(CLAUDE_ADVANCED_CLI),
     CORS_ALLOWED_ORIGINS,
-    APP_VERSION: npm_package_version || '1.0.0'
+    APP_VERSION: NPM_PACKAGE_VERSION || '1.0.0'
   };
 }
 

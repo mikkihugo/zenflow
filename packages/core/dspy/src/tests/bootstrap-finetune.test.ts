@@ -21,7 +21,12 @@ FailedPrediction,
 FinetuneTeleprompter,
 } from '../../teleprompters/bootstrap-finetune.js';
 
-// Mock LM for testing
+// Common test string constants
+const INSTRUCTIONS_FOLLOW = 'Follow instructions carefully.';
+const ERROR_NO_LM = 'Predictor 0 does not have an LM assigned';
+const ERROR_STRUCT_EQUIV = 'Structurally equivalent programs must have the same number of predictors';
+const ERROR_SHARED_PREDICTOR = 'The programs share predictor';
+const ERROR_THREADS = "BootstrapFinetune requires 'num_threads' to be bigger than or equal to the number of fine-tuning jobs";
 class MockLM implements LMInterface {
 model: string;
 private responses: Map<string, string> = new Map();
@@ -61,7 +66,7 @@ this.mockResponse = mockResponse;
 this.mockPredictors = [
 {
 name: name + 'predictor',
-signature: { instructions: 'Follow instructions carefully.' },
+signature: { instructions: INSTRUCTIONS_FOLLOW },
 lm: lm || new MockLM(),
 demos: [],
 },
@@ -317,7 +322,7 @@ studentWithoutLM.predictors()[0].lm = null;
 
 await expect(
 bootstrapFinetune.compile(studentWithoutLM, trainset)
-).rejects.toThrow('Predictor 0 does not have an LM assigned');
+).rejects.toThrow(ERROR_NO_LM);
 });
 
 it('should handle empty trainset gracefully', async () => {
@@ -449,7 +454,7 @@ num_threads: 2, // Less than number of predictors
 await expect(
 bootstrapFinetune.compile(manyPredictorsStudent, trainset)
 ).rejects.toThrow(
-'BootstrapFinetune requires 'num_threads' to be bigger than or equal to the number of fine-tuning jobs'
+ERROR_THREADS
 );
 });
 });
@@ -551,7 +556,7 @@ trainset,
 teacher: differentTeacher,
 })
 ).rejects.toThrow(
-'Structurally equivalent programs must have the same number of predictors'
+ERROR_STRUCT_EQUIV
 );
 });
 
@@ -565,7 +570,7 @@ bootstrapFinetune.compile(mockStudent, {
 trainset,
 teacher: sharedTeacher,
 })
-).rejects.toThrow('The programs share predictor');
+).rejects.toThrow(ERROR_SHARED_PREDICTOR);
 });
 
 it('should handle programs without demos', async () => {

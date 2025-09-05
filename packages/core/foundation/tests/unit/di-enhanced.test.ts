@@ -6,7 +6,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 
 describe('Enhanced DI Container Features', () => {
-  let container: any;
+  // The DI container is dynamically imported; type is not statically available in tests.
+  let container: unknown;
 
   beforeEach(async () => {
     const { createContainer } = await import('../../src/dependency-injection');
@@ -267,9 +268,14 @@ describe('Enhanced DI Container Features', () => {
 
   describe('Event System Integration', () => {
     it('should emit events for service registration', async () => {
-      const events: any[] = [];
+      interface ServiceRegisteredEvent {
+        token: string;
+        type: string;
+      }
+      const events: ServiceRegisteredEvent[] = [];
 
-      container.on('serviceRegistered', (event: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (container as any).on('serviceRegistered', (event: ServiceRegisteredEvent) => {
         events.push(event);
       });
 
@@ -284,9 +290,15 @@ describe('Enhanced DI Container Features', () => {
     });
 
     it('should emit events for service resolution', async () => {
-      const resolutionEvents: any[] = [];
+      interface ServiceResolvedEvent {
+        token: string;
+        resolutionTime: number;
+        [key: string]: unknown;
+      }
+      const resolutionEvents: ServiceResolvedEvent[] = [];
 
-      container.on('serviceResolved', (event: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (container as any).on('serviceResolved', (event: ServiceResolvedEvent) => {
         resolutionEvents.push(event);
       });
 
@@ -313,9 +325,15 @@ describe('Enhanced DI Container Features', () => {
     });
 
     it('should start health monitoring', async () => {
-      const healthEvents: any[] = [];
+      interface HealthCheckEvent {
+        servicesCount: number;
+        timestamp: number;
+        [key: string]: unknown;
+      }
+      const healthEvents: HealthCheckEvent[] = [];
 
-      container.on('healthCheck', (event: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (container as any).on('healthCheck', (event: HealthCheckEvent) => {
         healthEvents.push(event);
       });
 

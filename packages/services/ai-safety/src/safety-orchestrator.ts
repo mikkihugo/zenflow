@@ -164,7 +164,7 @@ export class AISafetyOrchestrator {
 });
 
       return { success: true};
-} catch (error) {
+} catch (_error) {
       return { 
         success: false, 
         error: new SafetyError(
@@ -192,7 +192,7 @@ export class AISafetyOrchestrator {
 });
 
       return { success: true};
-} catch (error) {
+} catch (_error) {
       return { 
         success: false, 
         error: new SafetyError(

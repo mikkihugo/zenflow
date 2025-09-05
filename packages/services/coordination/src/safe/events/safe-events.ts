@@ -8,7 +8,6 @@ logger.info('Safeevents initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

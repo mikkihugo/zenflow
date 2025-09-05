@@ -1,4 +1,4 @@
-export class GithubModels.Test {
+export class GithubModelsTest {
   constructor() {
     // TODO: Implement constructor
   }

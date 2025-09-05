@@ -149,16 +149,16 @@ async function saveToken(token: string): Promise<void> {
 export async function authLogin(): Promise<void> {
   try {
     // Use the copilot provider for authentication
-    const { CopilotAuth } = await import('@claude-zen/copilot-provider');
+    const { CopilotAuth: copilotAuth } = await import('@claude-zen/copilot-provider');
 
-    const auth = new CopilotAuth();
+    const auth = new copilotAuth();
     const githubToken = await auth.authenticate();
 
     // Save the VS Code-compatible token
     await saveToken(githubToken);
 
-    console.log('✅ Authentication successful!');
-    console.log('🎉 You can now use GitHub Copilot with Claude Code Zen.');
+    logger.info('✅ Authentication successful!');
+    logger.info('🎉 You can now use GitHub Copilot with Claude Code Zen.');
 
   } catch (error) {
     logger.error('Authentication failed: ', error);

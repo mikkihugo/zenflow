@@ -1,4 +1,4 @@
-export class LlmProvider.Test {
+export class LlmProviderTest {
   constructor() {
     // TODO: Implement constructor
   }

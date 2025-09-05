@@ -781,7 +781,7 @@ bottlenecks.push(...agentBottlenecks);
 // Add system-wide predictions
 this.addSystemWideBottlenecks(bottlenecks, systemLoad);
 
-logger.debug(`Predicted ${bottlenecks.length} potential bottlenecks`
+logger.debug(`Predicted ${bottlenecks.length} potential bottlenecks`);
 return bottlenecks;
 }
 
@@ -802,7 +802,7 @@ const enhancedMetrics = await this.enhanceMetricsWithTrends(currentMetrics, pers
 // Perform advanced bottleneck analysis
 const issues = await this.identifyAdvancedPerformanceIssues(enhancedMetrics, systemLoad, agentId);
 
-return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ').`]: [];
+return issues.length > 0 ? [`Agent ${agentId}: ${issues.join(', ')}`] : [];
 }
 
 private async loadPersistedMetrics(agentId:  string): Promise<any> {
@@ -823,7 +823,7 @@ await new Promise(resolve => setTimeout(resolve, 5));
 if (!persistedMetrics) {
 return {
 ...currentMetrics,
-trends:{ cpu: `stable`, memory: ' stable', errors:' improving' | ' stable' | ' declining'},
+trends:{ cpu: 'stable', memory: 'stable', errors: 'stable'},
 volatility:{ cpu: 0, memory:0, errors:0}
 };
 }
@@ -868,7 +868,7 @@ const errorThreshold = agentProfile.historicalErrorAvg * 1.5 || 0.15;
 if (metrics.avgCpuUsage > cpuThreshold) {
 const severity = metrics.trends?.cpu === 'increasing' ? ' critical': ` high`
 const deviationFromBaseline = ((metrics.avgCpuUsage - agentBaseline.cpu) * 100).toFixed(1);
-issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`
+issues.push(`CPU usage (${(metrics.avgCpuUsage * 100).toFixed(1)}%, +${deviationFromBaseline}% vs baseline)`);
 
 // Log critical performance event for this specific agent
 await this.logCriticalPerformanceEvent(agentId, `cpu_spike`, {
@@ -880,36 +880,36 @@ riskScore:agentRiskScore
 }
 
 if (metrics.avgMemoryUsage > 0.80) {
-const trend = metrics.trends?.memory === 'increasing' ? ' trending up': ``
-issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`
+const trend = metrics.trends?.memory === 'increasing' ? ' trending up': '';
+issues.push(`high memory usage (${(metrics.avgMemoryUsage * 100).toFixed(1)}%${trend})`);
 }
 
 if (metrics.avgErrorRate > 0.15) {
-const volatility = metrics.volatility?.errors > 0.1 ? ` with high volatility`: ``
-issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`
+const volatility = metrics.volatility?.errors > 0.1 ? ` with high volatility`: '';
+issues.push(`elevated error rate (${(metrics.avgErrorRate * 100).toFixed(1)}%${volatility})`);
 }
 
 if (metrics.avgCompletionTime > 30000) {
-issues.push(`slow response times (avg:${(metrics.avgCompletionTime / 1000).toFixed(1)}s)`
+issues.push(`slow response times (avg:${(metrics.avgCompletionTime / 1000).toFixed(1)}s)`);
 }
 
 // System-wide correlation analysis
 if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-issues.push(`system overload correlation detected`
+issues.push(`system overload correlation detected`);
 }
 
 // Trend-based predictive warnings
 if (metrics.trends?.cpu === 'increasing' && metrics.avgCpuUsage > 0.6) {
-issues.push('CPU usage trending toward capacity limits').
+issues.push('CPU usage trending toward capacity limits');
 }
 
 if (metrics.trends?.memory === 'increasing' && metrics.avgMemoryUsage > 0.5) {
-issues.push('memory usage showing upward trend').
+issues.push('memory usage showing upward trend');
 }
 
 // Volatility warnings
 if (metrics.volatility?.errors > 0.2) {
-issues.push('unstable error patterns detected').
+issues.push('unstable error patterns detected');
 }
 
 return issues;
@@ -928,24 +928,24 @@ private identifyPerformanceIssues(metrics:ReturnType<typeof this.calculateAgentM
 const issues:string[] = [];
 
 if (metrics.avgCpuUsage > 0.85) {
-issues.push('high CPU usage').
+issues.push('high CPU usage');
 }
 
 if (metrics.avgMemoryUsage > 0.80) {
-issues.push('high memory usage').
+issues.push('high memory usage');
 }
 
 if (metrics.avgErrorRate > 0.15) {
-issues.push('high error rate').
+issues.push('high error rate');
 }
 
 if (metrics.avgCompletionTime > 30000) {
-issues.push('slow completion times').
+issues.push('slow completion times');
 }
 
 // System-wide bottleneck detection
 if (systemLoad > 80 && metrics.avgCpuUsage > 0.7) {
-issues.push('system overload').
+issues.push('system overload');
 }
 
 return issues;
@@ -1016,12 +1016,12 @@ private async loadHistoricalData(): Promise<void> {
 try {
 // Load historical agent performance data from persistent storage
 // This would typically connect to a database or file system
-logger.debug('Loading historical performance data...').
+logger.debug('Loading historical performance data...');
 
 // Simulate loading data with small delay
 await new Promise(resolve => setTimeout(resolve, 100));
 
-logger.debug('Historical data loaded successfully').
+logger.debug('Historical data loaded successfully');
 } catch (error) {
 logger.error('Failed to load historical data: ', error);
 throw error;
@@ -1033,13 +1033,13 @@ throw error;
 */
 private async initializePredictionModels(): Promise<void> {
 try {
-logger.debug('Initializing prediction models...').
+logger.debug('Initializing prediction models...');
 
 // Initialize ML models for performance prediction
 // This would set up neural networks, regression models, etc.
 await new Promise(resolve => setTimeout(resolve, 50));
 
-logger.debug('Prediction models initialized').
+logger.debug('Prediction models initialized');
 } catch (error) {
 logger.error('Failed to initialize prediction models: ', error);
 throw error;

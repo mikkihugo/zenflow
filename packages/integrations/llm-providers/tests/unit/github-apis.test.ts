@@ -1,4 +1,4 @@
-export class GithubApis.Test {
+export class GithubApisTest {
   constructor() {
     // TODO: Implement constructor
   }

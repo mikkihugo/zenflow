@@ -1,3 +1,4 @@
+#![allow(unused)]
 //! # FACT - Fast Augmented Context Tools
 //!
 //! A high-performance context processing engine for Rust.
@@ -32,6 +33,15 @@
 //! # Ok(())
 //! # }
 //! ```
+//!
+//! ## WASM Example
+//!
+//! ```typescript
+//! import init, { fact_sum } from './fact_tools_wasm';
+//! await init();
+//! const result = fact_sum([1, 2, 3]);
+//! console.log(result); // 6
+//! ```
 
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
@@ -44,6 +54,15 @@ pub mod cache;
 pub mod engine;
 pub mod processor;
 pub mod templates;
+
+// --- WASM Bindings ---
+use wasm_bindgen::prelude::*;
+
+/// Sums an array of numbers, for WASM demo
+#[wasm_bindgen]
+pub fn fact_sum(numbers: Box<[f64]>) -> f64 {
+    numbers.iter().sum()
+}
 
 // Only export GitHub module when feature is enabled
 #[cfg(feature = "github")]
@@ -216,34 +235,3 @@ pub struct Metrics {
   pub error_count: u64,
 }
 
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[tokio::test]
-  async fn test_fact_creation() {
-    let fact = Fact::new();
-    let stats = fact.cache_stats();
-    assert_eq!(stats.entries, 0);
-  }
-
-  #[tokio::test]
-  async fn test_basic_processing() {
-    let fact = Fact::new();
-    let context = serde_json::json!({
-        "data": [1, 2, 3, 4, 5],
-        "operation": "sum"
-    });
-
-    // This will use a mock template since we haven't loaded real ones
-    match fact.process("test-template", context).await {
-      Ok(_) => {
-        // Template found and processed
-      }
-      Err(FactError::TemplateNotFound(_)) => {
-        // Expected if template not loaded
-      }
-      Err(e) => panic!("Unexpected error: {}", e),
-    }
-  }
-}

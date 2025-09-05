@@ -438,7 +438,7 @@ describe('LLM Provider - Integration Tests (Real API)', () => {
         // Test with invalid model (should fallback)
         try {
           const response = await llmProvider.complete('Hello', {
-            model: 'invalid-model' as any,
+            model: 'invalid-model' as unknown as import('../../src/llm-provider').LLMRequest['model'],
             maxTokens: 50,
           });
           // Should either work with fallback or throw descriptive error

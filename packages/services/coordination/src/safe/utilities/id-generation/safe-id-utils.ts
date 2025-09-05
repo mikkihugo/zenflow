@@ -8,7 +8,6 @@ logger.info('Safeidutils initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

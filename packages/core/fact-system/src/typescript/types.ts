@@ -8,20 +8,14 @@
  * @version 1.0.0
  */
 
-// NOTE:Database access should come from @claude-zen/infrastructure via @claude-zen/knowledge
-// This is a simplified interface for Tier 5 deep core - only accessible via knowledge package
-interface DatabaseAccess {
-  query(sql: string, params?: any[]): Promise<any[]>;
-  execute(sql: string, params?: any[]): Promise<number>;
-  close(): Promise<void>;
-}
+import type { DatabaseAdapter } from '@claude-zen/database';
 
 /**
  * Configuration for the FACT system
  */
 export interface FactSystemConfig {
-  /** Database access via foundation package */
-  database: DatabaseAccess;
+  /** Database adapter from @claude-zen/database */
+  database?: DatabaseAdapter;
 
   /** Whether to use the Rust engine for high-performance processing */
   useRustEngine?: boolean;
@@ -56,6 +50,13 @@ export interface FactSearchQuery {
   /** SQL-like query against facts database */
   query: string;
 
+  /** Optional type filter */
+  type?: string;
+
+
+  /** Maximum results to return */
+  limit?: number;
+
   /** Fact types to search within */
   factTypes?: (
     | 'npm-package'
@@ -73,9 +74,6 @@ export interface FactSearchQuery {
 
   /** Data sources to search within */
   sources?: string[];
-
-  /** Maximum results to return */
-  limit?: number;
 
   /** Include cached results */
   includeCached?: boolean;
@@ -505,6 +503,9 @@ export interface FactSystemStats {
 
   /** Whether Rust engine is active */
   rustEngineActive: boolean;
+
+  /** Whether the FACT system is initialized */
+  initialized: boolean;
 
   /** Performance metrics */
   performance?: {

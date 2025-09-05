@@ -160,10 +160,12 @@ export class ContainerImpl implements Container {
  async resolveAsync<T>(token: string): Promise<T> {
    const start = Date.now();
    const metadata = this.serviceMetadata.get(token);
+
    if (!metadata) {
      throw new Error(`Service '${token}' is not registered`);
    }
 
+   // Guard: return singleton if cached
    if (metadata.singleton && this.singletonCache.has(token)) {
      const instance = this.singletonCache.get(token) as T;
      this.trackDisposable(instance as unknown);
@@ -171,30 +173,37 @@ export class ContainerImpl implements Container {
      return instance;
    }
 
+   // Guard: handle async factory type
    if (metadata.type === ASYNC_FACTORY_TYPE) {
-     const factory = this.services.get(token) as () => Promise<T>;
-     const instance = await factory();
-
-     if (metadata.singleton) {
-       this.singletonCache.set(token, instance);
-     }
-
-     // Ensure async-factory instances participate in disposal and emit timing once
-     this.handleServiceInstance(instance, metadata, token, start);
-     return instance;
+     return this.resolveAsyncFactory<T>(token, metadata, start);
    }
 
    // Fallback to sync resolution
    return this.resolve<T>(token);
  }
 
+ private async resolveAsyncFactory<T>(token: string, metadata: ServiceInfo, start: number): Promise<T> {
+   const factory = this.services.get(token) as () => Promise<T>;
+   const instance = await factory();
+
+   if (metadata.singleton) {
+     this.singletonCache.set(token, instance);
+   }
+
+   // Ensure async-factory instances participate in disposal and emit timing once
+   this.handleServiceInstance(instance, metadata, token, start);
+   return instance;
+ }
+
  resolve<T>(token: string): T {
    const start = Date.now();
    const metadata = this.serviceMetadata.get(token);
+
    if (!metadata) {
      throw new Error(`Service '${token}' is not registered`);
    }
 
+   // Guard: return singleton if cached
    if (metadata.singleton && this.singletonCache.has(token)) {
      const instance = this.singletonCache.get(token) as T;
      this.trackDisposable(instance as unknown);
@@ -202,6 +211,7 @@ export class ContainerImpl implements Container {
      return instance;
    }
 
+   // Guard: ensure service definition exists
    const serviceDefinition = this.services.get(token);
    if (!serviceDefinition) {
      throw new Error(`Service definition for '${token}' not found`);

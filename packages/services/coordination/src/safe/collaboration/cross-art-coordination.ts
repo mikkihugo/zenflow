@@ -8,7 +8,6 @@ logger.info('Crossartcoordination initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

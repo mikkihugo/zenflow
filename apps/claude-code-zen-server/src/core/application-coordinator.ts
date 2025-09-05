@@ -3,17 +3,22 @@
  *
  * Restored application coordinator implementation focusing on WebSocket
  * coordination and real-time system orchestration. Manages application
- * lifecycle and coordinates system components.
+ * lifecycle and coordinates system components. 
  */
 
 import type { Server as HTTPServer } from 'http';
-import type { Server as SocketIOServer } from 'socket.io';
+import type { Server as SocketIOServer, Socket } from 'socket.io';
 import { getLogger, createContainer, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
 const logger = getLogger('application-coordinator');
 
 // Constants for duplicate strings
 const STATUS_CHANGED_EVENT = 'status-changed';
+const COMPONENT_INITIALIZED_EVENT = 'component:initialized';
+const WEBSOCKET_CONNECTED_EVENT = 'websocket:connected';
+const WEBSOCKET_DISCONNECTED_EVENT = 'websocket:disconnected';
+const READY = 'ready';
+const DISABLED = 'disabled';
 
 export interface ApplicationCoordinatorConfig {
   memory?: {
@@ -63,24 +68,24 @@ export interface SystemStatus {
       mode?: string;
       webSocketEnabled?: boolean;
     };
-    memory: { 
-      status: string; 
-      sessions: number; 
+    memory: {
+      status: string;
+      sessions: number;
       size?: number;
       cacheEnabled?: boolean;
     };
-    workflow: { 
-      status: string; 
+    workflow: {
+      status: string;
       activeWorkflows: number;
       realtimeEnabled?: boolean;
     };
-    export: { 
-      status: string; 
+    export: {
+      status: string;
       availableFormats?: number;
       streamingEnabled?: boolean;
     };
-    documentation: { 
-      status: string; 
+    documentation: {
+      status: string;
       documentsIndexed: number;
     };
     workspace: {
@@ -105,9 +110,9 @@ interface ApplicationCoordinatorEventMap extends EventMap {
   'shutdown': [];
   'status-changed': [string];
   'initialized': [{ timestamp: string; config: ApplicationCoordinatorConfig; activeConnections: number }];
-  'component:initialized': [string];
-  'websocket:connected': [string];
-  'websocket:disconnected': [string];
+  [COMPONENT_INITIALIZED_EVENT]: [string];
+  [WEBSOCKET_CONNECTED_EVENT]: [string];
+  [WEBSOCKET_DISCONNECTED_EVENT]: [string];
 }
 
 /**
@@ -123,14 +128,14 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   private activeWorkspaceId?: string;
   private configuration: ApplicationCoordinatorConfig;
   private serviceContainer = createContainer();
-  
+
   // Foundation service integrations
-  private memoryManager?: unknown;
-  private workflowEngine?: unknown;
-  private documentationSystem?: unknown;
-  private exportManager?: unknown;
-  private workspaceManager?: unknown;
-  private interfaceManager?: unknown;
+  private memoryManager?: { getSessionCount: () => number; getUsedMemory: () => number; };
+  private workflowEngine?: { getActiveWorkflowCount: () => number; createDocumentWorkflow: (documentPath: string) => Promise<{ workflowId: string; path: string; }>; };
+  private documentationSystem?: { getDocumentCount: () => number; processDocument: (documentPath: string) => Promise<{ workflowId: string; path: string; }>; };
+  private exportManager?: { getSupportedFormats: () => string[]; exportSystemData: (format: string) => Promise<{ filename: string; }>; };
+  private workspaceManager?: { getDocumentCount: () => number; };
+  private interfaceManager?: { start: () => Promise<void>; shutdown: () => Promise<void>; };
 
   // WebSocket integration
   private httpServer?: HTTPServer;
@@ -206,11 +211,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
           this.memoryManager = {
             getSessionCount: () => 0,
             getUsedMemory: () => 0,
-            initialize: () => Promise.resolve(),
-            shutdown: () => Promise.resolve(),
           };
           logger.info(' Memory management system initialized');
-          this.emit('component:initialized', 'memory');
+          this.emit(COMPONENT_INITIALIZED_EVENT, 'memory');
         } catch (error) {
           logger.warn('Memory manager initialization failed, continuing...', error);
         }
@@ -223,11 +226,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             getActiveWorkflowCount: () => 0,
             createDocumentWorkflow: (path: string) =>
               Promise.resolve({ workflowId: `workflow-${Date.now()}`, path }),
-            initialize: () => Promise.resolve(),
-            shutdown: () => Promise.resolve(),
           };
           logger.info(' Workflow engine initialized with real-time support');
-          this.emit('component:initialized', 'workflow');
+          this.emit(COMPONENT_INITIALIZED_EVENT, 'workflow');
         } catch (error) {
           logger.warn('Workflow engine initialization failed, continuing...', error);
         }
@@ -240,11 +241,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             getDocumentCount: () => 0,
             processDocument: (path: string) =>
               Promise.resolve({ workflowId: `doc-${Date.now()}`, path }),
-            initialize: () => Promise.resolve(),
-            shutdown: () => Promise.resolve(),
           };
           logger.info(' Documentation system initialized');
-          this.emit('component:initialized', 'documentation');
+          this.emit(COMPONENT_INITIALIZED_EVENT, 'documentation');
         } catch (error) {
           logger.warn('Documentation system initialization failed, continuing...', error);
         }
@@ -257,11 +256,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             getSupportedFormats: () => ['json', 'yaml', 'xml'],
             exportSystemData: (format: string) =>
               Promise.resolve({ filename: `export-${  Date.now()  }.${  format}` }),
-            initialize: () => Promise.resolve(),
-            shutdown: () => Promise.resolve(),
           };
           logger.info(' Export manager initialized with streaming support');
-          this.emit('component:initialized', 'export');
+          this.emit(COMPONENT_INITIALIZED_EVENT, 'export');
         } catch (error) {
           logger.warn('Export manager initialization failed, continuing...', error);
         }
@@ -272,16 +269,13 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         try {
           this.workspaceManager = {
             getDocumentCount: () => 0,
-            detectWorkspace: () => Promise.resolve('default-workspace'),
-            initialize: () => Promise.resolve(),
-            shutdown: () => Promise.resolve(),
           };
 
           if (this.configuration.workspace?.autoDetect) {
             this.activeWorkspaceId = 'default-workspace';
             logger.info(` Workspace detected: ${  this.activeWorkspaceId}`);
           }
-          this.emit('component:initialized', 'workspace');
+          this.emit(COMPONENT_INITIALIZED_EVENT, 'workspace');
         } catch (error) {
           logger.warn('Workspace manager initialization failed, continuing...', error);
         }
@@ -295,7 +289,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
             shutdown: () => Promise.resolve(),
           };
           logger.info(' Interface management system initialized with WebSocket support');
-          this.emit('component:initialized', 'interface');
+          this.emit(COMPONENT_INITIALIZED_EVENT, 'interface');
         } catch (error) {
           logger.warn('Interface manager initialization failed, continuing...', error);
         }
@@ -341,8 +335,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
 
       // Handle WebSocket events
-      this.on('websocket:connected', (...args: unknown[]) => { 
-        const socketId = args[0] as string;
+      this.on(WEBSOCKET_CONNECTED_EVENT, (socketId: string) => { 
         this.activeConnections++;
         logger.debug(`WebSocket client connected: ${  socketId  } (total: ${this.activeConnections})`);
         this.broadcastEvent('websocket:client:connected', { 
@@ -351,8 +344,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         });
       });
 
-      this.on('websocket:disconnected', (...args: unknown[]) => { 
-        const socketId = args[0] as string;
+      this.on(WEBSOCKET_DISCONNECTED_EVENT, (socketId: string) => { 
         this.activeConnections = Math.max(0, this.activeConnections - 1);
         logger.debug(`WebSocket client disconnected: ${  socketId  } (total: ${this.activeConnections})`);
         this.broadcastEvent('websocket:client:disconnected', { 
@@ -362,8 +354,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
 
       // Component lifecycle events
-      this.on('component:initialized', (...args: unknown[]) => { 
-        const componentName = args[0] as string;
+      this.on(COMPONENT_INITIALIZED_EVENT, (componentName: string) => { 
         logger.info(`Component initialized: ${  componentName}`);
         this.broadcastEvent('component:status', { 
           component: componentName, 
@@ -381,7 +372,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Initialize the application coordinator
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) {
       logger.info('Application coordinator already initialized');
       return;
@@ -417,13 +408,13 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Launch the application with WebSocket integration
    */
-  async launch(): Promise<void> {
-    await this.ensureInitialized();
+  launch(): void {
+    this.ensureInitialized();
     
     // Start interface with WebSocket support if configured
     if (this.interfaceManager && this.configuration.interface?.enableWebSocket) {
       try {
-        await (this.interfaceManager as any).start();
+        this.interfaceManager.start();
         logger.info(' Interface launched with WebSocket support');
       } catch (error) {
         logger.warn('Interface launch failed, continuing...', error);
@@ -451,45 +442,73 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       status: this.status,
       version: '2.0.0-websocket-enabled',
       components: {
-        interface: {
-          status: this.interfaceManager ? 'ready' : 'disabled',
-          mode: this.configuration.interface?.defaultMode || 'web',
-          webSocketEnabled: this.configuration.interface?.enableWebSocket ?? true,
-        },
-        memory: {
-          status: this.memoryManager ? 'ready' : 'disabled',
-          sessions: (this.memoryManager as any)?.getSessionCount?.() || 0,
-          size: (this.memoryManager as any)?.getUsedMemory?.() || 0,
-          cacheEnabled: this.configuration.memory?.enableCache ?? true,
-        },
-        workflow: {
-          status: this.workflowEngine ? 'ready' : 'disabled',
-          activeWorkflows: (this.workflowEngine as any)?.getActiveWorkflowCount?.() || 0,
-          realtimeEnabled: this.configuration.workflow?.enableRealtime ?? true,
-        },
-        export: { 
-          status: this.exportManager ? 'ready' : 'disabled',
-          availableFormats: (this.exportManager as any)?.getSupportedFormats?.()?.length || 3,
-          streamingEnabled: this.configuration.export?.enableStreaming ?? true,
-        },
-        documentation: {
-          status: this.documentationSystem ? 'ready' : 'disabled',
-          documentsIndexed: (this.documentationSystem as any)?.getDocumentCount?.() || 0,
-        },
-        workspace: {
-          status: this.activeWorkspaceId ? 'ready' : 'none',
-          workspaceId: this.activeWorkspaceId,
-          documentsLoaded: (this.workspaceManager as any)?.getDocumentCount?.() || 0,
-        },
-        websocket: {
-          status: this.configuration.websocket?.enableEventStreaming ? 'ready' : 'disabled',
-          connections: this.activeConnections,
-          eventStreaming: this.configuration.websocket?.enableEventStreaming ?? true,
-          broadcasting: this.broadcastingEnabled,
-        },
+        interface: this.getInterfaceStatus(),
+        memory: this.getMemoryStatus(),
+        workflow: this.getWorkflowStatus(),
+        export: this.getExportStatus(),
+        documentation: this.getDocumentationStatus(),
+        workspace: this.getWorkspaceStatus(),
+        websocket: this.getWebsocketStatus(),
       },
       uptime: Date.now() - this.startTime,
       lastUpdate: new Date().toISOString(),
+    };
+  }
+
+  private getInterfaceStatus() {
+    return {
+      status: this.interfaceManager ? READY : DISABLED,
+      mode: this.configuration.interface?.defaultMode || 'web',
+      webSocketEnabled: this.configuration.interface?.enableWebSocket ?? true,
+    };
+  }
+
+  private getMemoryStatus() {
+    return {
+      status: this.memoryManager ? READY : DISABLED,
+      sessions: this.memoryManager?.getSessionCount() || 0,
+      size: this.memoryManager?.getUsedMemory() || 0,
+      cacheEnabled: this.configuration.memory?.enableCache ?? true,
+    };
+  }
+
+  private getWorkflowStatus() {
+    return {
+      status: this.workflowEngine ? READY : DISABLED,
+      activeWorkflows: this.workflowEngine?.getActiveWorkflowCount() || 0,
+      realtimeEnabled: this.configuration.workflow?.enableRealtime ?? true,
+    };
+  }
+
+  private getExportStatus() {
+    return {
+      status: this.exportManager ? READY : DISABLED,
+      availableFormats: this.exportManager?.getSupportedFormats?.()?.length || 3,
+      streamingEnabled: this.configuration.export?.enableStreaming ?? true,
+    };
+  }
+
+  private getDocumentationStatus() {
+    return {
+      status: this.documentationSystem ? READY : DISABLED,
+      documentsIndexed: this.documentationSystem?.getDocumentCount() || 0,
+    };
+  }
+
+  private getWorkspaceStatus() {
+    return {
+      status: this.activeWorkspaceId ? READY : 'none',
+      workspaceId: this.activeWorkspaceId,
+      documentsLoaded: this.workspaceManager?.getDocumentCount() || 0,
+    };
+  }
+
+  private getWebsocketStatus() {
+    return {
+      status: this.configuration.websocket?.enableEventStreaming ? READY : DISABLED,
+      connections: this.activeConnections,
+      eventStreaming: this.configuration.websocket?.enableEventStreaming ?? true,
+      broadcasting: this.broadcastingEnabled,
     };
   }
 
@@ -501,7 +520,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
     workflowIds: string[];
     error?: string;
   }> {
-    await this.ensureInitialized();
+    this.ensureInitialized();
     
     try {
       logger.info(`Processing document: ${  documentPath}`);
@@ -517,7 +536,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       // Use documentation system to process document
       if (this.documentationSystem) {
         try {
-          const docResult = await (this.documentationSystem as any).processDocument(documentPath);
+          const docResult = await this.documentationSystem.processDocument(documentPath);
           if (docResult.workflowId) {
             workflowIds.push(docResult.workflowId);
           }
@@ -529,7 +548,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       // Use workflow engine to create processing workflows
       if (this.workflowEngine) {
         try {
-          const workflowResult = await (this.workflowEngine as any).createDocumentWorkflow(documentPath);
+          const workflowResult = await this.workflowEngine.createDocumentWorkflow(documentPath);
           if (workflowResult.workflowId) {
             workflowIds.push(workflowResult.workflowId);
           }
@@ -575,7 +594,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
     filename?: string;
     error?: string;
   }> {
-    await this.ensureInitialized();
+    this.ensureInitialized();
     
     try {
       logger.info(`Exporting system data to ${  format}`);
@@ -590,7 +609,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         timestamp: new Date().toISOString(),
       });
 
-      const exportResult = await (this.exportManager as any).exportSystemData(format);
+      const exportResult = await this.exportManager.exportSystemData(format);
       
       // Broadcast export completion
       this.broadcastEvent('export:completed', {
@@ -623,15 +642,15 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Generate comprehensive system report with real-time data
    */
-  async generateSystemReport(): Promise<string> {
-    await this.ensureInitialized();
+  generateSystemReport(): string {
+    this.ensureInitialized();
     const status = this.getSystemStatus();
 
     const componentDetails = Object.entries(status.components)
       .map(([name, info]) => {
         const details = Object.entries(info)
           .filter(([key]) => key !== 'status')
-          .map(([key, value]) => `    ${  key  }: ${  value}`)
+          .map(([key, value]) => `    ${  key  }: ${  value}`) 
           .join('\n');
         return `- **${name}**: ${info.status}${details ? `\n${details}` : ''}`;
       })
@@ -693,10 +712,10 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       }
 
       // Shutdown all components gracefully
-      const shutdownPromises = [];
+      const shutdownPromises: Promise<void>[] = [];
 
       if (this.interfaceManager) {
-        shutdownPromises.push((this.interfaceManager as any).shutdown());
+        shutdownPromises.push(this.interfaceManager.shutdown());
       }
       if (this.workflowEngine) {
         shutdownPromises.push((this.workflowEngine as any).shutdown());
@@ -756,9 +775,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Ensure coordinator is initialized before operations
    */
-  private async ensureInitialized(): Promise<void> {
+  private ensureInitialized(): void {
     if (!this.initialized) {
-      await this.initialize();
+      this.initialize();
     }
   }
 
@@ -789,11 +808,11 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   private initializeSocketIOHandlers(): void {
     if (!this.socketIOServer) return;
 
-    this.socketIOServer.on('connection', (socket) => {
-      this.emit('websocket:connected', socket.id);
+    this.socketIOServer.on('connection', (socket: Socket) => {
+      this.emit(WEBSOCKET_CONNECTED_EVENT, socket.id);
       
       // Handle coordinator-specific requests
-      socket.on('coordinator:status', async () => {
+      socket.on('coordinator:status', () => {
         const status = this.getSystemStatus();
         socket.emit('coordinator:status:response', status);
       });
@@ -807,13 +826,13 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         });
       });
 
-      socket.on('coordinator:report', async () => {
-        const report = await this.generateSystemReport();
+      socket.on('coordinator:report', () => {
+        const report = this.generateSystemReport();
         socket.emit('coordinator:report:response', { report });
       });
 
       socket.on('disconnect', () => {
-        this.emit('websocket:disconnected', socket.id);
+        this.emit(WEBSOCKET_DISCONNECTED_EVENT, socket.id);
       });
     });
   }
@@ -821,7 +840,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Broadcast event to all connected WebSocket clients
    */
-  private broadcastEvent(eventType: string, data: unknown): void {
+  private broadcastEvent(eventType: string, data: Record<string, unknown>): void {
     if (this.broadcastingEnabled && this.socketIOServer) {
       this.socketIOServer.emit(eventType, {
         type: eventType,
@@ -858,19 +877,19 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   /**
    * Static factory methods
    */
-  static async create(
+  static create(
     config?: ApplicationCoordinatorConfig
-  ): Promise<ApplicationCoordinator> {
+  ): ApplicationCoordinator {
     const coordinator = new ApplicationCoordinator(config);
-    await coordinator.initialize();
+    coordinator.initialize();
     return coordinator;
   }
 
-  static async quickStart(
+  static quickStart(
     config?: ApplicationCoordinatorConfig
-  ): Promise<ApplicationCoordinator> {
-    const coordinator = await ApplicationCoordinator.create(config);
-    await coordinator.launch();
+  ): ApplicationCoordinator {
+    const coordinator = ApplicationCoordinator.create(config);
+    coordinator.launch();
     return coordinator;
   }
 }

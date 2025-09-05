@@ -337,7 +337,8 @@ describe('Result Patterns - 100% Coverage', () => {
     });
 
     it('should handle circular references in error objects', () => {
-      const circularError: any = new Error('Circular error');
+      // Use intersection type to allow self-reference
+      const circularError: Error & { self?: unknown } = new Error('Circular error');
       circularError.self = circularError;
 
       const result = err(circularError);

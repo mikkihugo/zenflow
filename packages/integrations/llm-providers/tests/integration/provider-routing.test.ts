@@ -1,4 +1,4 @@
-export class ProviderRouting.Test {
+export class ProviderRoutingTest {
   constructor() {
     // TODO: Implement constructor
   }

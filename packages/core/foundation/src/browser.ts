@@ -202,22 +202,34 @@ export const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> =>
     }),
   ]);
 
+/**
+ * Retry an async operation with configurable attempts and delay.
+ * Extracted delay logic and guard clause for clarity.
+ */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const withRetry = async <T>(
   fn: () => Promise<T>,
   options: { retries?: number; minTimeout?: number } = {}
 ): Promise<T> => {
   const { retries = 3, minTimeout = 1000 } = options;
 
-  for (let i = 0; i <= retries; i++) {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       return await fn();
     } catch (error) {
-      if (i === retries) throw error;
-      await new Promise((resolve) => setTimeout(resolve, minTimeout * (i + 1)));
+      lastError = error;
+      if (attempt === retries) break;
+      await delay(minTimeout * (attempt + 1));
     }
   }
 
-  throw new Error('Retry failed');
+  // All attempts failed; throw the last encountered error
+  throw lastError ?? new Error('Retry failed');
 };
 
 export const createCircuitBreaker = () => ({

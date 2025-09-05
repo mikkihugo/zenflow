@@ -25,7 +25,7 @@ import {
  BayesianOptimizer,
  ClusteringAlgorithm,
  type ConceptDriftAlert,
- DefaultConfigs,
+ DEFAULT_CONFIGS,
  EmbeddingModel,
  type GradientConfig,
  GradientOptimizer,
@@ -243,7 +243,7 @@ export class MLNeuralCoordinator {
  private emit(event: string, data?: any): void {
  const listeners = this.eventListeners.get(event);
  if (listeners) {
- listeners.forEach(listener => listener(data));
+ for (const listener of listeners) listener(data);
  }
  }
 
@@ -380,7 +380,7 @@ export class MLNeuralCoordinator {
  ): Promise<DSPyOptimizationResult> {
  // Multi-objective optimization for MIPRO (accuracy vs speed vs memory)
  const multiObjConfig: MultiObjectiveConfig = {
-...DefaultConfigs.multiObjective(),
+...DEFAULT_CONFIGS.multiObjective(),
  max_iterations: config.max_iterations,
  population_size: config.population_size || 50,
  timeout_ms: config.timeout_ms,
@@ -464,7 +464,7 @@ export class MLNeuralCoordinator {
  ): Promise<DSPyOptimizationResult> {
  // Bayesian optimization for COPRO hyperparameters
  const bayesianConfig: BayesianConfig = {
-...DefaultConfigs.bayesian(),
+...DEFAULT_CONFIGS.bayesian(),
  max_iterations: config.max_iterations,
  timeout_ms: config.timeout_ms,
  memory_limit_mb: config.memory_limit_mb,

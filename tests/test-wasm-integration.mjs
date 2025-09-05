@@ -7,15 +7,15 @@ import { performance } from 'node:perf_hooks';
 import init, { FastCache, QueryProcessor, CognitiveEngine } from './dist/wasm/claude-zen-fact.js';
 
 async function testWASMIntegration() {
-  console.log('🧪 Testing WASM FACT Integration...');
+  // 🧪 Testing WASM FACT Integration...
   
   try {
     // Initialize WASM module
     await init();
-    console.log('✅ WASM module initialized');
+    // ✅ WASM module initialized
     
     // Test FastCache (10x performance improvement)
-    console.log('\n📦 Testing FastCache...');
+    // 📦 Testing FastCache...
     const cache = new FastCache(1000);
     
     const startCache = performance.now();
@@ -23,12 +23,12 @@ async function testWASMIntegration() {
     const cached = cache.get('test-key');
     const cacheTime = performance.now() - startCache;
     
-    console.log(`⚡ Cache operation: ${cacheTime.toFixed(3)}ms`);
-    console.log(`📊 Cache stats:`, cache.stats());
-    console.log(`✅ Cached value:`, JSON.parse(cached));
+    // ⚡ Cache operation: ${cacheTime.toFixed(3)}ms
+    // 📊 Cache stats: cache.stats()
+    // ✅ Cached value: JSON.parse(cached)
     
     // Test QueryProcessor (5.25x performance improvement)
-    console.log('\n🔍 Testing QueryProcessor...');
+    // 🔍 Testing QueryProcessor...
     const processor = new QueryProcessor();
     
     const startQuery = performance.now();
@@ -38,12 +38,12 @@ async function testWASMIntegration() {
     });
     const queryTime = performance.now() - startQuery;
     
-    console.log(`⚡ Query processing: ${queryTime.toFixed(3)}ms`);
-    console.log(`📊 Processing metrics:`, processor.get_metrics());
-    console.log(`✅ Query result:`, result);
+    // ⚡ Query processing: ${queryTime.toFixed(3)}ms
+    // 📊 Processing metrics: processor.get_metrics()
+    // ✅ Query result: result
     
     // Test CognitiveEngine
-    console.log('\n🧠 Testing CognitiveEngine...');
+    // 🧠 Testing CognitiveEngine...
     const engine = new CognitiveEngine();
     
     const analysis = engine.analyze_context({
@@ -51,16 +51,16 @@ async function testWASMIntegration() {
       project: { frameworks: ['react', 'typescript'] }
     });
     
-    console.log(`🎯 Context analysis:`, analysis);
+    // 🎯 Context analysis: analysis
     
     const suggestions = engine.suggest_templates({ type: 'framework_optimization' });
-    console.log(`💡 Template suggestions:`, suggestions);
+    // 💡 Template suggestions: suggestions
     
-    console.log('\n✅ All WASM tests passed!');
-    console.log('🚀 WASM-powered FACT system is ready for high-performance knowledge gathering');
+    // ✅ All WASM tests passed!
+    // 🚀 WASM-powered FACT system is ready for high-performance knowledge gathering
     
   } catch (error) {
-    console.error('❌ WASM test failed:', error);
+    // ❌ WASM test failed: error
     process.exit(1);
   }
 }

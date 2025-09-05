@@ -204,3 +204,6 @@ integration-test-report.json
 *-report.md
 *-completion*.md
 mcp.json
+
+# Temporary restore directory
+/packages/services/coordination/tmp_restore/

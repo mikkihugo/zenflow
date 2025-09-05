@@ -6,6 +6,7 @@
  */
 
 import { randomBytes } from 'node:crypto';
+import { FOUNDATION_ERRORS } from '../constants/errors';
 
 /**
  * Generate a unique ID.
@@ -52,7 +53,8 @@ export async function retry<T>(
     }
   }
 
-  throw lastError || new Error('All retry attempts failed');
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  throw lastError || new Error(FOUNDATION_ERRORS.ALL_RETRY_ATTEMPTS_FAILED);
 }
 
 /**

@@ -13,40 +13,40 @@
 
 import { EventBus, dynamicEventRegistry } from './packages/core/foundation/src/events/index.js';
 
-console.log('🚀 Testing Event System Integration...\n');
+ // 🚀 Testing Event System Integration...
 
 // =============================================================================
 // TEST 1: Foundation EventBus
 // =============================================================================
-console.log('1️⃣ Testing Foundation EventBus...');
+ // 1️⃣ Testing Foundation EventBus...
 
 try {
   const eventBus = EventBus.getInstance();
-  console.log('✅ EventBus instance created successfully');
+  // ✅ EventBus instance created successfully
   
   // Test event emission
   let testEventReceived = false;
   eventBus.on('test:integration', (data) => {
     testEventReceived = true;
-    console.log('✅ Test event received:', data);
+    // ✅ Test event received: data
   });
   
   eventBus.emit('test:integration', { message: 'Hello from EventBus!', timestamp: Date.now() });
   
   if (testEventReceived) {
-    console.log('✅ Event emission and listening working correctly');
+    // ✅ Event emission and listening working correctly
   } else {
-    console.log('❌ Event emission failed');
+    // ❌ Event emission failed
   }
   
 } catch (error) {
-  console.log('❌ Foundation EventBus test failed:', error.message);
+  // ❌ Foundation EventBus test failed: error.message
 }
 
 // =============================================================================
 // TEST 2: Dynamic Event Registry
 // =============================================================================
-console.log('\n2️⃣ Testing Dynamic Event Registry...');
+ // 2️⃣ Testing Dynamic Event Registry...
 
 try {
   // Test module registration
@@ -57,24 +57,24 @@ try {
     status: 'active'
   });
   
-  console.log('✅ Module registered successfully');
+  // ✅ Module registered successfully
   
   // Test getting active modules
   const activeModules = await dynamicEventRegistry.getActiveModules();
-  console.log('✅ Active modules retrieved:', activeModules.length);
+  // ✅ Active modules retrieved: activeModules.length
   
   // Test getting event metrics
   const metrics = await dynamicEventRegistry.getEventMetrics();
-  console.log('✅ Event metrics retrieved:', metrics.totalEvents);
+  // ✅ Event metrics retrieved: metrics.totalEvents
   
 } catch (error) {
-  console.log('❌ Dynamic Event Registry test failed:', error.message);
+  // ❌ Dynamic Event Registry test failed: error.message
 }
 
 // =============================================================================
 // TEST 3: WebSocket Hub Integration
 // =============================================================================
-console.log('\n3️⃣ Testing WebSocket Hub Integration...');
+ // 3️⃣ Testing WebSocket Hub Integration...
 
 try {
   const { WebsocketHub } = await import('./packages/services/coordination/src/events/websocket-hub.js');
@@ -82,14 +82,14 @@ try {
   const hub = new WebsocketHub();
   await hub.initialize();
   
-  console.log('✅ WebSocket Hub initialized successfully');
+  // ✅ WebSocket Hub initialized successfully
   
   // Test getting event system metrics
   const hubMetrics = await hub.getEventSystemMetrics();
-  console.log('✅ Hub metrics retrieved:', hubMetrics.websocketStats);
+  // ✅ Hub metrics retrieved: hubMetrics.websocketStats
   
 } catch (error) {
-  console.log('❌ WebSocket Hub test failed:', error.message);
+  // ❌ WebSocket Hub test failed: error.message
 }
 
 // =============================================================================

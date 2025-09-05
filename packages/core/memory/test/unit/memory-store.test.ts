@@ -268,7 +268,7 @@ describe('SessionMemoryStore', () => {
 
     it('should handle invalid key types gracefully', async () => {
       // Test with empty string
-      const result1 = await store.store(',    'value');
+      const result1 = await store.store('', 'value');
       expect(result1.isOk()).toBe(true);
 
       // Test with very long key

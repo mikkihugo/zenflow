@@ -99,7 +99,7 @@ describe('MemoryManager', () => {
       const result = await manager.registerBackend(backendId, config);
       expect(result.isOk()).toBe(true);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Backend ' + backendId + ' registered')
+        expect.stringContaining(`Backend ${  backendId  } registered`)
       );
 });
 
@@ -125,7 +125,7 @@ describe('MemoryManager', () => {
 
       expect(result.isOk()).toBe(true);
       expect(mockLogger.info).toHaveBeenCalledWith(
-        expect.stringContaining('Backend ' + backendId + ' unregistered')
+        expect.stringContaining(`Backend ${  backendId  } unregistered`)
       );
 });
 
@@ -254,7 +254,7 @@ describe('MemoryManager', () => {
     it('should handle partial batch failures gracefully', async () => {
       const operations = [
         { key: 'valid1', value: ' value1'},
-        { key:', value: ' invalid-key'}, // Invalid key
+        { key: 'invalid-key', value: 'invalid-value'}, // Invalid key
         { key: 'valid2', value: ' value2'},
 ];
 

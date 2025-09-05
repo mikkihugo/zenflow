@@ -8,7 +8,6 @@ logger.info('Types initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

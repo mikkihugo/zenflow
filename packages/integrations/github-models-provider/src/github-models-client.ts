@@ -9,6 +9,9 @@ import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('github-models-client');
 
+// Constants to avoid duplicate string literals
+const USER_AGENT_HEADER = USER_AGENT_HEADER;
+
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -80,7 +83,7 @@ export class GitHubModelsClient {
       headers: {
         'Authorization': `Bearer ${this.githubToken}`,
         'Content-Type': 'application/json',
-        'User-Agent': 'Claude-Code-Zen/1.0.0'
+        'User-Agent': USER_AGENT_HEADER
       }
     });
 
@@ -117,7 +120,7 @@ export class GitHubModelsClient {
       headers: {
         'Authorization': `Bearer ${this.githubToken}`,
         'Content-Type': 'application/json',
-        'User-Agent': 'Claude-Code-Zen/1.0.0'
+        'User-Agent': USER_AGENT_HEADER
       },
       body: JSON.stringify(body)
     });
@@ -165,7 +168,7 @@ export class GitHubModelsClient {
       headers: {
         'Authorization': `Bearer ${this.githubToken}`,
         'Content-Type': 'application/json',
-        'User-Agent': 'Claude-Code-Zen/1.0.0'
+        'User-Agent': USER_AGENT_HEADER
       },
       body: JSON.stringify(body)
     });

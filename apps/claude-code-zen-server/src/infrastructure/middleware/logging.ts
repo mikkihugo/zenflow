@@ -10,6 +10,7 @@
 import { getLogger } from '@claude-zen/foundation';
 import type { NextFunction, Request, Response } from 'express';
 import type { BufferEncoding } from 'node:buffer';
+import { getEnv, isProd } from '../../../config/env';
 
 const logger = getLogger('interfaces-api-http-middleware-logging');
 
@@ -184,7 +185,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  */
 const shouldLog = (path: string, method: string): boolean => {
   // Skip logging for health checks in production
-  if (process.env['NODE_ENV'] === 'production' && path === '/health') {
+  if (isProd() && path === '/health') {
     return false;
   }
 
@@ -306,7 +307,7 @@ const createLogEntry = ({
  * @param logEntry Structured log entry to output
  */
 const outputLog = (logEntry: LogEntry): void => {
-  if (process.env['NODE_ENV'] === 'development') {
+  if (getEnv().NODE_ENV === 'development') {
     // Pretty print for development
     const { httpRequest, level, message, metadata } = logEntry;
     const duration = httpRequest?.latency || '';

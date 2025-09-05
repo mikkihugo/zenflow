@@ -12,16 +12,18 @@
 
 import express from 'express';
 import cors from 'cors';
+import os from 'os';
 import { getLogger, safeAsync, withRetry } from '@claude-zen/foundation';
 import { WebDataService } from './src/services/web/data.handler';
+import { env } from './src/config/env';
 
 const logger = getLogger('ProductionApiServer');
 const app = express();
-const port = parseInt(process.env['API_PORT'] || '3001', 10);
+const port = env.PORT;
 
 // Enable CORS for development/production
 app.use(cors({
-  origin: process.env['CORS_ORIGIN'] || ['http://localhost:3000', 'http://localhost:3002', 'http://localhost:3003'],
+  origin: env.CORS_ALLOWED_ORIGINS || ['http://localhost:3000', 'http://localhost:3002', 'http://localhost:3003'],
   credentials: true,
 }));
 
@@ -38,7 +40,7 @@ app.use((req, res, next) => {
 // Initialize foundation services
 let dataService: WebDataService;
 
-async function initializeServices(): Promise<void> {
+function initializeServices(): Promise<void> {
   return withRetry(() => {
     logger.info('Initializing production foundation services...');
     dataService = new WebDataService();
@@ -52,7 +54,7 @@ app.get('/api/v1/coordination/health', async (req, res) => {
     const status = await dataService.getSystemStatus();
     res.json({
       status: 'healthy',
-      uptime: process.uptime(),
+      uptime: os.uptime(),
       timestamp: new Date().toISOString(),
       system: status,
       services: {
@@ -375,14 +377,14 @@ app.get('/api/v1/memory/status', async (req, res) => {
       }
       return {
         status: 'unknown',
-        totalMemory: process.memoryUsage().heapTotal,
-        usedMemory: process.memoryUsage().heapUsed,
+        totalMemory: os.totalmem(),
+        usedMemory: os.totalmem() - os.freemem(),
         sessions: 0,
       };
     }, {
       status: 'active',
-      totalMemory: process.memoryUsage().heapTotal,
-      usedMemory: process.memoryUsage().heapUsed,
+      totalMemory: os.totalmem(),
+      usedMemory: os.totalmem() - os.freemem(),
       sessions: 1,
     });
     res.json({
@@ -435,7 +437,7 @@ app.use((err: Error, req: express.Request, res: express.Response) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({
     error: 'Internal server error',
-    message: process.env['NODE_ENV'] === 'development' ? err.message : 'Something went wrong',
+    message: env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
   });
 });
 

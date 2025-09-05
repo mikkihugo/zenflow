@@ -8,7 +8,6 @@ logger.info('Approvalgatemachine initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

@@ -14,6 +14,11 @@ type Prediction,
 } from '../../lib/index.js';
 import { MIPROv2, type MIPROv2Config } from '../../teleprompters/miprov2.js';
 
+// Auto mode constants for reuse in tests
+const AUTO_LIGHT = 'light';
+const AUTO_MEDIUM = 'medium';
+const AUTO_HEAVY = 'heavy';
+
 // Mock DSPy Module for testing
 class MockModule extends DSPyModule {
 private name: string;
@@ -83,7 +88,7 @@ let valset: Example[];
 beforeEach(() => {
 basicConfig = {
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 verbose: false,
 };
 
@@ -112,30 +117,30 @@ miprov2 = new MIPROv2({ metric: exactMatch });
 const config = miprov2.getConfig();
 
 expect(config.metric).toBe(exactMatch);
-expect(config.auto).toBe('light'); // Default
+expect(config.auto).toBe(AUTO_LIGHT); // Default
 });
 
 it('should create MIPROv2 with auto=light configuration', () => {
-miprov2 = new MIPROv2({ metric: exactMatch, auto: 'light' });
+miprov2 = new MIPROv2({ metric: exactMatch, auto: AUTO_LIGHT });
 const config = miprov2.getConfig();
 
-expect(config.auto).toBe('light');
+expect(config.auto).toBe(AUTO_LIGHT);
 expect(config.verbose).toBe(false);
 expect(config.track_stats).toBe(true);
 });
 
 it('should create MIPROv2 with auto=medium configuration', () => {
-miprov2 = new MIPROv2({ metric: exactMatch, auto: 'medium' });
+miprov2 = new MIPROv2({ metric: exactMatch, auto: AUTO_MEDIUM });
 const config = miprov2.getConfig();
 
-expect(config.auto).toBe('medium');
+expect(config.auto).toBe(AUTO_MEDIUM);
 });
 
 it('should create MIPROv2 with auto=heavy configuration', () => {
-miprov2 = new MIPROv2({ metric: exactMatch, auto: 'heavy' });
+miprov2 = new MIPROv2({ metric: exactMatch, auto: AUTO_HEAVY });
 const config = miprov2.getConfig();
 
-expect(config.auto).toBe('heavy');
+expect(config.auto).toBe(AUTO_HEAVY);
 });
 
 it('should create MIPROv2 with auto=null (manual mode)', () => {
@@ -164,7 +169,7 @@ task_model: mockLM,
 teacher_settings: { temperature: 0.7 },
 max_bootstrapped_demos: 6,
 max_labeled_demos: 2,
-auto: 'medium',
+auto: AUTO_MEDIUM,
 seed: 42,
 init_temperature: 0.8,
 verbose: true,
@@ -182,7 +187,7 @@ expect(config.task_model).toBe(mockLM);
 expect(config.teacher_settings).toEqual({ temperature: 0.7 });
 expect(config.max_bootstrapped_demos).toBe(6);
 expect(config.max_labeled_demos).toBe(2);
-expect(config.auto).toBe('medium');
+expect(config.auto).toBe(AUTO_MEDIUM);
 expect(config.seed).toBe(42);
 expect(config.init_temperature).toBe(0.8);
 expect(config.verbose).toBe(true);
@@ -200,7 +205,7 @@ expect(config.task_model).toBeNull();
 expect(config.teacher_settings).toEqual({});
 expect(config.max_bootstrapped_demos).toBe(4);
 expect(config.max_labeled_demos).toBe(4);
-expect(config.auto).toBe('light');
+expect(config.auto).toBe(AUTO_LIGHT);
 expect(config.num_candidates).toBeNull();
 expect(config.num_threads).toBeNull();
 expect(config.maxerrors).toBeNull();
@@ -284,7 +289,7 @@ await expect(miprov2.compile(mockStudent, { trainset })).rejects.toThrow(
 it('should validate auto conflicts with manual parameters', async () => {
 miprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 num_candidates: 6,
 });
 
@@ -355,7 +360,7 @@ expect(result).toBeDefined();
 it('should handle zero-shot optimization', async () => {
 miprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 max_bootstrapped_demos: 0,
 max_labeled_demos: 0,
 });
@@ -419,7 +424,7 @@ expect(result).toBeDefined();
 it('should handle override parameters in compile method', async () => {
 const localMiprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 });
 
 const result = await localMiprov2.compile(mockStudent, {
@@ -436,7 +441,7 @@ expect(result).toBeDefined();
 it('should handle proposer configuration flags', async () => {
 const localMiprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 });
 
 const result = await localMiprov2.compile(mockStudent, {
@@ -454,7 +459,7 @@ expect(result).toBeDefined();
 it('should handle custom view_data_batch_size', async () => {
 const localMiprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 });
 
 const result = await localMiprov2.compile(mockStudent, {
@@ -469,7 +474,7 @@ expect(result).toBeDefined();
 it('should handle custom minibatch configuration', async () => {
 const localMiprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 });
 
 const result = await localMiprov2.compile(mockStudent, {
@@ -486,7 +491,7 @@ expect(result).toBeDefined();
 
 describe('Auto Mode Configurations', () => {
 it('should handle light auto mode correctly', async () => {
-miprov2 = new MIPROv2({ metric: exactMatch, auto: 'light' });
+miprov2 = new MIPROv2({ metric: exactMatch, auto: AUTO_LIGHT });
 
 const result = await miprov2.compile(mockStudent, { trainset });
 
@@ -495,7 +500,7 @@ expect(result).toBeDefined();
 });
 
 it('should handle medium auto mode correctly', async () => {
-miprov2 = new MIPROv2({ metric: exactMatch, auto: 'medium' });
+miprov2 = new MIPROv2({ metric: exactMatch, auto: AUTO_MEDIUM });
 
 const result = await miprov2.compile(mockStudent, { trainset });
 
@@ -504,7 +509,7 @@ expect(result).toBeDefined();
 });
 
 it('should handle heavy auto mode correctly', async () => {
-miprov2 = new MIPROv2({ metric: exactMatch, auto: 'heavy' });
+miprov2 = new MIPROv2({ metric: exactMatch, auto: AUTO_HEAVY });
 
 const result = await miprov2.compile(mockStudent, { trainset });
 
@@ -569,7 +574,7 @@ expect(result2).toBeDefined();
 it('should handle custom teacher settings', async () => {
 miprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 teacher_settings: { temperature: 0.7, max_tokens: 100 },
 });
 
@@ -594,7 +599,7 @@ task_model: null,
 teacher_settings: null,
 max_bootstrapped_demos: 4,
 max_labeled_demos: 4,
-auto: 'light',
+auto: AUTO_LIGHT,
 num_candidates: null,
 num_threads: null,
 maxerrors: null,
@@ -650,13 +655,13 @@ await expect(miprov2.compile(mockStudent, { trainset })).rejects.toThrow(
 
 it('should handle auto run settings like Stanford DSPy', () => {
 // Test auto settings match Stanford DSPy constants
-const lightConfig = new MIPROv2({ metric: exactMatch, auto: 'light' });
-const mediumConfig = new MIPROv2({ metric: exactMatch, auto: 'medium' });
-const heavyConfig = new MIPROv2({ metric: exactMatch, auto: 'heavy' });
+const lightConfig = new MIPROv2({ metric: exactMatch, auto: AUTO_LIGHT });
+const mediumConfig = new MIPROv2({ metric: exactMatch, auto: AUTO_MEDIUM });
+const heavyConfig = new MIPROv2({ metric: exactMatch, auto: AUTO_HEAVY });
 
-expect(lightConfig.getConfig().auto).toBe('light');
-expect(mediumConfig.getConfig().auto).toBe('medium');
-expect(heavyConfig.getConfig().auto).toBe('heavy');
+expect(lightConfig.getConfig().auto).toBe(AUTO_LIGHT);
+expect(mediumConfig.getConfig().auto).toBe(AUTO_MEDIUM);
+expect(heavyConfig.getConfig().auto).toBe(AUTO_HEAVY);
 });
 });
 
@@ -684,7 +689,7 @@ expect(result).toBeDefined();
 it('should track statistics when enabled', async () => {
 miprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 track_stats: true,
 });
 
@@ -697,7 +702,7 @@ expect(result).toBeDefined();
 it('should not track statistics when disabled', async () => {
 miprov2 = new MIPROv2({
 metric: exactMatch,
-auto: 'light',
+auto: AUTO_LIGHT,
 track_stats: false,
 });
 

@@ -322,10 +322,10 @@ export class BehavioralIntelligence {
    * @returns Behavioral prediction
    */
   async predictAgentPerformance(
-    agentId:string,
-    taskType:string,
-    taskComplexity:number
-  ):Promise<BehavioralPrediction> {
+    agentId: string,
+    taskType: string,
+    taskComplexity: number
+  ): Promise<BehavioralPrediction> {
     if (!this.initialized) await this.initialize();
 
     try {
@@ -387,9 +387,9 @@ export class BehavioralIntelligence {
    * @returns Task complexity analysis
    */
   async analyzeTaskComplexity(
-    taskType:string,
-    context:Record<string, unknown> = {}
-  ):Promise<TaskComplexityAnalysis> {
+    taskType: string,
+    context: Record<string, unknown> = {}
+  ): Promise<TaskComplexityAnalysis> {
     if (!this.initialized) await this.initialize();
 
     try {

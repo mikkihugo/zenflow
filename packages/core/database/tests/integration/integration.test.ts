@@ -77,25 +77,25 @@ function cleanupTestFiles(paths:string[]): void {
 }
 
 // Test setup constants
-const testDbPath = './test.db';
-const testVectorPath = './test_vectors';
-const testGraphPath = './test_graph';
-const perfTestDbPath = './perf_test.db';
+const TEST_DB_PATH = './test.db';
+const TEST_VECTOR_PATH = './test_vectors';
+const TEST_GRAPH_PATH = './test_graph';
+const PERF_TEST_DB_PATH = './perf_test.db';
 
 // Test setup and teardown
 beforeAll(() => {
- cleanupTestFiles([testDbPath, testVectorPath, testGraphPath, perfTestDbPath]);
+ cleanupTestFiles([TEST_DB_PATH, TEST_VECTOR_PATH, TEST_GRAPH_PATH, PERF_TEST_DB_PATH]);
 });
 
 afterAll(() => {
- cleanupTestFiles([testDbPath, testVectorPath, testGraphPath, perfTestDbPath]);
+ cleanupTestFiles([TEST_DB_PATH, TEST_VECTOR_PATH, TEST_GRAPH_PATH, PERF_TEST_DB_PATH]);
 });
 
 describe('Database Package Integration Tests - SQLite Adapter', () => {
  describe('SQLite Adapter', () => {
  test('should create connection and perform basic operations', async () => {
  const config:DatabaseConfig = {
- type: 'sqlite', database:testDbPath,
+ type: 'sqlite', database:TEST_DB_PATH,
  pool:{ min: 1, max:3},
 };
 
@@ -114,7 +114,7 @@ describe('Database Package Integration Tests - SQLite Adapter', () => {
 
  test('should handle connection pooling correctly', async () => {
  const config:DatabaseConfig = {
- type: 'sqlite', database:testDbPath,
+ type: 'sqlite', database:TEST_DB_PATH,
  pool:{ min: 2, max:5},
 };
 
@@ -303,7 +303,7 @@ describe('Database Package Integration Tests - Performance', () => {
  describe('Performance and Reliability', () => {
  function createPerformanceAdapter():SQLiteAdapter {
  const config:DatabaseConfig = {
- type: 'sqlite', database:perfTestDbPath,
+ type: 'sqlite', database:PERF_TEST_DB_PATH,
  pool:{ min: 1, max:1}, // Single connection to avoid table visibility issues
 };
  return new SQLiteAdapter(config);

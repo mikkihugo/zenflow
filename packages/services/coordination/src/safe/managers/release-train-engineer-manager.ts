@@ -8,7 +8,6 @@ logger.info('Releasetrainengineermanager initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

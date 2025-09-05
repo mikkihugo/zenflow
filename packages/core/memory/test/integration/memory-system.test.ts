@@ -124,12 +124,12 @@ describe('Memory System Integration', () => {
 
       expect(migrationResult.success).toBe(true);
       expect(mockBackends.cache.retrieve).toHaveBeenCalledWith(
-        'cache:temp:user:123')      );
+        'cache:temp:user:123');
       expect(mockBackends.session.store).toHaveBeenCalledWith(
         'session:user:123',        testData
       );
       expect(mockBackends.cache.delete).toHaveBeenCalledWith(
-        'cache:temp:user:123')      );
+        'cache:temp:user:123');
 });
 
     it('should provide unified statistics across all backends', async () => {

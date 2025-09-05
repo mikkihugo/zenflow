@@ -291,6 +291,7 @@ export class DaemonProcessManager {
   ): Promise<void> {
     const startTime = Date.now();
 
+     
     while (Date.now() - startTime < timeout) {
       if (!this.isProcessRunning(pid)) {
         return;
@@ -325,11 +326,11 @@ export class DaemonProcessManager {
       this.config.errorFile,
     ].map((file) => file.substring(0, file.lastIndexOf('/')));
 
-    for (const dir of [...new Set(dirs)]) {
+    await Promise.all([...new Set(dirs)].map(async (dir) => {
       if (dir && !existsSync(dir)) {
         await mkdir(dir, { recursive: true });
       }
-    }
+    }));
   }
 
   /**

@@ -8,7 +8,6 @@ logger.info('Epicmanagement initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

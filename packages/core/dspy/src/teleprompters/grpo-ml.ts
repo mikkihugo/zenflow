@@ -835,7 +835,7 @@ if (this.episodeRewards.length < this.config.minSampleSize) {
 return tests;
 }
 
-this.logger.info(`Validating policy improvement with statistical tests...`
+this.logger.info(`Validating policy improvement with statistical tests...`);
 
 // Split episodes into early and late phases
 const midPoint = Math.floor(this.episodeRewards.length / 2);

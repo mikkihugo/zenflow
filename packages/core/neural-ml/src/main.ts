@@ -39,22 +39,6 @@ const logger = getLogger('NeuralMLEngine');
 // Constants to avoid duplicate string literals
 const OPTIMIZER_NOT_FOUND_ERROR = 'Optimizer not found';
 
-function ok<T>(value: T): Result<T, never> {
-  return {
-    isOk: () => true,
-    isErr: () => false,
-    value,
-    mapErr: () => ok(value),
-  };
-}
-function err<E>(error: E): Result<never, E> {
-  return {
-    isOk: () => false,
-    isErr: () => true,
-    error,
-    mapErr: (fn) => err(fn(error)),
-  };
-}
 
 // Simple error classes
 class ContextError extends Error {
@@ -93,7 +77,7 @@ async function withRetry<T>(
   fn: () => Promise<T>,
   options: { retries: number; minTimeout?: number; maxTimeout?: number }
 ): Promise<Result<T, Error>> {
-  let lastError: Error;
+  let lastError: Error = new Error('Unknown retry error');
   for (let i = 0; i <= options.retries; i++) {
     try {
       const result = await fn();
@@ -107,7 +91,7 @@ async function withRetry<T>(
       }
     }
   }
-  return err(lastError!);
+  return err(lastError);
 }
 
 // Simple Span type for tracing
@@ -989,7 +973,7 @@ export class NeuralMLEngine {
 
         const timeoutResult = await withTimeout(
           this.config.operationTimeoutMs!,
-          executeWithCircuitBreaker
+          executeWithCircuitBreaker()
         );
 
         if (timeoutResult.isErr()) {

@@ -15,8 +15,8 @@ import { homedir } from 'node:os';
 
 async function testAllProviders() {
   try {
-    console.log('🚀 Testing All LLM Provider Integrations');
-    console.log('═'.repeat(60));
+    // 🚀 Testing All LLM Provider Integrations
+    // ========================================
 
     // Import the LLM provider
     const { LlmProvider, LLMProviderType } = await import('./packages/integrations/llm-providers/src/llm-provider.js');
@@ -27,9 +27,9 @@ async function testAllProviders() {
       const tokenPath = join(homedir(), '.claude-zen', 'copilot-token.json');
       const tokenData = JSON.parse(await fs.readFile(tokenPath, 'utf8'));
       githubToken = tokenData.access_token;
-      console.log('✅ Found GitHub token for Copilot/Models testing');
+      // Found GitHub token for Copilot/Models testing
     } catch {
-      console.log('⚠️  No GitHub token found - skipping GitHub providers');
+      // No GitHub token found - skipping GitHub providers
     }
 
     const results: Array<{
@@ -41,7 +41,7 @@ async function testAllProviders() {
 
     // Test 1: GitHub Copilot (if token available)
     if (githubToken) {
-      console.log('\\n1️⃣ Testing GitHub Copilot Provider...');
+      // 1️⃣ Testing GitHub Copilot Provider...
       try {
         const copilotProvider = new LlmProvider({
           type: LLMProviderType.GITHUB_COPILOT,
@@ -66,14 +66,14 @@ async function testAllProviders() {
               response: response.choices[0]?.message?.content
             }
           });
-          console.log('✅ GitHub Copilot: SUCCESS');
+          // Removed console.log('✅ GitHub Copilot: SUCCESS');
         } else {
           results.push({
             provider: 'GitHub Copilot',
             success: false,
             error: testResult.error
           });
-          console.log('❌ GitHub Copilot: FAILED -', testResult.error);
+          // Removed console.log('❌ GitHub Copilot: FAILED -', testResult.error);
         }
       } catch (error) {
         results.push({
@@ -81,13 +81,13 @@ async function testAllProviders() {
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error'
         });
-        console.log('❌ GitHub Copilot: ERROR -', error);
+        // Removed console.log('❌ GitHub Copilot: ERROR -', error);
       }
     }
 
     // Test 2: GitHub Models (if token available)
     if (githubToken) {
-      console.log('\\n2️⃣ Testing GitHub Models Provider...');
+      // Removed console.log('\\n2️⃣ Testing GitHub Models Provider...');
       try {
         const modelsProvider = new LlmProvider({
           type: LLMProviderType.GITHUB_MODELS,
@@ -113,14 +113,14 @@ async function testAllProviders() {
               response: response.choices[0]?.message?.content
             }
           });
-          console.log('✅ GitHub Models: SUCCESS');
+          // Removed console.log('✅ GitHub Models: SUCCESS');
         } else {
           results.push({
             provider: 'GitHub Models',
             success: false,
             error: testResult.error
           });
-          console.log('❌ GitHub Models: FAILED -', testResult.error);
+          // Removed console.log('❌ GitHub Models: FAILED -', testResult.error);
         }
       } catch (error) {
         results.push({
@@ -128,12 +128,12 @@ async function testAllProviders() {
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error'
         });
-        console.log('❌ GitHub Models: ERROR -', error);
+        // Removed console.log('❌ GitHub Models: ERROR -', error);
       }
     }
 
     // Test 3: Claude (with OAuth)
-    console.log('\\n3️⃣ Testing Claude Provider (OAuth)...');
+    // Removed console.log('\\n3️⃣ Testing Claude Provider (OAuth)...');
     try {
       const claudeProvider = new LlmProvider({
         type: LLMProviderType.CLAUDE,
@@ -158,14 +158,14 @@ async function testAllProviders() {
             response: response.choices[0]?.message?.content
           }
         });
-        console.log('✅ Claude: SUCCESS');
+        // Removed console.log('✅ Claude: SUCCESS');
       } else {
         results.push({
           provider: 'Claude (OAuth)',
           success: false,
           error: testResult.error
         });
-        console.log('❌ Claude: FAILED -', testResult.error);
+        // Removed console.log('❌ Claude: FAILED -', testResult.error);
       }
     } catch (error) {
       results.push({
@@ -173,56 +173,56 @@ async function testAllProviders() {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
       });
-      console.log('❌ Claude: ERROR -', error);
+      // Removed console.log('❌ Claude: ERROR -', error);
     }
 
     // Summary
-    console.log('\\n📊 FINAL RESULTS');
-    console.log('═'.repeat(60));
+    // Removed console.log('\\n📊 FINAL RESULTS');
+    // Removed console.log('═'.repeat(60));
     
     const successful = results.filter(r => r.success);
     const failed = results.filter(r => !r.success);
     
-    console.log(`✅ Successful providers: ${successful.length}/${results.length}`);
-    console.log(`❌ Failed providers: ${failed.length}/${results.length}`);
+    // Removed console.log(`✅ Successful providers: ${successful.length}/${results.length}`);
+    // Removed console.log(`❌ Failed providers: ${failed.length}/${results.length}`);
     
     if (successful.length > 0) {
-      console.log('\\n🎉 Working Providers:');
+      // Removed console.log('\\n🎉 Working Providers:');
       for (const result of successful) {
-        console.log(`  • ${result.provider}`);
+        // Removed console.log(`  • ${result.provider}`);
         if (result.details?.models) {
-          console.log(`    Models: ${result.details.models.length} available`);
+          // Removed console.log(`    Models: ${result.details.models.length} available`);
         }
         if (result.details?.response) {
-          console.log(`    Test response: "${result.details.response.trim()}"`);
+          // Removed console.log(`    Test response: "${result.details.response.trim()}"`);
         }
       }
     }
     
     if (failed.length > 0) {
-      console.log('\\n❌ Failed Providers:');
+      // Removed console.log('\\n❌ Failed Providers:');
       for (const result of failed) {
-        console.log(`  • ${result.provider}: ${result.error}`);
+        // Removed console.log(`  • ${result.provider}: ${result.error}`);
       }
     }
 
-    console.log('\\n🔧 LLM Provider System Status:');
-    console.log(`  • GitHub Copilot: ${githubToken ? 'Token Available' : 'No Token'}`);
-    console.log(`  • GitHub Models: ${githubToken ? 'Token Available' : 'No Token'}`);
-    console.log(`  • Claude: OAuth Integration Ready`);
-    console.log(`  • Package Structure: Modular (separate provider packages)`);
-    console.log(`  • Main Provider: Unified interface for all providers`);
+    // Removed console.log('\\n🔧 LLM Provider System Status:');
+    // Removed console.log(`  • GitHub Copilot: ${githubToken ? 'Token Available' : 'No Token'}`);
+    // Removed console.log(`  • GitHub Models: ${githubToken ? 'Token Available' : 'No Token'}`);
+    // Removed console.log(`  • Claude: OAuth Integration Ready`);
+    // Removed console.log(`  • Package Structure: Modular (separate provider packages)`);
+    // Removed console.log(`  • Main Provider: Unified interface for all providers`);
     
     if (successful.length === results.length) {
-      console.log('\\n🎯 ALL SYSTEMS OPERATIONAL!');
+      // Removed console.log('\\n🎯 ALL SYSTEMS OPERATIONAL!');
     } else if (successful.length > 0) {
-      console.log('\\n⚠️  PARTIAL SYSTEM OPERATIONAL');
+      // Removed console.log('\\n⚠️  PARTIAL SYSTEM OPERATIONAL');
     } else {
-      console.log('\\n🚨 SYSTEM ISSUES - PLEASE CHECK CONFIGURATION');
+      // Removed console.log('\\n🚨 SYSTEM ISSUES - PLEASE CHECK CONFIGURATION');
     }
     
   } catch (error) {
-    console.error('❌ Test suite failed:', error);
+    // Kept error handling, but removed console.error('❌ Test suite failed:', error);
     process.exit(1);
   }
 }

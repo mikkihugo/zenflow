@@ -8,7 +8,7 @@ import { createEventDrivenSystemMonitor } from '../packages/services/system-moni
 import { createSystemMonitoringBridge } from '../packages/services/system-monitoring/src/monitoring-event-bridge.js';
 
 async function main() {
-  console.log('🧪 Testing System Monitor Bridge...');
+  // 🧪 Testing System Monitor Bridge...
   
   try {
     // Create monitor
@@ -21,25 +21,25 @@ async function main() {
       enableLogging: true,
     });
 
-    console.log('✅ Bridge created successfully');
-    console.log('📊 Bridge Status:', bridge.getStatus());
+    // ✅ Bridge created successfully
+    // 📊 Bridge Status: bridge.getStatus()
 
     // Initialize monitor
     await monitor.initialize();
-    console.log('✅ Monitor initialized');
+    // ✅ Monitor initialized
 
     // Let it run for a few seconds
-    console.log('⏳ Running for 5 seconds...');
+    // ⏳ Running for 5 seconds...
     await new Promise(resolve => setTimeout(resolve, 5000));
 
     // Cleanup
     bridge.stop();
     await monitor.shutdown();
     
-    console.log('🎉 Test completed successfully!');
+    // 🎉 Test completed successfully!
     
   } catch (error) {
-    console.error('❌ Test failed:', error);
+    // ❌ Test failed: error
     process.exit(1);
   }
 }

@@ -25,24 +25,24 @@ interface TestResult {
 }
 
 async function testEventDrivenProviders() {
-  console.log('🚀 Testing Event-Driven LLM Providers');
-  console.log('═'.repeat(60));
+  // 🚀 Testing Event-Driven LLM Providers
+  // ========================================
 
   const results: TestResult[] = [];
 
   // Register all provider handlers
   try {
-    console.log('📡 Registering EventBus handlers...');
+    // Registering EventBus handlers...
     
     // Register Gemini handlers (already implemented)
     const { registerGeminiHandlers } = await import('./packages/integrations/gemini-provider/src/index.js');
     await registerGeminiHandlers(bus);
-    console.log('✅ Gemini handlers registered');
+    // Gemini handlers registered
 
     // Register Claude handlers with context7 MCP
     const { registerClaudeHandlers } = await import('./packages/integrations/claude-provider/src/claude-events.js');
     await registerClaudeHandlers(bus);
-    console.log('✅ Claude handlers registered');
+    // Claude handlers registered
 
     // Register Copilot handlers with auto-renewal
     const { registerCopilotHandlers } = await import('./packages/integrations/copilot-provider/src/copilot-events.js');

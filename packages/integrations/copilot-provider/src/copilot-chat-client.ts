@@ -10,6 +10,12 @@ import { CopilotTokenManager } from './copilot-token-manager.js';
 
 const logger = getLogger('copilot-chat-client');
 
+// Constants to avoid duplicate string literals
+const USER_AGENT_HEADER = USER_AGENT_HEADER;
+const EDITOR_VERSION_HEADER = EDITOR_VERSION_HEADER;
+const EDITOR_PLUGIN_VERSION_HEADER = EDITOR_PLUGIN_VERSION_HEADER;
+const OPENAI_ORG_HEADER = OPENAI_ORG_HEADER;
+
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
@@ -63,10 +69,10 @@ export class CopilotChatClient {
       headers: {
         'Authorization': `Bearer ${copilotToken.token}`,
         'Accept': 'application/json',
-        'User-Agent': 'GitHubCopilotChat/0.22.4 (claude-zen-compatible)',
-        'Editor-Version': 'vscode/1.96.0',
-        'Editor-Plugin-Version': 'copilot-chat/0.22.4',
-        'Openai-Organization': 'github-copilot'
+        'User-Agent': USER_AGENT_HEADER,
+        'Editor-Version': EDITOR_VERSION_HEADER,
+        'Editor-Plugin-Version': EDITOR_PLUGIN_VERSION_HEADER,
+        'Openai-Organization': OPENAI_ORG_HEADER
       }
     });
 
@@ -113,10 +119,10 @@ export class CopilotChatClient {
         'Authorization': `Bearer ${copilotToken.token}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'GitHubCopilotChat/0.22.4 (claude-zen-compatible)',
-        'Editor-Version': 'vscode/1.96.0',
-        'Editor-Plugin-Version': 'copilot-chat/0.22.4',
-        'Openai-Organization': 'github-copilot',
+        'User-Agent': USER_AGENT_HEADER,
+        'Editor-Version': EDITOR_VERSION_HEADER,
+        'Editor-Plugin-Version': EDITOR_PLUGIN_VERSION_HEADER,
+        'Openai-Organization': OPENAI_ORG_HEADER,
         'Openai-Intent': 'conversation-panel'
       },
       body: JSON.stringify(body)
@@ -166,10 +172,10 @@ export class CopilotChatClient {
         'Authorization': `Bearer ${copilotToken.token}`,
         'Content-Type': 'application/json',
         'Accept': 'text/event-stream',
-        'User-Agent': 'GitHubCopilotChat/0.22.4 (claude-zen-compatible)',
-        'Editor-Version': 'vscode/1.96.0',
-        'Editor-Plugin-Version': 'copilot-chat/0.22.4',
-        'Openai-Organization': 'github-copilot',
+        'User-Agent': USER_AGENT_HEADER,
+        'Editor-Version': EDITOR_VERSION_HEADER,
+        'Editor-Plugin-Version': EDITOR_PLUGIN_VERSION_HEADER,
+        'Openai-Organization': OPENAI_ORG_HEADER,
         'Openai-Intent': 'conversation-panel'
       },
       body: JSON.stringify(body)

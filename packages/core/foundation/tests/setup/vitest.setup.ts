@@ -61,11 +61,11 @@ export const testUtils = {
 declare global {
   const testUtils: {
     mockLogger: () => {
-      debug: any;
-      info: any;
-      warn: any;
-      error: any;
-      fatal: any;
+      debug: import('vitest').Mock;
+      info: import('vitest').Mock;
+      warn: import('vitest').Mock;
+      error: import('vitest').Mock;
+      fatal: import('vitest').Mock;
     };
     createMockConfig: () => {
       debug: boolean;

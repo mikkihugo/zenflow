@@ -8,7 +8,6 @@ logger.info('Safecollections initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

@@ -71,8 +71,8 @@ describe('Memory System DI Integration', () => {
   describe('Service Registration', () => {
     it('should register memory services with DI container', async () => {
       // Import the memory providers module
-      const { registerMemoryProviders} = await import(
-        '../../src/providers/memory-providers')      );
+      const { registerMemoryProviders } = await import(
+        '../../src/providers/memory-providers');
 
       // Register memory services
       registerMemoryProviders(container);
@@ -89,8 +89,8 @@ describe('Memory System DI Integration', () => {
 });
 
     it('should register memory controller with dependencies', async () => {
-      const { MemoryController} = await import(
-        '../../src/controllers/memory-controller')      );
+      const { MemoryController } = await import(
+        '../../src/controllers/memory-controller');
 
       // Register controller
       container.register('MemoryController', () => {
@@ -181,8 +181,8 @@ describe('Memory System DI Integration', () => {
 
   describe('Memory Controller DI Integration', () => {
     it('should inject dependencies into memory controller', async () => {
-      const { MemoryController} = await import(
-        '../../src/controllers/memory-controller')      );
+      const { MemoryController } = await import(
+        '../../src/controllers/memory-controller');
 
       // Mock provider factory
       const mockProviderFactory = {
@@ -216,8 +216,8 @@ describe('Memory System DI Integration', () => {
 });
 
     it('should handle memory operations through DI-injected services', async () => {
-      const { MemoryController} = await import(
-        '../../src/controllers/memory-controller')      );
+      const { MemoryController } = await import(
+        '../../src/controllers/memory-controller');
 
       const mockBackend = {
         store:vi.fn().mockResolvedValue(),

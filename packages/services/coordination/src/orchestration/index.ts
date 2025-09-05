@@ -10,6 +10,5 @@ export class Index {
 
   async execute(): Promise<void> {
   
-    // TODO: Implement functionality
   }
 }

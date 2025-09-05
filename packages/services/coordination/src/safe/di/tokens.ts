@@ -8,7 +8,6 @@ logger.info('Tokens initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

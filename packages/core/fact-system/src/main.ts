@@ -1,387 +1,427 @@
 /**
- * @fileoverview FACT System Package Main Implementation
+ * @fileoverview FACT System - Execution Result Caching
  *
- * Central export point for all FACT system functionality including
- * TypeScript coordination, Rust engine integration, and multi-source fact gathering.
+ * Domain-specific caching system for execution results (API calls, computations, etc.)
+ * Provides fast storage and retrieval of previously computed results.
+ * 
+ * Domain: Execution results, computational caching, API response storage
+ * Usage: Through coordination packages (TaskMaster, SPARC, etc.)
+ * 
+ * Uses @claude-zen/foundation for logging and events, @claude-zen/database for storage.
  */
 
-// =============================================================================
-// CORE FACT SYSTEM - Primary components (STUB IMPLEMENTATIONS)
-// =============================================================================
+import { getLogger, EventBus } from '@claude-zen/foundation';
+import { createDatabase } from '@claude-zen/database';
+import type { DatabaseAdapter } from '@claude-zen/database';
 import type {
- FactProcessingOptions,
- FactSearchQuery,
- FactSearchResult,
- FactSourceType,
- FactSystemConfig,
+  FactSearchQuery,
+  FactSourceType,
+  FactSystemConfig,
+  FactSystemStats,
 } from './typescript/types';
 
-// Simple logger for FACT system
-const logger = {
- info: (...args: any[]) => console.log('[FACT-INFO]', ...args),
- error: (...args: any[]) => console.error('[FACT-ERROR]', ...args),
- warn: (...args: any[]) => console.warn('[FACT-WARN]', ...args),
- debug: (...args: any[]) => console.debug('[FACT-DEBUG]', ...args),
-};
+// Define our own search results interface for the search method
+interface FactSearchResults {
+  facts: any[];
+  totalCount: number;
+  queryTime: number;
+}
 
+const logger = getLogger('fact-system');
+
+// Get singleton EventBus instance for FACT system
+export const eventBus = EventBus.getInstance();
+
+// =============================================================================
+// FACT CLIENT - Main implementation using proper database and foundation
+// =============================================================================
 export class FactClient {
- private config: FactSystemConfig | undefined;
+  private database: DatabaseAdapter | null = null;
+  private config: FactSystemConfig;
+  private initialized = false;
 
- constructor(config?: FactSystemConfig) {
- this.config = config;
- }
+  constructor(config: FactSystemConfig) {
+    this.config = config;
+    this.setupEventHandlers();
+  }
 
- async search(query: any): Promise<any> {
- logger.info('Searching facts with query:', query);
- return [];
- }
+  private setupEventHandlers(): void {
+    // Listen for FACT-specific events from coordination packages (TaskMaster, SPARC, etc.)
+    eventBus.on('fact:store', async (data: any) => {
+      await this.handleStoreRequest(data);
+    });
 
- async gatherFromSources(sources: any[], options?: any): Promise<any> {
- logger.info(
- 'Gathering facts from sources:',
- sources,
- 'with options:',
- options
- );
- return [];
- }
+    eventBus.on('fact:query', async (data: any) => {
+      await this.handleQueryRequest(data);
+    });
 
- getStats(): any {
- return {
- cacheSize: 0,
- totalQueries: 0,
- cacheHitRate: 0,
- rustEngineActive: this.config?.useRustEngine || false,
- };
- }
+    eventBus.on('fact:status', async (data: any) => {
+      await this.handleStatusRequest(data);
+    });
+  }
 
- shutdown?(): void {
- logger.info('Shutting down fact client');
- }
-}
+  private async handleStoreRequest(data: any): Promise<void> {
+    try {
+      await this.ensureInitialized();
+      const id = await this.storeFact(data);
+      logger.info(`Stored FACT: ${id}`);
+    } catch (error) {
+      logger.error('Failed to store FACT:', error);
+    }
+  }
 
-export function createFactClient(
- config?: FactSystemConfig
-): Promise<FactClient> {
- return Promise.resolve(new FactClient(config));
-}
-export function createSQLiteFactClient(path?: string): Promise<FactClient> {
- logger.info('Creating SQLite fact client at path:', path || 'default');
- return Promise.resolve(
- new FactClient({
- database: {
- query: async () => [],
- execute: async () => 0,
- close: async () => {},
- },
- })
- );
-}
+  private async handleQueryRequest(data: any): Promise<void> {
+    try {
+      await this.ensureInitialized();
+      const results = await this.search(data);
+      
+      // Emit response with request ID for correlation
+      eventBus.emit(`fact:query:response:${data.requestId}`, results);
+      logger.info(`Query completed for request: ${data.requestId}`);
+    } catch (error) {
+      logger.error('Failed to query FACTs:', error);
+      eventBus.emit(`fact:query:response:${data.requestId}`, {
+        facts: [],
+        totalCount: 0,
+        queryTime: 0,
+        error: (error as Error).message,
+      });
+    }
+  }
 
-export function createLanceDBFactClient(path?: string): Promise<FactClient> {
- logger.info('Creating LanceDB fact client at path:', path || 'default');
- return Promise.resolve(
- new FactClient({
- database: {
- query: async () => [],
- execute: async () => 0,
- close: async () => {},
- },
- })
- );
-}
+  private async handleStatusRequest(data: any): Promise<void> {
+    try {
+      const status = {
+        initialized: this.initialized,
+        stats: this.getStats(),
+      };
+      eventBus.emit(`fact:status:response:${data.requestId}`, status);
+    } catch (error) {
+      logger.error('Failed to get status:', error);
+    }
+  }
 
-export function createKuzuFactClient(path?: string): Promise<FactClient> {
- logger.info('Creating Kuzu fact client at path:', path || 'default');
- return Promise.resolve(
- new FactClient({
- database: {
- query: async () => [],
- execute: async () => 0,
- close: async () => {},
- },
- })
- );
+  private async ensureInitialized(): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+  }
+
+  async initialize(): Promise<void> {
+    try {
+      logger.info('Initializing FACT system...');
+      
+      // Initialize database using @claude-zen/database
+      if (this.config.database) {
+        // Use provided database connection
+        this.database = this.config.database as DatabaseAdapter;
+      } else {
+        // Create default SQLite database
+        this.database = await createDatabase('sqlite', './facts.db');
+      }
+
+      // Create FACT storage tables
+      await this.createTables();
+
+      this.initialized = true;
+      logger.info('FACT system initialized successfully');
+      
+      eventBus.emit('fact:system:initialized', { timestamp: Date.now() });
+    } catch (error) {
+      logger.error('Failed to initialize FACT system:', error);
+      throw error;
+    }
+  }
+
+  private async createTables(): Promise<void> {
+    if (!this.database) throw new Error('Database not initialized');
+
+    const createTableSQL = `
+      CREATE TABLE IF NOT EXISTS facts (
+        id TEXT PRIMARY KEY,
+        query TEXT NOT NULL,
+        result TEXT NOT NULL,
+        source TEXT NOT NULL,
+        timestamp INTEGER NOT NULL,
+        ttl INTEGER NOT NULL,
+        access_count INTEGER DEFAULT 0,
+        last_accessed INTEGER NOT NULL,
+        metadata TEXT NOT NULL
+      )
+    `;
+
+    const createIndexSQL = `
+      CREATE INDEX IF NOT EXISTS idx_facts_query ON facts(query);
+      CREATE INDEX IF NOT EXISTS idx_facts_source ON facts(source);
+      CREATE INDEX IF NOT EXISTS idx_facts_timestamp ON facts(timestamp);
+    `;
+
+    await this.database.query(createTableSQL);
+    await this.database.query(createIndexSQL);
+    
+    logger.info('FACT storage tables created');
+  }
+
+  async search(query: FactSearchQuery): Promise<FactSearchResults> {
+    await this.ensureInitialized();
+    const startTime = Date.now();
+    
+    try {
+      logger.info('Searching FACTs:', query);
+      
+      if (!this.database) throw new Error('Database not initialized');
+
+      let sql = 'SELECT * FROM facts WHERE 1=1';
+      const params: any[] = [];
+
+      if (query.query) {
+        sql += ' AND query LIKE ?';
+        params.push(`%${query.query}%`);
+      }
+
+      if (query.type) {
+        sql += ' AND JSON_EXTRACT(metadata, "$.type") = ?';
+        params.push(query.type);
+      }
+
+
+      sql += ' ORDER BY timestamp DESC, access_count DESC';
+      
+      if (query.limit) {
+        sql += ' LIMIT ?';
+        params.push(query.limit);
+      }
+
+      const rows = await this.database.query(sql, params) as Array<{
+        id: string;
+        query: string;
+        result: string;
+        source: string;
+        timestamp: number;
+        ttl: number;
+        metadata: string;
+      }>;
+      
+      const facts = rows.map(row => ({
+        id: row.id,
+        query: row.query,
+        result: JSON.parse(row.result),
+        source: row.source,
+        timestamp: row.timestamp,
+        ttl: row.ttl,
+        metadata: JSON.parse(row.metadata),
+      }));
+
+      const queryTime = Date.now() - startTime;
+      
+      logger.info(`Found ${facts.length} FACTs in ${queryTime}ms`);
+      
+      return {
+        facts,
+        totalCount: facts.length,
+        queryTime,
+      };
+    } catch (error) {
+      logger.error('FACT search failed:', error);
+      throw error;
+    }
+  }
+
+  async storeFact(fact: any): Promise<string> {
+    await this.ensureInitialized();
+    
+    try {
+      if (!this.database) throw new Error('Database not initialized');
+
+      const now = Date.now();
+      const factData = {
+        id: fact.id || crypto.randomUUID(),
+        query: fact.query,
+        result: JSON.stringify(fact.result),
+        source: fact.source,
+        timestamp: fact.timestamp || now,
+        ttl: fact.ttl || 3600000, // 1 hour default
+        access_count: 0,
+        last_accessed: now,
+        metadata: JSON.stringify(fact.metadata || {}),
+      };
+
+      const sql = `
+        INSERT OR REPLACE INTO facts 
+        (id, query, result, source, timestamp, ttl, access_count, last_accessed, metadata)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      await this.database.query(sql, [
+        factData.id,
+        factData.query,
+        factData.result,
+        factData.source,
+        factData.timestamp,
+        factData.ttl,
+        factData.access_count,
+        factData.last_accessed,
+        factData.metadata,
+      ]);
+
+      logger.info(`Stored FACT: ${factData.id}`);
+      return factData.id;
+    } catch (error) {
+      logger.error('Failed to store FACT:', error);
+      throw error;
+    }
+  }
+
+  getStats(): FactSystemStats {
+    return {
+      cacheSize: 0,
+      totalQueries: 0,
+      cacheHitRate: 0,
+      rustEngineActive: this.config.useRustEngine || false,
+      initialized: this.initialized,
+    };
+  }
+
+  async close(): Promise<void> {
+    if (this.database) {
+      await this.database.close();
+      this.database = null;
+    }
+    this.initialized = false;
+    logger.info('FACT system closed');
+  }
 }
 
 // =============================================================================
-// ADVANCED COMPONENTS - Bridge and processing systems (STUBS)
+// FACTORY FUNCTIONS - Using proper database backends
 // =============================================================================
-export class FactBridge {}
+export async function createFactClient(config: FactSystemConfig): Promise<FactClient> {
+  const client = new FactClient(config);
+  await client.initialize();
+  return client;
+}
+
+export async function createSQLiteFactClient(dbPath = './facts.db'): Promise<FactClient> {
+  logger.info('Creating SQLite FACT client at:', dbPath);
+  
+  const database = await createDatabase('sqlite', dbPath);
+  const client = new FactClient({
+    database,
+    useRustEngine: true,
+  });
+  
+  await client.initialize();
+  return client;
+}
+
+
+// =============================================================================
+// ADVANCED COMPONENTS - Bridge and processing systems
+// =============================================================================
+export class FactBridge {
+  constructor(_config: FactSystemConfig) {
+  }
+
+  async processWithRustEngine(data: any): Promise<any> {
+    // TODO: Call actual Rust engine via WASM bindings
+    logger.info('Processing with Rust engine (stub):', data);
+    return data;
+  }
+
+  async gatherFromSources(sources: FactSourceType[]): Promise<any[]> {
+    logger.info('Gathering from sources:', sources);
+    // TODO: Implement actual source gathering
+    return [];
+  }
+}
+
 export class IntelligentCache {
- private cache = new Map<string, any>();
+  private storage: any;
 
- constructor() {
- logger.info('Initializing intelligent cache system');
- }
+  constructor() {
+    // TODO: Initialize with proper cache backend
+    this.storage = new Map();
+  }
 
- clear(): void {
- this.cache.clear();
- logger.info('Cache cleared');
- }
+  async get(key: string): Promise<any> {
+    return this.storage.get(key);
+  }
 
- set(key: string, value: any): void {
- this.cache.set(key, value);
- logger.info('Cached fact:', key);
- }
+  async set(key: string, value: any, ttl?: number): Promise<void> {
+    this.storage.set(key, value);
+    if (ttl) {
+      setTimeout(() => this.storage.delete(key), ttl);
+    }
+  }
+}
 
- get(key: string): any {
- return this.cache.get(key) || null;
- }
+// =============================================================================
+// CONNECTORS AND PROCESSORS - Stub implementations for now
+// =============================================================================
+export class LiveAPIConnector {
+  async connect(apiUrl: string): Promise<void> {
+    logger.info('Connecting to API:', apiUrl);
+  }
+}
+
+export class DocumentationProcessor {
+  async process(docs: string[]): Promise<any[]> {
+    logger.info(`Processing documentation: ${docs.length} items`);
+    return [];
+  }
 }
 
 export class NaturalLanguageQuery {
- constructor() {
- logger.info('Initializing natural language query processor');
- }
-
- async processQuery(query: string): Promise<any> {
- logger.info('Processing natural language query:', query);
- return [];
- }
+  async parse(query: string): Promise<FactSearchQuery> {
+    logger.info('Parsing natural language query:', query);
+    return { query };
+  }
 }
 
 // =============================================================================
-// CONNECTORS - External data source integration (STUBS)
-// =============================================================================
-export class LiveAPIConnector {
- constructor() {
- logger.info('Initializing live API connector');
- }
-
- fetchData(source: string): Promise<any> {
- logger.info('Fetching data from source:', source);
- return Promise.resolve({});
- }
-}
-
-// =============================================================================
-// PROCESSORS - Data processing engines (STUBS)
-// =============================================================================
-export class DocumentationProcessor {
- constructor() {
- logger.info('Initializing documentation processor');
- }
-
- process(content: string): any {
- logger.info('Processing documentation content, length:', content.length);
- return {};
- }
-}
-
-// =============================================================================
-// TYPE DEFINITIONS
+// TYPE RE-EXPORTS
 // =============================================================================
 export type {
- APIDocumentationFactResult,
- BitbucketRepoFactResult,
- FactCacheEntry,
- FactProcessingOptions,
- FactQuery,
- FactResult,
- FactSearchQuery,
- FactSearchResult,
- FactSourceType,
- FactSystemConfig,
- FactSystemStats,
- GitHubFactResult,
- GitLabRepoFactResult,
- GoModuleFactResult,
- HexFactResult,
- JavaPackageFactResult,
- NPMFactResult,
- PerlPackageFactResult,
- RustCrateFactResult,
- RustEngineConfig,
- SecurityFactResult,
+  FactSearchQuery,
+  FactSourceType,
+  FactSystemConfig,
+  FactSystemStats,
 } from './typescript/types';
 
-// =============================================================================
-// PROFESSIONAL SYSTEM ACCESS - Production naming patterns
-// =============================================================================
-
-export async function getFactSystemAccess(
- config?: FactSystemConfig
-): Promise<any> {
- const factClient = await createFactClient(config);
- const cache = new IntelligentCache();
- const nlQuery = new NaturalLanguageQuery();
-
- return {
- createClient: (clientConfig?: FactSystemConfig) =>
- createFactClient(clientConfig),
- createSQLiteClient: (path?: string) => createSQLiteFactClient(path),
- createLanceDBClient: (path?: string) => createLanceDBFactClient(path),
- createKuzuClient: (path?: string) => createKuzuFactClient(path),
- createBridge: () => new FactBridge(),
- createCache: () => new IntelligentCache(),
- search: (query: any) => factClient.search(query),
- searchNaturalLanguage: (query: string) => nlQuery.processQuery(query),
- gatherFacts: (sources: any[], options?: any) =>
- factClient.gatherFromSources(sources, options),
- processDocumentation: (content: string) => {
- const processor = new DocumentationProcessor();
- return processor.process(content);
- },
- getStats: () => factClient.getStats(),
- clearCache: () => cache.clear(),
- shutdown: () => factClient.shutdown?.(),
- };
+// Additional types for new functionality
+export interface APIDocumentationFactResult {
+  url: string;
+  content: string;
+  lastUpdated: number;
 }
 
-export async function getFactClient(
- config?: FactSystemConfig
-): Promise<FactClient> {
- return await createFactClient(config);
+export interface GitHubFactResult {
+  repository: string;
+  stars: number;
+  lastCommit: string;
 }
 
-export async function getFactGathering(
- config?: FactSystemConfig
-): Promise<any> {
- const system = await getFactSystemAccess(config);
- return {
- gather: (sources: FactSourceType[], options?: FactProcessingOptions) =>
- system.gatherFacts(sources, options),
- search: (query: FactSearchQuery) => system.search(query),
- query: (naturalLanguageQuery: string) =>
- system.searchNaturalLanguage(naturalLanguageQuery),
- fromNPM: (packageName: string) =>
- system.search({ source: 'npm', query: packageName }),
- fromGitHub: (repository: string) =>
- system.search({ source: 'github', query: repository }),
- fromDocs: (apiName: string) =>
- system.search({ source: 'api_docs', query: apiName }),
- };
+export interface NPMFactResult {
+  package: string;
+  version: string;
+  downloads: number;
 }
 
-export async function getFactProcessing(
- config?: FactSystemConfig
-): Promise<any> {
- const system = await getFactSystemAccess(config);
- return {
- process: (content: string) => system.processDocumentation(content),
- cache: (key: string, data: any) => {
- const cache = new IntelligentCache();
- return cache.set(key, data);
- },
- retrieve: (key: string) => {
- const cache = new IntelligentCache();
- return cache.get(key);
- },
- analyze: (facts: FactSearchResult[]) =>
- // Analysis implementation
- ({
- totalFacts: facts.length,
- sourceBreakdown: facts.reduce(
- (acc, fact) => {
- const source = (fact as any).source || 'unknown';
- acc[source] = (acc[source] || 0) + 1;
- return acc;
- },
- {} as Record<string, number>
- ),
- confidence:
- facts.reduce(
- (sum, fact) => sum + ((fact as any).confidence || 0),
- 0
- ) / (facts.length || 1),
- }),
- };
+export interface SecurityFactResult {
+  cve: string;
+  severity: string;
+  description: string;
 }
 
-export async function getFactSources(config?: FactSystemConfig): Promise<any> {
- const system = await getFactSystemAccess(config);
- return {
- npm: (packageName: string) =>
- system.search({ source: 'npm', query: packageName }),
- github: (repository: string) =>
- system.search({ source: 'github', query: repository }),
- apiDocs: (apiName: string) =>
- system.search({ source: 'api_docs', query: apiName }),
- security: (cveId: string) =>
- system.search({ source: 'security', query: cveId }),
- live: async (endpoint: string) => {
- const connector = new LiveAPIConnector();
- return connector.fetchData(endpoint);
- },
- documentation: (content: string) => system.processDocumentation(content),
- };
+export interface FactCacheEntry {
+  key: string;
+  value: any;
+  timestamp: number;
+  ttl: number;
 }
 
-export async function getFactIntelligence(
- config?: FactSystemConfig
-): Promise<any> {
- const system = await getFactSystemAccess(config);
- const nlQuery = new NaturalLanguageQuery();
-
- return {
- understand: (query: string) => nlQuery.processQuery(query),
- search: (query: any) => system.search(query),
- reason: (facts: FactSearchResult[]) =>
- // Reasoning implementation
- ({
- insights: facts.map(
- (fact) =>
- `${(fact as any).source || 'unknown'}:${(fact as any).summary || (fact as any).content || 'no content'}`
- ),
- patterns: [], // Pattern detection would be implemented here
- recommendations: [], // Recommendations based on facts
- }),
- correlate: (facts: FactSearchResult[]) => {
- // Correlation analysis
- const correlations = [];
- for (let i = 0; i < facts.length; i++) {
- for (let j = i + 1; j < facts.length; j++) {
- // Simple correlation based on common terms
- const fact1Terms = ((facts[i] as any).content || '')
- .toLowerCase()
- .split(' ');
- const fact2Terms = ((facts[j] as any).content || '')
- .toLowerCase()
- .split(' ');
- const commonTerms = fact1Terms.filter((term: any) =>
- fact2Terms.includes(term)
- );
- if (commonTerms.length > 3) {
- correlations.push({
- fact1: facts[i],
- fact2: facts[j],
- commonTerms,
- strength:
- commonTerms.length /
- Math.max(fact1Terms.length, fact2Terms.length),
- });
- }
- }
- }
- return correlations;
- },
- };
+export interface RustEngineConfig {
+  enabled: boolean;
+  parallelism: number;
+  timeout: number;
 }
-
-// Professional fact system object with proper naming (matches brainSystem pattern)
-export const factSystem = {
- getAccess: getFactSystemAccess,
- getClient: getFactClient,
- getGathering: getFactGathering,
- getProcessing: getFactProcessing,
- getSources: getFactSources,
- getIntelligence: getFactIntelligence,
- createClient: createFactClient,
- createBridge: () => new FactBridge(),
-};
-
-// =============================================================================
-// METADATA
-// =============================================================================
-export const FACT_MAIN_INFO = {
- version: '1.0.0',
- description: 'FACT system main implementation entry point',
- components: [
- 'FactClient - Core fact gathering system',
- 'FactBridge - Rust/TypeScript integration',
- 'IntelligentCache - Smart caching layer',
- 'LiveAPIConnector - External data sources',
- 'DocumentationProcessor - Content processing',
- ],
-} as const;

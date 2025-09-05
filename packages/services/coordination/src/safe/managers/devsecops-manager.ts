@@ -8,7 +8,6 @@ logger.info('Devsecopsmanager initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 

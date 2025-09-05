@@ -1179,7 +1179,7 @@ export function validateConfig<T extends Record<string, any>>(
 /**
  * Create default configurations for different algorithms
  */
-export const DefaultConfigs = {
+export const DEFAULT_CONFIGS = {
  bayesian: (): BayesianConfig => ({
  max_iterations: 100,
  tolerance: 1e-6,

@@ -40,7 +40,8 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*"
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/database": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.17.1",

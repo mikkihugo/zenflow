@@ -62,6 +62,10 @@ const itStreaming = TEST_CONFIG.RUN_STREAMING ? it:it.skip;
 const itParallel = TEST_CONFIG.RUN_PARALLEL ? it:it.skip;
 
 describe("Comprehensive Claude SDK Tests", () => {
+	// Test status constants
+	const TEST_PASSED = " Passed";
+	const TEST_SKIPPED = "⏭️ Skipped";
+	
 	let taskManager:any;
 
 	beforeAll(() => {
@@ -454,7 +458,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 					expect(result.messages).toBeTruthy();
 					expect(result.messages.length).toBeGreaterThan(0);
 					logger.info(
-						`Task ${  index  }${1  }:${  result.success}` ? "Success" : "Failed",
+						`Task ${index + 1}: ${result.success ? "Success" : "Failed"}`,
 					);
 }
 
@@ -699,12 +703,12 @@ describe("Comprehensive Claude SDK Tests", () => {
 				const completedTasks = taskManager.getCompletedTasks();
 				const recentTasks = completedTasks.slice(-newTasks);
 
-				recentTasks.forEach((task:any) => {
+				for (const task of recentTasks) {
 					expect(task.startTime).toBeTruthy();
 					expect(task.endTime).toBeTruthy();
 					expect(task.duration).toBeGreaterThan(0);
 					expect(task.sessionId).toBeTruthy();
-});
+				}
 
 				logger.info(` Performance tracking:${newTasks} tasks monitored`);
 },
@@ -831,8 +835,6 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 	describe(" Cleanup and Resource Management", () => {
 		it("should clean up resources properly", () => {
-			const _initialTaskCount = taskManager.getCompletedTasks().length;
-
 			// Clear completed tasks
 			taskManager.clearCompletedTasks();
 			expect(taskManager.getCompletedTasks().length).toBe(0);
@@ -856,26 +858,26 @@ describe("Comprehensive Claude SDK Tests", () => {
 		it("should generate test completion report", () => {
 			const report = {
 				testSuites:{
-					promptValidation:" Passed",
-					basicExecution:" Passed",
+					promptValidation: TEST_PASSED,
+					basicExecution: TEST_PASSED,
 					advancedConfiguration:TEST_CONFIG.RUN_INTEGRATION
-						? " Passed"
-						:"⏭️ Skipped",
-					streaming:TEST_CONFIG.RUN_STREAMING ? " Passed" : "⏭️ Skipped",
+						? TEST_PASSED
+						: TEST_SKIPPED,
+					streaming:TEST_CONFIG.RUN_STREAMING ? TEST_PASSED : TEST_SKIPPED,
 					parallelExecution:TEST_CONFIG.RUN_PARALLEL
-						? " Passed"
-						:"⏭️ Skipped",
+						? TEST_PASSED
+						: TEST_SKIPPED,
 					swarmCoordination:TEST_CONFIG.RUN_INTEGRATION
-						? " Passed"
-						:"⏭️ Skipped",
+						? TEST_PASSED
+						: TEST_SKIPPED,
 					errorHandling:TEST_CONFIG.RUN_INTEGRATION
-						? " Passed"
-						:"⏭️ Skipped",
-					performance:TEST_CONFIG.RUN_PERFORMANCE ? " Passed" : "⏭️ Skipped",
+						? TEST_PASSED
+						: TEST_SKIPPED,
+					performance:TEST_CONFIG.RUN_PERFORMANCE ? TEST_PASSED : TEST_SKIPPED,
 					typescriptIntegration:TEST_CONFIG.RUN_INTEGRATION
-						? " Passed"
-						:"⏭️ Skipped",
-					cleanup:" Passed",
+						? TEST_PASSED
+						: TEST_SKIPPED,
+					cleanup: TEST_PASSED,
 },
 				configuration:{
 					integration:TEST_CONFIG.RUN_INTEGRATION,
@@ -890,7 +892,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 			// Verify all enabled test suites passed
 			const enabledTests = Object.entries(report.testSuites).filter(
-				([_, status]) => status === " Passed",
+				([, status]) => status === " Passed",
 			).length;
 
 			expect(enabledTests).toBeGreaterThan(0);

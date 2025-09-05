@@ -19,9 +19,9 @@ context?: string;
 }
 
 export interface LLMAnalysisResponse {
-result: any;
-confidence: number;
-metadata?: Record<string, any>;
+  result: unknown; // TODO: Specify precise type for LLMAnalysisResponse.result
+  confidence: number;
+  metadata?: Record<string, unknown>;
 }
 
 export interface LLMOptimizationRequest {
@@ -40,10 +40,10 @@ optimize(request: LLMOptimizationRequest): Promise<LLMOptimizationResponse>;
 }
 
 export interface DatabaseProvider {
-type: 'sqlite' | 'lancedb' | 'kuzu';
-connection: any;
-query(sql: string, params?: any[]): Promise<any[]>;
-execute(sql: string, params?: any[]): Promise<any>;
+  type: 'sqlite' | 'lancedb' | 'kuzu';
+  connection: unknown; // TODO: Specify precise type for DatabaseProvider.connection
+  query(sql: string, params?: any[]): Promise<any[]>;
+  execute(sql: string, params?: any[]): Promise<any>;
 }
 
 export interface PluginConfig {
@@ -53,7 +53,7 @@ enabled: boolean;
 }
 
 export interface PluginContext {
-[key: string]: any;
+  [key: string]: unknown;
 }
 
 // =============================================================================

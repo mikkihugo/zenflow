@@ -2,6 +2,7 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./src",
+    "outDir": "./dist",
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -19,8 +20,6 @@
     "di/examples/**/*.ts"
   ],
   "references": [
-    { "path": "../../core/foundation" },
-    { "path": "../../core/database" },
-    { "path": "../../core/fact-system" }
+    { "path": "../../core/foundation" }
   ]
 }

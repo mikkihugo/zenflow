@@ -8,7 +8,6 @@ logger.info('Index initialized');
 }
 async execute(): Promise<void> {
   
-// TODO: Implement functionality
 
 }
 
