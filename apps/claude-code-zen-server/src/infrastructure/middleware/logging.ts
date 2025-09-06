@@ -184,7 +184,7 @@ const getLogLevelFromStatus = (statusCode: number): LogLevel => {
  */
 const shouldLog = (path: string, method: string): boolean => {
   // Skip logging for health checks in production
-  if (isProd() && path === '/health') {
+  if (isProd && path === '/health') {
     return false;
   }
 
@@ -409,11 +409,7 @@ export const requestLogger = (
 
   // Hook into response finish event
   const originalEnd = res.end;
-  res.end = function (
-    chunk?: unknown,
-    encoding?: BufferEncoding,
-    cb?: () => void
-  ): Response {
+  res.end = function (this: Response, chunk?: unknown, encoding?: BufferEncoding | (() => void), cb?: () => void): Response {
     // Log response completion
     if (shouldLog(req.path, req.method)) {
       const level = getLogLevelFromStatus(res.statusCode);
@@ -436,8 +432,14 @@ export const requestLogger = (
       outputLog(logEntry);
     }
 
-    // Call original end method
-    return originalEnd.call(this, chunk, encoding, cb);
+    // Handle parameter overloads properly
+    if (typeof encoding === 'function') {
+      cb = encoding;
+      encoding = undefined;
+    }
+    
+    // Call original end method with proper parameters
+    return originalEnd.call(this, chunk, encoding as BufferEncoding, cb);
   };
 
   next();
