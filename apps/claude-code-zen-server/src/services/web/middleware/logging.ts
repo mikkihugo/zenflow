@@ -9,7 +9,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type { NextFunction, Request, Response } from 'express';
-import type { BufferEncoding } from 'node:buffer';
+// BufferEncoding is available globally in Node.js
 
 const logger = getLogger('interfaces-api-http-middleware-logging');
 

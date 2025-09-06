@@ -34,6 +34,8 @@ export interface ProcessInfo {
 export class DaemonProcessManager {
   private logger = getLogger('Daemon');
   private config: Required<DaemonConfig>;
+  // Current process reference for tracking (used for lifecycle management)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _currentProcess?: ReturnType<typeof spawn>;
 
   constructor(config: DaemonConfig = {}) {
@@ -105,7 +107,7 @@ export class DaemonProcessManager {
       child.unref();
     }
 
-    this.currentProcess = child;
+    this._currentProcess = child;
     this.logger.info(`Daemon started with PID: ${  child.pid}`);
 
     return processInfo;

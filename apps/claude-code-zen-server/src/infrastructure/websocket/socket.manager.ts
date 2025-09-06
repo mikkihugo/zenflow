@@ -370,8 +370,8 @@ export class WebSocketManager {
       // Dynamically import to avoid circular dependencies
       import('@claude-zen/foundation')
         .then((foundation) => {
-          if ('setLogBroadcaster' in foundation && foundation.setLogBroadcaster) {
-            foundation.setLogBroadcaster((event: string, data: unknown) => {
+          if ('setLogBroadcaster' in foundation && typeof (foundation as any).setLogBroadcaster === 'function') {
+            (foundation as any).setLogBroadcaster((event: string, data: unknown) => {
               // Broadcast to the logs room specifically
               this.broadcastToRoom('logs', event, data);
             });
@@ -543,7 +543,7 @@ export class WebSocketManager {
       healthScore,
       packages: foundationPackages,
       features: ['Core utilities', 'Logging', 'Error handling', 'Type-safe primitives'],
-      missingPackages: Object.keys(foundationPackages).filter(pkg => foundationPackages[pkg]?.status === 'unavailable'),
+      missingPackages: Object.keys(foundationPackages).filter(pkg => (foundationPackages as any)[pkg]?.status === 'unavailable'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['logger']
     };
   }
@@ -572,7 +572,7 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 30), // Minimum 30% if any services are running
       packages: infrastructurePackages,
       features: ['Database abstraction', 'Event system', 'OpenTelemetry', 'Service container'],
-      missingPackages: Object.keys(infrastructurePackages).filter(pkg => infrastructurePackages[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(infrastructurePackages).filter(pkg => (infrastructurePackages as any)[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['webSocket']
     };
   }
@@ -604,7 +604,7 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 20), // Minimum 20% as placeholder
       packages: intelligencePackages,
       features: ['Neural coordination', 'Brain systems', 'AI optimization'],
-      missingPackages: Object.keys(intelligencePackages).filter(pkg => intelligencePackages[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(intelligencePackages).filter(pkg => (intelligencePackages as any)[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['aiPlaceholder']
     };
   }
@@ -637,7 +637,7 @@ export class WebSocketManager {
       healthScore,
       packages: enterprisePackages,
       features: ['SAFE framework', 'Business workflows', 'Portfolio management'],
-      missingPackages: Object.keys(enterprisePackages).filter(pkg => enterprisePackages[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(enterprisePackages).filter(pkg => (enterprisePackages as any)[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['coordination']
     };
   }
@@ -666,7 +666,7 @@ export class WebSocketManager {
       healthScore,
       packages: operationsPackages,
       features: ['System monitoring', 'Load balancing', 'Performance tracking'],
-      missingPackages: Object.keys(operationsPackages).filter(pkg => operationsPackages[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(operationsPackages).filter(pkg => (operationsPackages as any)[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['webSocketMonitoring']
     };
   }
@@ -698,7 +698,7 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 25), // Minimum 25% for basic dev capabilities
       packages: developmentPackages,
       features: ['Code analysis', 'Git operations', 'Architecture validation'],
-      missingPackages: Object.keys(developmentPackages).filter(pkg => developmentPackages[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(developmentPackages).filter(pkg => (developmentPackages as any)[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['basicDev']
     };
   }
@@ -826,7 +826,7 @@ export class WebSocketManager {
         }
       };
       
-      const totalConnections = Object.values(databases).reduce((sum, db) => sum + db.connections, 0);
+      const totalConnections = Object.values(databases).reduce((sum, db) => sum + (typeof db.connections === 'number' ? db.connections : 0), 0);
       const healthyDatabases = Object.values(databases).filter(db => db.status === 'healthy').length;
       const healthScore = healthyDatabases / Object.keys(databases).length;
       
@@ -838,7 +838,7 @@ export class WebSocketManager {
         overallLatency: systemStats['averageLatency'] || '18ms',
         healthScore: Math.round(healthScore * 100) / 100,
         totalQueries: systemStats['totalQueries'] || 0,
-        successRate: 1 - (systemStats['databaseErrorRate'] || 0.02),
+        successRate: 1 - (typeof systemStats['databaseErrorRate'] === 'number' ? systemStats['databaseErrorRate'] : 0.02),
         timestamp: new Date().toISOString()
       };
     } catch (error) {

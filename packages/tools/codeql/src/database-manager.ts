@@ -17,6 +17,7 @@ import type {
 CodeQLConfig,
 CodeQLDatabase,
 CodeQLError,
+CodeQLLanguage,
 DatabaseCreationOptions,
 } from './types/codeql-types';
 
@@ -26,6 +27,7 @@ DatabaseCreationOptions,
 export class DatabaseManager {
 private readonly config:CodeQLConfig;
 private readonly databases = new Map<string, CodeQLDatabase>();
+private readonly logger: Logger;
 
 constructor(config:CodeQLConfig, logger:Logger) {
 this.config = config;
@@ -52,7 +54,7 @@ async createDatabase(
  const {tempDir} = this.config;
  const absolutePath = path.resolve(repositoryPath);
  const databaseId = this.generateDatabaseId(absolutePath, options.languages);
- const _databasePath = path.join(tempDir, `${databaseId}.db`);
+ const databasePath = path.join(tempDir, `${databaseId}.db`);
 
 this.logger.info(`Creating CodeQL database`, {
   databaseId,
@@ -71,7 +73,7 @@ await this.deleteDatabaseFiles(databasePath);
 
 // Build command arguments
 const args = [
-'database', 'create', _databasePath,
+'database', 'create', databasePath,
 '--source-root', absolutePath,
 '--language', options.languages.join(', '),
 ];

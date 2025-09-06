@@ -25,5 +25,4 @@ export const configuration = {
   enableFeatureX: false,
   // Add more config options as needed
 };
-export * from './configuration';
-// export * from './configuration';
+// Configuration module will be created when needed

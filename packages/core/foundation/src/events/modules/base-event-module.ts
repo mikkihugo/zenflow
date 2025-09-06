@@ -7,13 +7,12 @@
  */
 
 import { EventBus } from '../../events/event-bus.js';
-import { getLogger } from '../../core/logging/logging.service.js';
+import { getLogger, type Logger } from '../../core/logging/logging.service.js';
 import { generateUUID } from '../../utils.js';
 import { ok, err, Result } from '../../error-handling/index.js';
-import type { Logger } from '../../core/logging/logging.service.js';
 
 // Lightweight local shims; real telemetry lives in services/telemetry.
-const recordMetric = (_metricName: string, _metricValue: number, _metricAttrs?: Record<string, unknown>) => { /* noop metric shim */ };
+const recordMetric = (__metricName: string, __metricValue: number, __metricAttrs?: Record<string, unknown>) => { /* noop metric shim */ };
 async function withTrace<T>(name: string, fn: () => Promise<T>): Promise<T> {
   try {
     return await fn();
@@ -201,7 +200,7 @@ export abstract class BaseEventModule implements IEventModule {
   const enrichedEventData: Record<string, unknown> = {
       ...eventData,
       moduleId: this.config.moduleId,
-      timestamp: (eventData && eventData.timestamp) || new Date(),
+      timestamp: (eventData && eventData['timestamp']) || new Date(),
     };
     const opts = isCorrelationContext(options)
       ? { correlationContext: options }

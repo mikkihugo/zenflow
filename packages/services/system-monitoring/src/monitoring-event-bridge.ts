@@ -7,7 +7,7 @@
 
 import {
   EventBus,
-  EventLogger,
+  getLogger,
   isValidEventName,
 } from '@claude-zen/foundation';
 import type { EventDrivenSystemMonitor } from './monitoring-event-driven.js';
@@ -69,6 +69,7 @@ export class EventDrivenSystemMonitorBridge {
   private startTime: number;
   private eventListeners: Map<string, Function> = new Map();
   private isStarted = false;
+  private logger = getLogger('monitoring-bridge');
 
   constructor(
     monitor: EventDrivenSystemMonitor,
@@ -78,10 +79,6 @@ export class EventDrivenSystemMonitorBridge {
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.eventBus = EventBus.getInstance();
     this.startTime = Date.now();
-
-    if (this.config.enableLogging) {
-      EventLogger.enable();
-    }
   }
 
   /**
@@ -89,7 +86,7 @@ export class EventDrivenSystemMonitorBridge {
    */
   async start(): Promise<void> {
     if (this.isStarted) {
-      EventLogger.log('monitoring-bridge:already-started', { 
+      this.logger.info('monitoring-bridge:already-started', { 
         moduleId: this.config.moduleId 
       });
       return;
@@ -126,14 +123,14 @@ export class EventDrivenSystemMonitorBridge {
 
       this.isStarted = true;
 
-      EventLogger.log('monitoring-bridge:started', {
+      this.logger.info('monitoring-bridge:started', {
         moduleId: this.config.moduleId,
         heartbeatInterval: this.config.heartbeatInterval,
         eventsToForward: this.getMonitoredEvents(),
       });
 
     } catch (error) {
-      EventLogger.logError('monitoring-bridge:start-failed', error as Error, {
+      this.logger.error('monitoring-bridge:start-failed', error as Error, {
         component: this.config.moduleId
       });
       throw error;
@@ -159,7 +156,7 @@ export class EventDrivenSystemMonitorBridge {
 
     this.isStarted = false;
 
-    EventLogger.log('monitoring-bridge:stopped', {
+    this.logger.info('monitoring-bridge:stopped', {
       moduleId: this.config.moduleId,
       uptime: Date.now() - this.startTime,
     });
@@ -228,7 +225,7 @@ export class EventDrivenSystemMonitorBridge {
           : `system-monitoring:${eventName}`
         
         if (this.config.enableLogging) {
-          EventLogger.log('monitoring-bridge:event-name-prefixed', {
+          this.logger.debug('monitoring-bridge:event-name-prefixed', {
             original: eventName,
             prefixed: validatedEventName,
           });
@@ -239,7 +236,7 @@ export class EventDrivenSystemMonitorBridge {
       this.eventBus.emit(validatedEventName, payload);
 
       if (this.config.enableLogging) {
-        EventLogger.logFlow(
+        this.logger.debug(
           'EventDrivenSystemMonitor',
           'EventBus',
           validatedEventName
@@ -247,7 +244,7 @@ export class EventDrivenSystemMonitorBridge {
       }
 
     } catch (error) {
-      EventLogger.logError(
+      this.logger.error(
         'monitoring-bridge:forward-failed',
         error as Error,
         { component: this.config.moduleId }
@@ -271,7 +268,7 @@ export class EventDrivenSystemMonitorBridge {
       });
 
       if (this.config.enableLogging) {
-        EventLogger.log('monitoring-bridge:heartbeat', {
+        this.logger.debug('monitoring-bridge:heartbeat', {
           moduleId: this.config.moduleId,
           uptime,
         });

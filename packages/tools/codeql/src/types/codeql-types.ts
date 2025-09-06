@@ -24,15 +24,15 @@ tempDir?: string;
 // Supported Languages
 export type CodeQLLanguage =
 | 'javascript'
-| ' typescript'
-| ' python'
-| ' java'
-| ' csharp'
-| ' cpp'
-| ' go'
-| ' ruby'
-| ' swift'
-| ' kotlin';
+| 'typescript'
+| 'python'
+| 'java'
+| 'csharp'
+| 'cpp'
+| 'go'
+| 'ruby'
+| 'swift'
+| 'kotlin';
 
 // Database Management
 export interface CodeQLDatabase {
@@ -521,7 +521,7 @@ cpuTimeMs: number;
 // Error Types
 export interface CodeQLError extends Error {
 /** Error type */
-type: 'config' | ' database' | ' query' | ' parse' | ' system';
+type: 'config' | 'database' | 'query' | 'parse' | 'system';
 /** Error code */
 code?: string | number;
 /** Command that failed */

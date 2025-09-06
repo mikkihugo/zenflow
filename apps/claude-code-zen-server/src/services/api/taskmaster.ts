@@ -118,9 +118,9 @@ interface PIPlanningEvent {
  */
 class TaskMasterManager {
   private taskMasterSystem: TaskMasterSystem | null = null;
-  private webSocketCoordinator?: WebSocketCoordinator;
+  public webSocketCoordinator?: WebSocketCoordinator | undefined;
 
-  constructor(webSocketCoordinator?: WebSocketCoordinator) {
+  constructor(webSocketCoordinator?: WebSocketCoordinator | undefined) {
     this.webSocketCoordinator = webSocketCoordinator;
   }
 
@@ -135,7 +135,6 @@ class TaskMasterManager {
           const timer = setTimeout(() => {
             // Remove listener on timeout
             try {
-              // @ts-expect-error foundation bus supports off
               bus.off(resTopic as any, onMessage as any);
             } catch {
               // Ignore cleanup errors during timeout
@@ -147,7 +146,6 @@ class TaskMasterManager {
             if (!msg || msg.correlationId !== correlationId) return;
             clearTimeout(timer);
             try {
-              // @ts-expect-error foundation bus supports off
               bus.off(resTopic as any, onMessage as any);
             } catch {
               // Ignore cleanup errors
@@ -155,9 +153,7 @@ class TaskMasterManager {
             resolve(msg as TResp);
           };
 
-          // @ts-expect-error foundation bus supports on/emit
           bus.on(resTopic as any, onMessage as any);
-          // @ts-expect-error foundation bus supports on/emit
           bus.emit(reqTopic as any, { ...payload, correlationId });
         });
       };
@@ -380,7 +376,7 @@ function validateTaskInput(data: unknown): {
   if (!title || typeof title !== 'string' || title.trim().length < 3) {
     validationErrors.push('Title must be at least 3 characters');
   }
-  if (!priority || !['low', 'medium', 'high', 'critical'].includes(priority)) {
+  if (!priority || !['low', 'medium', 'high', 'critical'].includes(priority as string)) {
     validationErrors.push(
       'Priority must be one of: low, medium, high, critical'
     );
@@ -572,7 +568,7 @@ async function handleCreateTask(
       manager.webSocketCoordinator.broadcast('task:created', task);
     }
 
-    logger.info(`Task created:${  task.id  } - ${  task.title}`);
+    logger.info(`Task created:${  (task as any).id  } - ${  (task as any).title}`);
 
     res.status(201).json({
       success: true,
@@ -719,7 +715,7 @@ async function handleGetTasksByState(
         'blocked',
       ].includes(state)
     ) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid state',
         validStates: [
@@ -734,6 +730,7 @@ async function handleGetTasksByState(
         ],
         timestamp: new Date().toISOString(),
       });
+      return;
     }
 
     const tasks = await taskMaster.getTasksByState(state as TaskState);
@@ -887,7 +884,7 @@ async function validateWIPLimits(
   if (
     wipLimits.available <= 0 &&
     toState !== 'done' &&
-    toState !== ' blocked'
+    toState !== 'blocked'
   ) {
     return {
       status: 422,
@@ -966,56 +963,61 @@ async function handleMoveTask(
     const { toState, reason } = req.body;
 
     // Validate inputs
-    const validationResult = validateMoveTaskInputs(taskId, toState);
+    const validationResult = validateMoveTaskInputs(taskId || '', toState);
     if (validationResult) {
-      return res
+      res
         .status(validationResult.status)
         .json(validationResult.response);
+      return;
     }
 
     // Get current task
-    const currentTask = await taskMaster.getTask(taskId);
+    const currentTask = await taskMaster.getTask(taskId || '');
     if (!currentTask) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Task not found',
         taskId,
         timestamp: new Date().toISOString(),
       });
+      return;
     }
 
     // Validate transition and WIP limits
     const transitionResult = await validateTaskTransition(
-      taskMaster,
-      taskId,
-      currentTask,
+      taskMaster as any,
+      taskId || '',
+      currentTask as any,
       toState as TaskState
     );
     if (transitionResult) {
-      return res
+      res
         .status(transitionResult.status)
         .json(transitionResult.response);
+      return;
     }
 
     const wipResult = await validateWIPLimits(taskMaster, toState as TaskState);
     if (wipResult) {
-      return res.status(wipResult.status).json(wipResult.response);
+      res.status(wipResult.status).json(wipResult.response);
+      return;
     }
 
     // Move the task
-    const result = await taskMaster.moveTask(taskId, toState);
+    const result = await taskMaster.moveTask(taskId || '', toState);
     if (!result) {
-      return res.status(422).json({
+      res.status(422).json({
         success: false,
         error: TASK_ERROR_MESSAGES.moveTaskFailed,
         message: 'Task state change was rejected by the system',
         timestamp: new Date().toISOString(),
       });
+      return;
     }
 
     // Broadcast and respond
     broadcastTaskMove(manager, {
-      taskId,
+      taskId: taskId || '',
       fromState: currentTask.state,
       toState,
       reason,
