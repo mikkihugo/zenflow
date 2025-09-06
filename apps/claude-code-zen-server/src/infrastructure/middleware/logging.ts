@@ -9,7 +9,7 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type { NextFunction, Request, Response } from 'express';
-import { getEnv, isProd } from '../../../config/env';
+import { getEnv, isProd } from '../../config/env';
 
 const logger = getLogger('interfaces-api-http-middleware-logging');
 

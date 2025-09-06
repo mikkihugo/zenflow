@@ -1,170 +1,90 @@
-# Development Guidelines for Claude Code Zen
+# Claude Code Zen – Developer Guardrails (Concise)
 
-This guide reflects the event-driven architecture and guardrails now enforced across the repo.
+Full detailed manual: see `CLAUDE.md`. This file keeps the daily rules lean.
 
-## Repository overview
+> Event System: Legacy `@claude-zen/events` removed. Use the single typed EventBus from `@claude-zen/foundation` for ALL cross-package communication.
 
-Enterprise AI platform with agents, workflows, and a web-first interface. Packages are grouped under apps/, packages/{core,services,tools,integrations}, and src/ domain implementations.
+## Repo Overview
+Enterprise AI platform: web-first dashboard + agents + multi-database + WASM acceleration. Packages: `apps/`, `packages/{core,services,tools,integrations}`.
 
-## Core architecture principles
+## Core Principles (TL;DR)
+| Area | Rule |
+|------|------|
+| Events | Single EventBus (`@claude-zen/foundation`) only |
+| Imports | Only foundation, database, neural-ml directly |
+| Providers | `@claude-zen/*-provider` may cross-import |
+| Data | Use adapters (SQLite/LanceDB/Kuzu) – stay agnostic |
+| Heavy compute | Rust/WASM gateway, never bespoke JS math |
+| Domains | No ad-hoc cross-domain helpers |
 
-- Event-driven only: communicate across packages via the single typed EventBus from foundation
-- Import boundary: only @claude-zen/foundation, @claude-zen/database, and @claude-zen/neural-ml may be imported directly
-- **LLM Provider Exception**: LLM provider packages (@claude-zen/*-provider) may import each other for shared functionality and provider coordination
-- Backend-agnostic data access: use database adapters; avoid binding to a specific backend
-- WASM-first heavy compute: route through Rust/WASM gateways
-
-### Domain separation
-
+### Domain Map
 ```
 src/
-├── coordination/    # Orchestration and enterprise methodologies
-├── neural/          # WASM-accelerated neural processing
-├── interfaces/      # Web/MCP interfaces (web is primary)
-└── database/        # Database adapters and persistence
+  coordination/   # orchestration & methodologies
+  neural/         # WASM & ML
+  interfaces/     # web (primary) + limited MCP
+  database/       # adapters & persistence
 ```
 
-## Packages
+## Packages (Categories)
+Core (foundation, database) • Services (coordination, brain, knowledge, monitoring, telemetry) • Tools • Integrations (providers, exporters, otel)
+Legacy: multi-bus & NeuralBridge deprecated.
 
-- Core: foundation (EventBus, logging, utils), database (adapters)
-- Services: coordination, brain, knowledge, monitoring, telemetry
-- Tools: code-analyzer, git-operations, parsers, ai-linter, etc.
-- Integrations: llm-providers, exporters, otel-collector
+## Agents & Coordination
+Flexible agent type strings (capability-driven). SAFe + SPARC + XState events. TaskMaster: approvals & audit.
 
-Legacy notes: NeuralBridge and similar legacy orchestrators are deprecated; “swarm” terminology remains.
-
-## Agent coordination
-
-- Agent types are flexible strings; select by capability
-- Coordination through SAFe, SPARC, XState workflows via events
-- TaskMaster provides SOC2-style approvals and audit trails
-
-## Interface guidelines
-
-- Primary: web dashboard
+## Interfaces
+Primary dashboard:
 ```bash
-pnpm --filter @claude-zen/web-dashboard dev
-# http://localhost:3000/
+pnpm --filter @claude-zen/web-dashboard dev  # http://localhost:3000/
 ```
-- Secondary: limited MCP; Minimal terminal status only
+Secondary: limited MCP. Terminal: minimal.
 
-## Authentication guidelines
+## Auth
+Lives in provider packages. Server orchestrates only. Don’t duplicate OAuth flows.
 
-**Authentication logic belongs in provider packages:**
-- LLM provider packages (`@claude-zen/*-provider`) contain authentication implementations
-- Server provides CLI interface that orchestrates provider authentication
-- Avoid duplicating authentication logic between server and providers
+## Data
+Use `@claude-zen/database` adapters. Stay backend-agnostic. Pool intelligently.
 
-**Example architecture:**
-```typescript
-// ❌ WRONG - Server duplicates auth logic
-// apps/server/auth.ts has full OAuth implementation
+## Neural
+Route heavy compute via WASM gateway APIs only.
 
-// ✅ CORRECT - Server uses provider
-// apps/server/auth.ts
-export async function authLogin() {
-  const { CopilotAuth } = await import('@claude-zen/copilot-provider');
-  const auth = new CopilotAuth();
-  const token = await auth.authenticate();
-  await saveToken(token);
-}
+## Testing
+Layout:
 ```
-
-## Database guidelines
-
-- Use adapters from @claude-zen/database (SQLite, LanceDB, Kuzu)
-- Keep code backend-agnostic; use pooling/caching utilities
-
-## Neural guidelines
-
-- Use WASM gateway for heavy compute; avoid JS math
-- Keep access through the provided gateway APIs
-
-## Testing guidelines
-
-**Test file organization:**
-- Tests MUST be in `tests/` directories, never in `src/` or `__tests__/`
-- Test files should use `.test.ts` or `.spec.ts` extensions
-- **FORBIDDEN**: `__tests__/` directories are not allowed
-
-**Directory Structure:**
+packages/<pkg>/src
+packages/<pkg>/tests   # ONLY location
 ```
-packages/[package]/
-├── src/
-│   └── component.ts
-└── tests/           # ← Tests here, not in src/ or __tests__/
-    └── component.test.ts
-```
+Rules: no `__tests__/`; use `.test.ts|.spec.ts`; run per-package.
 
-**Migration Strategy:**
-- All packages must use `tests/` now. Migrate any legacy `__tests__/` directories to `tests/`.
-- Update tsconfig and vitest globs accordingly per package.
-
-**Import rules for tests:**
-- Test files can import from their own package's src
-- Follow same foundation/database import restrictions
-- Use Vitest for testing framework
-
-## Dev workflow
-
+## Daily Dev
 ```bash
 pnpm install
-pnpm type-check
+pnpm type-check         # may show existing errors
 pnpm --filter @claude-zen/web-dashboard dev
-pnpm build
+pnpm build              # only when producing binaries
 ```
+Tests: per-package.
 
-Tests: run per-package only with `pnpm test`.
+### Package Manager
+pnpm only (v10.15.0+). Replace npx with `pnpm dlx`.
 
-### Package manager policy
+## Change Philosophy
+Surgical edits. Preserve behavior. Validate: type-check, dashboard, build (if relevant).
 
-- Use pnpm only (v10.15.0+). npm/yarn/npx are not supported in this repo.
-- When a guide suggests `npx`, use `pnpm dlx` instead (example: `pnpm dlx create-svelte@latest`).
+## Enforcement
+Scripts: `scripts/validate-imports.js`, `scripts/validate-dependencies.js`. ESLint guards boundaries.
 
-## Quality and functionality
+### TaskMaster Routing
+Emit `api:tasks:*`, `api:system:status` only. No direct coordination imports.
 
-- Prefer surgical changes; preserve behavior
-- Validate type-check, build, and dashboard navigation
+## Large / Risky Changes
+Route via TaskMaster approval workflow.
 
-## Architecture enforcement
+### Performance & Compatibility
+Maintain latency ±10%, memory, DB efficiency, WASM use. Preserve public APIs; document deprecations.
 
-- Scripts: scripts/validate-imports.js and scripts/validate-dependencies.js
-- ESLint soft rules discourage cross-package imports beyond foundation/database
-
-TaskMaster and event-driven flows
-- The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
-- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
-- Downstream packages should implement responders listening on these topics and emit typed responses
-
-TaskMaster and event-driven flows
-- The server’s TaskMaster API (apps/claude-code-zen-server) no longer imports @claude-zen/coordination directly
-- All TaskMaster-related metrics and CRUD requests proxy via the typed EventBus (api:tasks:*, api:system:status)
-- Downstream packages should implement responders listening on these topics and emit typed responses
-
-## Task approval example
-
-If a change is large or risky, route through TaskMaster and approvals in coordination packages.
-  }
-}
-```
-
-#### 6. Performance Characteristic Preservation
-
-**Maintain existing performance profiles:**
-- Response times within ±10% of baseline
-- Memory usage patterns preserved
-- Database query efficiency maintained
-- WASM acceleration usage preserved
-
-#### 7. Backward Compatibility Requirements
-
-**Enterprise systems require stability:**
-- API contracts preserved
-- Data migration paths provided
-- Deprecation notices for breaking changes
-- Gradual rollout capabilities
-
-### AI Limitations and Safeguards
+### AI Safeguards (Brief)
 
 #### Known AI Code Generation Issues
 
@@ -208,7 +128,7 @@ if (!safetyCheck.safe) {
 - Refinement focuses on behavior validation
 - Completion requires comprehensive testing
 
-#### Success Metrics for Functionality Preservation
+#### Functionality Metrics
 
 **Quantitative measures:**
 - **Test pass rate**: ≥99% after changes
@@ -221,7 +141,7 @@ if (!safetyCheck.safe) {
 - TaskMaster approval compliance
 - Incident response time for issues
 - Developer confidence in AI-assisted changes
-## 🛡️ Functionality Preservation Guidelines
+## Functionality Preservation (Key Points)
 
 ### Critical Distinction: "Compiles" vs "Compiles AND Works"
 
@@ -276,9 +196,9 @@ describe('Agent Processing', () => {
 });
 ```
 
-### Enterprise-Level Functionality Preservation Requirements
+### Enterprise Requirements (Condensed)
 
-#### 1. Surgical Fix Guidelines
+#### Surgical Fix
 
 **Line-by-line modifications only:**
 - Change one logical unit at a time
@@ -292,7 +212,7 @@ describe('Agent Processing', () => {
 - ❌ Removing error handling without replacement
 - ❌ Changing return types without updating callers
 
-#### 2. AI-Assisted Change Verification Process
+#### Verification Flow
 
 **Mandatory verification steps:**
 1. **Pre-change baseline**: Run full test suite and capture metrics
@@ -301,7 +221,7 @@ describe('Agent Processing', () => {
 4. **Integration testing**: Test with connected systems
 5. **Performance validation**: Ensure no degradation
 
-#### 3. TaskMaster Approval Workflow
+#### TaskMaster Approval
 
 **Major AI-assisted changes require approval:**
 ```typescript
@@ -323,7 +243,7 @@ if (!approval.granted) {
 }
 ```
 
-#### 4. Quality Gates for AI-Generated Code
+#### Quality Gates
 
 **Enterprise quality requirements:**
 - **Unit test coverage**: ≥90% for modified code paths
@@ -332,7 +252,7 @@ if (!approval.granted) {
 - **Security review**: AI safety monitor validation
 - **Documentation**: Updated API docs and inline comments
 
-#### 5. Error Handling Preservation
+#### Error Handling
 
 **Never remove existing error handling:**
 ```typescript
@@ -355,23 +275,7 @@ async function riskyOperation(): Promise<Result<Data, Error>> {
 }
 ```
 
-#### 6. Performance Characteristic Preservation
-
-**Maintain existing performance profiles:**
-- Response times within ±10% of baseline
-- Memory usage patterns preserved
-- Database query efficiency maintained
-- WASM acceleration usage preserved
-
-#### 7. Backward Compatibility Requirements
-
-**Enterprise systems require stability:**
-- API contracts preserved
-- Data migration paths provided
-- Deprecation notices for breaking changes
-- Gradual rollout capabilities
-
-### AI Limitations and Safeguards
+### (Removed duplicate explanatory blocks for brevity)
 
 #### Known AI Code Generation Issues
 
@@ -684,9 +588,9 @@ async function processAgent(agentId: string): Promise<Result<AgentState, Error>>
 }
 ```
 
-## 🚫 Common Anti-Patterns
+## Anti-Patterns
 
-### What NOT to Do
+### Avoid
 
 - **❌ Don't limit agent types artificially** - the system supports flexible agent type strings
 - **❌ Don't bypass WASM for heavy computation** - use Rust acceleration for performance
@@ -702,7 +606,7 @@ async function processAgent(agentId: string): Promise<Result<AgentState, Error>>
 - **❌ Don't create artificial package tiers** - use direct imports for current architecture
 - **❌ Don't ignore multi-database design** - support SQLite, LanceDB, and Kuzu appropriately
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -730,7 +634,7 @@ pnpm --filter @claude-zen/web-dashboard dev
 # Kuzu: Graph database, verify installation
 ```
 
-## 📊 Monitoring and Metrics
+## Monitoring (Selected)
 
 ### Performance Monitoring
 
@@ -746,9 +650,9 @@ pnpm --filter @claude-zen/web-dashboard dev
 - **Teamwork Efficiency**: Multi-agent collaboration success rates
 - **TaskMaster Compliance**: Approval workflow times and audit trail completeness
 
-## 🎓 Integration Guidelines
+## Integration
 
-### For New Agents
+### New Agents
 
 1. **Understand the Domain**: Identify which domain your agent belongs to
 2. **Choose Appropriate Type**: Use descriptive agent type strings (no artificial limits)
@@ -756,7 +660,7 @@ pnpm --filter @claude-zen/web-dashboard dev
 4. **Focus on Capabilities**: Define what your agent can do, not arbitrary type categories
 5. **Use Web Interface**: Integrate with the dashboard for monitoring and control
 
-### For System Integration
+### System Integration
 
 1. **Web-First Approach**: Primary integration through Svelte dashboard
 2. **Database Strategy**: Choose appropriate backend (SQLite/LanceDB/Kuzu)
@@ -765,7 +669,7 @@ pnpm --filter @claude-zen/web-dashboard dev
 
 ---
 
-## 📈 Success Metrics
+## Success Metrics (Development)
 
 **Development Effectiveness**:
 - **Web Dashboard Functionality**: Primary interface works completely
@@ -776,7 +680,7 @@ pnpm --filter @claude-zen/web-dashboard dev
 
 **Remember**: Claude Code Zen is a **sophisticated enterprise platform** - respect the architecture, leverage the frameworks, and focus on the comprehensive web interface as your primary development target.
 
-## 🚫 Forbidden Patterns
+## Forbidden Patterns
 
 ### Code Quality Violations
 

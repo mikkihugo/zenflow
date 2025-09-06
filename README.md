@@ -18,49 +18,31 @@ Advanced AI development platform with sophisticated agent coordination, multi-da
 - **⚡ Cross-Platform Deployment**: Self-contained executables (116MB each) for Linux, macOS, Windows
 - **🔧 GitHub Integration**: Authentication and development workflow integration for CI/CD
 
-## 🚀 Quick Start
+> Note: A previously duplicated `@claude-zen/events` package was fully removed. All event mechanics and contracts now live exclusively in `@claude-zen/foundation`.
 
-### Prerequisites
+## 🚀 Quick Start (Development)
 
-- Node.js 22.18.0+ (required)
-- pnpm 10.15.0+ (required) — npm/yarn are not supported here
-- Rust (stable) for WASM modules (auto-installs if missing)
-  
-Note: mise is not required for this repository. Use your system toolchain or asdf/volta if preferred.
-
-### Development Setup
+Prerequisites: Node.js 22.18.0+, pnpm 10.15.0+, Rust (stable, auto-installs for WASM). mise not required.
 
 ```bash
-# Clone repository
 git clone https://github.com/mikkihugo/zenflow
 cd zenflow
-
-# Install dependencies
-pnpm install
-
-# Start web dashboard (PRIMARY interface)
-pnpm --filter @claude-zen/web-dashboard dev
-# Access at: http://localhost:3000
+pnpm install                       # 2–3s
+pnpm --filter @claude-zen/web-dashboard dev  # http://localhost:3000 (PRIMARY)
 ```
 
-### Production Usage
-
+Production build (creates cross‑platform SEA binaries – NEVER CANCEL):
 ```bash
-# Build everything (creates cross-platform binaries) — NEVER CANCEL
-pnpm build
-
-# Run production binaries
-./dist/bundle/claude-zen-linux
-./dist/bundle/claude-zen-macos
-./dist/bundle/claude-zen-win.exe
+pnpm build   # 5–6 min
+./dist/bundle/claude-zen-linux      # or -macos / -win.exe
 ```
 
-## 🚀 Next Steps
+## ✅ First Things To Do
 
-- [ ] Read the [Development Guidelines](AGENTS.md) for comprehensive coding standards
-- [ ] Explore the web dashboard at `http://localhost:3000`
-- [ ] Review the [Architecture Documentation](docs/architecture/) for system design
-- [ ] Check out the [API Documentation](docs/api/) for integration details
+- Read concise agent & development guardrails in `AGENTS.md` (deep version: `CLAUDE.md`)
+- Start the web dashboard: `pnpm --filter @claude-zen/web-dashboard dev`
+- Skim architecture docs in `docs/architecture/`
+- Review API docs in `docs/api/`
 
 ## 🏗️ Architecture
 
@@ -196,41 +178,19 @@ The platform supports **flexible agent types** without arbitrary restrictions:
 - 🗄️ Multi-database — SQLite, LanceDB, Kuzu via backend-agnostic adapters
 - 🧩 52+ package monorepo — strict domain boundaries, SEA binaries (~116MB)
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 22.18.0+
-- pnpm 10.15.0+ (npm/yarn not supported)
-- Rust (stable) — auto-installed for WASM when needed
-
-### Development
+## � Common Commands (Recap)
 
 ```bash
-# Install deps (2–3s)
-pnpm install
-
-# Fast type pass (25–30s, may show pre-existing errors)
-pnpm type-check
-
-# Start web dashboard (PRIMARY interface)
-pnpm --filter @claude-zen/web-dashboard dev
-# ➜ http://localhost:3000/
-```
-
-### Build (NEVER CANCEL)
-
-```bash
-# Full build (5–6 min) — produces SEA binaries
-pnpm build
-
-# Optional: WASM-only (1–2 min)
-./build-wasm.sh
+pnpm install                      # deps
+pnpm type-check                   # may show existing errors
+pnpm --filter @claude-zen/web-dashboard dev  # primary UI
+pnpm build                        # full SEA build (5–6 min)
+./build-wasm.sh                   # WASM only (1–2 min)
 ```
 
 Artifacts:
-- dist/bundle/claude-zen-{linux|macos|win.exe} (~116MB)
-- dist/wasm/* (WASM modules + d.ts)
+ - dist/bundle/claude-zen-{linux|macos|win.exe}
+ - dist/wasm/*
 
 ## 🏗️ Architecture at a glance
 
@@ -281,12 +241,13 @@ pnpm build
 
 Linting and type-checking have pre-existing issues across the repo; fix only where you touch.
 
-## ✅ Validation before you’re done
+## ✅ Validation Checklist
 
-1) Type-check runs to completion (errors may exist elsewhere)
-2) Build completes and creates binaries in dist/bundle/
-3) Dashboard starts and navigates without errors
-4) Changes respect domain boundaries and EventBus routing
+1. Type-check completes (pre-existing errors allowed outside your changes)
+2. Dashboard starts & navigates without console errors
+3. Build (when needed) produces binaries
+4. EventBus used for cross-package communication
+5. Domain boundaries respected (no ad-hoc cross-domain helpers)
 
 Event-driven enforcement and validators
 - Cross-package calls must go through the single typed EventBus from @claude-zen/foundation
@@ -319,8 +280,8 @@ MIT — see LICENSE.
 ## 📞 Support
 
 - Issues: https://github.com/mikkihugo/zenflow/issues
-- Docs: /docs and [Development Guidelines](AGENTS.md)
-- Agents: [AGENTS.md](AGENTS.md)
+- Docs: /docs (deep guidelines in `CLAUDE.md`)
+- Quick guardrails: `AGENTS.md`
 
 —
 

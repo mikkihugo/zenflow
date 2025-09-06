@@ -84,9 +84,9 @@ export interface AgentRegistryEvents {
 };
   'agent-registry:agent-info': {
     requestId:string;
-    agent: 'AgentInstance' | 'null';
+    agent: AgentInstance | null;
     timestamp:number;
-};
+  };
   'agent-registry:agents-found': {
     requestId:string;
     agents:AgentInstance[];
@@ -245,15 +245,15 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     this.on('brain:agent-registry:register-agent', async (data) => {
       try {
         const result = await this.registerAgentInternal(data.registration);
-        if (result.success) {
+        if (result.isOk()) {
           this.emit('agent-registry:agent-registered', {
             requestId:data.requestId,
-            agentId:result.data!.id,
-            agent:result.data!,
+            agentId:result.value.id,
+            agent:result.value,
             success:true,
             timestamp:Date.now(),
-});
-} else {
+          });
+        } else {
           this.emit('agent-registry:agent-registered', {
             requestId:data.requestId,
             agentId: '',
@@ -266,7 +266,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
             error:result.error?.message || 'Registration failed',
             timestamp:Date.now(),
           });
-}
+        }
 } catch (error) {
         this.emit('agent-registry:error', {
           requestId:data.requestId,
@@ -360,20 +360,20 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     // Handle stats requests
     this.on('brain:agent-registry:get-registry-stats', async (data) => {
       try {
-        const _stats = await this.getRegistryStatsInternal();
+        const stats = await this.getRegistryStatsInternal();
         this.emit('agent-registry:stats', {
           requestId:data.requestId,
           stats,
           timestamp:Date.now(),
-});
-} catch (error) {
+        });
+      } catch (error) {
         this.emit('agent-registry:error', {
           requestId:data.requestId,
           error:error instanceof Error ? error.message : String(error),
           timestamp:Date.now(),
-});
-}
-});
+        });
+      }
+    });
 }
 
   // =============================================================================
@@ -405,7 +405,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     return withTrace('agent-registry-register', async () => {
       try {
         // Check agent limit
-        if (this.agents.size >= this.options.maxAgents!) {
+        if (typeof this.options.maxAgents === 'number' && this.agents.size >= this.options.maxAgents) {
           return err(new Error('Maximum agent limit reached'));
 }
 
@@ -524,7 +524,13 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
 
       // Get matching agents and apply additional filters
       let matchingAgents = Array.from(candidateIds)
-        .map(id => this.agents.get(id)!)
+        .map(id => {
+          const agent = this.agents.get(id);
+          if (!agent) {
+            throw new Error(`Agent with id ${id} not found`);
+          }
+          return agent;
+        })
         .filter(agent => {
           if (criteria.status && agent.status !== criteria.status) {
             return false;
@@ -578,7 +584,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
       if (this.options.enableMetrics) {
         recordMetric('agent_health_updates', 1);
         recordHistogram('agent_response_time', health.responseTime);
-        recordHistogram('agenterror_rate', health.errorRate);
+        recordHistogram('agent_error_rate', health.errorRate);
 }
 
       this.logger.debug('Agent health updated', { agentId, health:health.status});
@@ -631,21 +637,27 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
   // HELPER METHODS - FOUNDATION POWERED
   // =============================================================================
 
-  private updateIndexes(agent:AgentInstance, operation:'add' | ' remove'): void {
+  private updateIndexes(agent:AgentInstance, operation:'add' | 'remove'): void {
     if (operation === 'add') {
       // Update type index
       if (!this.agentsByType.has(agent.type)) {
         this.agentsByType.set(agent.type, new Set());
 }
-      this.agentsByType.get(agent.type)!.add(agent.id);
+      const typeSet = this.agentsByType.get(agent.type);
+      if (typeSet) {
+        typeSet.add(agent.id);
+      }
 
       // Update capability indexes
       for (const capability of agent.capabilities) {
         if (!this.agentsByCapability.has(capability)) {
           this.agentsByCapability.set(capability, new Set());
-}
-        this.agentsByCapability.get(capability)!.add(agent.id);
-}
+        }
+        const capSet = this.agentsByCapability.get(capability);
+        if (capSet) {
+          capSet.add(agent.id);
+        }
+      }
 } else {
       // Remove from type index
       const typeSet = this.agentsByType.get(agent.type);
@@ -674,9 +686,11 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
       return;
 }
 
-    this.healthMonitorInterval = setInterval(() => {
-      this.performHealthChecks();
-}, this.options.healthCheckInterval!);
+    if (typeof this.options.healthCheckInterval === 'number') {
+      this.healthMonitorInterval = setInterval(() => {
+        this.performHealthChecks();
+      }, this.options.healthCheckInterval);
+    }
 
     this.logger.info('Health monitoring started', {
       interval:this.options.healthCheckInterval,
@@ -685,7 +699,9 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
 
   private performHealthChecks():void {
     const now = createTimestamp();
-    const staleThreshold = now - (this.options.healthCheckInterval! * 2); // 2x interval
+    const staleThreshold = typeof this.options.healthCheckInterval === 'number'
+      ? now - (this.options.healthCheckInterval * 2)
+      : now - 60000; // fallback to 1min if not set
 
     for (const [agentId, agent] of this.agents.entries()) {
       if (agent.lastSeen < staleThreshold) {

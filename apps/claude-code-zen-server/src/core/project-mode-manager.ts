@@ -15,8 +15,9 @@ export class ProjectModeManager {
     };
   }
 
-  private _initializeAgileMode(): Promise<void> {
-    // Placeholder for Agile mode initialization logic
-    return Promise.resolve();
-  }
+  // TODO: Implement Agile mode initialization when needed
+  // private _initializeAgileMode(): Promise<void> {
+  //   // Placeholder for Agile mode initialization logic
+  //   return Promise.resolve();
+  // }
 }
