@@ -612,21 +612,11 @@ function getGridStyle(widget: DashboardWidget) {
 	return sizeMap[widget.size];
 }
 
-// Reactive statements
-$: connectedStatus = $connectionStatus;
-$: widgets = $dashboardState.widgets;
-$: metrics = $dashboardState.performanceMetrics;
-$: recentEvents = $eventLog.slice(0, 5);
-</script>
-
-<script lang="ts">
 /**
  * Progressive widget loader for dashboard grid.
  * Dynamically imports the correct widget component based on widget.type.
  * Shows a loading spinner and error fallback.
  */
-import { onMount } from "svelte";
-import { writable } from "svelte/store";
 
 const widgetTypeToImport: Record<string, () => Promise<any>> = {
   visualization: () => import("./SafeVisualizationWidget.svelte"),
@@ -635,9 +625,6 @@ const widgetTypeToImport: Record<string, () => Promise<any>> = {
   prediction: () => import("./SafePredictionWidget.svelte"),
   integration: () => import("./SafeIntegrationWidget.svelte"),
 };
-
-export let userRole: string;
-export let immersionLevel: "basic" | "enhanced" | "production";
 
 export let widget: any;
 
@@ -663,6 +650,12 @@ onMount(async () => {
   }
   loading = false;
 });
+
+// Reactive statements
+$: connectedStatus = $connectionStatus;
+$: widgets = $dashboardState.widgets;
+$: metrics = $dashboardState.performanceMetrics;
+$: recentEvents = $eventLog.slice(0, 5);
 </script>
 
 <!-- WidgetLoader component -->
