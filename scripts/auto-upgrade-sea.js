@@ -149,7 +149,9 @@ class SEAUpgrader {
       if (existsSync(checkFile)) {
         return parseInt(require('fs').readFileSync(checkFile, 'utf8'));
       }
-    } catch {}
+    } catch {
+      // Ignore file read errors, return default
+    }
     return 0;
   }
 
@@ -157,7 +159,9 @@ class SEAUpgrader {
     try {
       const checkFile = join(this.binDir, '.last-check');
       require('fs').writeFileSync(checkFile, timestamp.toString());
-    } catch {}
+    } catch {
+      // Ignore file write errors
+    }
   }
 }
 

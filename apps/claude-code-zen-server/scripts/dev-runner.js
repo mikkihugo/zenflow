@@ -20,7 +20,7 @@ try {
 	const syslogModule = await import("../src/utils/logtape-syslog-bridge");
 	syslogBridge = syslogModule.syslogBridge;
 	logger.info(" LogTape syslog bridge loaded successfully");
-} catch (_error) {
+} catch {
 	logger.info("ℹ️ LogTape syslog bridge not available (optional feature)");
 	// Provide a simple null implementation
 	syslogBridge = {
@@ -32,7 +32,6 @@ try {
 }
 
 const PORT = process.env.PORT || 3000;
-const _ERROR_PORT = 3001; // Fallback error server
 
 let mainServer = null;
 let errorServer = null;
@@ -350,7 +349,7 @@ function broadcastMessage(message) {
 				pid: process.pid,
 			});
 		}
-	} catch (_error) {
+	} catch {
 		// Ignore broadcast errors - non-critical
 	}
 }

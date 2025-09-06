@@ -125,7 +125,7 @@ function checkFile(filePath) {
 			const line = lines[i].trim();
 
 			// Check for import statements
-			const importMatch = line.match(/^import.*from\s+['"]([\w@][\w@\-\./]+)['"];?/);
+			const importMatch = line.match(/^import.*from\s+['"]([\w@][\w@\-./]+)['"];?/);
 			if (importMatch) {
 				const importedModule = importMatch[1];
 
@@ -160,7 +160,7 @@ function checkFile(filePath) {
 			}
 
 			// Also check require statements
-			const requireMatch = line.match(/require\(['"]([\w@][\w@\-\./]+)['"]\)/);
+			const requireMatch = line.match(/require\(['"]([\w@][\w@\-./]+)['"]\)/);
 			if (requireMatch) {
 				const requiredModule = requireMatch[1];
 
@@ -193,7 +193,7 @@ function checkFile(filePath) {
 			}
 
 			// Also check dynamic import() statements
-			const dynamicImportMatch = line.match(/import\(\s*['"]([\w@][\w@\-\./]+)['"]\s*\)/);
+			const dynamicImportMatch = line.match(/import\(\s*['"]([\w@][\w@\-./]+)['"]\s*\)/);
 			if (dynamicImportMatch) {
 				const dynModule = dynamicImportMatch[1];
 
