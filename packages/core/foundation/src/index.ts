@@ -131,6 +131,48 @@ export type { BaseEvent, EventPayload, EventMap } from './events/index.js';
 /** Logger type export */
 export type { Logger } from './core/logging/index.js';
 
+/** System utilities and capability detection */
+export {
+  capabilities,
+  createCapabilityProvider
+} from './utilities/system/index.js';
+
+/** Additional utilities - avoiding duplicates */
+export {
+  generateApiKey,
+  generateCustomId,
+  generateSessionId,
+  generateShortId,
+  generateTimestampId,
+  nanoid,
+  customAlphabet,
+  z,
+  isEmail,
+  isURL,
+  formatTimestamp,
+  now,
+  parseISO,
+  getSystemInfo,
+  getPlatform,
+  getEnvironment
+} from './utilities/index.js';
+
+/** Time utilities */
+export {
+  dateFromTimestamp,
+  timestampFromDate,
+  isoStringFromTimestamp
+} from './utilities/time/index.js';
+
+/** Validation utilities */
+export {
+  emailSchema,
+  nonEmptyStringSchema,
+  positiveNumberSchema,
+  urlSchema,
+  uuidSchema
+} from './utilities/index.js';
+
 // =============================================================================
 // 🔁 Reintroduced Advanced Exports (User Requested)
 // =============================================================================

@@ -1,0 +1,17 @@
+{
+  "name": "@claude-zen/integrations-test",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/claude-provider": "workspace:*",
+    "@claude-zen/copilot-provider": "workspace:*",
+    "@claude-zen/github-models-provider": "workspace:*",
+    "@claude-zen/gemini-provider": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  }
+}

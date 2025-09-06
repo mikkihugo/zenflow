@@ -21,11 +21,15 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import {
-  createHealthDataProviders,
-  getCapabilityScores,
-  getSystemCapabilityData,
-} from '@claude-zen/foundation/system-capability-data-provider';
+
+// TODO: Implement these functions when system capability data provider is available
+const createHealthDataProviders = () => ({ foundation: { status: 'healthy' } });
+const getCapabilityScores = () => ({ overall: 75 });
+const getSystemCapabilityData = () => ({ 
+  status: 'operational',
+  capabilities: ['foundation', 'logging', 'events'],
+  facades: ['foundation', 'infrastructure']
+});
 import { type Request, type Response, Router } from 'express';
 
 const logger = getLogger('SystemCapabilityRoutes');

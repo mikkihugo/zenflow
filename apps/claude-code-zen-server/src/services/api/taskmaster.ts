@@ -161,7 +161,7 @@ class TaskMasterManager {
       this.taskMasterSystem = {
         async getFlowMetrics() {
           try {
-            const resp = await requestResponse<any>('api:tasks:metrics:request', 'api:tasks:metrics:response');
+            const resp = await requestResponse<any>('taskmaster:metrics:request', 'taskmaster:metrics:response');
             const m = resp?.metrics ?? {};
             const cycleTime = Number(m.averageDuration ?? 0);
             const throughput = Number(m.throughputPerHour ?? 0);
@@ -192,7 +192,7 @@ class TaskMasterManager {
 
         async getSystemHealth() {
           try {
-            const resp = await requestResponse<any>('api:system:status:request', 'api:system:status:response');
+            const resp = await requestResponse<any>('system:status:request', 'system:status:response');
             const h = resp?.health ?? {};
             return {
               overallHealth: Number(h.overall ?? 0.8),
@@ -215,7 +215,7 @@ class TaskMasterManager {
 
         async createTask(data: Partial<TaskMasterTask>) {
           try {
-            const resp = await requestResponse<any>('api:tasks:create:request', 'api:tasks:create:response', { input: data });
+            const resp = await requestResponse<any>('taskmaster:create:request', 'taskmaster:create:response', { input: data });
             const t = resp?.task ?? {};
             return {
               id: String(t.id ?? generateUUID()),
@@ -256,7 +256,7 @@ class TaskMasterManager {
 
         async getTasksByState(_state: TaskState) {
           try {
-            const resp = await requestResponse<any>('api:tasks:list:request', 'api:tasks:list:response');
+            const resp = await requestResponse<any>('taskmaster:list:request', 'taskmaster:list:response');
             const list = Array.isArray(resp?.tasks) ? resp.tasks : [];
             // Basic normalization
             return list.map((t: any) => ({

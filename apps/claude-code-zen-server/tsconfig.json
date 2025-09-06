@@ -10,7 +10,7 @@
     "downlevelIteration": true,
     "paths": {
       "@claude-zen/foundation": [
-        "../../packages/core/foundation/dist"
+        "../../packages/core/foundation/dist/src"
       ],
       "@claude-zen/database": [
         "../../packages/core/database/dist"

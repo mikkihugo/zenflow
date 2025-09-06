@@ -26,6 +26,14 @@ export interface WebDataService {
   getTasks(): Promise<unknown[]>;
   getServiceStats(): Record<string, unknown>;
   getSystemState?(): Record<string, unknown>; // For real API routes integration
+  
+  // Missing methods referenced by event-gateway
+  getDocuments(): Promise<unknown[]>;
+  executeCommand(command: unknown): Promise<unknown>;
+  getSettings(): Promise<unknown>;
+  updateSettings(settings: unknown): Promise<unknown>;
+  getLogs(): Promise<unknown[]>;
+  getTaskMetrics(): Promise<unknown>;
 }
 
 export class WebSocketManager {

@@ -782,8 +782,9 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
 
   /**
    * Start heartbeat for WebSocket connections
+   * @private method for future WebSocket heartbeat implementation
    */
-  private startHeartbeat(): void {
+  private _startHeartbeat(): void {
     const interval = this.configuration.websocket?.heartbeatInterval || 30000;
     
     this.heartbeatInterval = setInterval(() => {

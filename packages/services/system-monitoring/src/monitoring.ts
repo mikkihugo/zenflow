@@ -716,7 +716,7 @@ export async function getSystemMonitoring(
     trackSystem:(metrics: { cpu: number; memory: number }) =>
       recordMetric('system.health', metrics.cpu + metrics.memory),
     trackPerformance: (operation: string, duration: number) =>
-      recordHistogram('operation.duration', duration),
+      recordHistogram(`operation.${operation}.duration`, duration),
 
     // Lifecycle
     shutdown: async () => {
