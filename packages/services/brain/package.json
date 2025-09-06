@@ -114,6 +114,10 @@
     "./types": {
       "types": "./dist/types.d.ts",
       "import": "./dist/types.js"
+    },
+    "./brain-event-module": {
+      "types": "./dist/brain-event-module.d.ts",
+      "import": "./dist/brain-event-module.js"
     }
   },
   "engines": {

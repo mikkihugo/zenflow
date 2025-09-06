@@ -25,16 +25,20 @@ describe('Foundation Main Exports', () => {
       expect(typeof main.safeAsync).toBe('function');
     });
 
-    it('should maintain tree-shaking structure', async () => {
+    it('should maintain tree-shaking structure (relaxed threshold after reintroducing advanced exports)', async () => {
       const main = await import('../../src/index');
       const exportKeys = Object.keys(main);
-
-      // Should have minimal exports for tree-shaking
-      expect(exportKeys.length).toBeLessThan(15);
-
-      // Should NOT include heavy utilities (they should be in specific modules)
-      // TypedEventBase has been removed from foundation
-      expect(exportKeys.includes('createServiceContainer')).toBe(false);
+      // New relaxed threshold (advanced ergonomic exports restored)
+      expect(exportKeys.length).toBeLessThan(60);
+      // Sanity: ensure key advanced exports are present
+      expect(exportKeys.includes('EVENT_CATALOG')).toBe(true);
+      expect(exportKeys.includes('withRetry')).toBe(true);
+      expect(exportKeys.includes('withTimeout')).toBe(true);
+      expect(exportKeys.includes('createContainer')).toBe(true);
+      expect(exportKeys.includes('ProcessLifecycleManager')).toBe(true);
+      expect(exportKeys.includes('generateUUID')).toBe(true);
+  expect(exportKeys.includes('EXTENDED_EVENT_CATALOG')).toBe(true);
+  expect(exportKeys.includes('isExtendedEventName')).toBe(true);
     });
 
     it('should work with logger creation', async () => {

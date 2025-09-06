@@ -14,7 +14,7 @@ const logger = getLogger('EventCatalog');
 // ============================================================================
 
 export interface BaseEvent {
-  timestamp?: Date;
+  timestamp?: number | Date;
   requestId?: string;
   correlationId?: string;
 }

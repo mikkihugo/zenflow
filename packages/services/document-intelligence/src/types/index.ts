@@ -1,43 +1,34 @@
 /**
-* @fileoverview Document Intelligence Types
+* @fileoverview External Document Import Intelligence Types
 *
-* Unified type system for document intelligence service including semantic analysis,
-* strategic vision, document processing, and swarm integration types.
+* Unified type system for external document import service including external semantic analysis,
+* stakeholder vision import, external document processing, and import integration task generation.
 */
 
 
-// Re-export types from core processing
-export type * from '../core/document-driven-system';
-export type * from '../core/document-processor';
-export type * from '../core/document-workflow-system';
-export type * from '../intelligence/segmentation-engine';
-// Re-export types from intelligence modules
-export type * from '../intelligence/semantic-classifier';
-// Re-export types from scanning
-export type * from '../scanning/enhanced-document-scanner';
-// Re-export types from services
-export type * from '../services/strategic-vision-service';
+// Clean external document import types only - no legacy imports
 
 /**
-* Document intelligence service types
+* External document import service types
 */
 export interface DocumentIntelligenceConfig {
-enableSemanticAnalysis?:boolean;
-enableStrategicVision?:boolean;
-enableWorkflowProcessing?:boolean;
-enableSwarmIntegration?:boolean;
-confidenceThreshold?:number;
-maxSegmentSize?:number;
-preserveAlgorithmBlocks?:boolean;
+enableExternalSemanticAnalysis?:boolean;
+enableStakeholderVisionImport?:boolean;
+enableImportWorkflowProcessing?:boolean;
+enableImportIntegrationTaskGeneration?:boolean;
+importConfidenceThreshold?:number;
+maxImportSegmentSize?:number;
+preserveExternalContentBlocks?:boolean;
+targetProjectMode?:boolean; // Always import into existing projects
 }
 
 /**
-* Document analysis request options
+* External document import analysis request options
 */
 export interface DocumentAnalysisOptions {
-content:string;
-projectId?:string;
-enableSemanticAnalysis?:boolean;
+externalContent:string;
+targetProjectId:string; // Required - always importing into existing project
+enableExternalSemanticAnalysis?:boolean;
 enableStrategicAnalysis?:boolean;
 enableScanning?:boolean;
 enableSegmentation?:boolean;

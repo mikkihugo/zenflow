@@ -1,5 +1,23 @@
-// Re-export foundation's event system for coordination
+// Foundation unified event system
 export { EventBus, EventEmitter } from '@claude-zen/foundation';
+export {
+  BRAIN_COORDINATION_EVENT_CATALOG,
+  DOCUMENT_IMPORT_COORDINATION_EVENT_CATALOG,
+  type BrainCoordinationEventMap,
+  type DocumentImportCoordinationEventMap,
+  type BrainSafeWorkflowSupportEvent,
+  type BrainSparcPhaseReadyEvent,
+  type BrainExistingProjectWorkflowRequestEvent,
+  type CoordinationWorkflowApprovedEvent,
+  type CoordinationPriorityEscalatedEvent,
+  type CoordinationResourceAllocatedEvent,
+  type DocumentIntelligenceImportCompleteEvent,
+  type DocumentIntelligenceImportIntegrationReadyEvent,
+  type DocumentIntelligenceImportErrorEscalatedEvent,
+  type CoordinationImportApprovedEvent,
+  type CoordinationImportWorkflowAssignedEvent,
+  type CoordinationImportContextProvidedEvent
+} from '@claude-zen/foundation/events';
 
 // Simple event type definitions for coordination domains
 export type CoordinationEventType = 

@@ -110,6 +110,22 @@
       "types": "./dist/src/events/index.d.ts",
       "import": "./dist/src/events/index.js"
     },
+    "./events/extended": {
+      "types": "./dist/src/events/extended-event-catalog.d.ts",
+      "import": "./dist/src/events/extended-event-catalog.js"
+    },
+    "./events/modules": {
+      "types": "./dist/src/events/modules/index.d.ts",
+      "import": "./dist/src/events/modules/index.js"
+    },
+    "./events/modules/base-event-module": {
+      "types": "./dist/src/events/modules/base-event-module.d.ts",
+      "import": "./dist/src/events/modules/base-event-module.js"
+    },
+    "./events/saga": {
+      "types": "./dist/src/events/saga/index.d.ts",
+      "import": "./dist/src/events/saga/index.js"
+    },
     "./types": {
       "types": "./dist/src/types/index.d.ts",
       "import": "./dist/src/types/index.js"

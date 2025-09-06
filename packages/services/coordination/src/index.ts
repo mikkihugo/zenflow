@@ -10,6 +10,7 @@
 
 // Core coordination
 export * from './core/coordination-orchestrator';
+export * from './core/coordination-event-module';
 
 // Event types
 export * from './types/events';

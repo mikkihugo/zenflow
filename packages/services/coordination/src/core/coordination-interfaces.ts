@@ -9,14 +9,26 @@
  * @version 1.0.0
  */
 
-import type { 
-  BaseEvent, 
-  EventBusConfig, 
-  EventPayload, 
-  Result, 
-  UUID, 
-  Timestamp
-} from '@claude-zen/foundation';
+import type { Result } from '@claude-zen/foundation';
+
+import type {
+  UUID,
+  Timestamp,
+  JsonValue
+} from '@claude-zen/foundation/types';
+
+// Temporary type definitions for development
+type BaseEvent = {
+  requestId: string;
+  timestamp: number;
+  [key: string]: any;
+};
+
+type EventBusConfig = {
+  maxListeners?: number;
+};
+
+type EventPayload = JsonValue;
 
 // =============================================================================
 // COORDINATION CORE INTERFACES

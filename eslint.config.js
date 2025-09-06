@@ -709,4 +709,21 @@ export default [
       'security/**/*',
     ],
   },
+  // Transitional relax rules for new unified event system (will be tightened later)
+  {
+    files: [
+      'packages/core/foundation/src/events/saga/**/*.{ts,tsx}',
+      'packages/core/foundation/src/events/modules/**/*.{ts,tsx}',
+      'packages/services/document-intelligence/src/event-module-wrapper.ts',
+      'packages/services/coordination/src/core/coordination-event-module.ts'
+    ],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'unicorn/prefer-ternary': 'off',
+      'prefer-destructuring': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      'no-console': 'warn',
+      'no-duplicate-imports': 'error'
+    }
+  }
 ];

@@ -79,18 +79,10 @@ export class SafePortfolioTraceabilityService {
   /**
    * Initialize the service
    */
-  initialize(): Promise<void> {
-    try {
-      this.logger.info('Initializing SAFe Portfolio Traceability Service...');
-
-      // TODO: Initialize AI brain system for epic analysis
-      // this.brainSystem = await getBrainSystemAccess();
-
-      this.logger.info('SAFe Portfolio Traceability Service initialized successfully');
-    } catch (error) {
-      this.logger.error(`Failed to initialize SAFe Portfolio Traceability Service:`, error);
-  throw error;
-    }
+  async initialize(): Promise<void> {
+    this.logger.info('Initializing SAFe Portfolio Traceability Service...');
+    // TODO: Initialize AI brain system for epic analysis
+    this.logger.info('SAFe Portfolio Traceability Service initialized successfully');
   }
 
   /**
@@ -145,8 +137,7 @@ export class SafePortfolioTraceabilityService {
   /**
    * Analyze epic context using AI
    */
-  private analyzeEpicContext(context: EpicGenerationContext): Promise<{ businessValue: number; complexity: string; urgency: string; }> {
-    // TODO: Implement AI analysis of epic context
+  private async analyzeEpicContext(context: EpicGenerationContext): Promise<{ businessValue: number; complexity: string; urgency: string; }> {
     return {
       businessValue: context.strategic.businessValue,
       complexity: context.technical.complexityAssessment,
@@ -157,12 +148,11 @@ export class SafePortfolioTraceabilityService {
   /**
    * Generate business case for epic
    */
-  private generateBusinessCase(
+  private async generateBusinessCase(
     epicId: string,
     context: EpicGenerationContext,
     analysis: { businessValue: number; complexity: string; urgency: string }
   ): Promise<Record<string, unknown>> {
-    // TODO: Implement business case generation
     return {
       epicId,
       problemStatement: context.business.problemStatement,
@@ -250,32 +240,24 @@ export class SafePortfolioTraceabilityService {
   /**
    * Get traceability record for epic
    */
-  getEpicTraceability(epicId: string): Promise<Record<string, unknown> | null> {
-    // TODO: Implement traceability retrieval
-    void epicId;
+  async getEpicTraceability(epicId: string): Promise<Record<string, unknown> | null> {
+    void epicId; // TODO implement persistence lookup
     return null;
   }
 
   /**
    * Update epic traceability
    */
-  updateEpicTraceability(epicId: string, updates: Record<string, unknown>): Promise<void> {
-    // TODO: Implement traceability updates
-    void epicId;
-    void updates;
+  async updateEpicTraceability(epicId: string, updates: Record<string, unknown>): Promise<void> {
+    void epicId; void updates; // TODO implement persistence update
   }
 
   /**
    * Generate learning insights from epic outcomes
    */
-  learnFromEpicOutcome(epicId: string, outcome: Record<string, unknown>): Promise<{ patterns: unknown[]; improvements: unknown[] }> {
-    // TODO: Implement learning from epic outcomes
-    void epicId;
-    void outcome;
-    return {
-      patterns: [],
-      improvements: []
-    };
+  async learnFromEpicOutcome(epicId: string, outcome: Record<string, unknown>): Promise<{ patterns: unknown[]; improvements: unknown[] }> {
+    void epicId; void outcome; // TODO implement analytics
+    return { patterns: [], improvements: [] };
   }
 }
 

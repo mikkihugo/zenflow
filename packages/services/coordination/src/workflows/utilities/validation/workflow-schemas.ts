@@ -1,4 +1,4 @@
-import { z, getLogger } from '@claude-zen/foundation';
+import { getLogger, z } from '@claude-zen/foundation';
 import {
   WorkflowContext,
   WorkflowDefinition,

@@ -48,7 +48,6 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/database": "workspace:*",
-    
     "@statelyai/inspect": "^0.4.0",
     "expr-eval": "^2.0.2",
     "async": "^3.2.4",

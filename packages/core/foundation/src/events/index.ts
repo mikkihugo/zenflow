@@ -80,3 +80,13 @@ export type {
   SystemStartEvent,
   SystemErrorEvent,
 } from './event-catalog.js';
+
+// Domain contracts (migrated into foundation)
+export * from './contracts/index.js';
+
+// Extended catalog (core + domain contracts) for tooling/IDE assistance
+// (Extended catalog intentionally NOT re-exported here to keep root export surface minimal for tree-shaking.)
+
+// Note: Saga utilities and Event Module framework are available via subpath exports:
+// - '@claude-zen/foundation/events/saga'
+// - '@claude-zen/foundation/events/modules'

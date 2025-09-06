@@ -9,11 +9,10 @@
 import {
   EventEmitter,
   getLogger,
-  recordMetric,
-  withTrace,
-  TelemetryManager,
   type Logger,
 } from '@claude-zen/foundation';
+// recordMetric, withTrace, TelemetryManager do not exist in foundation and must be removed or replaced.
+// Remove @withTrace decorator and recordMetric/TelemetryManager usage below.
 
 // Types for SPARC completion knowledge
 interface SPARCSession {
@@ -75,25 +74,19 @@ interface ExtractedKnowledge {
  */
 export class SPARCCompletionExtractor extends EventEmitter {
   private readonly logger: Logger;
-  private readonly telemetryManager: TelemetryManager;
+  // TelemetryManager removed
 
   constructor() {
     super();
     this.logger = getLogger('sparc-completion-extractor');
-    this.telemetryManager = new TelemetryManager();
+    // this.telemetryManager = new TelemetryManager();
   }
 
   /**
    * Extract knowledge from a completed SPARC session
    */
-  @withTrace('sparc-completion-extractor', 'extract-knowledge')
   async extractKnowledge(session: SPARCSession): Promise<ExtractedKnowledge> {
     this.logger.info(`Extracting knowledge from SPARC session ${session.sessionId}`);
-    
-    recordMetric('sparc_knowledge_extraction_started', 1, {
-      sessionId: session.sessionId,
-      phase: session.phase
-    });
 
     try {
       const extractedKnowledge: ExtractedKnowledge = {
@@ -105,20 +98,10 @@ export class SPARCCompletionExtractor extends EventEmitter {
       };
 
       this.emit('knowledge-extracted', extractedKnowledge);
-      
-      recordMetric('sparc_knowledge_extraction_completed', 1, {
-        sessionId: session.sessionId,
-        patternsCount: extractedKnowledge.patterns.length,
-        insightsCount: extractedKnowledge.insights.length
-      });
 
       return extractedKnowledge;
     } catch (error) {
       this.logger.error('Failed to extract knowledge from SPARC session', error);
-      recordMetric('sparc_knowledge_extraction_failed', 1, {
-        sessionId: session.sessionId,
-        error: error.message
-      });
       throw error;
     }
   }

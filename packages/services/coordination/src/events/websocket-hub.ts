@@ -5,11 +5,8 @@
  * so events can be broadcast to websocket clients and inbound messages can be published into the event system.
  */
 
-import {
-  EventBus,
-  isValidEventName,
-  EventLogger,
-} from '@claude-zen/foundation';
+import { EventBus, isValidEventName } from '@claude-zen/foundation';
+import { dynamicEventRegistry, EventLogger } from '@claude-zen/foundation/events';
 import { randomUUID } from 'crypto';
 import { WebSocket } from 'ws';
 
@@ -58,7 +55,8 @@ export class WebsocketHub {
     this.eventBus = EventBus.getInstance();
     
     // Feature flag ZEN_EVENT_HUB_BRIDGE (default: on)
-    const flagValue = process.env['ZEN_EVENT_HUB_BRIDGE'];
+  const { ZEN_EVENT_HUB_BRIDGE: flagRaw } = process.env;
+  const flagValue = flagRaw;
     this.bridgeEnabled = flagValue !== 'off' && flagValue !== 'false';
     
     EventLogger.log('websocket-hub:constructor', {
@@ -211,21 +209,21 @@ export class WebsocketHub {
   /**
    * Handle publish requests - forward to EventBus
    */
-  private handlePublish(connection: WebSocketConnection, message: InboundMessage): void {
-    if (!message.event) {
+  private handlePublish(_connection: WebSocketConnection, _message: InboundMessage): void {
+    if (!_message.event) {
       EventLogger.log('websocket-hub:publish-missing-event');
       return;
     }
 
     // Validate event name
-    if (!isValidEventName(message.event)) {
+    if (!isValidEventName(_message.event)) {
       EventLogger.log('websocket-hub:publish-invalid-event');
       return;
     }
 
     try {
       // Forward to EventBus using emitSafe
-      this.eventBus.emitSafe(message.event, message.payload).then(result => {
+      this.eventBus.emitSafe(_message.event, _message.payload).then(result => {
         if (result.isErr()) {
           EventLogger.logError('websocket-hub:publish-emit-failed', result.error!, {
             component: WebsocketHub.componentName
@@ -392,7 +390,7 @@ export class WebsocketHub {
    */
   async getEventSystemMetrics() {
     try {
-      const metrics = await dynamicEventRegistry.getEventMetrics();
+      const metrics = await dynamicEventRegistry.getMetrics();
       const flows = await dynamicEventRegistry.getEventFlows();
       const activeModules = await dynamicEventRegistry.getActiveModules();
       

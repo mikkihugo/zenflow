@@ -2,7 +2,7 @@
   "name": "@claude-zen/document-intelligence",
   "version": "1.0.0",
   "private": true,
-  "description": "Unified document intelligence service with semantic analysis, strategic vision, and workflow processing",
+  "description": "External document import service - processes and imports external documents into existing SAFe projects with AI-powered analysis and transformation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,14 +13,15 @@
   },
   "keywords": [
     "document-intelligence",
-    "semantic-analysis",
-    "strategic-vision",
-    "document-processing",
-    "pattern-recognition",
-    "swarm-coordination"
+    "external-document-import",
+    "document-transformation",
+    "safe-integration",
+    "document-analysis",
+    "import-processing",
+    "existing-project-integration"
   ],
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*"
+  "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.2",

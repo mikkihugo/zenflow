@@ -103,11 +103,83 @@
 /** Production-ready logging - minimal root surface */
 export { getLogger } from './core/logging/index.js';
 
+/** Additional logging utilities */
+export { createLogger } from './core/logging/logging.service.js';
+
 /** Type-safe configuration and environment detection */
 export { getConfig, isDevelopment, isProduction, isTest } from './config/index.js';
 
 /** Result pattern core runtime utilities */
 export { Result, ok, err, safeAsync } from './error-handling/index.js';
 
-/** Event system core utilities */
+/** Event system core minimal utilities (advanced helpers via subpath './events') */
 export { EventBus, EventEmitter } from './events/index.js';
+export type { BaseEvent, EventPayload, EventMap } from './events/index.js';
+
+// (UUID generation available via subpath: import { generateUUID } from '@claude-zen/foundation/utils')
+
+// Advanced utilities intentionally omitted for tree-shaking (import from subpaths):
+// - registerEventModule, sendModuleHeartbeat, EVENT_CATALOG helpers
+// - withRetry (utilities/async)
+// - createContainer / Container (dependency-injection)
+// - ProcessLifecycleManager / setupProcessLifecycle (core/lifecycle)
+
+// (Error types and withTimeout available via '@claude-zen/foundation/error-handling')
+
+// (Process lifecycle exports moved to subpath import only)
+
+/** Logger type export */
+export type { Logger } from './core/logging/index.js';
+
+// =============================================================================
+// 🔁 Reintroduced Advanced Exports (User Requested)
+// =============================================================================
+// These exports were previously trimmed for an aggressive tree-shaking demo.
+// They are now restored for developer ergonomics. Modern bundlers will still
+// tree-shake unused symbols when importing from '@claude-zen/foundation'.
+// If bundle size becomes a concern again, consider moving these back behind
+// explicit subpath imports or exporting a consolidated namespace object instead.
+
+// Event system advanced helpers & catalog utilities
+export {
+	EVENT_CATALOG,
+	isValidEventName,
+	getEventType,
+	getAllEventNames,
+	getEventsByCategory,
+	registerEventModule,
+	sendModuleHeartbeat,
+	getActiveModules,
+	getEventMetrics,
+	getEventFlows,
+	getDynamicEventCatalog,
+	logEvent,
+	logFlow,
+	logError,
+} from './events/index.js';
+
+// Dependency Injection (lightweight container)
+export { createContainer } from './di.js';
+export type { Container } from './di.js';
+
+// DI Tokens for dependency injection
+export { TOKENS } from './dependency-injection/container.service.js';
+
+// Process lifecycle management
+export { ProcessLifecycleManager, setupProcessLifecycle } from './core/lifecycle/process.lifecycle.js';
+
+// Resilience helpers (retry / timeout) & key error types
+export { withRetry, withTimeout, TimeoutError, ValidationError, NetworkError, ResourceError, ConfigurationError } from './error-handling/index.js';
+
+// UUID generation convenience
+export { generateUUID } from './utilities/index.js';
+
+// Extended event catalog (full merged) now part of the single full root entry
+export {
+	EXTENDED_EVENT_CATALOG,
+	isExtendedEventName,
+	getExtendedEventType,
+} from './events/extended-event-catalog.js';
+
+// NOTE: Additional utilities (system info, validation helpers, etc.) remain
+// accessible via subpaths: '@claude-zen/foundation/utilities'
