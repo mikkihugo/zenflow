@@ -2,14 +2,14 @@ import { describe, it, expect, beforeEach, afterEach, vi} from 'vitest';
 import {
   mockLogger,
   mockConfig,
-  mockDIContainer,
+  mockContainer,
   createMockMemoryConfig,
 } from '../mocks/foundation-mocks';
 
 // Mock the entire foundation module
 vi.mock('@claude-zen/foundation', () => ({
   getLogger:() => mockLogger,
-  DIContainer:vi.fn(() => mockDIContainer),
+  Container:vi.fn(() => mockContainer),
   injectable:vi.fn((target) => target),
   createToken:vi.fn((name) => Symbol(name)),
   Result:{
@@ -49,7 +49,7 @@ describe('Memory System DI Integration', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    container = mockDIContainer;
+    container = mockContainer;
     memoryConfig = createMockMemoryConfig();
 
     // Setup container mock responses

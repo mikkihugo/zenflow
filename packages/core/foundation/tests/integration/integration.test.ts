@@ -12,7 +12,7 @@
 import { afterAll, describe, expect, it } from 'vitest';
 import {
   // Dependency injection
-  DIContainer,
+  Container,
   // Error handling
   EnhancedError,
   executeClaudeTask,
@@ -64,7 +64,7 @@ describe('Foundation Integration Tests', () => {
       expect(db).toBeTruthy();
 
       // DI system
-      const container = new DIContainer();
+      const container = new Container();
       expect(container).toBeTruthy();
     });
 
@@ -170,7 +170,7 @@ describe('Foundation Integration Tests', () => {
 
   describe('Dependency Injection Integration', () => {
     it('should support service registration and injection', () => {
-      const container = new DIContainer();
+      const container = new Container();
 
       // Register services using proper DI tokens
       const loggerToken = createToken<Logger>('logger');
@@ -194,7 +194,7 @@ describe('Foundation Integration Tests', () => {
     });
 
     it('should support function-based service creation', () => {
-      const container = new DIContainer();
+      const container = new Container();
       const loggerToken = createToken<Logger>('logger');
       const serviceToken = createToken<{name: string; version: string}>('testService');
 

@@ -5,6 +5,14 @@ import { watch } from "node:fs";
 import { createServer } from "node:http";
 import path from "node:path";
 
+// Simple logger for development runner
+const logger = {
+	info: (msg) => console.log(`[${new Date().toISOString()}] INFO: ${msg}`),
+	error: (msg) => console.error(`[${new Date().toISOString()}] ERROR: ${msg}`),
+	warn: (msg) => console.warn(`[${new Date().toISOString()}] WARN: ${msg}`),
+	debug: (msg) => console.log(`[${new Date().toISOString()}] DEBUG: ${msg}`)
+};
+
 // LogTape syslog bridge - optional feature
 let syslogBridge = null;
 try {

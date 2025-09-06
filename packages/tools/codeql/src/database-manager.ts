@@ -14,11 +14,11 @@ err,
 } from '@claude-zen/foundation';
 
 import type {
-CodeQLConfig,
-CodeQLDatabase,
-CodeQLError,
-CodeQLLanguage,
-DatabaseCreationOptions,
+  CodeQLConfig,
+  CodeQLDatabase,
+  CodeQLError,
+  CodeQLLanguage,
+  DatabaseCreationOptions,
 } from './types/codeql-types';
 
 /**
@@ -30,8 +30,8 @@ private readonly databases = new Map<string, CodeQLDatabase>();
 private readonly logger: Logger;
 
 constructor(config:CodeQLConfig, logger:Logger) {
-this.config = config;
-this.logger = logger.child({ component: 'DatabaseManager' });
+  this.config = config;
+  this.logger = (logger as any).child ? (logger as any).child({ component: 'DatabaseManager' }) : logger;
 }
 
 /**
@@ -59,7 +59,7 @@ async createDatabase(
 this.logger.info(`Creating CodeQL database`, {
   databaseId,
   repositoryPath: absolutePath,
-  databasePath: _databasePath,
+  databasePath,
   languages: options.languages,
 });
 
@@ -127,21 +127,21 @@ const databaseSize = await this.calculateDatabaseSize(databasePath);
 const database: CodeQLDatabase = {
   id: databaseId,
   path: databasePath,
-  language: options.languages[0], // Primary language - validated above
+  language: options.languages[0]!,
   additionalLanguages: options.languages.slice(1),
   sourceRoot: absolutePath,
   createdAt: new Date(),
   sizeBytes: databaseSize,
-  isReady: true,
-  buildCommand: options.buildCommand,
+  isReady: true as true,
+  buildCommand: options.buildCommand ?? undefined,
   metadata: {
     creationArgs: args,
     workingDirectory,
-    excludePatterns: options.excludePatterns,
+    excludePatterns: options.excludePatterns ?? undefined,
     stdout: result.stdout,
     stderr: result.stderr,
   },
-};
+} as CodeQLDatabase;
 
 // Store in registry
 this.databases.set(databaseId, database);

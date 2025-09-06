@@ -5,7 +5,7 @@
  * logging and telemetry packages, processes it, and exports to multiple backends.
  */
 
-import { createServer} from 'node:http';
+import { createServer, Server } from 'node:http';
 import { type Logger, getLogger } from '@claude-zen/foundation';
 import compression from 'compression';
 import cors from 'cors';
@@ -39,7 +39,7 @@ function getDefaultConfig() {
 export class InternalOTELCollector {
   private config:CollectorConfig;
   private logger:Logger;
-  private httpServer: 'Server' | 'null' = null;
+  private httpServer: Server | null = null;
   private exporterManager:ExporterManager;
   private processorManager:ProcessorManager;
   private stats:CollectorStats;
@@ -272,7 +272,7 @@ export class InternalOTELCollector {
     app.get('/stats', (req, res) => {
       try {
         const _stats = this.getStats();
-        res.json(stats);
+        res.json(_stats);
 } catch (error) {
         res.status(500).json({ error:String(error)});
 }
@@ -417,7 +417,7 @@ export class InternalOTELCollector {
 /**
  * Global collector instance
  */
-let globalCollector: 'InternalOTELCollector' | 'null' = null;
+let globalCollector: InternalOTELCollector | null = null;
 
 /**
  * Get global collector instance

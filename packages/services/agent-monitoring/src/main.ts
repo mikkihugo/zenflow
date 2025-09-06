@@ -158,7 +158,7 @@ export type {
   PredictionRequest,
   PredictionResult,
   ResourceUsage,
-  SwarmId,
+  TeamId,
   // System Types
   SystemHealthSummary,
   SystemHealthSummary as SystemHealth,

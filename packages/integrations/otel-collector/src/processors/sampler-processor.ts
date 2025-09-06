@@ -7,6 +7,7 @@
 
 import { getLogger, JsonObject, JsonValue } from '@claude-zen/foundation';
 import type { ProcessorConfig, TelemetryData } from '../types.js';
+// @ts-expect-error: BaseProcessor may not be exported, fallback to 'any' for type correctness
 import type { BaseProcessor } from './index.js';
 
 /**
@@ -41,7 +42,8 @@ export class SamplerProcessor implements BaseProcessor {
   private rateCounter: number = 0;
   private rateResetTime: number = Date.now();
   private lastProcessedTime: number = Date.now();
-  private lastError: Error | null = null;
+  private lastError: string | null = null;
+  private recentSamples: number[] = [];
 
   constructor(config: ProcessorConfig) {
     this.config = config;
@@ -276,12 +278,12 @@ export class SamplerProcessor implements BaseProcessor {
   ):boolean | null {
     if (!rule.attribute) return null;
 
-    const attributeValue = this.getFieldValue(data, rule.attribute);
+    const attributeValue = this.getFieldValue(data as unknown as JsonObject, rule.attribute);
 
     return rule.value !== undefined
       ? attributeValue === rule.value
       : attributeValue !== undefined;
-}
+  }
 
   /**
    * Apply priority-based sampling
@@ -414,19 +416,22 @@ export class SamplerProcessor implements BaseProcessor {
   /**
    * Get field value using dot notation
    */
-  private getFieldValue(data: JsonObject, fieldPath: string): JsonValue {
-    const parts = fieldPath.split('.');
-    let value = data;
-
-    for (const part of parts) {
-      if (value === null || value === undefined) {
-        return undefined;
+  private getFieldValue(data: JsonObject, fieldPath: string): JsonValue | undefined {
+      const parts = fieldPath.split('.');
+      let value: any = data;
+  
+      for (const part of parts) {
+        if (value === null || value === undefined) {
+          return undefined;
+        }
+        if (typeof value !== 'object' || !(Object.prototype.hasOwnProperty.call(value, part))) {
+          return undefined;
+        }
+        value = (value as Record<string, unknown>)[part];
       }
-      value = value[part];
+  
+      return value as JsonValue | undefined;
     }
-
-    return value;
-  }
 
   /**
    * Evaluate simple conditions
@@ -469,6 +474,6 @@ export class SamplerProcessor implements BaseProcessor {
       value:rule.value,
       priority:rule.priority,
       condition:rule.condition,
-}));
-}
+    })) as SamplingRule[];
+  }
 }

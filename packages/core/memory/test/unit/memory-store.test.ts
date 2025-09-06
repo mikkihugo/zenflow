@@ -249,7 +249,7 @@ describe('SessionMemoryStore', () => {
       const statsResult = await store.getStats();
       expect(statsResult.isOk()).toBe(true);
 
-      const _stats = statsResult._unsafeUnwrap();
+      const stats = statsResult._unsafeUnwrap();
       expect(stats.size).toBe(2);
       expect(stats.maxSize).toBeDefined();
 });
@@ -317,7 +317,7 @@ describe('SessionMemoryStore', () => {
       const result = await store.store('limit3',    'value3');
       expect(result.isOk() || result.isErr()).toBe(true);
 
-      const _stats = await store.getStats();
+      const stats = await store.getStats();
       expect(stats._unsafeUnwrap().size).toBeLessThanOrEqual(2);
 });
 });

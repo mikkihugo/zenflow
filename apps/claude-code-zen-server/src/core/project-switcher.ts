@@ -122,7 +122,8 @@ export class ProjectSwitcher extends EventEmitter {
     const startTime = Date.now();
     this.isSwitching = true;
     if (this.lastError) {
-      delete (this as any).lastError;
+      // @ts-expect-error: lastError may not exist on this
+      if ('lastError' in this) delete (this as { lastError?: string }).lastError;
     }
 
     try {

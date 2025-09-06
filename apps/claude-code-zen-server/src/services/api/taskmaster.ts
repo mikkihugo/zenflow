@@ -405,7 +405,7 @@ function validateTaskInput(data: unknown): {
  * Handle task creation with comprehensive SAFe metadata
  */
 async function handleTaskCreation(
-  taskMaster: unknown,
+  taskMaster: { createTask: (data: unknown) => Promise<unknown> },
   taskData: {
     title: string;
     description?: string;
@@ -441,9 +441,7 @@ async function handleTaskCreation(
   };
 
   // Use TaskMaster system to create the task
-  const createdTask = await (
-    taskMaster as { createTask: (data: unknown) => Promise<unknown> }
-  ).createTask(safeTaskData);
+  const createdTask = await taskMaster.createTask(safeTaskData);
 
   log(LogLevel.INFO, `SAFe task created with ID: ${  taskId}`);
   return createdTask;
@@ -962,8 +960,12 @@ async function handleMoveTask(
     const { taskId } = req.params;
     const { toState, reason } = req.body;
 
+    // Defensive: ensure both are strings for type safety
+    const safeTaskId = typeof taskId === 'string' ? taskId : String(taskId ?? '');
+    const safeToState = typeof toState === 'string' ? toState : String(toState ?? '');
+
     // Validate inputs
-    const validationResult = validateMoveTaskInputs(taskId || '', toState);
+    const validationResult = validateMoveTaskInputs(safeTaskId, safeToState);
     if (validationResult) {
       res
         .status(validationResult.status)
@@ -1031,7 +1033,7 @@ async function handleMoveTask(
         taskId,
         fromState: currentTask.state,
         toState,
-        wipStatus: wipResult?.wipStatus,
+        wipStatus: wipResult?.wipStatus || null,
         movedAt: new Date().toISOString(),
       },
       timestamp: new Date().toISOString(),
@@ -1045,8 +1047,9 @@ async function handleMoveTask(
 // Validation helper for PI Planning event data
 function validatePIPlanningEventData(body: unknown): string[] {
   const validationErrors: string[] = [];
+  const bodyObj = body as Record<string, unknown>;
   const { planningIntervalNumber, artId, startDate, endDate, facilitator } =
-    body;
+    bodyObj;
 
   if (
     !planningIntervalNumber ||
@@ -1058,10 +1061,10 @@ function validatePIPlanningEventData(body: unknown): string[] {
   if (!artId || typeof artId !== 'string' || artId.trim().length < 3) {
     validationErrors.push('ART ID must be at least 3 characters');
   }
-  if (!startDate || !Date.parse(startDate)) {
+  if (!startDate || typeof startDate !== 'string' || !Date.parse(startDate)) {
     validationErrors.push('Start date must be a valid ISO date');
   }
-  if (!endDate || !Date.parse(endDate)) {
+  if (!endDate || typeof endDate !== 'string' || !Date.parse(endDate)) {
     validationErrors.push('End date must be a valid ISO date');
   }
   if (
@@ -1071,7 +1074,7 @@ function validatePIPlanningEventData(body: unknown): string[] {
   ) {
     validationErrors.push('Facilitator name must be at least 2 characters');
   }
-  if (startDate && endDate && Date.parse(startDate) >= Date.parse(endDate)) {
+  if (startDate && endDate && typeof startDate === 'string' && typeof endDate === 'string' && Date.parse(startDate) >= Date.parse(endDate)) {
     validationErrors.push('End date must be after start date');
   }
   return validationErrors;
@@ -1243,11 +1246,11 @@ async function calculateStateMetrics(
 
   // Parallel task fetching by state
   const taskPromises = states.map(async (state) => {
-    const tasks = await taskMaster.getTasksByState(state);
+    const tasks = (await taskMaster.getTasksByState?.(state)) || [];
     tasksByState[state] = tasks;
 
     const totalEffort = tasks.reduce(
-      (sum, task) => sum + task.estimatedEffort,
+      (sum: number, task: TaskMasterTask) => sum + task.estimatedEffort,
       0
     );
     stateMetrics[state] = {
@@ -1298,8 +1301,8 @@ async function createDashboardDataHandler(
 
     // Calculate dashboard insights
     const totalTasks = Object.values(tasksByState).flat().length;
-    const completedTasks = tasksByState['done'].length;
-    const blockedTasks = tasksByState['blocked'].length;
+    const completedTasks = tasksByState['done']?.length || 0;
+    const blockedTasks = tasksByState['blocked']?.length || 0;
     const completionRate =
       totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
     const blockedRate =
@@ -1314,7 +1317,7 @@ async function createDashboardDataHandler(
           blockedRate,
           totalTasks,
           activeStates: states.filter(
-            (state) => tasksByState[state].length > 0
+            (state) => tasksByState[state]?.length > 0
           ),
         },
         health,
@@ -1322,8 +1325,8 @@ async function createDashboardDataHandler(
         stateMetrics,
         states,
         insights: {
-          bottlenecks: states.filter((state) => tasksByState[state].length > 5),
-          highPriorityBlocked: tasksByState['blocked'].filter(
+          bottlenecks: states.filter((state) => (tasksByState[state]?.length || 0) > 5),
+          highPriorityBlocked: (tasksByState['blocked'] || []).filter(
             (task) => task.priority === 'high' || task.priority === 'critical'
           ).length,
           avgCycleTime: metrics.cycleTime,
@@ -1367,6 +1370,7 @@ interface TaskMasterSystemInterface {
   shutdown?(): Promise<void>;
   createTask?(taskData: unknown): Promise<unknown>;
   moveTask?(taskId: string, newStatus: string): Promise<unknown>;
+  getTasksByState?(state: TaskState): Promise<TaskMasterTask[]>;
   getFlowMetrics?(): Promise<unknown>;
   createPIPlanningEvent?(eventData: unknown): Promise<unknown>;
 }
@@ -1397,36 +1401,36 @@ export async function getTaskMasterService(): Promise<TaskMasterService> {
     shutdown: async () => {
       if (
         taskMaster &&
-        typeof (taskMaster as unknown).shutdown === 'function'
+        typeof (taskMaster as TaskMasterSystemInterface).shutdown === 'function'
       ) {
-        await (taskMaster as unknown).shutdown();
+        await (taskMaster as TaskMasterSystemInterface).shutdown?.();
       }
     },
     getStatus: () => 'ready',
     createTask: async (taskData: unknown) => {
       if (
         taskMaster &&
-        typeof (taskMaster as unknown).createTask === 'function'
+        typeof (taskMaster as TaskMasterSystemInterface).createTask === 'function'
       ) {
-        return await (taskMaster as unknown).createTask(taskData);
+        return await (taskMaster as TaskMasterSystemInterface).createTask?.(taskData);
       }
       return { success: false, message: 'createTask not available' };
     },
     moveTask: async (taskId: string, newStatus: string) => {
       if (
         taskMaster &&
-        typeof (taskMaster as unknown).moveTask === 'function'
+        typeof (taskMaster as TaskMasterSystemInterface).moveTask === 'function'
       ) {
-        return await (taskMaster as unknown).moveTask(taskId, newStatus);
+        return await (taskMaster as TaskMasterSystemInterface).moveTask?.(taskId, newStatus);
       }
       return false;
     },
     getFlowMetrics: async () => {
       if (
         taskMaster &&
-        typeof (taskMaster as unknown).getFlowMetrics === 'function'
+        typeof (taskMaster as TaskMasterSystemInterface).getFlowMetrics === 'function'
       ) {
-        return await (taskMaster as unknown).getFlowMetrics();
+        return await (taskMaster as TaskMasterSystemInterface).getFlowMetrics?.();
       }
       return {
         cycleTime: 0,
@@ -1440,9 +1444,9 @@ export async function getTaskMasterService(): Promise<TaskMasterService> {
     createPIPlanningEvent: async (eventData: unknown) => {
       if (
         taskMaster &&
-        typeof (taskMaster as unknown).createPIPlanningEvent === 'function'
+        typeof (taskMaster as TaskMasterSystemInterface).createPIPlanningEvent === 'function'
       ) {
-        return await (taskMaster as unknown).createPIPlanningEvent(eventData);
+        return await (taskMaster as TaskMasterSystemInterface).createPIPlanningEvent?.(eventData);
       }
       return { success: false, message: 'createPIPlanningEvent not available' };
     },

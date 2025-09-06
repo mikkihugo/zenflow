@@ -268,61 +268,55 @@ const createLogEntry = ({
   const requestMetadata = req.metadata as RequestMetadata;
   const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
 
-  // Build httpRequest object with only defined properties
-  const httpRequest: any = {
-    requestMethod: req.method,
-    requestUrl: req.originalUrl || req.url,
+  // Build httpRequest object as mutable, then cast to readonly
+  const httpRequestMutable: any = {
+    requestMethod: req.method || 'UNKNOWN',
+    requestUrl: req.originalUrl || req.url || 'unknown',
     requestSize: getRequestSize(req),
     protocol: req.protocol,
   };
-  
+
   if (res?.statusCode !== undefined) {
-    httpRequest.status = res.statusCode;
+    httpRequestMutable.status = res.statusCode;
   }
-  
+
   if (res) {
     const responseSize = getResponseSize(res);
     if (responseSize !== undefined) {
-      httpRequest.responseSize = responseSize;
+      httpRequestMutable.responseSize = responseSize;
     }
   }
-  
+
   if (requestMetadata?.userAgent) {
-    httpRequest.userAgent = requestMetadata.userAgent;
+    httpRequestMutable.userAgent = requestMetadata.userAgent;
   }
-  
+
   if (requestMetadata?.remoteIp) {
-    httpRequest.remoteIp = requestMetadata.remoteIp;
+    httpRequestMutable.remoteIp = requestMetadata.remoteIp;
   }
-  
+
   if (requestMetadata?.referer) {
-    httpRequest.referer = requestMetadata.referer;
+    httpRequestMutable.referer = requestMetadata.referer;
   }
-  
+
   if (duration) {
-    httpRequest.latency = formatDuration(duration);
+    httpRequestMutable.latency = formatDuration(duration);
   }
 
   const logEntry: LogEntry = {
     timestamp: new Date().toISOString(),
     level,
     message,
-    httpRequest,
+    httpRequest: httpRequestMutable as NonNullable<LogEntry['httpRequest']>,
     trace: requestMetadata?.requestId,
     operation: {
       id: requestMetadata?.requestId,
       producer: 'claude-zen-flow-api',
       first: !res,
-      // First log entry for request
       last: !!res,
-      // Last log entry for response
     },
+    ...(isValidMetadata(metadata) ? { metadata: sanitizeData(metadata) } : {}),
   };
-  
-  // Only set metadata if it's valid
-  if (isValidMetadata(metadata)) {
-    (logEntry as any).metadata = sanitizeData(metadata);
-  }
 
   return logEntry;
 };
@@ -345,14 +339,14 @@ const outputLog = (logEntry: LogEntry): void => {
     if (httpRequest) {
       logger.info(`${method  } ${  url  } ${  status  } ${  duration}`);
       if (level === LogLevel.ERROR && metadata) {
-        logger.error('Error details: ', metadata);
+        logger.error('Error details: ', logEntry['metadata']);
       }
     } else {
       logger.info(`${level  } ${  message}`);
     }
 
     if (metadata && level !== LogLevel.ERROR) {
-      logger.debug('Metadata: ', metadata);
+      logger.debug('Metadata: ', logEntry['metadata']);
     }
   } else {
     // Production:JSON format for structured logging
@@ -524,7 +518,7 @@ export const log = (
   metadata?: Record<string, unknown>
 ): void => {
   if (req) {
-    const params: any = { level, message, req };
+    const params: { level: LogLevel; message: string; req: Request; metadata?: Record<string, unknown> } = { level, message, req };
     if (metadata) {
       params.metadata = metadata;
     }
@@ -539,10 +533,8 @@ export const log = (
     };
     
     // Only set metadata if it's valid
-    if (isValidMetadata(metadata)) {
-      (logEntry as any).metadata = sanitizeData(metadata);
-    }
-    
+    // (Handled in object spread above)
+ 
     outputLog(logEntry);
   }
 };
@@ -635,14 +627,6 @@ export const logExternalService = ({
   outputLog(logEntry);
 };
 
-// Extend Express Request interface to include metadata
-declare global {
-  namespace Express {
-    interface Request {
-      metadata?: RequestMetadata;
-    }
-  }
-}
 
 export default {
   logLevel: LogLevel,

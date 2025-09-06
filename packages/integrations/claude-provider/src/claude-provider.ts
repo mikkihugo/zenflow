@@ -15,6 +15,7 @@ export interface ClaudeConfig {
   baseURL?: string;
   useOAuth?: boolean;
   oauthToken?: string;
+  mode?: 'api' | 'sdk' | 'both';
 }
 
 export interface ClaudeMessage {
@@ -154,6 +155,16 @@ export class ClaudeProvider {
   async createChatCompletion(request: ClaudeCompletionRequest): Promise<any> {
     const response = await this.createMessage(request);
     return this.convertToOpenAIFormat(response);
+  }
+
+  /**
+   * Create streaming chat completion
+   */
+  async *createChatCompletionStream(request: ClaudeCompletionRequest): AsyncGenerator<any, void, unknown> {
+    // For now, just yield the non-streaming response
+    // TODO: Implement actual streaming
+    const response = await this.createChatCompletion(request);
+    yield response;
   }
   
   async testConnection(): Promise<{ success: boolean; error?: string }> {

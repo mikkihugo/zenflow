@@ -21,7 +21,6 @@ export interface RegistryOptions {
 export class RegistryAdapter extends EventEmitter {
   private agents = new Map<string, Agent>();
   private services = new Map<string, any>();
-  private container: any = {};
   private options: RegistryOptions;
   private logger = { debug: (msg: string, data?: any) => console.log(msg, data) };
 
@@ -64,15 +63,8 @@ export class RegistryAdapter extends EventEmitter {
   }
 
   registerInstance<T>(name: string, instance: T): void {
-    const result = { registerInstance: () => ({ isErr: () => false, error: { message: '' } }) };
-    const regResult = result.registerInstance(name, instance);
-    
-    if (regResult.isErr()) {
-      throw new Error(
-        `Failed to register instance ${  name  }: ${  regResult.error.message}`
-      );
-    }
-
+    // Store instance in services map
+    this.services.set(name, instance);
     this.emitMigrationEvent('instanceRegistered', { name });
   }
 

@@ -194,7 +194,7 @@ export class LlmProvider {
           throw new Error('GitHub Copilot provider not initialized');
         }
         const copilotModels = await this.copilotProvider.listModels();
-        return copilotModels.map(m => ({ id: m.id, name: m.name || m.id }));
+        return copilotModels.map((m: any) => ({ id: m.id, name: m.name || m.id }));
       }
       
       case LLMProviderType.GITHUB_MODELS: {
@@ -202,7 +202,7 @@ export class LlmProvider {
           throw new Error('GitHub Models provider not initialized');
         }
         const githubModels = await this.githubModelsProvider.listModels();
-        return githubModels.map(m => ({ id: m.id, name: m.friendly_name, description: m.summary }));
+        return githubModels.map((m: any) => ({ id: m.id, name: m.friendly_name, description: m.summary }));
       }
       
       case LLMProviderType.CLAUDE: {

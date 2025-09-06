@@ -11,7 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 //  TIER 1 ONLY - 5-Tier Architecture Compliance
-import { getLogger, ProcessLifecycleManager } from '@claude-zen/foundation';
+import { getLogger, ProcessLifecycleManager, type Container } from '@claude-zen/foundation';
 
 // Strategic facades for accessing functionality
 
@@ -35,7 +35,7 @@ class WebConfig {
   host: string;
   staticDir?: string;
   daemon?: boolean;
-  container?: DIContainer;
+  container?: Container;
   [key: string]: unknown;
 
   constructor(config: unknown) {
@@ -53,44 +53,7 @@ class WebConfig {
   }
 }
 
-// Real DI Container implementation
-class DIContainer {
-  private services = new Map<string, unknown>();
-  private factories = new Map<string, () => unknown>();
-
-  register<T>(name: string, instance: T): void {
-    this.services.set(name, instance);
-  }
-
-  registerFactory<T>(name: string, factory: () => T): void {
-    this.factories.set(name, factory);
-  }
-
-  resolve<T>(name: string): T {
-    if (this.services.has(name)) {
-      return this.services.get(name) as T;
-    }
-    if (this.factories.has(name)) {
-      const factory = this.factories.get(name);
-      if (!factory) {
-        throw new Error(`Factory for service ${name} is unexpectedly null`);
-      }
-      const instance = factory();
-      this.services.set(name, instance);
-      return instance as T;
-    }
-    throw new Error(`Service ${name} not found in container`);
-  }
-
-  has(name: string): boolean {
-    return this.services.has(name) || this.factories.has(name);
-  }
-
-  clear(): void {
-    this.services.clear();
-    this.factories.clear();
-  }
-}
+// Container implementation is now imported from @claude-zen/foundation
 
 // Real WebDashboardServer implementation using Express
 class WebDashboardServer {
@@ -493,7 +456,7 @@ const DASHBOARD_PATHS = {
 export class WebInterface {
   private logger = getLogger('WebInterface');
   private config: WebConfig;
-  private container?: DIContainer;
+  private container?: Container;
   private lifecycleManager?: ProcessLifecycleManager;
 
   // Component instances

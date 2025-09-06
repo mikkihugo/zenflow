@@ -113,7 +113,7 @@ export class ApiRouteHandler {
   /**
    * Health check handler.
    */
-  private handleHealth(req: Request, res: Response): void {
+  private handleHealth(_req: Request, res: Response): void {
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
@@ -125,7 +125,7 @@ export class ApiRouteHandler {
   /**
    * System status handler.
    */
-  private handleSystemStatus(req: Request, res: Response): void {
+  private handleSystemStatus(_req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(2000, res, 'Status request timed out');
     const handler = this.correlatedHandler('api:system:status:response', correlationId, cancel, (payload) => {
@@ -138,7 +138,7 @@ export class ApiRouteHandler {
   /**
    * Get swarms handler.
    */
-  private handleGetSwarms(req: Request, res: Response): void {
+  private handleGetSwarms(_req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Swarms request timed out');
     const handler = this.correlatedHandler('api:swarms:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ swarms: unknown }>) => {
@@ -165,7 +165,7 @@ export class ApiRouteHandler {
   /**
    * Get tasks handler.
    */
-  private handleGetTasks(req: Request, res: Response): void {
+  private handleGetTasks(_req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Tasks request timed out');
     const handler = this.correlatedHandler('api:tasks:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ tasks: unknown }>) => {
@@ -192,7 +192,7 @@ export class ApiRouteHandler {
   /**
    * Get documents handler.
    */
-  private handleGetDocuments(req: Request, res: Response): void {
+  private handleGetDocuments(_req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(3000, res, 'Documents request timed out');
     const handler = this.correlatedHandler('api:documents:list:response', correlationId, cancel, (payload: CorrelatedPayload<{ documents: unknown }>) => {
@@ -218,7 +218,7 @@ export class ApiRouteHandler {
   /**
    * Get settings handler.
    */
-  private handleGetSettings(req: Request, res: Response): void {
+  private handleGetSettings(_req: Request, res: Response): void {
     const correlationId = this.newCorrelationId();
     const cancel = this.setTimeoutOrFail(2000, res, 'Settings request timed out');
     const handler = this.correlatedHandler('api:settings:get:response', correlationId, cancel, (payload: CorrelatedPayload<{ settings: unknown }>) => {

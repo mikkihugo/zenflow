@@ -7,7 +7,8 @@
 
 // Main provider orchestrator
 // Convenience factory functions
-import { LlmProvider, LLMProviderConfig, LLMProviderType } from './llm-provider.js';
+import { LlmProvider, LLMProviderType } from './llm-provider.js';
+import type { LLMProviderConfig } from './llm-provider.js';
 
 export { LlmProvider, LLMProviderType } from './llm-provider.js';
 export type { 
@@ -44,7 +45,7 @@ export function createClaudeProvider(apiKey: string, endpoint?: string): LlmProv
   return new LlmProvider({
     type: LLMProviderType.CLAUDE,
     apiKey,
-    endpoint
+    endpoint: endpoint || undefined
   });
 }
 

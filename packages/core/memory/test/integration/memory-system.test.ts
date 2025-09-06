@@ -17,7 +17,7 @@ vi.mock('@claude-zen/foundation', () => ({
     emit = vi.fn();
     on = vi.fn();
 },
-  DIContainer:vi.fn(() => ({
+  Container:vi.fn(() => ({
     register:vi.fn(),
     resolve:vi.fn(),
     has:vi.fn(),

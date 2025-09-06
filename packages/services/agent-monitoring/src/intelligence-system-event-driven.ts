@@ -360,7 +360,7 @@ export class EventDrivenIntelligenceSystem {
 
  private predictTaskDurationInternal(agentId: AgentId,
  taskType: string,
- context?:Record<string, unknown>
+ _context?:Record<string, unknown>
  ): TaskPrediction {
  // Simple prediction algorithm (would be more sophisticated in production)
  const baseTime = 1000; // Base 1 second

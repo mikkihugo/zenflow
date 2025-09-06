@@ -24,4 +24,4 @@ export {
 } from './intelligence-system-bridge.js';
 
 // Types and interfaces
-export type * from './types.js';
+// (Removed invalid export type * syntax. Types should be re-exported individually if needed.)

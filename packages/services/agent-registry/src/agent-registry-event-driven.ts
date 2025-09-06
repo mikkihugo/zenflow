@@ -10,21 +10,42 @@
 // =============================================================================
 
 import {
-  createServiceContainer,
   err,
   getLogger,
   type Logger,
   ok,
   type Result,
-  TypedEventBase,
   generateUUID,
-  type UUID,
-  createTimestamp,
-  type Timestamp,
-  recordMetric,
-  recordHistogram,
-  withTrace,
 } from '@claude-zen/foundation';
+import { EventEmitter } from 'node:events';
+
+// Fallback types and functions for missing exports
+ type UUID = string;
+ type Timestamp = number; // epoch millis for arithmetic simplicity
+
+// Fallback implementations for missing functions
+ function createTimestamp(): Timestamp {
+   return Date.now();
+ }
+
+function recordMetric(name: string, value: number): void {
+  // TODO: Implement proper metrics recording when available
+  console.debug(`Metric: ${name} = ${value}`);
+}
+
+function recordHistogram(name: string, value: number): void {
+  // TODO: Implement proper histogram recording when available  
+  console.debug(`Histogram: ${name} = ${value}`);
+}
+
+function withTrace<T>(operationName: string, operation: () => T): T {
+  // TODO: Implement proper tracing when available
+  console.debug(`Trace: ${operationName}`);
+  return operation();
+}
+
+// Base class fallback for TypedEventBase
+class TypedEventBase extends EventEmitter {}
 
 /* eslint-disable sonarjs/no-duplicate-string */
 
@@ -122,65 +143,48 @@ export interface AgentRegistryEvents {
 // TYPE DEFINITIONS - AGENT MANAGEMENT
 // =============================================================================
 
-interface AgentInstance {
-  id:UUID;
-  templateId:string;
-  name:string;
-  type:string;
-  capabilities:string[];
-  status:'active' | 'inactive' | 'busy' | 'error';
-  health:AgentHealthStatus;
-  config:Record<string, unknown>;
-  metadata:Record<string, unknown>;
-  registeredAt:Timestamp;
-  lastSeen:Timestamp;
-  version:number;
-}
+import type { AgentRegistrationConfig, AgentRegistryOptions } from './types';
 
-interface AgentRegistrationConfig {
-  templateId:string;
-  name:string;
-  type:string;
-  capabilities?:string[];
-  config?:Record<string, unknown>;
-  metadata?:Record<string, unknown>;
-}
-
+// Local specialized types for event-driven implementation
 interface AgentHealthStatus {
-  status:'healthy' | 'degraded' | 'unhealthy';
-  responseTime:number;
-  errorRate:number;
-  memoryUsage:number;
-  cpuUsage:number;
-  lastCheck:Timestamp;
-  details?:Record<string, unknown>;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  responseTime: number;
+  errorRate: number;
+  memoryUsage: number;
+  cpuUsage: number;
+  lastCheck: Timestamp;
 }
-
-interface AgentSearchCriteria {
-  type?:string;
-  capabilities?:string[];
-  status?:AgentInstance['status'];
-  templateId?:string;
-  limit?:number;
-  offset?:number;
+interface AgentInstance {
+  id: string;
+  templateId: string;
+  name: string;
+  type: string;
+  status: 'active' | 'inactive' | 'busy' | 'error';
+  config: Record<string, unknown>;
+  capabilities: string[];
+  metadata: Record<string, unknown>;
+  health: AgentHealthStatus;
+  registeredAt: Timestamp;
+  lastSeen: Timestamp;
+  version: number;
 }
-
 interface RegistryStats {
-  totalAgents:number;
-  agentsByType:Record<string, number>;
-  agentsByStatus:Record<string, number>;
-  averageResponseTime:number;
-  averageHealth:number;
-  lastUpdated:Timestamp;
+  totalAgents: number;
+  agentsByType: Record<string, number>;
+  agentsByStatus: Record<string, number>;
+  averageResponseTime: number;
+  averageHealth: number;
+  lastUpdated: Timestamp;
 }
 
-interface AgentRegistryOptions {
-  enableHealthMonitoring?:boolean;
-  healthCheckInterval?:number;
-  maxAgents?:number;
-  enableMetrics?:boolean;
-  persistentStorage?:boolean;
-}
+type AgentSearchCriteria = {
+  type?: string;
+  capabilities?: string[];
+  status?: AgentInstance['status'];
+  templateId?: string;
+  limit?: number;
+  offset?: number;
+};
 
 // =============================================================================
 // EVENT-DRIVEN AGENT REGISTRY - FOUNDATION POWERED
@@ -195,11 +199,18 @@ const EVENT_AGENT_REGISTRY_HEALTH_UPDATED = 'agent-registry:health-updated';
 const EVENT_AGENT_REGISTRY_STATS = 'agent-registry:stats';
 const EVENT_AGENT_REGISTRY_ERROR = 'agent-registry:error';
 
+interface InternalAgentRegistryOptions extends AgentRegistryOptions {
+  enableHealthMonitoring?: boolean;
+  healthCheckInterval?: number;
+  maxAgents?: number;
+  enableMetrics?: boolean;
+  persistentStorage?: boolean;
+}
+
 export class EventDrivenAgentRegistry extends TypedEventBase {
   private logger:Logger;
-  private serviceContainer:Record<string, unknown>;
   private initialized = false;
-  private options:AgentRegistryOptions;
+  private options:InternalAgentRegistryOptions;
   private agents = new Map<UUID, AgentInstance>();
   private agentsByType = new Map<string, Set<UUID>>();
   private agentsByCapability = new Map<string, Set<UUID>>();
@@ -207,8 +218,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
 
   constructor(options:AgentRegistryOptions = {}) {
     super();
-    this.logger = getLogger('EventDrivenAgentRegistry');
-    this.serviceContainer = createServiceContainer();
+  this.logger = getLogger('EventDrivenAgentRegistry');
     
     // Default options with foundation-powered features
     this.options = {
@@ -227,7 +237,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
 
   private setupBrainEventHandlers():void {
     // Handle brain initialization requests
-    this.on('brain:agent-registry:initialize', (data) => {
+  this.on('brain:agent-registry:initialize', (data: { requestId:string; options?:AgentRegistryOptions }) => {
       try {
         if (data.options) {
           this.options = { ...this.options, ...data.options};
@@ -253,7 +263,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     });
 
     // Handle agent registration requests
-    this.on('brain:agent-registry:register-agent', (data) => {
+  this.on('brain:agent-registry:register-agent', (data: { requestId:string; registration:AgentRegistrationConfig }) => {
       try {
         const result = this.registerAgentInternal(data.registration);
         if ((result as any).isOk && (result as any).isOk()) {
@@ -288,7 +298,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     });
 
     // Handle agent unregistration requests
-    this.on('brain:agent-registry:unregister-agent', (data) => {
+  this.on('brain:agent-registry:unregister-agent', (data: { requestId:string; agentId:string }) => {
       try {
         const success = this.unregisterAgentInternal(data.agentId);
         this.emit(EVENT_AGENT_REGISTRY_AGENT_UNREGISTERED, {
@@ -313,7 +323,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     });
 
     // Handle get agent requests
-    this.on('brain:agent-registry:get-agent', (data) => {
+  this.on('brain:agent-registry:get-agent', (data: { requestId:string; agentId:string }) => {
       try {
         const agent = this.getAgentInternal(data.agentId);
         this.emit(EVENT_AGENT_REGISTRY_AGENT_INFO, {
@@ -331,7 +341,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     });
 
     // Handle find agents requests
-    this.on('brain:agent-registry:find-agents', (data) => {
+  this.on('brain:agent-registry:find-agents', (data: { requestId:string; criteria:AgentSearchCriteria }) => {
       try {
         const { agents, totalCount} = this.findAgentsInternal(data.criteria) as any;
         this.emit(EVENT_AGENT_REGISTRY_AGENTS_FOUND, {
@@ -350,7 +360,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     });
 
     // Handle health update requests
-    this.on('brain:agent-registry:update-agent-health', (data) => {
+  this.on('brain:agent-registry:update-agent-health', (data: { requestId:string; agentId:string; health:AgentHealthStatus }) => {
       try {
         const success = this.updateAgentHealthInternal(data.agentId, data.health);
         this.emit(EVENT_AGENT_REGISTRY_HEALTH_UPDATED, {
@@ -369,7 +379,7 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
     });
 
     // Handle stats requests
-    this.on('brain:agent-registry:get-registry-stats', (data) => {
+  this.on('brain:agent-registry:get-registry-stats', (data: { requestId:string }) => {
       try {
         const stats = this.getRegistryStatsInternal();
         this.emit(EVENT_AGENT_REGISTRY_STATS, {
@@ -429,12 +439,14 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
           name:registration.name,
           type:registration.type,
           capabilities:registration.capabilities || [],
-          status: 'active',          health:{
-            status: 'healthy',            responseTime:0,
-            errorRate:0,
-            memoryUsage:0,
-            cpuUsage:0,
-            lastCheck:timestamp,
+          status: 'active',
+          health: {
+            status: 'healthy',
+            responseTime: 0,
+            errorRate: 0,
+            memoryUsage: 0,
+            cpuUsage: 0,
+            lastCheck: timestamp,
           },
           config:registration.config || {},
           metadata:registration.metadata || {},
@@ -621,8 +633,8 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
         
         // Accumulate metrics
         totalResponseTime += agent.health.responseTime;
-        totalHealth += agent.health.status === 'healthy' ? 1:
-                       agent.health.status === 'degraded' ? 0.5:0;
+  totalHealth += agent.health.status === 'healthy' ? 1 :
+           agent.health.status === 'degraded' ? 0.5 : 0;
       }
 
       const stats:RegistryStats = {

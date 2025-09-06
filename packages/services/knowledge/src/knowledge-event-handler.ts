@@ -276,5 +276,7 @@ class KnowledgeEventHandler {
 
 // Initialize event handler - PURE EVENT-DRIVEN
 const knowledgeEventHandler = new KnowledgeEventHandler();
+// Use the event handler to prevent unused warning
+void knowledgeEventHandler;
 
 // NO EXPORTS - Pure event-driven package

@@ -152,7 +152,7 @@ export const memoryBackendSpecs = {
  * @example
  */
 export function registerMemoryProviders(
-  container: DIContainer,
+  container: Container,
   customConfigs?: {
     [key: string]: Partial<MemoryConfig>;
   }
@@ -204,7 +204,7 @@ export function registerMemoryProviders(
  * @param container
  * @example
  */
-export function createMemoryBackends(container:DIContainer): {
+export function createMemoryBackends(container:Container): {
   cache:unknown;
   session:unknown;
   semantic:unknown;
@@ -237,7 +237,7 @@ export function createMemoryBackends(container:DIContainer): {
  * Creates memory backends based on configuration options
  */
 function createConfiguredMemoryBackends(
-  container: DIContainer,
+  container: Container,
   options: {
     enableCache: boolean;
     enableSessions: boolean;
@@ -300,7 +300,7 @@ async function performBackendHealthChecks(
 }
 
 export async function initializeMemorySystem(
-  container: DIContainer,
+  container: Container,
   options: {
     enableCache: boolean;
     enableSessions: boolean;
@@ -352,7 +352,7 @@ export async function initializeMemorySystem(
  */
 export function createMemoryContainer(
   customConfigs?: Parameters<typeof registerMemoryProviders>[1]
-): DIContainer {
+): Container {
   const container = createContainer('memory-integration');
 
   // Register core services (would normally come from main app)

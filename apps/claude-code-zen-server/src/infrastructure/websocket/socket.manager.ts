@@ -370,8 +370,11 @@ export class WebSocketManager {
       // Dynamically import to avoid circular dependencies
       import('@claude-zen/foundation')
         .then((foundation) => {
-          if ('setLogBroadcaster' in foundation && typeof (foundation as any).setLogBroadcaster === 'function') {
-            (foundation as any).setLogBroadcaster((event: string, data: unknown) => {
+          if (
+            'setLogBroadcaster' in foundation &&
+            typeof (foundation as { setLogBroadcaster?: (event: string, data: unknown) => void }).setLogBroadcaster === 'function'
+          ) {
+            (foundation as { setLogBroadcaster: (event: string, data: unknown) => void }).setLogBroadcaster((event: string, data: unknown) => {
               // Broadcast to the logs room specifically
               this.broadcastToRoom('logs', event, data);
             });
@@ -543,7 +546,10 @@ export class WebSocketManager {
       healthScore,
       packages: foundationPackages,
       features: ['Core utilities', 'Logging', 'Error handling', 'Type-safe primitives'],
-      missingPackages: Object.keys(foundationPackages).filter(pkg => (foundationPackages as any)[pkg]?.status === 'unavailable'),
+      missingPackages: Object.keys(foundationPackages).filter(pkg =>
+        typeof (foundationPackages as Record<string, { status?: string }>)[pkg]?.status === 'string' &&
+        (foundationPackages as Record<string, { status?: string }>)[pkg]?.status === 'unavailable'
+      ),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['logger']
     };
   }
@@ -572,7 +578,10 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 30), // Minimum 30% if any services are running
       packages: infrastructurePackages,
       features: ['Database abstraction', 'Event system', 'OpenTelemetry', 'Service container'],
-      missingPackages: Object.keys(infrastructurePackages).filter(pkg => (infrastructurePackages as any)[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(infrastructurePackages).filter(pkg => {
+        const entry = (infrastructurePackages as Record<string, { status?: string }>)[pkg];
+        return entry?.status === 'fallback';
+      }),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['webSocket']
     };
   }
@@ -604,7 +613,10 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 20), // Minimum 20% as placeholder
       packages: intelligencePackages,
       features: ['Neural coordination', 'Brain systems', 'AI optimization'],
-      missingPackages: Object.keys(intelligencePackages).filter(pkg => (intelligencePackages as any)[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(intelligencePackages).filter(pkg => {
+        const entry = (intelligencePackages as Record<string, { status?: string }>)[pkg];
+        return entry?.status === 'fallback';
+      }),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['aiPlaceholder']
     };
   }
@@ -637,7 +649,10 @@ export class WebSocketManager {
       healthScore,
       packages: enterprisePackages,
       features: ['SAFE framework', 'Business workflows', 'Portfolio management'],
-      missingPackages: Object.keys(enterprisePackages).filter(pkg => (enterprisePackages as any)[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(enterprisePackages).filter(pkg => {
+        const entry = (enterprisePackages as Record<string, { status?: string }>)[pkg];
+        return entry?.status === 'fallback';
+      }),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['coordination']
     };
   }
@@ -666,7 +681,10 @@ export class WebSocketManager {
       healthScore,
       packages: operationsPackages,
       features: ['System monitoring', 'Load balancing', 'Performance tracking'],
-      missingPackages: Object.keys(operationsPackages).filter(pkg => (operationsPackages as any)[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(operationsPackages).filter(pkg => {
+        const entry = (operationsPackages as Record<string, { status?: string }>)[pkg];
+        return entry?.status === 'fallback';
+      }),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['webSocketMonitoring']
     };
   }
@@ -698,7 +716,10 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 25), // Minimum 25% for basic dev capabilities
       packages: developmentPackages,
       features: ['Code analysis', 'Git operations', 'Architecture validation'],
-      missingPackages: Object.keys(developmentPackages).filter(pkg => (developmentPackages as any)[pkg]?.status === 'fallback'),
+      missingPackages: Object.keys(developmentPackages).filter(pkg => {
+        const entry = (developmentPackages as Record<string, { status?: string }>)[pkg];
+        return entry?.status === 'fallback';
+      }),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['basicDev']
     };
   }
@@ -723,7 +744,10 @@ export class WebSocketManager {
       // Calculate derived metrics
       const successRate = totalTasks > 0 ? completedTasks / totalTasks : 0;
       const activeAgents = swarms.reduce((total: number, swarm) => total + (swarm.activeAgents || 0), 0);
-      const totalAgents = swarms.reduce((total: number, swarm) => total + ((swarm as any).totalAgents || 0), 0);
+      const totalAgents = swarms.reduce((total: number, swarm) => {
+        const ta = (swarm as { totalAgents?: number }).totalAgents;
+        return total + (ta || 0);
+      }, 0);
       
       return {
         totalSwarms,

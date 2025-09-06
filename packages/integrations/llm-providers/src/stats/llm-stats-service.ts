@@ -9,3 +9,5 @@ export class LlmStatsService extends EventEmitter {
     // TODO: Implement processing logic
   }
 }
+
+export default LlmStatsService;

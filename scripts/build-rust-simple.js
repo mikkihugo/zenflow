@@ -8,6 +8,14 @@
 import { execSync } from "node:child_process";
 import path from "node:path";
 
+// Simple logger for build script
+const logger = {
+	info: (msg) => console.log(`[${new Date().toISOString()}] INFO: ${msg}`),
+	error: (msg) => console.error(`[${new Date().toISOString()}] ERROR: ${msg}`),
+	warn: (msg) => console.warn(`[${new Date().toISOString()}] WARN: ${msg}`),
+	debug: (msg) => console.log(`[${new Date().toISOString()}] DEBUG: ${msg}`)
+};
+
 logger.info(" Building Rust Projects (Smart Mode)...\n");
 
 // Known problematic packages to skip or build differently

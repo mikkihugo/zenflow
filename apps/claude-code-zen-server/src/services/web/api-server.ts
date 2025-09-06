@@ -47,7 +47,7 @@ export class ApiServer {
   private server: Server;
   private app: Express;
   private readonly logger = getLogger(ApiServer);
-  private _webApiRoutes: WebApiRoutes | null = null;
+  private _webApiRoutes: WebApiRoutes | null = null; // Will be initialized later for dynamic route management
   private realApiRoutes: ReturnType<typeof createRealApiRoutes>;
 
   constructor(private config: ApiServerConfig) {
@@ -369,7 +369,7 @@ export class ApiServer {
     });
 
     // API info endpoint
-    this.app.get('/api/info', (req: Request, res: Response) => {
+    this.app.get('/api/info', (_req: Request, res: Response) => {
       res.json({
         name: 'Claude Code Zen',
         version: getVersion(),

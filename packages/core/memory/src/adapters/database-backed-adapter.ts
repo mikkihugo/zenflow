@@ -92,13 +92,13 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
     
     // Validate required fields exist and have appropriate types
     return (
-      typeof typedRow.key === 'string' &&
-      typeof typedRow.value === 'string' &&
-      typeof typedRow.timestamp === 'number' &&
-      typeof typedRow.size === 'number' &&
-      typeof typedRow.type === 'string' &&
-      (typedRow.ttl === null || typeof typedRow.ttl === 'number') &&
-      (typedRow.metadata === null || typeof typedRow.metadata === 'string')
+      typeof typedRow['key'] === 'string' &&
+      typeof typedRow['value'] === 'string' &&
+      typeof typedRow['timestamp'] === 'number' &&
+      typeof typedRow['size'] === 'number' &&
+      typeof typedRow['type'] === 'string' &&
+      (typedRow['ttl'] === null || typeof typedRow['ttl'] === 'number') &&
+      (typedRow['metadata'] === null || typeof typedRow['metadata'] === 'string')
     );
   }
 
@@ -217,6 +217,9 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 
         // Type-safe row processing with comprehensive validation
         const rawRow = rows[0];
+        if (!rawRow) {
+          return ok(null);
+        }
         if (!this.isValidDatabaseRow(rawRow)) {
           return err(new Error(`Invalid database row structure for key: ${key}`));
         }
@@ -235,9 +238,9 @@ export class DatabaseBackedAdapter extends BaseMemoryBackend {
 
         // Construct type-safe MemoryEntry with validated data
         const entry: MemoryEntry = {
-          key: String(rawRow.key),
-          value: parsedValue.value,
-          metadata: parsedMetadata.value,
+          key: String(rawRow['key']),
+          value: parsedValue.value as JSONValue,
+          metadata: parsedMetadata.value as Record<string, unknown>,
           timestamp: Number(rawRow.timestamp),
           size: Number(rawRow.size),
           type: String(rawRow.type),

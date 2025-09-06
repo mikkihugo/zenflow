@@ -278,7 +278,7 @@ describe('MemoryManager', () => {
       manager = new MemoryManager();
       await manager.registerBackend(
         'stats-backend',        createMockMemoryConfig()
-      )();
+      );
 });
 
     it('should provide comprehensive statistics', async () => {
@@ -288,7 +288,7 @@ describe('MemoryManager', () => {
       const result = await manager.getStats();
       expect(result.isOk()).toBe(true);
 
-      const _stats = result._unsafeUnwrap();
+      const stats = result._unsafeUnwrap();
       expect(stats.totalBackends).toBeGreaterThan(0);
       expect(stats.totalEntries).toBeGreaterThanOrEqual(0);
       expect(stats.memoryUsage).toBeDefined();
@@ -298,8 +298,8 @@ describe('MemoryManager', () => {
       const backend1 = 'stats-backend-1';
       const backend2 = 'stats-backend-2';
 
-      await manager.registerBackend(backend1, createMockMemoryConfig())();
-      await manager.registerBackend(backend2, createMockMemoryConfig())();
+      await manager.registerBackend(backend1, createMockMemoryConfig());
+      await manager.registerBackend(backend2, createMockMemoryConfig());
 
       const result = await manager.getBackendStats();
       expect(result.isOk()).toBe(true);
@@ -336,7 +336,7 @@ describe('MemoryManager', () => {
         createBackend:vi.fn().mockReturnValue(failingBackend),
 }));
 
-      await manager.registerBackend('failing', createMockMemoryConfig())();
+      await manager.registerBackend('failing', createMockMemoryConfig());
 
       const result = await manager.store('test-key',    'test-value');
       // Should handle failure gracefully
@@ -353,7 +353,7 @@ describe('MemoryManager', () => {
 };
 
       manager = new MemoryManager(config);
-      await manager.registerBackend('circuit-test', createMockMemoryConfig())();
+      await manager.registerBackend('circuit-test', createMockMemoryConfig());
 
       // This is a placeholder for circuit breaker testing
       // Actual implementation would simulate failures and verify circuit opening
@@ -361,7 +361,7 @@ describe('MemoryManager', () => {
 });
 
     it('should validate input parameters', async () => {
-      await manager.registerBackend('validation', createMockMemoryConfig())();
+      await manager.registerBackend('validation', createMockMemoryConfig());
 
       // Test invalid key
       const invalidKeyResult = await manager.store(null as any, 'value');
@@ -411,7 +411,7 @@ describe('MemoryManager', () => {
   describe('Cleanup and Shutdown', () => {
     beforeEach(async () => {
       manager = new MemoryManager();
-      await manager.registerBackend('cleanup-test', createMockMemoryConfig())();
+      await manager.registerBackend('cleanup-test', createMockMemoryConfig());
 });
 
     it('should perform graceful shutdown', async () => {

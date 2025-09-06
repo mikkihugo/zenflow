@@ -10,6 +10,14 @@ const { join } = require('path');
 const { platform } = require('os');
 const https = require('https');
 
+// Simple logger for upgrade script
+const logger = {
+  info: (msg) => console.log(`[${new Date().toISOString()}] INFO: ${msg}`),
+  error: (msg) => console.error(`[${new Date().toISOString()}] ERROR: ${msg}`),
+  warn: (msg) => console.warn(`[${new Date().toISOString()}] WARN: ${msg}`),
+  debug: (msg) => console.log(`[${new Date().toISOString()}] DEBUG: ${msg}`)
+};
+
 class SEAUpgrader {
   constructor() {
     this.binDir = join(__dirname, '..', 'bin');

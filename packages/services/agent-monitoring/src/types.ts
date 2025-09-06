@@ -143,8 +143,9 @@ export interface EmergentBehavior {
   stability: number;
 }
 
-// Swarm Types
+// Team Types
 export type TeamworkSessionId = string;
+export type TeamId = string;
 export type ForecastHorizon = '1h' | '6h' | '24h' | '7d' | '30d';
 
 // System Health Types
@@ -287,12 +288,12 @@ export interface IntelligenceSystem {
 
   getAgentHealth(agentId: AgentId): AgentHealth | null;
 
-  forecastPerformanceOptimization(swarmId: SwarmId,
+  forecastPerformanceOptimization(teamId: TeamId,
     horizon?:ForecastHorizon
   ): Promise<PerformanceOptimizationForecast>;
 
-  predictKnowledgeTransferSuccess(sourceSwarm: SwarmId,
-    targetSwarm: SwarmId,
+  predictKnowledgeTransferSuccess(sourceTeam: TeamId,
+    targetTeam: TeamId,
     patterns: unknown[]
   ): Promise<KnowledgeTransferPrediction>;
 

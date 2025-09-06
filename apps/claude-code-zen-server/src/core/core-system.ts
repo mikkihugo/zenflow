@@ -15,6 +15,7 @@ import {
 import { getLogger, createContainer, EventEmitter, type EventMap } from '@claude-zen/foundation';
 
 const logger = getLogger('core-system');
+const container = createContainer();
 
 // Constants for duplicate strings
 const STATUS_CHANGED_EVENT = 'status-changed';
@@ -127,7 +128,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
   private startTime: number;
   private initialized = false;
   private configuration: SystemConfig;
-  private serviceContainer = createContainer();
+  private containerRef = container;
 
   // Core system components
   private taskMasterService?: TaskMasterService;
@@ -139,7 +140,6 @@ export class System extends EventEmitter<CoreSystemEventMap> {
   constructor(config: SystemConfig = {}) {
     super();
     this.configuration = {
-      // Default configuration with WebSocket support
       websocket: {
         enableEventStreaming: true,
         heartbeatInterval: 30000,
@@ -166,38 +166,14 @@ export class System extends EventEmitter<CoreSystemEventMap> {
     };
     this.startTime = Date.now();
     this.setupEventHandlers();
+    // Event-driven: trigger async component initialization via event
+    setImmediate(() => this.emit('system:init', this.configuration));
   }
 
   /**
    * Initialize core system components
    */
-  private async initializeComponents(): Promise<void> {
-    logger.info('Initializing core system components...');
-
-    try {
-      // Initialize TaskMaster service
-      if (!this.taskMasterService) {
-        this.taskMasterService = await getTaskMasterService();
-        await this.taskMasterService.initialize();
-        logger.info(' TaskMaster service initialized');
-      }
-
-            // Register services in container
-            // The container expects a constructor, not an instance
-            this.serviceContainer.register('taskmaster', (this.taskMasterService as any).constructor as new (...args: unknown[]) => unknown);
-
-      // Initialize WebSocket heartbeat if enabled
-      if (this.configuration.websocket?.enableEventStreaming) {
-        this.startHeartbeat();
-        logger.info(' WebSocket heartbeat initialized');
-      }
-
-      logger.info(' Core components initialization complete');
-    } catch (error) {
-      logger.error(' Failed to initialize core components:', error);
-      throw error;
-    }
-  }
+  // Removed direct initializeComponents. Initialization now handled by event handler below.
 
   /**
    * Setup system event handlers
@@ -224,16 +200,36 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       });
 
       // Handle WebSocket events
-  this.on(WEBSOCKET_CONNECTED_EVENT, (...args: unknown[]) => { 
+      this.on(WEBSOCKET_CONNECTED_EVENT, (...args: unknown[]) => {
         const socketId = args[0] as string;
         this.activeConnections++;
         logger.debug(`WebSocket client connected: ${  socketId  } (total: ${this.activeConnections})`);
       });
 
-  this.on(WEBSOCKET_DISCONNECTED_EVENT, (...args: unknown[]) => { 
+      this.on(WEBSOCKET_DISCONNECTED_EVENT, (...args: unknown[]) => {
         const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
         logger.debug(`WebSocket client disconnected: ${  socketId  } (total: ${this.activeConnections})`);
+      });
+
+      // Event-driven: handle system:init to initialize components
+      this.on('system:init', async () => {
+        logger.info('Event-driven: initializing core system components...');
+        try {
+          if (!this.taskMasterService) {
+            this.taskMasterService = await getTaskMasterService();
+            await this.taskMasterService.initialize();
+            logger.info(' TaskMaster service initialized');
+          }
+          if (this.configuration.websocket?.enableEventStreaming) {
+            this.startHeartbeat();
+            logger.info(' WebSocket heartbeat initialized');
+          }
+          logger.info(' Core components initialization complete (event-driven)');
+        } catch (error) {
+          logger.error(' Failed to initialize core components (event-driven):', error);
+          this.emit('error', error as Error);
+        }
       });
 
       logger.info(' Event handlers configured');
@@ -258,8 +254,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       this.status = INITIALIZING_STATUS;
       this.emit(STATUS_CHANGED_EVENT, this.status);
 
-      // Initialize all system components
-      await this.initializeComponents();
+      // Event-driven: initialization is triggered by 'system:init' event handler
 
       this.status = READY_STATUS;
       this.initialized = true;
@@ -447,7 +442,8 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       // Stop heartbeat
       if (this.heartbeatInterval) {
         clearInterval(this.heartbeatInterval);
-        delete (this as any).heartbeatInterval;
+        // @ts-expect-error: heartbeatInterval may not exist on this
+        if ('heartbeatInterval' in this) delete (this as { heartbeatInterval?: NodeJS.Timeout }).heartbeatInterval;
       }
 
       // Shutdown TaskMaster service
@@ -483,13 +479,13 @@ export class System extends EventEmitter<CoreSystemEventMap> {
    * Get system components
    */
   getComponents() {
-    return {
-      taskmaster: this.taskMasterService,
-      container: this.serviceContainer,
-      httpServer: this.httpServer,
-      socketIO: this.socketIOServer,
-      activeConnections: this.activeConnections,
-    };
+      return {
+          taskmaster: this.taskMasterService,
+          container: this.containerRef,
+          httpServer: this.httpServer,
+          socketIO: this.socketIOServer,
+          activeConnections: this.activeConnections,
+      };
   }
 
   /**

@@ -8,8 +8,8 @@ members = [
     # Build them via the nested workspace at packages/tools/coder
     
     # Core components (moved to new structure)
-    # "packages/core/fact-system/src/rust",
-    "packages/core/neural-ml/neural-core",
+    "packages/core/fact-system/src/rust",
+    # "packages/core/neural-ml/neural-core", # Temporarily disabled due to workspace conflict
     
     # taskmaster wasm has dependency conflicts, exclude for now
     # "packages/services/taskmaster/src/wasm",

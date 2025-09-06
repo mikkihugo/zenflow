@@ -628,6 +628,7 @@ export class InfrastructureMetrics {
   ): void {
   recordHistogram(`infrastructure.${operation}.duration`, duration);
   recordMetric(`infrastructure.${operation}.calls`, 1);
+  recordMetric(`infrastructure.${operation}.success`, success ? 1 : 0);
 }
 
   /**
@@ -641,7 +642,13 @@ export class InfrastructureMetrics {
    * Track infrastructure event
    */
   trackEvent(event: string, attributes: Record<string, any> = {}): void {
-    recordMetric(`infrastructure.event.${  event}`, 1);
+    recordMetric(`infrastructure.event.${event}`, 1);
+    // Record attributes as separate metrics if provided
+    Object.entries(attributes).forEach(([key, value]) => {
+      if (typeof value === 'number') {
+        recordMetric(`infrastructure.event.${event}.${key}`, value);
+      }
+    });
   }
 }
 

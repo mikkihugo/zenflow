@@ -11,6 +11,9 @@ export { CopilotAuth } from './copilot-auth.js';
 export { GitHubModelsClient } from './github-models-client.js';
 export { registerCopilotHandlers } from './copilot-events.js';
 
+// Alias for compatibility with LLM provider
+export { CopilotChatClient as CopilotProvider } from './copilot-chat-client.js';
+
 export type {
   ChatMessage,
   ChatCompletionRequest,

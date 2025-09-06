@@ -16,7 +16,7 @@ export const mockConfig = {
   toObject: vi.fn(() => ({})),
 };
 
-export const mockDIContainer = {
+export const mockContainer = {
   register: vi.fn(),
   resolve: vi.fn(),
   has: vi.fn(),

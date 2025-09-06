@@ -35,12 +35,13 @@
  * const coders = registry.findAgentsByCapability('code-generation');); * `
  */
 
-// Core agent registry implementation
-// Factory functions
-import { AgentRegistry } from './agent-registry';
+// Core agent registry implementation (event-driven)
+import { EventDrivenAgentRegistry } from './agent-registry-event-driven';
 import type { AgentRegistryOptions } from './types';
 
-export { AgentRegistry } from './agent-registry';
+// Export event-driven registry as main AgentRegistry
+export { EventDrivenAgentRegistry as AgentRegistry } from './agent-registry-event-driven';
+export { EventDrivenAgentRegistry, createEventDrivenAgentRegistry } from './agent-registry-event-driven';
 
 // Registry adapter for migration and compatibility
 export {
@@ -62,23 +63,23 @@ export type {
  */
 export function createAgentRegistry(
   options?: AgentRegistryOptions
-): AgentRegistry {
-  return new AgentRegistry(options);
+): EventDrivenAgentRegistry {
+  return new EventDrivenAgentRegistry(options);
 }
 
 /**
  * Global registry instance for singleton pattern usage
  */
-let globalAgentRegistry: AgentRegistry | null = null;
+let globalAgentRegistry: EventDrivenAgentRegistry | null = null;
 
 /**
  * Get or create the global agent registry instance
  */
 export function getGlobalAgentRegistry(
   options?: AgentRegistryOptions
-): AgentRegistry {
+): EventDrivenAgentRegistry {
   if (!globalAgentRegistry) {
-    globalAgentRegistry = new AgentRegistry(options);
+    globalAgentRegistry = new EventDrivenAgentRegistry(options);
   }
   return globalAgentRegistry;
 }

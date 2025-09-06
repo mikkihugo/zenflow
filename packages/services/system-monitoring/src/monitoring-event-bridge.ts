@@ -130,7 +130,8 @@ export class EventDrivenSystemMonitorBridge {
       });
 
     } catch (error) {
-      this.logger.error('monitoring-bridge:start-failed', error as Error, {
+      this.logger.error('monitoring-bridge:start-failed', {
+        error: (error as Error).message,
         component: this.config.moduleId
       });
       throw error;
@@ -236,19 +237,17 @@ export class EventDrivenSystemMonitorBridge {
       this.eventBus.emit(validatedEventName, payload);
 
       if (this.config.enableLogging) {
-        this.logger.debug(
-          'EventDrivenSystemMonitor',
-          'EventBus',
-          validatedEventName
-        );
+        this.logger.debug('EventBus event emitted', {
+          event: validatedEventName,
+          module: 'EventDrivenSystemMonitor'
+        });
       }
 
     } catch (error) {
-      this.logger.error(
-        'monitoring-bridge:forward-failed',
-        error as Error,
-        { component: this.config.moduleId }
-      );
+      this.logger.error('monitoring-bridge:forward-failed', {
+        error: (error as Error).message,
+        component: this.config.moduleId
+      });
     }
   }
 
