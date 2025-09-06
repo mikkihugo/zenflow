@@ -107,12 +107,12 @@ export class ConsoleExporter implements BaseExporter {
 }
 
  async getHealthStatus():Promise<{
- status:'healthy' | ' degraded' | ' unhealthy';
+ status:'healthy' | 'degraded' | 'unhealthy';
  lastSuccess?:number;
  lastError?:string;
 }> {
  return {
- status:this.lastError ? 'degraded' : ' healthy', lastSuccess:this.lastExportTime || undefined,
+ status:this.lastError ? 'degraded' : 'healthy', lastSuccess:this.lastExportTime || undefined,
  lastError:this.lastError || undefined,
 };
 }

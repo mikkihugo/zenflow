@@ -1,99 +1,105 @@
 # @claude-zen/document-intelligence
 
-Unified document intelligence service providing semantic analysis, strategic vision coordination, and intelligent document processing.
+**External Document Import Service** - Imports and processes external stakeholder documents into existing SAFe projects. This service is designed specifically for importing external documents (vision statements, requirements, stakeholder content) rather than creating primary artifacts from scratch.
 
-## 🧠 **Core Capabilities**
+## 🧠 **Core Import Capabilities**
 
-### **Document Intelligence**
+### **External Document Intelligence**
 
-- **Semantic Content Classification**: DeepCode-style algorithm/concept/technical pattern recognition
-- **Pattern Recognition**: Multi-pattern content analysis with confidence scoring
-- **Content Density Analysis**: Algorithm density, concept complexity measurement
-- **Intelligent Segmentation**: Context-aware document segmentation strategies
+- **Stakeholder Content Classification**: Import and classify external vision documents, requirements, and business content
+- **External Pattern Recognition**: Analyze imported documents for SAFe-compatible patterns and structures
+- **Content Transformation Analysis**: Transform external document formats into project-compatible structures
+- **Import-Aware Segmentation**: Context-aware segmentation for integrating external content
 
-### **Strategic Vision & Coordination**
+### **External Document Coordination**
 
-- **Strategic Vision Service**: Database-driven strategic analysis and goal extraction
-- **Document Task Coordinator**: Vision + documents + tasks integration
-- **Vision Coordination**: Multi-system orchestration and dashboard generation
-- **Swarm Integration**: Task generation from document analysis
+- **External Vision Import Service**: Import external vision documents into existing SAFe project structures
+- **Stakeholder Document Coordinator**: Integrate external stakeholder documents with existing project tasks
+- **External Content Integration**: Multi-system coordination for importing external documents
+- **Import Task Generation**: Generate integration tasks from external document analysis
 
-### **Enhanced Document Processing**
+### **External Document Import Processing**
 
-- **Document Workflow System**: Vision → ADRs → PRDs → Epics → Features → Tasks → Code
-- **Enhanced Scanner**: Pattern recognition with swarm task generation
-- **File Operations**: Intelligent document processing and workflow execution
-- **Multi-Database Integration**: SQLite, LanceDB, Kuzu graph support
+- **External Document Import Workflows**: External Vision → Import to PRDs → Integration with Epics → Existing Project Integration
+- **External Content Scanner**: Pattern recognition specialized for importing external documents
+- **Import File Operations**: Specialized processing for external document import and integration
+- **Multi-Database Integration**: Store imported external content in SQLite, LanceDB, Kuzu graph databases
 
-## 🚀 **Quick Start**
+## 🚀 **External Document Import Quick Start**
 
 ```typescript
 import { getDocumentIntelligenceService } from '@claude-zen/document-intelligence';
 
-// Get the unified service
+// Get the external document import service
 const service = await getDocumentIntelligenceService();
 
-// Semantic analysis
-const analysis = await service.analyzeSemantics({
-  content: documentContent,
+// Import external stakeholder document for analysis
+const importAnalysis = await service.analyzeSemantics({
+  content: externalStakeholderDocument,
   enablePatternRecognition: true,
-  enableDensityAnalysis: true,
+  enableImportTransformation: true,
 });
 
-// Strategic vision coordination
-const vision = await service.coordinateVision({
-  projectId: 'my-project',
-  includeTaskGeneration: true,
+// Import external vision into existing project
+const importResult = await service.coordinateVision({
+  projectId: 'existing-project',
+  externalVisionContent: stakeholderVision,
+  importMode: true,
+  includeIntegrationTasks: true,
 });
 
-// Intelligent document processing
-const result = await service.processDocument({
-  path: './docs/vision.md',
-  enableWorkflow: true,
-  generateTasks: true,
+// Process external document for import into existing workflows
+const importProcessing = await service.processDocument({
+  path: './external-docs/stakeholder-vision.md',
+  importMode: true,
+  targetProjectId: 'existing-project',
+  enableImportWorkflows: true,
+  generateIntegrationTasks: true,
 });
 ```
 
-## 📦 **Architecture**
+## 📦 **External Document Import Architecture**
 
 ```
 @claude-zen/document-intelligence/
-├── core/                    # Document processing infrastructure
-├── services/                # Strategic services and coordination
-├── intelligence/            # DeepCode-style semantic analysis
-├── scanning/               # Enhanced document and code scanning
-├── utils/                  # Query-aware retrieval and utilities
-└── types/                  # Unified type system
+├── core/                    # External document import processing infrastructure
+├── services/                # External document import services and coordination
+├── intelligence/            # External document analysis and transformation
+├── scanning/               # External document scanning and pattern recognition
+├── utils/                  # Import-aware retrieval and transformation utilities
+└── types/                  # External document import type system
 ```
 
-## 🎯 **Strategic Integration**
+## 🎯 **External Document Import Integration**
 
-Access through strategic facade:
+Access external document import capabilities through strategic facade:
 
 ```typescript
 import { getDocumentIntelligence } from '@claude-zen/enterprise';
 
-const service = await getDocumentIntelligence();
-// Full document intelligence capabilities available
+const importService = await getDocumentIntelligence();
+// External document import capabilities for existing SAFe projects
+// NOT for primary artifact creation - only for importing stakeholder content
 ```
 
-## 🧠 **DeepCode Integration**
+## 🧠 **External Document Import Intelligence**
 
-Includes vision-like document parsing capabilities inspired by DeepCode:
+Includes specialized parsing capabilities for importing external stakeholder documents:
 
-- **Weighted Semantic Indicators**: Multi-level content importance scoring
-- **Document Type Detection**: Research paper vs technical spec classification
-- **Algorithm Block Preservation**: Keep related algorithm content together
-- **Query-Aware Retrieval**: Attention mechanisms for context-specific analysis
+- **External Content Semantic Indicators**: Multi-level importance scoring for imported stakeholder content
+- **External Document Type Detection**: Business vision vs technical requirements classification for import
+- **Stakeholder Content Block Preservation**: Keep related external content together during import
+- **Import-Aware Retrieval**: Attention mechanisms for integrating external content into existing projects
 
-## 🔧 **Configuration**
+## 🔧 **External Document Import Configuration**
 
 ```typescript
-const service = await getDocumentIntelligenceService({
-  enableSemanticAnalysis: true,
-  enableStrategicVision: true,
-  enableWorkflowProcessing: true,
-  enableSwarmIntegration: true,
-  confidenceThreshold: 0.8,
+const importService = await getDocumentIntelligenceService({
+  enableExternalDocumentAnalysis: true,
+  enableStakeholderVisionImport: true,
+  enableImportWorkflowProcessing: true,
+  enableIntegrationTaskGeneration: true,
+  importConfidenceThreshold: 0.8,
+  targetProjectMode: true, // Always import into existing projects
 });
 ```

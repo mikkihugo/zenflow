@@ -9,8 +9,8 @@ import { createContainer } from '../../src/dependency-injection';
 
 describe('Dependency Injection - Working Methods Only', () => {
   const TEST_SERVICE_NAME = 'test-service';
-  const META_SERVICE_NAME = META_SERVICE_NAME;
-  const FACTORY_SERVICE_NAME = FACTORY_SERVICE_NAME;
+  const META_SERVICE_NAME = 'meta-service';
+  const FACTORY_SERVICE_NAME = 'factory-service';
   let container: ReturnType<typeof createContainer>;
 
   beforeEach(() => {

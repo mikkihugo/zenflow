@@ -32,7 +32,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Request logging middleware
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   logger.debug(`${req.method} ${req.path}`, { query: req.query, body: req.body });
   next();
 });
@@ -40,16 +40,21 @@ app.use((req, res, next) => {
 // Initialize foundation services
 let dataService: WebDataService;
 
-function initializeServices(): Promise<void> {
-  return withRetry(() => {
+async function initializeServices(): Promise<void> {
+  const result = await withRetry(async () => {
     logger.info('Initializing production foundation services...');
     dataService = new WebDataService();
     logger.info('✅ Production foundation services initialized');
-  }, { retries: 3, minTimeout: 1000 });
+    return true;
+  }, 3, 1000);
+  
+  if (result.isErr()) {
+    throw result.error;
+  }
 }
 
 // Production health endpoint with real system status
-app.get('/api/v1/coordination/health', async (req, res) => {
+app.get('/api/v1/coordination/health', async (_req, res) => {
   try {
     const status = await dataService.getSystemStatus();
     res.json({
@@ -100,9 +105,9 @@ interface FoundationGlobal {
 }
 
 // Production projects endpoint - get from foundation project management
-app.get('/api/v1/coordination/projects', async (req, res) => {
+app.get('/api/v1/coordination/projects', async (_req, res) => {
   try {
-    const projects = await safeAsync(async () => {
+    const projectsResult = await safeAsync(async () => {
       const foundationGlobal = (global as { foundation?: FoundationGlobal }).foundation;
       const getProjectManager = foundationGlobal?.getProjectManager;
       if (getProjectManager) {
@@ -115,9 +120,14 @@ app.get('/api/v1/coordination/projects', async (req, res) => {
         return await memoryManager.get('projects') || [];
       }
       return [];
-    }, []);
+    });
+    
+    // Handle Result type properly
+    const projects = projectsResult.isOk() ? projectsResult.value : [];
+    const projectList = Array.isArray(projects) ? projects : [];
+    
     res.json({
-      projects: projects.map((project: Project) => ({
+      projects: projectList.map((project: Project) => ({
         id: project.id || `proj-${  Date.now()}`,
         name: project.name || 'Unnamed Project',
         description: project.description || 'No description',
@@ -125,7 +135,7 @@ app.get('/api/v1/coordination/projects', async (req, res) => {
         createdAt: project.createdAt || new Date().toISOString(),
         lastUpdated: project.lastUpdated || new Date().toISOString(),
       })),
-      total: projects.length,
+      total: projectList.length,
     });
   } catch (error) {
     logger.error("Error:", error);
@@ -134,7 +144,7 @@ app.get('/api/v1/coordination/projects', async (req, res) => {
 });
 
 // Production swarms endpoint - get from brain coordinator
-app.get('/api/v1/coordination/swarms', async (req, res) => {
+app.get('/api/v1/coordination/swarms', async (_req, res) => {
   try {
     const swarms = await dataService.getSwarmStatus();
     res.json({
@@ -179,20 +189,27 @@ interface BrainCoordinator {
 }
 
 // Production agents endpoint - get from brain coordinator agent registry
-app.get('/api/v1/coordination/agents', async (req, res) => {
+app.get('/api/v1/coordination/agents', async (_req, res) => {
   try {
-    const agents = await safeAsync(async () => {
+    const agentsResult = await safeAsync(async () => {
       const { getBrainCoordinator } = (global as { foundation?: { getBrainCoordinator: () => () => BrainCoordinator } })
         .foundation || { getBrainCoordinator: () => null };
       if (getBrainCoordinator) {
-        const coordinator: BrainCoordinator = getBrainCoordinator();
-        const agentRegistry: AgentRegistry = await coordinator.getAgentRegistry();
-        return await agentRegistry.getAllAgents();
+        const coordinatorFactory = getBrainCoordinator();
+        if (coordinatorFactory) {
+          const coordinator: BrainCoordinator = coordinatorFactory();
+          const agentRegistry: AgentRegistry = await coordinator.getAgentRegistry();
+          return await agentRegistry.getAllAgents();
+        }
       }
       return [];
-    }, []);
+    });
+    
+    const agents = agentsResult.isOk() ? agentsResult.value : [];
+    const agentList = Array.isArray(agents) ? agents : [];
+    
     res.json({
-      agents: (agents as Agent[]).map((agent: Agent) => ({
+      agents: agentList.map((agent: Agent) => ({
         id: agent.id || `agent-${  Date.now()}`,
         name: agent.name || 'Unnamed Agent',
         type: agent.type || 'general',
@@ -205,7 +222,7 @@ app.get('/api/v1/coordination/agents', async (req, res) => {
         currentTask: agent.currentTask || null,
         lastActive: agent.lastActive || new Date().toISOString(),
       })),
-      total: (agents as Agent[]).length,
+      total: agentList.length,
     });
   } catch (error) {
     logger.error("Error:", error);
@@ -222,7 +239,6 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
       const getBrainCoordinator = foundationGlobal?.getBrainCoordinator;
       if (getBrainCoordinator) {
         const coordinator = getBrainCoordinator();
-        // @ts-expect-error: coordinator type is unknown
         return await (coordinator as { createAgent: (_config: { name: string; type: string; capabilities: string[] }) => Promise<Agent> }).createAgent({
           name: agentData.name || 'New Agent',
           type: agentData.type || 'general',
@@ -240,7 +256,7 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
         currentTask: null,
         createdAt: new Date().toISOString(),
       };
-    }, null);
+    });
     if (newAgent) {
       res.json(newAgent);
     } else {
@@ -253,19 +269,23 @@ app.post('/api/v1/coordination/agents', async (req, res) => {
 });
 
 // Production tasks endpoint - get from task master
-app.get('/api/v1/coordination/tasks', async (req, res) => {
+app.get('/api/v1/coordination/tasks', async (_req, res) => {
   try {
-    const tasks = await safeAsync(async () => {
+    const tasksResult = await safeAsync(async () => {
       const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
       if (getTaskMaster) {
-        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (_config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
+        const taskMaster = getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (_config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> };
         return await taskMaster.getAllTasks();
       }
       return [];
-    }, []);
+    });
+    
+    const tasks = tasksResult.isOk() ? tasksResult.value : [];
+    const taskList = Array.isArray(tasks) ? tasks as Array<{ id?: string; title?: string; name?: string; description?: string; status?: string; priority?: string; assignedAgent?: string; assignee?: string; createdAt?: string; estimatedCompletion?: string; dueDate?: string }> : [];
+    
     res.json({
-      tasks: (tasks as unknown[]).map((task: { id?: string; title?: string; name?: string; description?: string; status?: string; priority?: string; assignedAgent?: string; assignee?: string; createdAt?: string; estimatedCompletion?: string; dueDate?: string }) => ({
+      tasks: taskList.map((task) => ({
         id: task.id || `task-${  Date.now()}`,
         title: task.title || task.name || 'Unnamed Task',
         description: task.description || 'No description',
@@ -275,7 +295,7 @@ app.get('/api/v1/coordination/tasks', async (req, res) => {
         createdAt: task.createdAt || new Date().toISOString(),
         estimatedCompletion: task.estimatedCompletion || task.dueDate,
       })),
-      total: (tasks as unknown[]).length,
+      total: taskList.length,
     });
   } catch (error) {
     logger.error("Error:", error);
@@ -291,7 +311,7 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
       const { getTaskMaster } = (global as { foundation?: { getTaskMaster: () => unknown } })
         .foundation || { getTaskMaster: () => null };
       if (getTaskMaster) {
-        const taskMaster = new (getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (_config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> })();
+        const taskMaster = getTaskMaster() as { getAllTasks: () => Promise<unknown[]>; createTask: (_config: { title: string; description: string; priority: string; assignedAgent?: string }) => Promise<unknown> };
         return await taskMaster.createTask({
           title: taskData.title || 'New Task',
           description: taskData.description || 'Task description',
@@ -310,7 +330,7 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
         createdAt: new Date().toISOString(),
         estimatedCompletion: new Date(Date.now() + 3600000).toISOString(),
       };
-    }, null);
+    });
     if (newTask) {
       res.json(newTask);
     } else {
@@ -323,7 +343,7 @@ app.post('/api/v1/coordination/tasks', async (req, res) => {
 });
 
 // Production performance metrics endpoint
-app.get('/api/v1/analytics/performance', async (req, res) => {
+app.get('/api/v1/analytics/performance', async (_req, res) => {
   try {
     const metrics = await dataService.getTaskMetrics();
     const systemStatus = await dataService.getSystemStatus();
@@ -366,13 +386,13 @@ app.get('/api/v1/analytics/performance', async (req, res) => {
 });
 
 // Production memory status endpoint
-app.get('/api/v1/memory/status', async (req, res) => {
+app.get('/api/v1/memory/status', async (_req, res) => {
   try {
     const memoryStatus = await safeAsync(async () => {
       const { getMemoryManager } = (global as { foundation?: { getMemoryManager: () => unknown } })
         .foundation || { getMemoryManager: () => null };
       if (getMemoryManager) {
-        const memoryManager = new (getMemoryManager() as { getStatus: () => Promise<{ status: string; totalMemory: number; usedMemory: number; sessions: number }> })();
+        const memoryManager = getMemoryManager() as { getStatus: () => Promise<{ status: string; totalMemory: number; usedMemory: number; sessions: number }> };
         return await memoryManager.getStatus();
       }
       return {
@@ -381,17 +401,15 @@ app.get('/api/v1/memory/status', async (req, res) => {
         usedMemory: os.totalmem() - os.freemem(),
         sessions: 0,
       };
-    }, {
-      status: 'active',
-      totalMemory: os.totalmem(),
-      usedMemory: os.totalmem() - os.freemem(),
-      sessions: 1,
     });
+    
+    const memStatus = memoryStatus.isOk() ? memoryStatus.value : { status: 'unknown', totalMemory: 0, usedMemory: 0, sessions: 0 };
+    
     res.json({
-      status: memoryStatus.status,
-      totalMemory: `${Math.round(memoryStatus.totalMemory / 1024 / 1024)  }MB`,
-      usedMemory: `${Math.round(memoryStatus.usedMemory / 1024 / 1024)  }MB`,
-      sessions: memoryStatus.sessions,
+      status: memStatus.status,
+      totalMemory: `${Math.round(memStatus.totalMemory / 1024 / 1024)  }MB`,
+      usedMemory: `${Math.round(memStatus.usedMemory / 1024 / 1024)  }MB`,
+      sessions: memStatus.sessions,
       lastBackup: new Date(Date.now() - 1800000).toISOString(),
     });
   } catch (error) {
@@ -401,13 +419,13 @@ app.get('/api/v1/memory/status', async (req, res) => {
 });
 
 // Production database status endpoint
-app.get('/api/v1/database/status', async (req, res) => {
+app.get('/api/v1/database/status', async (_req, res) => {
   try {
     const dbStatus = await safeAsync(async () => {
       const { getDatabaseProvider } = (global as { foundation?: { getDatabaseProvider: () => unknown } })
         .foundation || { getDatabaseProvider: () => null };
       if (getDatabaseProvider) {
-        const dbProvider = new (getDatabaseProvider() as { getStatus(): Promise<{ status: string; type: string; totalRecords: number }> })();
+        const dbProvider = getDatabaseProvider() as { getStatus(): Promise<{ status: string; type: string; totalRecords: number }> };
         return await dbProvider.getStatus();
       }
       return {
@@ -415,15 +433,14 @@ app.get('/api/v1/database/status', async (req, res) => {
         type: 'SQLite + LanceDB + Kuzu',
         totalRecords: 0,
       };
-    }, {
-      status: 'connected',
-      type: 'SQLite + LanceDB + Kuzu',
-      totalRecords: 15420,
     });
+    
+    const dbState = dbStatus.isOk() ? dbStatus.value : { status: 'unknown', type: 'unknown', totalRecords: 0 };
+    
     res.json({
-      status: dbStatus.status,
-      type: dbStatus.type,
-      totalRecords: dbStatus.totalRecords,
+      status: dbState.status,
+      type: dbState.type,
+      totalRecords: dbState.totalRecords,
       lastSync: new Date(Date.now() - 600000).toISOString(),
     });
   } catch (error) {
@@ -433,7 +450,7 @@ app.get('/api/v1/database/status', async (req, res) => {
 });
 
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response) => {
+app.use((err: Error, _req: express.Request, res: express.Response) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({
     error: 'Internal server error',

@@ -31,7 +31,7 @@ export {
 analyzeFile,
 CodeAnalyzer,
 createCodeAnalyzer,
-DependencyRelationshipMapper,
+// TODO: DependencyRelationshipMapper not implemented yet
 } from './code-analyzer';
 
 // Export all types
@@ -75,9 +75,8 @@ repoAnalyzer: createRepoAnalyzer(repositoryPath),
 async analyzeAll() {
 const [repoResults, dependencyMap] = await Promise.all([
 this.repoAnalyzer.analyzeDomainBoundaries(),
-this.codeAnalyzer.buildDependencyMap
-? this.codeAnalyzer.buildDependencyMap()
-: Promise.resolve(null),
+// TODO: buildDependencyMap method not implemented yet
+Promise.resolve(null),
 ]);
 return { repoResults, dependencyMap };
 },

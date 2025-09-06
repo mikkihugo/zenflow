@@ -98,7 +98,7 @@ describe('SessionMemoryStore', () => {
 
       const retrieveResult = await store.retrieve(key);
       expect(retrieveResult.isOk()).toBe(true);
-      expect(retrieveResult.unsafeUnwrap()).toBe(value);
+      expect(retrieveResult._unsafeUnwrap()).toBe(value);
 });
 
     it('should store and retrieve complex objects', async () => {
@@ -114,23 +114,23 @@ describe('SessionMemoryStore', () => {
 
       const retrieveResult = await store.retrieve(key);
       expect(retrieveResult.isOk()).toBe(true);
-      expect(retrieveResult.unsafeUnwrap()).toEqual(value);
+      expect(retrieveResult._unsafeUnwrap()).toEqual(value);
 });
 
     it('should handle null and undefined values', async () => {
       await store.store('null-key', null);
       const nullResult = await store.retrieve('null-key');
-      expect(nullResult.unsafeUnwrap()).toBe(null);
+      expect(nullResult._unsafeUnwrap()).toBe(null);
 
       await store.store('undefined-key');
       const undefinedResult = await store.retrieve('undefined-key');
-      expect(undefinedResult.unsafeUnwrap()).toBe(undefined);
+      expect(undefinedResult._unsafeUnwrap()).toBe(undefined);
 });
 
     it('should return error for non-existent keys', async () => {
       const result = await store.retrieve('non-existent-key');
       expect(result.isOk()).toBe(true);
-      expect(result.unsafeUnwrap()).toBe(null);
+      expect(result._unsafeUnwrap()).toBe(null);
 });
 
     it('should handle store options correctly', async () => {
@@ -156,16 +156,16 @@ describe('SessionMemoryStore', () => {
     it('should delete existing keys', async () => {
       const deleteResult = await store.delete('test-key');
       expect(deleteResult.isOk()).toBe(true);
-      expect(deleteResult.unsafeUnwrap()).toBe(true);
+      expect(deleteResult._unsafeUnwrap()).toBe(true);
 
       const retrieveResult = await store.retrieve('test-key');
-      expect(retrieveResult.unsafeUnwrap()).toBe(null);
+      expect(retrieveResult._unsafeUnwrap()).toBe(null);
 });
 
     it('should handle deletion of non-existent keys', async () => {
       const result = await store.delete('non-existent-key');
       expect(result.isOk()).toBe(true);
-      expect(result.unsafeUnwrap()).toBe(false);
+      expect(result._unsafeUnwrap()).toBe(false);
 });
 });
 
@@ -192,7 +192,7 @@ describe('SessionMemoryStore', () => {
       // Verify all values were stored
       for (const op of operations) {
         const retrieveResult = await store.retrieve(op.key);
-        expect(retrieveResult.unsafeUnwrap()).toBe(op.value);
+        expect(retrieveResult._unsafeUnwrap()).toBe(op.value);
 }
 });
 
@@ -213,7 +213,7 @@ describe('SessionMemoryStore', () => {
       for (const [index, result] of results.entries()) {
         const expectedValue = Object.values(testData)[index];
         expect(result.isOk()).toBe(true);
-        expect(result.unsafeUnwrap()).toBe(expectedValue);
+        expect(result._unsafeUnwrap()).toBe(expectedValue);
 }
 });
 });
@@ -232,8 +232,8 @@ describe('SessionMemoryStore', () => {
       const retrieve1 = await store.retrieve('key1');
       const retrieve2 = await store.retrieve('key2');
 
-      expect(retrieve1.unsafeUnwrap()).toBe(null);
-      expect(retrieve2.unsafeUnwrap()).toBe(null);
+      expect(retrieve1._unsafeUnwrap()).toBe(null);
+      expect(retrieve2._unsafeUnwrap()).toBe(null);
 });
 });
 
@@ -249,7 +249,7 @@ describe('SessionMemoryStore', () => {
       const statsResult = await store.getStats();
       expect(statsResult.isOk()).toBe(true);
 
-      const _stats = statsResult.unsafeUnwrap();
+      const _stats = statsResult._unsafeUnwrap();
       expect(stats.size).toBe(2);
       expect(stats.maxSize).toBeDefined();
 });
@@ -257,7 +257,7 @@ describe('SessionMemoryStore', () => {
     it('should report healthy status', async () => {
       const healthResult = await store.health();
       expect(healthResult.isOk()).toBe(true);
-      expect(healthResult.unsafeUnwrap()).toBe(true);
+      expect(healthResult._unsafeUnwrap()).toBe(true);
 });
 });
 
@@ -295,7 +295,7 @@ describe('SessionMemoryStore', () => {
 
       // Should exist immediately
       const result = await store.retrieve('ttl-key');
-      expect(result.unsafeUnwrap()).toBe('ttl-value');
+      expect(result._unsafeUnwrap()).toBe('ttl-value');
 
       // Wait for TTL to expire (in a real implementation)
       // This is a placeholder - actual TTL testing would require time manipulation
@@ -318,7 +318,7 @@ describe('SessionMemoryStore', () => {
       expect(result.isOk() || result.isErr()).toBe(true);
 
       const _stats = await store.getStats();
-      expect(stats.unsafeUnwrap().size).toBeLessThanOrEqual(2);
+      expect(stats._unsafeUnwrap().size).toBeLessThanOrEqual(2);
 });
 });
 });

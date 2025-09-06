@@ -290,7 +290,7 @@ export class WebProcessManager {
       status: 'healthy',
       pid: process.pid,
       uptime: process.uptime(),
-      daemonMode: this.config.daemon,
+      daemonMode: this.config.daemon ?? false,
       pidFile: this.pidFile,
       pidFileExists: existsSync(this.pidFile),
     };

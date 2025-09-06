@@ -72,7 +72,7 @@ export interface ConflictResolution {
   conflictFiles: string[]
   aiSuggestions: ConflictSuggestion[]
   strategy: 'auto' | 'manual' | 'ai-assisted'
-  result?: 'resolved' | ' requires-manual' | ' failed'
+  result?: 'resolved' | 'requires-manual' | 'failed'
 }
 
 export interface ConflictSuggestion {
@@ -110,7 +110,7 @@ export interface GitOperation {
 
 export interface MaintenanceTask {
   id: string
-  type: 'cleanup-stale' | ' compress-trees' | ' update-remotes' | ' verify-integrity'
+  type: 'cleanup-stale' | 'compress-trees' | 'update-remotes' | 'verify-integrity'
   schedule: string
   lastRun?: Date
   nextRun: Date
@@ -166,7 +166,7 @@ export interface GitWorktreeEvent {
 
 export interface GitMaintenanceEvent {
   type: 'git: maintenance: started' | 'git: maintenance: completed'
-  taskType: 'cleanup-stale' | ' compress-trees' | ' update-remotes' | ' verify-integrity'
+  taskType: 'cleanup-stale' | 'compress-trees' | 'update-remotes' | 'verify-integrity'
   projectsAffected?: number
   timestamp: string
 }

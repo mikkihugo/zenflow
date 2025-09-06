@@ -29,7 +29,8 @@ export class EventGateway {
     const bus = getEventBus();
 
     // Health/status
-    bus.on('api:system:status:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:system:status:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         const result = await this.data.getSystemStatus();
         bus.emit('api:system:status:response', { ...result, correlationId: payload?.correlationId });
@@ -51,7 +52,8 @@ export class EventGateway {
   }
 
   private registerSwarms(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:swarms:list:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:swarms:list:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         const result = await this.data.getSwarmStatus();
         bus.emit('api:swarms:list:response', { swarms: result, correlationId: payload?.correlationId });
@@ -63,7 +65,8 @@ export class EventGateway {
   }
 
   private registerTaskMetrics(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:tasks:metrics:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:tasks:metrics:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         const result = await this.data.getTaskMetrics();
         bus.emit('api:tasks:metrics:response', { metrics: result, correlationId: payload?.correlationId });
@@ -75,7 +78,8 @@ export class EventGateway {
   }
 
   private registerTasks(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:tasks:list:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:tasks:list:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         const tasks = await this.data.getTasks?.();
         bus.emit('api:tasks:list:response', { tasks: tasks ?? [], correlationId: payload?.correlationId });
@@ -85,7 +89,8 @@ export class EventGateway {
       }
     });
 
-    bus.on('api:tasks:create:request', async (payload: CorrelatedPayload<{ input: unknown }>) => {
+    bus.on('api:tasks:create:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ input: unknown }>;
       try {
         const input = (payload && 'input' in payload ? (payload as { input: unknown }).input : undefined);
         const task = await this.data.createTask?.(input);
@@ -98,7 +103,8 @@ export class EventGateway {
   }
 
   private registerDocuments(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:documents:list:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:documents:list:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         const documents = await this.data.getDocuments();
         bus.emit('api:documents:list:response', { documents, correlationId: payload?.correlationId });
@@ -110,7 +116,8 @@ export class EventGateway {
   }
 
   private registerExecute(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:execute:request', async (payload: CorrelatedPayload<{ input: unknown }>) => {
+    bus.on('api:execute:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ input: unknown }>;
       try {
         const input = (payload && 'input' in payload ? (payload as { input: unknown }).input : undefined);
         const result = await this.data.executeCommand(input);
@@ -123,7 +130,8 @@ export class EventGateway {
   }
 
   private registerSettings(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:settings:get:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:settings:get:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         const settings = await this.data.getSettings();
         bus.emit('api:settings:get:response', { settings, correlationId: payload?.correlationId });
@@ -133,7 +141,8 @@ export class EventGateway {
       }
     });
 
-    bus.on('api:settings:update:request', async (payload: CorrelatedPayload<{ input: unknown }>) => {
+    bus.on('api:settings:update:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ input: unknown }>;
       try {
         const input = (payload && 'input' in payload ? (payload as { input: unknown }).input : undefined);
         const settings = await this.data.updateSettings(input);
@@ -146,7 +155,8 @@ export class EventGateway {
   }
 
   private registerLogs(bus: ReturnType<typeof getEventBus>): void {
-    bus.on('api:logs:list:request', async (payload: CorrelatedPayload<{ limit?: number; offset?: number }>) => {
+    bus.on('api:logs:list:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ limit?: number; offset?: number }>;
       try {
         const limit = Number(payload && 'limit' in payload ? (payload as { limit?: number }).limit ?? 100 : 100);
         const offset = Number(payload && 'offset' in payload ? (payload as { offset?: number }).offset ?? 0 : 0);
@@ -161,7 +171,8 @@ export class EventGateway {
 
   private registerBrain(bus: ReturnType<typeof getEventBus>): void {
     // Brain task analysis
-    bus.on('api:brain:analyze:request', async (payload: CorrelatedPayload<{ task: string; context?: Record<string, unknown> }>) => {
+    bus.on('api:brain:analyze:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ task: string; context?: Record<string, unknown> }>;
       try {
         if (!this.data.analyzeBrainTask) {
           throw new Error('Brain task analysis not available');
@@ -176,7 +187,8 @@ export class EventGateway {
     });
 
     // Brain prompt optimization
-    bus.on('api:brain:optimize:request', async (payload: CorrelatedPayload<{ task: string; basePrompt: string; context?: Record<string, unknown>; priority?: string }>) => {
+    bus.on('api:brain:optimize:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ task: string; basePrompt: string; context?: Record<string, unknown>; priority?: string }>;
       try {
         if (!this.data.optimizeBrainPrompt) {
           throw new Error('Brain prompt optimization not available');
@@ -196,7 +208,8 @@ export class EventGateway {
     });
 
     // Brain complexity estimation
-    bus.on('api:brain:complexity:request', async (payload: CorrelatedPayload<{ taskId: string; task: string; context?: Record<string, unknown> }>) => {
+    bus.on('api:brain:complexity:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload<{ taskId: string; task: string; context?: Record<string, unknown> }>;
       try {
         if (!this.data.estimateBrainComplexity) {
           throw new Error('Brain complexity estimation not available');
@@ -215,7 +228,8 @@ export class EventGateway {
     });
 
     // Brain status
-    bus.on('api:brain:status:request', async (payload: CorrelatedPayload) => {
+    bus.on('api:brain:status:request', async (...args: unknown[]) => {
+      const payload = args[0] as CorrelatedPayload;
       try {
         if (!this.data.getBrainStatus) {
           throw new Error('Brain status not available');

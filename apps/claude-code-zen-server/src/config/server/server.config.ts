@@ -27,7 +27,7 @@ export interface WebConfig {
     enabled: boolean;
     secret?: string;
   };
-  theme?: 'dark' | ' light';
+  theme?: 'dark' | 'light';
   realTime?: boolean;
   coreSystem?: CoreSystemInterface;
   container?: Container;
@@ -39,7 +39,7 @@ export interface WebSession {
   createdAt: Date;
   lastActivity: Date;
   preferences: {
-    theme: 'dark' | ' light';
+    theme: 'dark' | 'light';
     refreshInterval: number;
     notifications: boolean;
   };
@@ -49,7 +49,7 @@ export interface WebSession {
  * Default web configuration.
  */
 export const DEFAULT_WEB_CONFIG: Required<
-  Omit<WebConfig, 'auth' | ' coreSystem' | ' container'>
+  Omit<WebConfig, 'auth' | 'coreSystem' | 'container'>
 > & {
   auth: WebConfig['auth'];
   coreSystem?: CoreSystemInterface;
@@ -64,8 +64,6 @@ export const DEFAULT_WEB_CONFIG: Required<
   auth: { enabled: false },
   theme: 'dark',
   realTime: true,
-  coreSystem: undefined,
-  container: undefined,
 };
 
 /**
@@ -75,7 +73,7 @@ export const DEFAULT_WEB_CONFIG: Required<
  * @example
  */
 export function createWebConfig(config: WebConfig = {}): Required<
-  Omit<WebConfig, 'auth' | ' coreSystem' | ' container'>
+  Omit<WebConfig, 'auth' | 'coreSystem' | 'container'>
 > & {
   auth: WebConfig['auth'];
   coreSystem?: CoreSystemInterface;

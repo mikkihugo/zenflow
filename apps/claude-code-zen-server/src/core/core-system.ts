@@ -446,7 +446,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       // Stop heartbeat
       if (this.heartbeatInterval) {
         clearInterval(this.heartbeatInterval);
-        this.heartbeatInterval = undefined;
+        delete (this as any).heartbeatInterval;
       }
 
       // Shutdown TaskMaster service

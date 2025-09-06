@@ -164,7 +164,7 @@ export class FileExporter implements BaseExporter {
     lastError?:string;
 }> {
     // Check if file is writable
-    let status:'healthy' | ' degraded' | ' unhealthy' = ' healthy';
+    let status:'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';

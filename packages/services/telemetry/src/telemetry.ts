@@ -6,7 +6,14 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { SpanOptions, TelemetryConfig } from './types.js';
+import type { TelemetryConfig } from './types.js';
+
+// Local type definitions to avoid conflicts
+export type Attributes = Record<string, unknown>;
+export interface SpanOptions {
+  attributes?: Attributes;
+  kind?: 'client' | 'server' | 'producer' | 'consumer' | 'internal';
+}
 
 // =============================================================================
 // SIMPLE TELEMETRY MANAGER
@@ -132,7 +139,7 @@ export class TelemetryManager {
 
     return {
       setAttributes: (attributes: Record<string, unknown>) => {
-        trace.attributes = { ...trace.attributes, ...attributes } as Record<string, unknown>;
+        trace.attributes = { ...trace.attributes, ...attributes };
       },
       end: () => {
         trace.status = 'completed';
@@ -376,4 +383,3 @@ export function setTraceAttributes(attributes: Record<string, unknown>): void {
 export type Span = ReturnType<typeof startTrace>;
 export type Tracer = TelemetryManager;
 export type Meter = TelemetryManager;
-export type Attributes = Record<string, unknown>;

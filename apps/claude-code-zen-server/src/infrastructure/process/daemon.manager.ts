@@ -23,7 +23,7 @@ export interface DaemonConfig {
 export interface ProcessInfo {
   pid: number;
   startTime: Date;
-  status: 'running' | ' stopped' | ' error';
+  status: 'running' | 'stopped' | 'error';
   command: string;
   args: string[];
 }
@@ -218,7 +218,7 @@ export class DaemonProcessManager {
     pid?: number;
     uptime?: number;
     memory?: NodeJS.MemoryUsage;
-    status: 'healthy' | ' unhealthy' | ' stopped';
+    status: 'healthy' | 'unhealthy' | 'stopped';
   }> {
     const processInfo = await this.getRunningProcess();
 
@@ -238,7 +238,7 @@ export class DaemonProcessManager {
         pid: processInfo.pid,
         uptime: Date.now() - processInfo.startTime.getTime(),
         memory: process.memoryUsage(), // Current process memory
-        status: isRunning ? 'healthy' : ' unhealthy',
+        status: isRunning ? 'healthy' : 'unhealthy',
       };
     } catch (error) {
       this.logger.error('Failed to get daemon status: ', error);

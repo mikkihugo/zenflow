@@ -224,7 +224,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  this.initialized = true;
  const duration = Date.now() - initStartTime;
 
- this.logger.info(' Traffic Controller initialized successfully', {
+ this.logger.info('Traffic Controller initialized successfully', {
  duration: `${duration}ms`,
  components: 'all-load-balancing-components',
  predictiveScaling: this.config.enablePredictiveScaling,
@@ -238,7 +238,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  });
  } catch (error) {
  const duration = Date.now() - initStartTime;
- this.logger.error(' Traffic Controller initialization failed', {
+ this.logger.error('Traffic Controller initialization failed', {
  error: error instanceof Error ? error.message: String(error),
  duration: `${duration}ms`,
  });
@@ -279,7 +279,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  // Allow event loop to process cleanup
  await new Promise((resolve) => setTimeout(resolve, 0));
 
- this.logger.info(' Traffic Controller shutdown complete');
+ this.logger.info('Traffic Controller shutdown complete');
  }
 
  /**
@@ -365,7 +365,7 @@ export class TrafficController extends EventBus<TrafficEvents> {
  timestamp: Date.now(),
  });
 
- this.logger.error(' Traffic control failed: ', error);
+ this.logger.error('Traffic control failed: ', error);
  return [];
  }
  }

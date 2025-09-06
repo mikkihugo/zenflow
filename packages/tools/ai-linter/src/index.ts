@@ -393,7 +393,7 @@ let fixedCode = content;
 // Fix 2:Replace 'any' with proper types
 if (
 errors.some((e) => e.message.includes('no-explicit-any')) &&
-content.includes(' updateStats(')
+content.includes('updateStats(')
 ) {
 fixedCode = fixedCode.replace(
 /:any/g,

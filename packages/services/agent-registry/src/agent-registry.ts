@@ -506,7 +506,7 @@ export class AgentRegistry extends TypedEventBase {
    * Graceful shutdown with resource cleanup
    */
   async shutdown():Promise<void> {
-    this.logger.info(' Shutting down Professional Agent Registry...');
+    this.logger.info('Shutting down Professional Agent Registry...');
     try {
       // Clear caches
       this.agentCache.clear();
@@ -516,9 +516,9 @@ export class AgentRegistry extends TypedEventBase {
       await this.container.dispose();
 
       this.emit('shutdown', {});
-      this.logger.info(' Professional Agent Registry shutdown complete');
+      this.logger.info('Professional Agent Registry shutdown complete');
     } catch (error) {
-      this.logger.error(' Error during registry shutdown:', error);
+      this.logger.error('Error during registry shutdown:', error);
       throw error;
 }
 }

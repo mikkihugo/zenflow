@@ -29,7 +29,7 @@ class ClaudeZenServer {
 
   async start(): Promise<Result<void, Error>> {
     try {
-      logger.info(' Starting Claude Code Zen Server');
+      logger.info('Starting Claude Code Zen Server');
 
       const express = (await import('express')).default;
       const app = express();
@@ -52,7 +52,7 @@ class ClaudeZenServer {
 
       return ok();
     } catch (error) {
-      logger.error(' Failed to start server: ', error);
+      logger.error('Failed to start server: ', error);
       return err(error instanceof Error ? error : new Error(String(error)));
     }
   }
@@ -91,7 +91,7 @@ class ClaudeZenServer {
       app.use(morgan('combined'));
     }
 
-    logger.debug(' Middleware setup complete');
+    logger.debug('Middleware setup complete');
   }
 
   /**
@@ -171,7 +171,7 @@ class ClaudeZenServer {
       });
     });
 
-    logger.debug(' Routes setup complete');
+    logger.debug('Routes setup complete');
   }
 
   /**

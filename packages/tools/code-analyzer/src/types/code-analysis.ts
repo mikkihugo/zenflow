@@ -11,30 +11,67 @@ export interface ASTAnalysis {
   patterns: Array<{ name: string; line: number }>;
   imports: Array<{ statement: string; module: string }>;
   exports: Array<{ statement: string; name: string }>;
+  declarations: Array<{ type: string; name: string }>;
+  references: Array<{ identifier: string; location: string }>;
 }
 
 export interface SemanticAnalysis {
-  variables: Array<{ name: string; type: string; scope: string }>;
-  functions: Array<{ name: string; parameters: string[]; returnType: string }>;
-  classes: Array<{ name: string; methods: string[]; properties: string[] }>;
-  scopes: Array<{ type: string; name: string; depth: number }>;
-  references: Array<{ symbol: string; locations: number[] }>;
-  dataFlow: Record<string, string[]>;
-  callGraph: Record<string, string[]>;
+  scopes: Array<{ type: string; depth: number }>;
+  bindings: Array<{ type: string; name: string }>;
+  typeInformation: Array<{ type: string; name: string }>;
+  controlFlow: { 
+    nodes: Array<{ id: number; type: string }>;
+    edges: Array<{ from: number; to: number }>;
+    entryPoints: number[];
+    exitPoints: number[];
+  };
+  dataFlow: {
+    nodes: Array<{ id: number; type: string }>;
+    edges: Array<{ from: number; to: number }>;
+    definitions: Array<{ variable: string; location: number }>;
+    uses: Array<{ variable: string; location: number }>;
+  };
+  callGraph: {
+    nodes: Array<{ id: number; name: string }>;
+    edges: Array<{ from: number; to: number }>;
+    entryPoints: number[];
+    recursiveCalls: Array<{ nodeId: number; callCount: number }>;
+  };
 }
 
 export interface CodeQualityMetrics {
   linesOfCode: number;
-  physicalLinesOfCode: number;
+  physicalLinesOfCode?: number;
   cyclomaticComplexity: number;
+  cognitiveComplexity?: number;
   maintainabilityIndex: number;
-  technicalDebt: number;
-  duplicatedLines: number;
-  testCoverage: number;
-  documentation: number;
-  codeSmells: string[];
-  securityIssues: string[];
-  vulnerabilities: string[];
+  halsteadMetrics?: {
+    vocabulary: number;
+    length: number;
+    difficulty: number;
+    effort: number;
+    time: number;
+    bugs: number;
+    volume: number;
+  };
+  couplingMetrics?: {
+    afferentCoupling: number;
+    efferentCoupling: number;
+    instability: number;
+    abstractness: number;
+    distance: number;
+  };
+  cohesionMetrics?: {
+    lcom: number;
+    tcc: number;
+    lcc: number;
+    scom: number;
+  };
+  codeSmells: Array<{ type: string; severity: string; line: number }>;
+  antiPatterns?: Array<{ name: string; line: number }>;
+  designPatterns?: Array<{ name: string; line: number }>;
+  securityIssues: Array<{ type: string; severity: string; line: number }>;
+  vulnerabilities: Array<{ type: string; severity: string; line: number }>;
 }
 
 export interface AICodeInsights {
@@ -95,39 +132,88 @@ export interface AICodeInsights {
 }
 
 export interface CodeAnalysisResult {
+  id: string;
   filePath: string;
   language: SupportedLanguage;
-  analysisId: string;
-  timestamp: number;
+  timestamp: Date;
   ast: ASTAnalysis;
+  syntaxErrors: Array<{ message: string; line: number; column: number }>;
+  parseSuccess: boolean;
   semantics: SemanticAnalysis;
+  typeErrors: Array<{ message: string; line: number; column: number }>;
   quality: CodeQualityMetrics;
+  suggestions: Array<CodeSuggestion>;
   aiInsights?: AICodeInsights;
-  metadata: {
-    fileSize: number;
-    encoding: string;
-    analysisTime: number;
-  };
+  analysisTime: number;
+  memoryUsage: number;
 }
 
 export interface LiveAnalysisSession {
-  sessionId: string;
-  repositoryPath: string;
-  startTime: number;
+  id: string;
+  startTime: Date;
+  options: CodeAnalysisOptions;
+  watchedFiles: string[];
+  watchedDirectories: string[];
+  status: 'active' | 'inactive' | 'analyzing';
   filesAnalyzed: number;
-  totalAnalysisTime: number;
+  errorsFound: number;
+  suggestionsGenerated: number;
+  analysisQueue: string[];
+  metrics: SessionMetrics;
+  eventHandlers: Array<{ event: string; handler: Function }>;
+  notifications: Array<{ message: string; level: string; timestamp: Date }>;
+  isWatching?: boolean;
+  lastAnalysisTime?: Date;
 }
 
 export interface CodeAnalysisOptions {
+  includeTests?: boolean;
+  includeNodeModules?: boolean;
+  includeDotFiles?: boolean;
+  maxFileSize?: number;
+  excludePatterns?: string[];
+  analysisMode?: string;
+  realTimeAnalysis?: boolean;
+  enableWatching?: boolean;
   enableAIRecommendations?: boolean;
-  includeSemanticAnalysis?: boolean;
-  includeQualityMetrics?: boolean;
-  cacheable?: boolean;
+  enableAILinting?: boolean;
+  enableAIRefactoring?: boolean;
+  enableContextualAnalysis?: boolean;
+  batchSize?: number;
+  throttleMs?: number;
+  cachingEnabled?: boolean;
+  parallelProcessing?: boolean;
+  languages?: SupportedLanguage[];
+  enableVSCodeIntegration?: boolean;
+  enableIDEIntegration?: boolean;
+  enableCIIntegration?: boolean;
 }
 
-export type SupportedLanguage = 'typescript' | 'javascript' | 'python' | 'go' | 'rust' | 'java' | 'cpp';
+export type SupportedLanguage = 'typescript' | 'javascript' | 'tsx' | 'jsx' | 'python' | 'go' | 'rust' | 'java' | 'cpp';
 
 export interface EnhancedAnalysisOptions extends CodeAnalysisOptions {
   priority?: 'low' | 'normal' | 'high';
   timeout?: number;
+}
+
+// Additional types needed by the code analyzer
+export interface CodeSuggestion {
+  type: string;
+  message: string;
+  priority: string;
+  file: string;
+  line: number;
+  column: number;
+}
+
+export interface SessionMetrics {
+  analysisLatency: { avg: number; min: number; max: number; p95: number; p99: number };
+  throughput: {
+    filesPerSecond: number;
+    linesPerSecond: number;
+    operationsPerSecond: number;
+  };
+  resourceUsage: { cpuUsage: number; memoryUsage: number; diskIO: number; networkIO: number };
+  errorRates: { parseErrors: number; analysisErrors: number; overallErrorRate: number };
+  cacheMetrics: { hitRate: number; missRate: number; size: number; evictions: number };
 }

@@ -175,15 +175,15 @@ export async function authStatus(): Promise<void> {
       const tokenData = JSON.parse(await fs.readFile(tokenPath, 'utf8'));
       logger.info('\n Authentication Status');
       logger.info('═'.repeat(30));
-      logger.info(' Authenticated: Yes');
+      logger.info('Authenticated: Yes');
       logger.info(` Token created: ${  tokenData.created_at}`);
       logger.info(` Token location: ${  tokenPath}`);
       logger.info(` Source: ${  tokenData.source}`);
     } catch {
       logger.info('\n Authentication Status');
       logger.info('═'.repeat(30));
-      logger.info(' Authenticated: No');
-      logger.info(' Run "claude-zen auth login" to authenticate');
+      logger.info('Authenticated: No');
+      logger.info('Run "claude-zen auth login" to authenticate');
     }
   } catch (error) {
     logger.error('Failed to check authentication status: ', error);

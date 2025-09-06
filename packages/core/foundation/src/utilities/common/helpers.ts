@@ -6,7 +6,7 @@
  */
 
 import { randomBytes } from 'node:crypto';
-import { FOUNDATION_ERRORS } from '../constants/errors';
+import { FOUNDATION_ERRORS } from '../../constants/errors.js';
 
 /**
  * Generate a unique ID.

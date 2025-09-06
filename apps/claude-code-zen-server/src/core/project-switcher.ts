@@ -77,7 +77,7 @@ export interface ProjectSwitchResult {
  * Project switcher status
  */
 export interface ProjectSwitcherStatus {
-  status: 'idle' | ' switching' | ' error';
+  status: 'idle' | 'switching' | 'error';
   isSwitching: boolean;
   currentProject?: string;
   lastSwitch?: string;
@@ -121,7 +121,9 @@ export class ProjectSwitcher extends EventEmitter {
 
     const startTime = Date.now();
     this.isSwitching = true;
-    this.lastError = undefined;
+    if (this.lastError) {
+      delete (this as any).lastError;
+    }
 
     try {
       this.emit('switchStarted', request);

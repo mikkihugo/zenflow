@@ -54,7 +54,7 @@ interface Task {
 
 interface TaskResult {
   id: string;
-  status: 'success' | ' failure' | ' timeout';
+  status: 'success' | 'failure' | 'timeout';
   result?: unknown;
   error?: string;
   duration: number;

@@ -140,7 +140,7 @@ export enum LogLevelEnum {
  * import type { PackageJson} from '@claude-zen/foundation';
  *
  * function validatePackage(pkg:PackageJson): boolean {
- *   return typeof pkg.name === 'string' && typeof pkg.version === ' string';
+ *   return typeof pkg.name === 'string' && typeof pkg.version === 'string';
  *}
  *
  * // Type-safe tsconfig.json

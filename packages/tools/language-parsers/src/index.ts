@@ -121,17 +121,17 @@ const factory = createParserFactory();
 
 switch (family) {
 case 'beam': {
-const parser = factory.createBeamParser(options);
+const parser = factory.createBeamParser();
 return await parser.parseFile(filePath);
 }
 case 'functional': {
 // Future:Add functional language parser support
-const parser = factory.createBeamParser(options); // Fallback to beam for now
+const parser = factory.createBeamParser(); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
 case 'concurrent': {
 // Future:Add concurrent language parser support
-const parser = factory.createBeamParser(options); // Fallback to beam for now
+const parser = factory.createBeamParser(); // Fallback to beam for now
 return await parser.parseFile(filePath);
 }
 default:
@@ -171,21 +171,21 @@ const familyPromises = Array.from(filesByFamily.entries()).map(
 async ([family, paths]) => {
 switch (family) {
 case 'beam': {
-const parser = factory.createBeamParser(options);
+const parser = factory.createBeamParser();
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result.unsafeUnwrap() : [];
+return result.isOk() ? result._unsafeUnwrap() : [];
 }
 case 'functional': {
 // Future: Add functional language parser support
-const parser = factory.createBeamParser(options); // Fallback to beam for now
+const parser = factory.createBeamParser(); // Fallback to beam for now
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result.unsafeUnwrap() : [];
+return result.isOk() ? result._unsafeUnwrap() : [];
 }
 case 'concurrent': {
 // Future: Add concurrent language parser support
-const parser = factory.createBeamParser(options); // Fallback to beam for now
+const parser = factory.createBeamParser(); // Fallback to beam for now
 const result = await parser.parseFiles(paths);
-return result.isOk() ? result.unsafeUnwrap() : [];
+return result.isOk() ? result._unsafeUnwrap() : [];
 }
 default:
 return [];

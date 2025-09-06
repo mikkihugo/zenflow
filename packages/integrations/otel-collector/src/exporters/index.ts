@@ -236,7 +236,7 @@ export class ExporterManager {
     Record<
       string,
       {
-        status:'healthy' | ' degraded' | ' unhealthy';
+        status:'healthy' | 'degraded' | 'unhealthy';
         lastSuccess?:number;
         lastError?:string;
 }

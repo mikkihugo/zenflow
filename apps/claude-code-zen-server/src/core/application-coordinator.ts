@@ -335,7 +335,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
 
       // Handle WebSocket events
-      this.on(WEBSOCKET_CONNECTED_EVENT, (socketId: string) => { 
+      this.on(WEBSOCKET_CONNECTED_EVENT, (...args: unknown[]) => {
+        const socketId = args[0] as string;
         this.activeConnections++;
         logger.debug(`WebSocket client connected: ${  socketId  } (total: ${this.activeConnections})`);
         this.broadcastEvent('websocket:client:connected', { 
@@ -344,7 +345,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
         });
       });
 
-      this.on(WEBSOCKET_DISCONNECTED_EVENT, (socketId: string) => { 
+      this.on(WEBSOCKET_DISCONNECTED_EVENT, (...args: unknown[]) => {
+        const socketId = args[0] as string;
         this.activeConnections = Math.max(0, this.activeConnections - 1);
         logger.debug(`WebSocket client disconnected: ${  socketId  } (total: ${this.activeConnections})`);
         this.broadcastEvent('websocket:client:disconnected', { 
@@ -354,7 +356,8 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       });
 
       // Component lifecycle events
-      this.on(COMPONENT_INITIALIZED_EVENT, (componentName: string) => { 
+      this.on(COMPONENT_INITIALIZED_EVENT, (...args: unknown[]) => {
+        const componentName = args[0] as string;
         logger.info(`Component initialized: ${  componentName}`);
         this.broadcastEvent('component:status', { 
           component: componentName, 
@@ -496,11 +499,20 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
   }
 
   private getWorkspaceStatus() {
-    return {
+    const result: {
+      status: string;
+      workspaceId?: string;
+      documentsLoaded: number;
+    } = {
       status: this.activeWorkspaceId ? READY : 'none',
-      workspaceId: this.activeWorkspaceId,
       documentsLoaded: this.workspaceManager?.getDocumentCount() || 0,
     };
+    
+    if (this.activeWorkspaceId) {
+      result.workspaceId = this.activeWorkspaceId;
+    }
+    
+    return result;
   }
 
   private getWebsocketStatus() {
@@ -708,7 +720,7 @@ export class ApplicationCoordinator extends EventEmitter<ApplicationCoordinatorE
       // Stop heartbeat
       if (this.heartbeatInterval) {
         clearInterval(this.heartbeatInterval);
-        this.heartbeatInterval = undefined;
+        delete (this as any).heartbeatInterval;
       }
 
       // Shutdown all components gracefully

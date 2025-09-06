@@ -132,13 +132,13 @@ export class BatchProcessor implements BaseProcessor {
 }
 
   async getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
+    status:'healthy' | 'degraded' | 'unhealthy';
     lastProcessed?:number;
     lastError?:string;
 }> {
     const batchUtilization = this.batch.length / this.maxBatchSize;
 
-    let status:'healthy' | ' degraded' | ' unhealthy' = ' healthy';
+    let status:'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';

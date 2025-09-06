@@ -50,7 +50,7 @@ export interface SystemStatusData {
 export interface SwarmStatusData {
   id: string;
   name: string;
-  type: 'queen' | ' commander' | ' agent';
+  type: 'queen' | 'commander' | 'agent';
   status: 'active' | ' idle' | ' busy' | ' error';
   tasks: {
     current: number;
@@ -82,7 +82,7 @@ export interface TaskMetricsData {
 interface AgentData {
   id?: string;
   name?: string;
-  type?: 'queen' | ' commander' | ' agent';
+  type?: 'queen' | 'commander' | 'agent';
   status?: 'active' | ' idle' | ' busy' | ' error';
   performance?: {
     efficiency?: number;
@@ -123,7 +123,8 @@ export class WebDataService {
           // Provision minimal tables we rely on (idempotent)
           await this.ensureTasksTable();
         },
-        { retries: 3, minTimeout: 1000 }
+        3,
+        1000
       );
     } catch (error) {
       logger.error('Failed to initialize strategic systems: ', error);
@@ -133,7 +134,7 @@ export class WebDataService {
   private async ensureTasksTable(): Promise<void> {
     if (!this.databaseSystem) return;
     try {
-      await this.databaseSystem.query(
+      await (this.databaseSystem as any).query(
         `CREATE TABLE IF NOT EXISTS tasks (
           id TEXT PRIMARY KEY,
           title TEXT NOT NULL,
@@ -158,7 +159,7 @@ export class WebDataService {
       return { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 };
     }
     try {
-      const res = await this.databaseSystem.query(
+      const res = await (this.databaseSystem as any).query(
         `SELECT status, COUNT(*) as cnt FROM tasks GROUP BY status`
       );
       const counts = { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 } as Record<string, number>;
@@ -236,7 +237,7 @@ export class WebDataService {
    * Get comprehensive system status with real data
    */
   async getSystemStatus(): Promise<SystemStatusData> {
-    return await safeAsync(
+    const result = await safeAsync(
       async () => {
         const taskStats = await this.getTaskStatistics();
         const performance = this.getPerformanceMetrics();
@@ -277,6 +278,16 @@ export class WebDataService {
         timestamp: new Date().toISOString(),
       }
     );
+    
+    return result.isOk() ? result.value : {
+      system: 'Claude Code Zen',
+      version: '1.0.0',
+      swarms: { active: 0, total: 0, queens: 0, commanders: 0, agents: 0 },
+      tasks: { pending: 0, running: 0, completed: 0, failed: 0, blocked: 0 },
+      performance: { cpuUsage: 0, memoryUsage: 0, uptime: 0, throughput: 0 },
+      health: { database: 0, brain: 0, coordination: 0, overall: 0 },
+      timestamp: new Date().toISOString(),
+    };
   }
 
   /**
@@ -320,7 +331,7 @@ export class WebDataService {
 
     try {
       const startTime = Date.now();
-      await this.databaseSystem.ping();
+      await (this.databaseSystem as any).ping();
       const responseTime = Date.now() - startTime;
 
       // Health based on response time
@@ -379,7 +390,7 @@ export class WebDataService {
     return {
       id: agent.id || `swarm-${  index}`,
       name: agent.name || `Swarm ${  index  }${1}`,
-      type: (agent.type as 'queen' | ' commander' | ' agent') || ' agent',
+      type: (agent.type as 'queen' | 'commander' | 'agent') || 'agent',
       status:
         (agent.status as 'active' | ' idle' | ' busy' | ' error') || 'active',
       tasks: {
@@ -400,7 +411,7 @@ export class WebDataService {
     // Get swarm data from persistent storage instead of mock data
     try {
       if (this.databaseSystem) {
-        const swarmQuery = await this.databaseSystem.query(
+        const swarmQuery = await (this.databaseSystem as any).query(
           'SELECT * FROM swarm_status ORDER BY last_active DESC'
         );
         if (swarmQuery && swarmQuery.rows) {
@@ -430,7 +441,7 @@ export class WebDataService {
 
     const typeRaw = this.coerceString(obj.type, 'agent');
     const typeVal: SwarmStatusData['type'] =
-      typeRaw === 'queen' || typeRaw === ' commander' || typeRaw === ' agent'
+      typeRaw === 'queen' || typeRaw ==='commander' || typeRaw ==='agent'
         ? (typeRaw as SwarmStatusData['type'])
         : 'agent';
 
@@ -481,7 +492,7 @@ export class WebDataService {
    * Get real swarm status data from foundation services
    */
   async getSwarmStatus(): Promise<SwarmStatusData[]> {
-    return await safeAsync(async () => {
+    const result = await safeAsync(async () => {
       // First try to get from brain coordination
       const brainSwarms = await this.getBrainCoordinationData();
       if (brainSwarms.length > 0) {
@@ -497,18 +508,20 @@ export class WebDataService {
       // If no data available, return empty array instead of mock data
       logger.info('No swarm data available from any source');
       return [];
-    }, []);
+    });
+    
+    return result.isOk() ? result.value : [];
   }
 
   private async getTaskMasterFlowData(): Promise<TaskMetricsData | null> {
     // Compute simple metrics from local DB as interim implementation
     if (!this.databaseSystem) return null;
     try {
-      const total = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks`);
-      const completed = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'completed'`);
-      const failed = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'failed'`);
-      const running = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'running'`);
-      const pending = await this.databaseSystem.query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'pending'`);
+      const total = await (this.databaseSystem as any).query(`SELECT COUNT(*) as n FROM tasks`);
+      const completed = await (this.databaseSystem as any).query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'completed'`);
+      const failed = await (this.databaseSystem as any).query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'failed'`);
+      const running = await (this.databaseSystem as any).query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'running'`);
+      const pending = await (this.databaseSystem as any).query(`SELECT COUNT(*) as n FROM tasks WHERE status = 'pending'`);
       const totalTasks = Number(total.rows?.[0]?.n ?? 0);
       const completedTasks = Number(completed.rows?.[0]?.n ?? 0);
       const failedTasks = Number(failed.rows?.[0]?.n ?? 0);
@@ -586,10 +599,12 @@ export class WebDataService {
    * Get comprehensive task metrics
    */
   async getTaskMetrics(): Promise<TaskMetricsData> {
-    return await safeAsync(async () => {
+    const result = await safeAsync(async () => {
       const metrics = await this.getTaskMasterFlowData();
       return metrics || this.getFallbackTaskMetrics();
-    }, this.getFallbackTaskMetrics());
+    });
+    
+    return result.isOk() ? result.value : this.getFallbackTaskMetrics();
   }
 
   /**
@@ -600,7 +615,7 @@ export class WebDataService {
   > {
     try {
       if (!this.databaseSystem) return [];
-      const res = await this.databaseSystem.query(
+      const res = await (this.databaseSystem as any).query(
         `SELECT id, title, status, priority, created_at as createdAt, updated_at as updatedAt FROM tasks ORDER BY created_at DESC`
       );
       return (res.rows ?? []).map((r: any) => ({
@@ -632,7 +647,7 @@ export class WebDataService {
       const estimatedEffort = obj.estimatedEffort != null ? Number(obj.estimatedEffort) : null;
       const assignedAgent = obj.assignedAgent ? String(obj.assignedAgent) : null;
       const now = new Date().toISOString();
-      await this.databaseSystem.query(
+      await (this.databaseSystem as any).query(
         `INSERT INTO tasks (id, title, description, status, priority, estimated_effort, assigned_agent, created_at, updated_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [id, title, description, status, priority, estimatedEffort, assignedAgent, now, now]

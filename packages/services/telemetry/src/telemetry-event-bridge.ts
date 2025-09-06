@@ -5,12 +5,24 @@
  * Maintains ZERO IMPORTS rule for telemetry-event-driven.ts while enabling EventBus integration.
  */
 
-import {
-  EventBus,
-  EventLogger,
-  isValidEventName,
-} from '@claude-zen/foundation';
+import { EventBus } from '@claude-zen/foundation';
+import { EventLogger } from '@claude-zen/foundation/events';
+import { isValidEventName } from '@claude-zen/foundation/events';
 import type { EventDrivenTelemetryManager } from './telemetry-event-driven.js';
+
+// Import TelemetryEvents interface from the event-driven module
+interface TelemetryEvents {
+  'telemetry:record-metric': { name: string; value: number; attributes?: Record<string, unknown>; timestamp: number; };
+  'telemetry:record-histogram': { name: string; value: number; attributes?: Record<string, unknown>; timestamp: number; };
+  'telemetry:record-gauge': { name: string; value: number; attributes?: Record<string, unknown>; timestamp: number; };
+  'telemetry:record-event': { name: string; data?: unknown; timestamp: number; };
+  'telemetry:start-trace': { name: string; traceId: string; attributes?: Record<string, unknown>; timestamp: number; };
+  'telemetry:end-trace': { traceId: string; timestamp: number; };
+  'telemetry:metrics': { requestId: string; metrics: Record<string, unknown>; timestamp: number; };
+  'telemetry:traces': { requestId: string; traces: Record<string, unknown>; timestamp: number; };
+  'telemetry:initialized': { requestId: string; success: boolean; serviceName: string; timestamp: number; };
+  'telemetry:shutdown-complete': { requestId: string; success: boolean; timestamp: number; };
+}
 
 // =============================================================================
 // DYNAMIC REGISTRY INTEGRATION (Workaround until exports fixed)
@@ -65,7 +77,7 @@ export class TelemetryEventBridge {
   private readonly telemetryManager: EventDrivenTelemetryManager;
   private readonly eventBus: EventBus;
   private readonly config: BridgeConfig;
-  private readonly eventListeners: Map<string, Function> = new Map();
+  private readonly eventListeners: Map<string, (...args: unknown[]) => void> = new Map();
   private heartbeatInterval: NodeJS.Timeout | null = null;
   private isStarted = false;
   private readonly startTime = Date.now();
@@ -185,22 +197,25 @@ export class TelemetryEventBridge {
         'telemetry:metrics',
         'telemetry:traces',
         'telemetry:initialized',
-        'telemetry:shutdown'
+        'telemetry:shutdown-complete'
       ];
 
+      // Clear existing listeners
       for (const [event, listener] of this.eventListeners.entries()) {
         this.eventBus.off(event, listener);
       }
+      this.eventListeners.clear();
+
+      // Set up new event forwarding
+      for (const eventName of eventsToForward) {
         if (isValidEventName(eventName)) {
           const listener = (data: unknown) => {
             this.eventBus.emit(eventName, data);
           };
           
-          eventEmitter.on(eventName, listener);
+          eventEmitter.addEventListener(eventName as keyof TelemetryEvents, listener);
           this.eventListeners.set(eventName, listener);
         }
-      for (const [event, listener] of this.eventListeners.entries()) {
-        this.eventBus.off(event, listener);
       }
 
       EventLogger.log('telemetry-bridge:event-forwarding-setup', {
@@ -252,7 +267,7 @@ export class TelemetryEventBridge {
       'telemetry:metrics',
       'telemetry:traces',
       'telemetry:initialized',
-      'telemetry:shutdown'
+      'telemetry:shutdown-complete'
     ];
   }
 

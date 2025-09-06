@@ -527,7 +527,7 @@ export class WebSocketManager {
     const foundationPackages = {
       '@claude-zen/foundation': {
         status: packageInfo['@claude-zen/foundation']?.available ? 'registered' : 'unavailable',
-        version: packageInfo['@claude-zen/foundation']?.version
+        version: packageInfo['@claude-zen/foundation']?.version ?? null
       }
     };
 
@@ -555,7 +555,7 @@ export class WebSocketManager {
     const infrastructurePackages = {
       '@claude-zen/database': {
         status: packageInfo['@claude-zen/database']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/database']?.version
+        version: packageInfo['@claude-zen/database']?.version ?? null
       },
       // Event system is now part of foundation
     };
@@ -584,11 +584,11 @@ export class WebSocketManager {
     const intelligencePackages = {
       '@claude-zen/brain': {
         status: packageInfo['@claude-zen/brain']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/brain']?.version
+        version: packageInfo['@claude-zen/brain']?.version ?? null
       },
       '@claude-zen/neural-ml': {
         status: packageInfo['@claude-zen/neural-ml']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/neural-ml']?.version
+        version: packageInfo['@claude-zen/neural-ml']?.version ?? null
       }
     };
 
@@ -616,11 +616,11 @@ export class WebSocketManager {
     const enterprisePackages = {
       '@claude-zen/coordination': {
         status: packageInfo['@claude-zen/coordination']?.available ? 'active' : 'fallback',
-        version: packageInfo['@claude-zen/coordination']?.version
+        version: packageInfo['@claude-zen/coordination']?.version ?? null
       },
       '@claude-zen/workflows': {
         status: packageInfo['@claude-zen/workflows']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/workflows']?.version
+        version: packageInfo['@claude-zen/workflows']?.version ?? null
       }
     };
 
@@ -649,7 +649,7 @@ export class WebSocketManager {
     const operationsPackages = {
       '@claude-zen/system-monitoring': {
         status: packageInfo['@claude-zen/system-monitoring']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/system-monitoring']?.version
+        version: packageInfo['@claude-zen/system-monitoring']?.version ?? null
       }
     };
 
@@ -678,11 +678,11 @@ export class WebSocketManager {
     const developmentPackages = {
       '@claude-zen/code-analyzer': {
         status: packageInfo['@claude-zen/code-analyzer']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/code-analyzer']?.version
+        version: packageInfo['@claude-zen/code-analyzer']?.version ?? null
       },
       '@claude-zen/git-operations': {
         status: packageInfo['@claude-zen/git-operations']?.available ? 'registered' : 'fallback',
-        version: packageInfo['@claude-zen/git-operations']?.version
+        version: packageInfo['@claude-zen/git-operations']?.version ?? null
       }
     };
 

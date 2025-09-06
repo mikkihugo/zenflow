@@ -2,7 +2,7 @@
  * @file Memory management:memory-integration.
  */
 
-import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
+import { Container, TOKENS, createContainer } from '@claude-zen/foundation';
 
 import { getLogger } from '../config/logging-config';
 

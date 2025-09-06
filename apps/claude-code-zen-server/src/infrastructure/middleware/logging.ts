@@ -269,22 +269,46 @@ const createLogEntry = ({
   const requestMetadata = req.metadata as RequestMetadata;
   const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
 
+  // Build httpRequest object with only defined properties
+  const httpRequest: any = {
+    requestMethod: req.method,
+    requestUrl: req.originalUrl || req.url,
+    requestSize: getRequestSize(req),
+    protocol: req.protocol,
+  };
+  
+  if (res?.statusCode !== undefined) {
+    httpRequest.status = res.statusCode;
+  }
+  
+  if (res) {
+    const responseSize = getResponseSize(res);
+    if (responseSize !== undefined) {
+      httpRequest.responseSize = responseSize;
+    }
+  }
+  
+  if (requestMetadata?.userAgent) {
+    httpRequest.userAgent = requestMetadata.userAgent;
+  }
+  
+  if (requestMetadata?.remoteIp) {
+    httpRequest.remoteIp = requestMetadata.remoteIp;
+  }
+  
+  if (requestMetadata?.referer) {
+    httpRequest.referer = requestMetadata.referer;
+  }
+  
+  if (duration) {
+    httpRequest.latency = formatDuration(duration);
+  }
+
   const logEntry: LogEntry = {
     timestamp: new Date().toISOString(),
     level,
     message,
-    httpRequest: {
-      requestMethod: req.method,
-      requestUrl: req.originalUrl || req.url,
-      requestSize: getRequestSize(req),
-      status: res?.statusCode,
-      responseSize: res ? getResponseSize(res) : undefined,
-      userAgent: requestMetadata?.userAgent,
-      remoteIp: requestMetadata?.remoteIp,
-      referer: requestMetadata?.referer,
-      latency: duration ? formatDuration(duration) : undefined,
-      protocol: req.protocol,
-    },
+    httpRequest,
     trace: requestMetadata?.requestId,
     operation: {
       id: requestMetadata?.requestId,
@@ -294,8 +318,12 @@ const createLogEntry = ({
       last: !!res,
       // Last log entry for response
     },
-    metadata: isValidMetadata(metadata) ? sanitizeData(metadata) : undefined,
   };
+  
+  // Only set metadata if it's valid
+  if (isValidMetadata(metadata)) {
+    (logEntry as any).metadata = sanitizeData(metadata);
+  }
 
   return logEntry;
 };
@@ -461,15 +489,20 @@ export const logPerformance = (
   metadata?: Record<string, unknown>
 ): void => {
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
+  const logMetadata: Record<string, unknown> = {
+    operation,
+    duration: `${duration}ms`,
+  };
+  
+  if (metadata) {
+    logMetadata.performanceMetric = metadata;
+  }
+  
   const logEntry = createLogEntry({
     level,
-    message: `Performance: ${  operation  } took ${  formatDuration(duration)}`,
+    message: `Performance: ${operation} took ${formatDuration(duration)}`,
     req,
-    metadata: {
-      operation,
-      duration: `${duration  }ms`,
-      performanceMetric: metadata,
-    },
+    metadata: logMetadata,
   });
   outputLog(logEntry);
 };
@@ -490,7 +523,11 @@ export const log = (
   metadata?: Record<string, unknown>
 ): void => {
   if (req) {
-    const logEntry = createLogEntry({ level, message, req, metadata });
+    const params: any = { level, message, req };
+    if (metadata) {
+      params.metadata = metadata;
+    }
+    const logEntry = createLogEntry(params);
     outputLog(logEntry);
   } else {
     // Simple log without request context
@@ -498,8 +535,13 @@ export const log = (
       timestamp: new Date().toISOString(),
       level,
       message,
-      metadata: isValidMetadata(metadata) ? sanitizeData(metadata) : undefined,
     };
+    
+    // Only set metadata if it's valid
+    if (isValidMetadata(metadata)) {
+      (logEntry as any).metadata = sanitizeData(metadata);
+    }
+    
     outputLog(logEntry);
   }
 };

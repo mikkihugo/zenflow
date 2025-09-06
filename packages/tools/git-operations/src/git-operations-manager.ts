@@ -162,7 +162,7 @@ restrictedEnvVars: [
 ],
 });
 this.initializeMaintenanceTasks();
-logger.info(' GitOperationsManager initialized', {
+logger.info('GitOperationsManager initialized', {
 	managerId: this.managerId,
 	aiConflictResolution: this.config.aiConflictResolution,
 	intelligentBranching: this.config.intelligentBranching,
@@ -190,14 +190,14 @@ if (this.config.automatedMaintenance) {
 this.startMaintenanceScheduler();
 }
 
-logger.info(' GitOperationsManager ready', {
+logger.info('GitOperationsManager ready', {
 managerId: this.managerId,
 maxConcurrentOps: this.config.maxConcurrentOps,
 maintenanceTasks: this.maintenanceTasks.length,
 aiEnabled: !!this.claude,
 });
 } catch (error) {
-logger.error(' Failed to initialize GitOperationsManager', {
+logger.error('Failed to initialize GitOperationsManager', {
 managerId: this.managerId,
 error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
 });
@@ -551,7 +551,7 @@ await git.push(remote, branch, pushOptions);
 
 this.completeOperation(operation, { pushed: true });
 
-logger.info(' Changes pushed successfully', {
+logger.info('Changes pushed successfully', {
 managerId: this.managerId,
 projectId,
 remote: options.remote || 'origin',
@@ -623,7 +623,7 @@ pulled: true,
 conflictResolution,
 });
 
-logger.info(' Changes pulled successfully', {
+logger.info('Changes pulled successfully', {
 managerId: this.managerId,
 projectId,
 remote: options.remote || 'origin',
@@ -651,7 +651,7 @@ git: SimpleGit,
 conflictType: 'merge' | 'rebase' | 'cherry-pick',
 workingDir: string
 ): Promise<ConflictResolution> {
-logger.info(' Starting AI conflict resolution', {
+logger.info('Starting AI conflict resolution', {
 	managerId: this.managerId,
 	conflictType,
 	workingDir,
@@ -666,7 +666,7 @@ try {
 	const remainingConflicts = await this.getRemainingConflicts(git);
 	const result = this.createAIResolutionResult(conflictType, conflictFiles, aiSuggestions, remainingConflicts);
 	await this.completeMergeOrRebaseIfResolved(git, conflictType, remainingConflicts);
-	logger.info(' AI conflict resolution completed', {
+	logger.info('AI conflict resolution completed', {
 		managerId: this.managerId,
 		conflictType,
 		originalConflicts: conflictFiles.length,
@@ -685,7 +685,7 @@ try {
 	}
 	return result;
 } catch (error) {
-	logger.error(' AI conflict resolution failed', {
+	logger.error('AI conflict resolution failed', {
 		managerId: this.managerId,
 		conflictType,
 		error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
@@ -737,7 +737,7 @@ private createAIResolutionResult(conflictType: 'merge' | 'rebase' | 'cherry-pick
 		conflictFiles,
 		aiSuggestions,
 		strategy: 'ai-assisted',
-		result: remainingConflicts.length === 0 ? 'resolved' : ' requires-manual',
+		result: remainingConflicts.length === 0 ? 'resolved' : 'requires-manual',
 	};
 }
 
@@ -966,21 +966,21 @@ private initializeMaintenanceTasks(): void {
 		},
 		{
 			id: 'compress-git-trees',
-	type: ' compress-trees',
+	type: 'compress-trees',
 			schedule: '0 3 * * 0', // Weekly on Sunday at 3 AM
 			nextRun: new Date(),
 			enabled: true,
 		},
 		{
 			id: 'update-remote-refs',
-	type: ' update-remotes',
+	type: 'update-remotes',
 			schedule: '0 1 * * *', // Daily at 1 AM
 			nextRun: new Date(),
 			enabled: true,
 		},
 		{
 			id: 'verify-repository-integrity',
-	type: ' verify-integrity',
+	type: 'verify-integrity',
 			schedule: '0 4 * * 1', // Weekly on Monday at 4 AM
 			nextRun: new Date(),
 			enabled: true,
@@ -1035,13 +1035,13 @@ switch (task.type) {
 case 'cleanup-stale':
 await this.cleanupStaleTrees();
 break;
-case ' compress-trees':
+case 'compress-trees':
 await this.compressGitTrees();
 break;
-case ' update-remotes':
+case 'update-remotes':
 await this.updateRemoteReferences();
 break;
-case ' verify-integrity':
+case 'verify-integrity':
 await this.verifyRepositoryIntegrity();
 break;
 }
@@ -1483,13 +1483,13 @@ await this.sandbox.shutdown();
 // Clean up event listeners
 this.removeAllListeners();
 
-logger.info(' GitOperationsManager shutdown complete', {
+logger.info('GitOperationsManager shutdown complete', {
 managerId: this.managerId,
 operationsCompleted: this.operationHistory.length,
 treesManaged: this.treeMetrics.size,
 });
 } catch (error) {
-logger.error(' Error during GitOperationsManager shutdown', {
+logger.error('Error during GitOperationsManager shutdown', {
 managerId: this.managerId,
 error: error instanceof Error ? error.message : UNKNOWN_ERROR_MESSAGE,
 });
@@ -1540,7 +1540,7 @@ branch,
 path: worktreePath,
 });
 
-logger.info(' Git worktree created successfully', {
+logger.info('Git worktree created successfully', {
 managerId: this.managerId,
 projectId,
 worktreeName,
@@ -1605,7 +1605,7 @@ worktreeName,
 deletedBranch: options.deleteBranch,
 });
 
-logger.info(' Git worktree removed successfully', {
+logger.info('Git worktree removed successfully', {
 managerId: this.managerId,
 projectId,
 worktreeName,
@@ -1691,7 +1691,7 @@ return [];
 * Subscribe to git operation events
 */
 onOperation(
-eventType: 'started' | ' completed' | ` failed`,
+eventType: 'started' | 'completed' | 'failed',
 handler: (
 event:
 | GitOperationStartedEvent

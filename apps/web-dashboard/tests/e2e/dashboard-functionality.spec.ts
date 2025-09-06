@@ -3,6 +3,9 @@
  * Tests all major frontend improvements and functionality
  */
 
+// IMPORTANT: This file must only be run by Playwright, not imported by Vitest or any other runner.
+// Do not import this file in any configuration or test utility.
+
 import { test, expect } from '@playwright/test';
 
 // Test configuration

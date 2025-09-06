@@ -535,7 +535,7 @@ export class ApiServer {
     Array<{
       name: string;
       path: string;
-      type: 'directory' | ' file';
+      type: 'directory' | 'file';
       size: number | null;
       modified: string;
     }>
@@ -583,7 +583,7 @@ export class ApiServer {
     files: Array<{
       name: string;
       path: string;
-      type: 'directory' | ' file';
+      type: 'directory' | 'file';
       size: number | null;
       modified: string;
     }>
@@ -865,7 +865,7 @@ export class ApiServer {
       const shutdownMonitor: {
         startTime: number;
         activeConnections: number;
-        shutdownState: 'initiating' | ' draining' | ' stopped';
+        shutdownState: 'initiating' | 'draining' | 'stopped';
         gracefulTimeout: number;
       } = {
         startTime: Date.now(),
@@ -911,7 +911,7 @@ export class ApiServer {
   /**
    * Create comprehensive health check function for terminus
    */
-  private createHealthCheck(type: 'health' | ' healthz' | ' readyz') {
+  private createHealthCheck(type: 'health' | 'healthz' | 'readyz') {
     return (): Promise<{
       status: string;
       timestamp: string;

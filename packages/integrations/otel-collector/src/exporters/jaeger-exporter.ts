@@ -217,7 +217,7 @@ export class JaegerExporter implements BaseExporter {
     // Check if queue is getting too full
     const queueUtilization = this.queue.length / this.maxQueueSize;
 
-    let status:'healthy' | ' degraded' | ' unhealthy' = ' healthy';
+    let status:'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     if (this.lastError) {
       status = 'unhealthy';

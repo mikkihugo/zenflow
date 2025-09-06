@@ -18,14 +18,14 @@ import {
 
 // Enhanced Interface types
 export interface InterfaceConfig {
-  mode: 'terminal' | ' web' | ' mcp' | ' api' | ' advanced-cli';
-  theme?: 'dark' | ' light';
+  mode: 'terminal' | 'web' | 'mcp' | 'api' | 'advanced-cli';
+  theme?: 'dark' | 'light';
   verbose?: boolean;
   port?: number;
   // For web interface
   serverUrl?: string;
   // For MCP interface
-  terminalMode?: 'basic' | ' advanced';
+  terminalMode?: 'basic' | 'advanced';
   // For terminal interface sub-mode
   aiAssistance?: boolean;
   // Enable AI assistance
@@ -37,7 +37,7 @@ export interface InterfaceConfig {
 
 // Enhanced Interface launcher utilities
 export const interfaceUtils = {
-  detectMode(): 'terminal' | ' web' | ' mcp' | ' api' | ' advanced-cli' {
+  detectMode(): 'terminal' | 'web' | 'mcp' | 'api' | 'advanced-cli' {
     // Auto-detect interface mode based on environment and commands
     if (isMcpEnabled()) return 'mcp';
     if (isWebInterfaceEnabled()) return 'web';
@@ -73,7 +73,7 @@ export const interfaceUtils = {
     return 'terminal'; // Default to unified terminal interface
   },
 
-  detectTerminalMode(): 'basic' | ' advanced' {
+  detectTerminalMode(): 'basic' | 'advanced' {
     // Auto-detect terminal sub-mode with advanced CLI support
     const args = process.argv.slice(2);
 

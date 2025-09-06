@@ -41,28 +41,19 @@
  * @version 2.0.0-event-driven
  */
 
+// Import working implementations
 import {
+  EventDrivenTelemetryManager,
   createEventDrivenTelemetryManager,
-  getEventDrivenTelemetry,
   initializeEventDrivenTelemetry,
-  shutdownEventDrivenTelemetry,
+  getEventDrivenTelemetry,
+  shutdownEventDrivenTelemetry
 } from './telemetry-event-driven.js';
 
 import {
   TelemetryEventBridge,
-  createTelemetryEventBridge,
-  getDefaultTelemetryBridgeConfig,
+  createTelemetryEventBridge
 } from './telemetry-event-bridge.js';
-
-// PRIMARY EVENT-DRIVEN EXPORTS (ZERO IMPORTS)
-export {
-  createEventDrivenTelemetryManager,
-  EventDrivenTelemetryManager,
-  EventDrivenTelemetryManager as default,
-  getEventDrivenTelemetry,
-  initializeEventDrivenTelemetry,
-  shutdownEventDrivenTelemetry,
-} from './telemetry-event-driven.js';
 
 /**
  * Creates a new EventDrivenTelemetryManager.
@@ -72,7 +63,9 @@ export {
  * @param config - Optional configuration (not used).
  * @returns A new EventDrivenTelemetryManager instance.
  */
-export function createTelemetryManager(): TelemetryManager {
+export function createTelemetryManager(config?: unknown): EventDrivenTelemetryManager {
+  // Config parameter ignored for now - the implementation uses internal defaults
+  void config;
   return createEventDrivenTelemetryManager();
 }
 
@@ -100,9 +93,17 @@ export function createTelemetryAccess(config?: unknown) {
   };
 }
 
-// Event bridge exports for foundation integration
+// Export event bridge functionality
 export {
   TelemetryEventBridge,
-  createTelemetryEventBridge,
-  getDefaultTelemetryBridgeConfig,
+  createTelemetryEventBridge
+};
+
+// Export core event-driven telemetry functionality
+export {
+  EventDrivenTelemetryManager,
+  createEventDrivenTelemetryManager,
+  initializeEventDrivenTelemetry,
+  getEventDrivenTelemetry,
+  shutdownEventDrivenTelemetry
 };

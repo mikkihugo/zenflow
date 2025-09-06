@@ -63,18 +63,18 @@ const itParallel = TEST_CONFIG.RUN_PARALLEL ? it:it.skip;
 
 describe("Comprehensive Claude SDK Tests", () => {
 	// Test status constants
-	const TEST_PASSED = " Passed";
+	const TEST_PASSED = "Passed";
 	const TEST_SKIPPED = "⏭️ Skipped";
 	
 	let taskManager:any;
 
 	beforeAll(() => {
-		logger.info(" Starting comprehensive Claude SDK test suite");
+		logger.info("Starting comprehensive Claude SDK test suite");
 		taskManager = getGlobalClaudeTaskManager();
 });
 
 	afterAll(() => {
-		logger.info(" Cleaning up after comprehensive tests");
+		logger.info("Cleaning up after comprehensive tests");
 		taskManager?.clearCompletedTasks();
 		taskManager?.clearPermissionDenials();
 		cleanupGlobalInstances();
@@ -94,7 +94,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(wrappedPrompt).toContain("SAFETY VALIDATION ACTIVE");
 			expect(wrappedPrompt).not.toBe(unsafePrompt); // Should be modified
 
-			logger.info(" Prompt validation working correctly");
+			logger.info("Prompt validation working correctly");
 });
 
 		it("should filter Claude output correctly", () => {
@@ -116,7 +116,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 			expect(filteredOutput.length).toBeLessThan(rawOutput.length);
 			expect(filteredOutput).toContain("typescript");
 
-			logger.info(" Output filtering working correctly");
+			logger.info("Output filtering working correctly");
 });
 
 		itIntegration(
@@ -237,7 +237,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
 
-				logger.info(" Custom system prompts working correctly");
+				logger.info("Custom system prompts working correctly");
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -333,9 +333,9 @@ describe("Comprehensive Claude SDK Tests", () => {
 
 				// Should either complete quickly or be cancelled/timeout
 				if (result.success) {
-					logger.info(" Task completed within timeout");
+					logger.info("Task completed within timeout");
 } else {
-					logger.info(" Task cancelled or timed out as expected");
+					logger.info("Task cancelled or timed out as expected");
 					expect(result.error.message).toMatch(/timeout|cancel|abort/i);
 }
 },
@@ -795,7 +795,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(resultMessage).toBeTruthy();
 				expect((resultMessage as any).iserror).toBeFalsy();
 
-				logger.info(" TypeScript error fixing integration working");
+				logger.info("TypeScript error fixing integration working");
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -827,7 +827,7 @@ describe("Comprehensive Claude SDK Tests", () => {
 				expect(messages).toBeTruthy();
 				expect(messages.length).toBeGreaterThan(0);
 
-				logger.info(" Multi-file TypeScript analysis working");
+				logger.info("Multi-file TypeScript analysis working");
 },
 			TEST_CONFIG.STANDARD_TIMEOUT,
 		);
@@ -843,14 +843,14 @@ describe("Comprehensive Claude SDK Tests", () => {
 			taskManager.clearPermissionDenials();
 			expect(taskManager.getPermissionDenials().length).toBe(0);
 
-			logger.info(" Resource cleanup working correctly");
+			logger.info("Resource cleanup working correctly");
 });
 
 		it("should handle cleanup of global instances", () => {
 			// This should not throw an error
 			expect(() => cleanupGlobalInstances()).not.toThrow();
 
-			logger.info(" Global instance cleanup working");
+			logger.info("Global instance cleanup working");
 });
 });
 
@@ -888,11 +888,11 @@ describe("Comprehensive Claude SDK Tests", () => {
 				timestamp:new Date().toISOString(),
 };
 
-			logger.info(" Comprehensive Claude SDK Test Report:", report);
+			logger.info("Comprehensive Claude SDK Test Report:", report);
 
 			// Verify all enabled test suites passed
 			const enabledTests = Object.entries(report.testSuites).filter(
-				([, status]) => status === " Passed",
+				([, status]) => status === "Passed",
 			).length;
 
 			expect(enabledTests).toBeGreaterThan(0);

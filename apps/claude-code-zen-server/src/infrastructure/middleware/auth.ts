@@ -33,7 +33,7 @@ export interface User {
 export interface AuthContext {
   readonly user?: User;
   readonly token?: string;
-  readonly tokenType?: 'bearer' | ' api_key';
+  readonly tokenType?: 'bearer' | 'api_key';
   readonly isAuthenticated: boolean;
 }
 
@@ -104,10 +104,15 @@ export const optionalAuthMiddleware = (
         isAuthenticated: false,
         // Still false since we're not actually validating
       },
-      token: authHeader?.replace(BEARER_PREFIX, '') || apiKey,
-      tokenType: authHeader ? 'bearer' : ' api_key',
+      tokenType: authHeader ? 'bearer' : 'api_key',
       isAuthenticated: false,
     };
+    
+    // Only set token if we have a value
+    const tokenValue = authHeader?.replace(BEARER_PREFIX, '') || apiKey;
+    if (tokenValue) {
+      (authContext as any).token = tokenValue;
+    }
 
     if (isDev) {
       logger.debug('Optional auth:Token provided but not validated', {

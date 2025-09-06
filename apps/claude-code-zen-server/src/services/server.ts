@@ -373,7 +373,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
   async getHealth(): Promise<HealthCheckResult> {
     const healthChecks: Array<{
       name: string;
-      status: 'ok' | ' error';
+      status: 'ok' | 'error';
       message?: string;
     }> = [];
 
@@ -393,7 +393,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         const httpHealth = await this.adapters.http.getHealth();
         healthChecks.push({
           name: 'http',
-          status: httpHealth.healthy ? 'ok' : ' error',
+          status: httpHealth.healthy ? 'ok' : 'error',
           message: httpHealth.message,
         });
       } catch (error) {
@@ -410,7 +410,7 @@ export class ClaudeZenServerImpl implements UnifiedClaudeZenServer {
         const dbHealth = await this.adapters.database.getHealth();
         healthChecks.push({
           name: 'database',
-          status: dbHealth.healthy ? 'ok' : ' error',
+          status: dbHealth.healthy ? 'ok' : 'error',
           message: dbHealth.message,
         });
       } catch (error) {
