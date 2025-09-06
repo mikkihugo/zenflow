@@ -64,7 +64,7 @@ export type EventType =
   | 'api.response'
   | 'custom';
 
-export type EventPriority = 'low' | ' medium' | ' high' | ' critical';
+export type EventPriority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface EventEmitter {
   emit(event: SystemEvent): void;

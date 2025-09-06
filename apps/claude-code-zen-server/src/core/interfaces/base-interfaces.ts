@@ -13,7 +13,7 @@ export interface CoordinationRequest {
   readonly id: string;
   readonly type: string;
   readonly payload: unknown;
-  readonly priority?: 'low' | ' medium' | ' high';
+  readonly priority?: 'low' | 'medium' | 'high';
   readonly timeout?: number;
   readonly timestamp: number;
 }
@@ -76,7 +76,7 @@ export interface Task {
   readonly description: string;
   readonly payload: unknown;
   readonly requirements: readonly string[];
-  readonly priority: 'low' | ' medium' | ' high' | ' critical';
+  readonly priority: 'low' | 'medium' | 'high' | 'critical';
   readonly estimatedDuration?: number;
   readonly dependencies?: readonly string[];
   readonly createdAt: string;
@@ -159,7 +159,7 @@ export interface SystemEvent {
   readonly target?: string;
   readonly payload: unknown;
   readonly timestamp: string;
-  readonly priority: 'low' | ' medium' | ' high' | ' critical';
+  readonly priority: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export type EventHandler<T = unknown> = (

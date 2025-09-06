@@ -131,7 +131,7 @@ export type SystemEvent =
 export interface SystemError extends Error {
   code: string;
   component: string;
-  severity: 'low' | ' medium' | ' high' | ' critical';
+  severity: 'low' | 'medium' | 'high' | 'critical';
   metadata?: Record<string, unknown>;
   timestamp: Date;
 }

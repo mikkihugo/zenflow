@@ -48,7 +48,7 @@ interface TaskMasterTask {
   title: string;
   description?: string;
   state: TaskState;
-  priority: 'low' | ' medium' | ' high' | ' critical';
+  priority: 'low' | 'medium' | 'high' | 'critical';
   estimatedEffort: number;
   assignedAgent?: string;
   createdAt: string;
@@ -109,7 +109,7 @@ interface PIPlanningEvent {
   startDate: string;
   endDate: string;
   facilitator: string;
-  status: 'planned' | ' in-progress' | ' completed';
+  status: 'planned' | 'in-progress' | 'completed';
   createdAt: string;
 }
 

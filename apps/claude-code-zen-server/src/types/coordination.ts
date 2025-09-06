@@ -151,7 +151,7 @@ export type TaskStatus =
   | 'cancelled'
   | 'timeout';
 
-export type TaskPriority = 'low' | ' medium' | ' high' | ' critical';
+export type TaskPriority = 'low' | 'medium' | 'high' | 'critical';
 
 export interface TaskPayload {
   action: string;
@@ -260,7 +260,7 @@ export type MessageType =
   | 'error'
   | 'coordination';
 
-export type MessagePriority = 'low' | ' medium' | ' high' | ' urgent';
+export type MessagePriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface CommunicationChannel {
   id: string;
