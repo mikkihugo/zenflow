@@ -23,14 +23,14 @@
  */
 
 import {
-  createServiceContainer,
+  createContainer,
   err,
   getLogger,
   type Logger,
   ok,
   type Result,
-  TypedEventBase,
 } from '@claude-zen/foundation';
+import { EventEmitter } from '@claude-zen/foundation';
 import type { JsonObject, JsonValue} from '@claude-zen/foundation/types';
 
 /**
@@ -39,7 +39,7 @@ import type { JsonObject, JsonValue} from '@claude-zen/foundation/types';
  * Leverages advanced dependency injection features for high-performance agent management
  * with auto-discovery, advanced scoping, and intelligent service graphs.
  */
-export class AgentRegistry extends TypedEventBase {
+export class AgentRegistry extends EventEmitter {
   private logger:Logger;
   private agentCache = new Map<string, JsonValue>();
   private performanceMetrics = new Map<
@@ -172,13 +172,13 @@ export class AgentRegistry extends TypedEventBase {
         enhancedAgent,
         {
           lifetime:Lifetime.SCOPED, // Scoped for better performance
-          capabilities:[agent.type, ...Object.keys(agent.capabilities)],
+          capabilities:[agent.type, ...(agent.capabilities ?? [])],
           tags:['agent', agent.type, agent.status],
           metadata:{
             agentType:agent.type,
             registrationTime:Date.now(),
             capabilities:agent.capabilities,
-},
+          },
           healthCheck:async () => {
             // Advanced health check with performance metrics
             const now = Date.now();
@@ -188,8 +188,8 @@ export class AgentRegistry extends TypedEventBase {
             const healthMetrics = await this.performAsyncHealthCheck(agent.id);
             
             const isHealthy =
-              timeSinceLastSeen < 60000 && 
-              enhancedAgent.health > 0.5 && 
+              timeSinceLastSeen < 60000 &&
+              enhancedAgent.health > 0.5 &&
               healthMetrics.isResponding;
 
             if (!isHealthy) {
@@ -201,14 +201,14 @@ export class AgentRegistry extends TypedEventBase {
             }
 
             return isHealthy;
-},
+          },
           priority:
             agent.type === 'coordinator'
               ? 100
               : agent.type === 'specialist'
                 ? 80
                 : 50,
-}
+        }
       );
 
       if (registrationResult.isErr()) {
@@ -407,40 +407,46 @@ export class AgentRegistry extends TypedEventBase {
     // Apply additional filters
     const filteredAgents = agents.filter((agent, index, array) => {
       // Remove duplicates
-      const isFirst = array.findIndex((a) => a.id === agent.id) === index;
+      const isFirst =
+        typeof agent === 'object' && agent !== null && 'id' in agent &&
+        array.findIndex((a) => typeof a === 'object' && a !== null && 'id' in a && (a as any).id === (agent as any).id) === index;
       if (!isFirst) {
         return false;
-}
+      }
 
       // Type filter
-      if (query.type && agent.type !== query.type) {
+      if (query.type && typeof agent === 'object' && agent !== null && 'type' in agent && (agent as any).type !== query.type) {
         return false;
-}
+      }
 
       // Status filter
-      if (query.status && agent.status !== query.status) {
+      if (query.status && typeof agent === 'object' && agent !== null && 'status' in agent && (agent as any).status !== query.status) {
         return false;
-}
+      }
 
       // Performance filters
-      if (query.performance) {
+      if (query.performance && typeof agent === 'object' && agent !== null && 'performance' in agent) {
+        const perf = (agent as any).performance;
         if (
           query.performance.minSuccessRate &&
-          agent.performance?.successRate < query.performance.minSuccessRate
+          typeof perf === 'object' && perf !== null &&
+          'successRate' in perf &&
+          perf.successRate < query.performance.minSuccessRate
         ) {
           return false;
-}
+        }
         if (
           query.performance.maxResponseTime &&
-          agent.performance?.averageResponseTime >
-            query.performance.maxResponseTime
+          typeof perf === 'object' && perf !== null &&
+          'averageResponseTime' in perf &&
+          perf.averageResponseTime > query.performance.maxResponseTime
         ) {
           return false;
-}
-}
+        }
+      }
 
       return true;
-});
+    });
 
     this.emit('agentsQueried', {
       query,
@@ -457,7 +463,7 @@ export class AgentRegistry extends TypedEventBase {
     const containerStats = this.container.getStats();
     const agentCount = this.agentCache.size;
 
-    const performanceData = Array.from(this.performanceMetrics.values())();
+    const performanceData = Array.from(this.performanceMetrics.values());
     const averageAccessTime =
       performanceData.length > 0
         ? performanceData.reduce(
@@ -632,18 +638,18 @@ export class AgentRegistry extends TypedEventBase {
    * Helper:Basic agent selection fallback
    */
   private basicAgentSelection(criteria:JsonObject): JsonValue[] {
-    const agents = Array.from(this.agentCache.values())();
+    const agents = Array.from(this.agentCache.values());
 
     return agents
       .filter((agent) => {
-        if (criteria.type && agent.type !== criteria.type) {
+        if (criteria.type && typeof agent === 'object' && agent !== null && 'type' in agent && (agent as any).type !== criteria.type) {
           return false;
-}
-        if (criteria.excludeIds?.includes(agent.id)) {
+        }
+        if (criteria.excludeIds && typeof agent === 'object' && agent !== null && 'id' in agent && criteria.excludeIds.includes((agent as any).id)) {
           return false;
-}
+        }
         return true;
-})
+      })
       .slice(0, criteria.maxResults||10);
 }
 }

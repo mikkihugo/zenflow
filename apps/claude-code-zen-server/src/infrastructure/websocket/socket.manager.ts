@@ -175,7 +175,7 @@ export class WebSocketManager {
           // Send initial logs from the logging system
           try {
             // Fallback:getLogEntries not available in foundation
-            const logs = [];
+            const logs: unknown[] = [];
             socket.emit('logs:initial', {
               data: logs,
               timestamp: new Date().toISOString(),
@@ -234,7 +234,7 @@ export class WebSocketManager {
     const logsInterval = setInterval(() => {
       try {
         // Fallback:getLogEntries not available in foundation
-        const logs = [];
+        const logs: unknown[] = [];
 
         // Only broadcast if we have logs
         if (logs.length > 0) {
@@ -369,9 +369,9 @@ export class WebSocketManager {
     try {
       // Dynamically import to avoid circular dependencies
       import('@claude-zen/foundation')
-        .then(({ setLogBroadcaster }) => {
-          if (setLogBroadcaster) {
-            setLogBroadcaster((event: string, data: unknown) => {
+        .then((foundation) => {
+          if ('setLogBroadcaster' in foundation && foundation.setLogBroadcaster) {
+            foundation.setLogBroadcaster((event: string, data: unknown) => {
               // Broadcast to the logs room specifically
               this.broadcastToRoom('logs', event, data);
             });
@@ -395,7 +395,7 @@ export class WebSocketManager {
     try {
       // Use real data service if available
       if (this.dataService.getSystemState) {
-        const systemState = this.dataService.getSystemState();
+        const systemState = this.dataService.getSystemState() as Record<string, unknown>;
         
         // Build facade status from actual system state
         return {
@@ -418,8 +418,8 @@ export class WebSocketManager {
             },
             coordination: {
               name: 'coordination',
-              capability: systemState.agents?.length > 0 ? 'full' : 'partial',
-              healthScore: systemState.agents?.length > 0 ? 85 : 60,
+              capability: (systemState['agents'] as unknown[])?.length > 0 ? 'full' : 'partial',
+              healthScore: (systemState['agents'] as unknown[])?.length > 0 ? 85 : 60,
               packages: {
                 '@claude-zen/coordination': {
                   status: 'active',
@@ -428,12 +428,12 @@ export class WebSocketManager {
               },
               features: ['Agent management', 'Task coordination', 'Swarm orchestration'],
               missingPackages: [],
-              registeredServices: systemState.agents?.length > 0 ? ['coordination', 'swarmManager'] : ['coordination']
+              registeredServices: (systemState['agents'] as unknown[])?.length > 0 ? ['coordination', 'swarmManager'] : ['coordination']
             }
           },
           totalPackages: 2,
           availablePackages: 2,
-          registeredServices: systemState.agents?.length > 0 ? 4 : 3,
+          registeredServices: (systemState['agents'] as unknown[])?.length > 0 ? 4 : 3,
           timestamp: new Date().toISOString()
         };
       }
@@ -504,7 +504,7 @@ export class WebSocketManager {
   /**
    * Get service health information
    */
-  private getServiceHealth(): Record<string, { status: string; uptime?: number; connections?: number }> {
+  private getServiceHealth(): Record<string, { status: string; uptime?: number; connections?: number; activeSwarms?: number }> {
     try {
       // Check which services are actually running and healthy
       return {
@@ -523,7 +523,7 @@ export class WebSocketManager {
   /**
    * Get foundation facade status
    */
-  private getFoundationFacadeStatus(packageInfo: Record<string, { status: string; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
+  private getFoundationFacadeStatus(packageInfo: Record<string, { available: boolean; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const foundationPackages = {
       '@claude-zen/foundation': {
         status: packageInfo['@claude-zen/foundation']?.available ? 'registered' : 'unavailable',
@@ -532,7 +532,7 @@ export class WebSocketManager {
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 
-      ['logger', 'errorHandler', 'typeGuards'].includes(s) && serviceHealth[s].status === 'healthy'
+      ['logger', 'errorHandler', 'typeGuards'].includes(s) && serviceHealth[s]?.status === 'healthy'
     );
 
     const healthScore = registeredServices.length >= 1 ? 95 : 50;
@@ -543,7 +543,7 @@ export class WebSocketManager {
       healthScore,
       packages: foundationPackages,
       features: ['Core utilities', 'Logging', 'Error handling', 'Type-safe primitives'],
-      missingPackages: Object.keys(foundationPackages).filter(pkg => foundationPackages[pkg].status === 'unavailable'),
+      missingPackages: Object.keys(foundationPackages).filter(pkg => foundationPackages[pkg]?.status === 'unavailable'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['logger']
     };
   }
@@ -551,7 +551,7 @@ export class WebSocketManager {
   /**
    * Get infrastructure facade status
    */
-  private getInfrastructureFacadeStatus(packageInfo: Record<string, { status: string; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
+  private getInfrastructureFacadeStatus(packageInfo: Record<string, { available: boolean; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const infrastructurePackages = {
       '@claude-zen/database': {
         status: packageInfo['@claude-zen/database']?.available ? 'registered' : 'fallback',
@@ -561,7 +561,7 @@ export class WebSocketManager {
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 
-      ['database', 'events', 'otel'].includes(s) && serviceHealth[s].status === 'healthy'
+      ['database', 'events', 'otel'].includes(s) && serviceHealth[s]?.status === 'healthy'
     );
 
     const healthScore = Math.round((registeredServices.length / 3) * 100);
@@ -572,7 +572,7 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 30), // Minimum 30% if any services are running
       packages: infrastructurePackages,
       features: ['Database abstraction', 'Event system', 'OpenTelemetry', 'Service container'],
-      missingPackages: Object.keys(infrastructurePackages).filter(pkg => infrastructurePackages[pkg].status === 'fallback'),
+      missingPackages: Object.keys(infrastructurePackages).filter(pkg => infrastructurePackages[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['webSocket']
     };
   }
@@ -580,7 +580,7 @@ export class WebSocketManager {
   /**
    * Get intelligence facade status  
    */
-  private getIntelligenceFacadeStatus(packageInfo: Record<string, { status: string; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
+  private getIntelligenceFacadeStatus(packageInfo: Record<string, { available: boolean; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const intelligencePackages = {
       '@claude-zen/brain': {
         status: packageInfo['@claude-zen/brain']?.available ? 'registered' : 'fallback',
@@ -593,7 +593,7 @@ export class WebSocketManager {
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 
-      ['brain', 'neural', 'ai'].includes(s) && serviceHealth[s].status === 'healthy'
+      ['brain', 'neural', 'ai'].includes(s) && serviceHealth[s]?.status === 'healthy'
     );
 
     const healthScore = Math.round((registeredServices.length / 2) * 100);
@@ -604,7 +604,7 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 20), // Minimum 20% as placeholder
       packages: intelligencePackages,
       features: ['Neural coordination', 'Brain systems', 'AI optimization'],
-      missingPackages: Object.keys(intelligencePackages).filter(pkg => intelligencePackages[pkg].status === 'fallback'),
+      missingPackages: Object.keys(intelligencePackages).filter(pkg => intelligencePackages[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['aiPlaceholder']
     };
   }
@@ -612,7 +612,7 @@ export class WebSocketManager {
   /**
    * Get enterprise facade status
    */
-  private getEnterpriseFacadeStatus(packageInfo: Record<string, { status: string; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
+  private getEnterpriseFacadeStatus(packageInfo: Record<string, { available: boolean; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const enterprisePackages = {
       '@claude-zen/coordination': {
         status: packageInfo['@claude-zen/coordination']?.available ? 'active' : 'fallback',
@@ -625,7 +625,7 @@ export class WebSocketManager {
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 
-      ['coordination', 'workflows', 'safe'].includes(s) && serviceHealth[s].status === 'healthy'
+      ['coordination', 'workflows', 'safe'].includes(s) && serviceHealth[s]?.status === 'healthy'
     );
 
     // Coordination is available, so partial capability
@@ -637,7 +637,7 @@ export class WebSocketManager {
       healthScore,
       packages: enterprisePackages,
       features: ['SAFE framework', 'Business workflows', 'Portfolio management'],
-      missingPackages: Object.keys(enterprisePackages).filter(pkg => enterprisePackages[pkg].status === 'fallback'),
+      missingPackages: Object.keys(enterprisePackages).filter(pkg => enterprisePackages[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['coordination']
     };
   }
@@ -645,7 +645,7 @@ export class WebSocketManager {
   /**
    * Get operations facade status
    */
-  private getOperationsFacadeStatus(packageInfo: Record<string, { status: string; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
+  private getOperationsFacadeStatus(packageInfo: Record<string, { available: boolean; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const operationsPackages = {
       '@claude-zen/system-monitoring': {
         status: packageInfo['@claude-zen/system-monitoring']?.available ? 'registered' : 'fallback',
@@ -654,11 +654,11 @@ export class WebSocketManager {
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 
-      ['monitoring', 'loadBalancer', 'chaos'].includes(s) && serviceHealth[s].status === 'healthy'
+      ['monitoring', 'loadBalancer', 'chaos'].includes(s) && serviceHealth[s]?.status === 'healthy'
     );
 
     // WebSocket monitoring is working, so partial capability
-    const healthScore = serviceHealth.webSocket?.status === 'healthy' ? 45 : 20;
+    const healthScore = serviceHealth['webSocket']?.status === 'healthy' ? 45 : 20;
 
     return {
       name: 'operations',
@@ -666,7 +666,7 @@ export class WebSocketManager {
       healthScore,
       packages: operationsPackages,
       features: ['System monitoring', 'Load balancing', 'Performance tracking'],
-      missingPackages: Object.keys(operationsPackages).filter(pkg => operationsPackages[pkg].status === 'fallback'),
+      missingPackages: Object.keys(operationsPackages).filter(pkg => operationsPackages[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['webSocketMonitoring']
     };
   }
@@ -674,7 +674,7 @@ export class WebSocketManager {
   /**
    * Get development facade status
    */
-  private getDevelopmentFacadeStatus(packageInfo: Record<string, { status: string; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
+  private getDevelopmentFacadeStatus(packageInfo: Record<string, { available: boolean; version: string | null }>, serviceHealth: Record<string, { status: string }>): { name: string; capability: string; healthScore: number; packages: Record<string, { status: string; version: string | null }>; features: string[]; missingPackages: string[]; registeredServices: string[] } {
     const developmentPackages = {
       '@claude-zen/code-analyzer': {
         status: packageInfo['@claude-zen/code-analyzer']?.available ? 'registered' : 'fallback',
@@ -687,7 +687,7 @@ export class WebSocketManager {
     };
 
     const registeredServices = Object.keys(serviceHealth).filter(s => 
-      ['codeAnalyzer', 'gitOps', 'architecture'].includes(s) && serviceHealth[s].status === 'healthy'
+      ['codeAnalyzer', 'gitOps', 'architecture'].includes(s) && serviceHealth[s]?.status === 'healthy'
     );
 
     const healthScore = Math.round((registeredServices.length / 3) * 100);
@@ -698,7 +698,7 @@ export class WebSocketManager {
       healthScore: Math.max(healthScore, 25), // Minimum 25% for basic dev capabilities
       packages: developmentPackages,
       features: ['Code analysis', 'Git operations', 'Architecture validation'],
-      missingPackages: Object.keys(developmentPackages).filter(pkg => developmentPackages[pkg].status === 'fallback'),
+      missingPackages: Object.keys(developmentPackages).filter(pkg => developmentPackages[pkg]?.status === 'fallback'),
       registeredServices: registeredServices.length > 0 ? registeredServices : ['basicDev']
     };
   }
@@ -709,21 +709,21 @@ export class WebSocketManager {
   private async getSwarmStats(): Promise<Record<string, unknown>> {
     try {
       // Get real swarm data from the data service
-      const swarms = await this.dataService.getSwarms();
-      const tasks = await this.dataService.getTasks();
+      const swarms = await this.dataService.getSwarms() as Array<{ status: string; activeAgents?: number }>;
+      const tasks = await this.dataService.getTasks() as Array<{ status: string }>;
       const systemStats = this.dataService.getServiceStats();
       
       // Calculate real metrics from actual data
       const totalSwarms = Array.isArray(swarms) ? swarms.length : 0;
-      const activeSwarms = Array.isArray(swarms) ? swarms.filter((s: { status: string }) => s.status === 'active').length : 0;
+      const activeSwarms = Array.isArray(swarms) ? swarms.filter(s => s.status === 'active').length : 0;
       const totalTasks = Array.isArray(tasks) ? tasks.length : 0;
-      const completedTasks = Array.isArray(tasks) ? tasks.filter((t: { status: string }) => t.status === 'completed').length : 0;
-      const tasksInProgress = Array.isArray(tasks) ? tasks.filter((t: { status: string }) => t.status === 'running' || t.status === 'in_progress').length : 0;
+      const completedTasks = Array.isArray(tasks) ? tasks.filter(t => t.status === 'completed').length : 0;
+      const tasksInProgress = Array.isArray(tasks) ? tasks.filter(t => t.status === 'running' || t.status === 'in_progress').length : 0;
       
       // Calculate derived metrics
       const successRate = totalTasks > 0 ? completedTasks / totalTasks : 0;
-      const activeAgents = swarms.reduce((total: number, swarm: { activeAgents: number }) => total + (swarm.activeAgents || 0), 0);
-      const totalAgents = swarms.reduce((total: number, swarm: { totalAgents: number }) => total + (swarm.totalAgents || 0), 0);
+      const activeAgents = swarms.reduce((total: number, swarm) => total + (swarm.activeAgents || 0), 0);
+      const totalAgents = swarms.reduce((total: number, swarm) => total + ((swarm as any).totalAgents || 0), 0);
       
       return {
         totalSwarms,
@@ -733,7 +733,7 @@ export class WebSocketManager {
         tasksCompleted: completedTasks,
         tasksInProgress,
         totalTasks,
-        averageResponseTime: systemStats.averageResponseTime || 180,
+        averageResponseTime: systemStats['averageResponseTime'] || 180,
         successRate: Math.round(successRate * 100) / 100,
         coordinationEfficiency: activeSwarms > 0 ? Math.round((activeAgents / Math.max(totalAgents, 1)) * 100) : 0,
         timestamp: new Date().toISOString()
@@ -775,7 +775,7 @@ export class WebSocketManager {
         external: memoryUsage.external,
         activeConnections: connectionStats.totalConnections,
         memoryUtilization: Math.round((usedMemoryMB / totalMemoryMB) * 100) / 100,
-        cacheEfficiency: systemStats.cacheHitRate || 0.75,
+        cacheEfficiency: systemStats['cacheHitRate'] || 0.75,
         processUptime: Math.round(process.uptime()),
         timestamp: new Date().toISOString()
       };
@@ -803,10 +803,10 @@ export class WebSocketManager {
         primary: {
           type: 'sqlite',
           status: 'healthy', // This would check actual DB connection
-          connections: systemStats.databaseConnections || 0,
-          latency: systemStats.databaseLatency || `${15  }ms`,
-          queryCount: systemStats.totalQueries || 0,
-          errorRate: systemStats.databaseErrorRate || 0.02
+          connections: systemStats['databaseConnections'] || 0,
+          latency: systemStats['databaseLatency'] || `${15  }ms`,
+          queryCount: systemStats['totalQueries'] || 0,
+          errorRate: systemStats['databaseErrorRate'] || 0.02
         },
         vector: {
           type: 'lancedb',
@@ -835,10 +835,10 @@ export class WebSocketManager {
         totalConnections,
         healthyDatabases,
         totalDatabases: Object.keys(databases).length,
-        overallLatency: systemStats.averageLatency || '18ms',
+        overallLatency: systemStats['averageLatency'] || '18ms',
         healthScore: Math.round(healthScore * 100) / 100,
-        totalQueries: systemStats.totalQueries || 0,
-        successRate: 1 - (systemStats.databaseErrorRate || 0.02),
+        totalQueries: systemStats['totalQueries'] || 0,
+        successRate: 1 - (systemStats['databaseErrorRate'] || 0.02),
         timestamp: new Date().toISOString()
       };
     } catch (error) {

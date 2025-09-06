@@ -623,15 +623,18 @@ export class DocumentIntelligenceEventWrapper {
             content: artifact.content,
             targetLocation: 'project-integration'
           }))
-        : [],
-      integrationReadiness: result.importMetrics && result.integrationNotifications
-        ? {
-            score: result.importMetrics.integrationReadinessScore,
-            recommendations: result.integrationNotifications.nextIntegrationSteps ?? [],
-            nextSteps: result.integrationNotifications.nextIntegrationSteps ?? []
-          }
-        : undefined
+        : []
     };
+    const readiness = result.importMetrics && result.integrationNotifications
+      ? {
+          score: result.importMetrics.integrationReadinessScore,
+          recommendations: Array.isArray(result.integrationNotifications.nextIntegrationSteps) ? result.integrationNotifications.nextIntegrationSteps : [],
+          nextSteps: Array.isArray(result.integrationNotifications.nextIntegrationSteps) ? result.integrationNotifications.nextIntegrationSteps : []
+        }
+      : undefined;
+    if (readiness) {
+      (base as any).integrationReadiness = readiness;
+    }
     if (result.importResult && typeof result.importResult.error === 'string') {
       (base as any).error = result.importResult.error;
     }

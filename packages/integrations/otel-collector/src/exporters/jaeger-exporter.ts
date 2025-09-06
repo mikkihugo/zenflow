@@ -210,7 +210,7 @@ export class JaegerExporter implements BaseExporter {
 }
 
   async getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
+    status:'healthy' | 'degraded' | 'unhealthy';
     lastSuccess?:number;
     lastError?:string;
 }> {

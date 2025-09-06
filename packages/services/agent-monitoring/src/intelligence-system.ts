@@ -190,7 +190,7 @@ export class CompleteIntelligenceSystem implements IntelligenceSystem {
     horizon?:ForecastHorizon
   ): Promise<PerformanceOptimizationForecast> {
     return {
-      agentId:{ id: 'agent-1', swarmId, type: ' coordinator', instance:1},
+      agentId:{ id: 'agent-1', swarmId, type: 'coordinator', instance:1},
       currentPerformance:0.8,
       predictedPerformance:0.9,
       optimizationStrategies:[],

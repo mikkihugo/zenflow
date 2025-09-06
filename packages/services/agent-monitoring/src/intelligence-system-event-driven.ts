@@ -431,7 +431,7 @@ export class EventDrivenIntelligenceSystem {
  const health = this.agentHealth.get(agentId.id);
  if (health) {
  health.errorRate = (1 - successRate) * 100;
- health.status = successRate > 0.9 ? 'healthy':successRate > 0.7 ? ' degraded': ' unhealthy';
+ health.status = successRate > 0.9 ? 'healthy':successRate > 0.7 ? 'degraded': 'unhealthy';
  health.timestamp = Date.now();
 }
 }

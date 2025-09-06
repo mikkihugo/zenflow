@@ -73,27 +73,27 @@ export class AIInsightsEngine {
     const timestamp = new Date().toISOString();
 
     // Performance Analysis
-    if (data.performance) {
+    if (data['performance']) {
       insights.push(
         ...this.analyzePerformance(
-          data.performance as Record<string, unknown>,
+          data['performance'] as Record<string, unknown>,
           timestamp
         )
       );
     }
 
     // Agent Analysis
-    if (Array.isArray(data.agents) && data.agents.length > 0) {
+    if (Array.isArray(data['agents']) && data['agents'].length > 0) {
       insights.push(
         ...this.analyzeAgents(
-          data.agents as Array<Record<string, unknown>>,
+          data['agents'] as Array<Record<string, unknown>>,
           timestamp
         )
       );
     }
 
     // Task Analysis
-    if (Array.isArray(data.tasks) && data.tasks.length > 0) {
+    if (Array.isArray(data['tasks']) && data['tasks'].length > 0) {
       insights.push(
         ...this.analyzeTasks(
           data.tasks as Array<Record<string, unknown>>,

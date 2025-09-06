@@ -185,7 +185,7 @@ export class SystemCapabilityRoutes {
       const isHealthy = capabilityData.systemHealthScore >= 70;
 
       const response = {
-        status: isHealthy ? 'healthy' : ' degraded',
+        status: isHealthy ? 'healthy' : 'degraded',
         timestamp: new Date().toISOString(),
         health: {
           score: capabilityData.systemHealthScore,

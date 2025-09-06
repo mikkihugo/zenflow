@@ -305,7 +305,7 @@ return prompt;
 /**
 * Private:Generate examples from conversation context
 */
-private generateExamplesFromContext(task: string): DSPyExample[] {
+private generateExamplesFromContext(_task: string): DSPyExample[] {
 const examples: DSPyExample[] = [];
 
 // Simple example generation from context

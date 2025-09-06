@@ -214,17 +214,17 @@ export class ProcessorManager extends TypedEventBase {
    * Get processor manager health status
    */
   async getHealthStatus():Promise<{
-    status:'healthy' | ' degraded' | ' unhealthy';
+    status:'healthy' | 'degraded' | 'unhealthy';
     processorCount:number;
     lastProcessed?:number;
     lastError?:string;
     processors:Array<{
       name:string;
-      status:'healthy' | ' degraded' | ' unhealthy';
+      status:'healthy' | 'degraded' | 'unhealthy';
 }>;
 }> {
     const processorStatuses = [];
-    let overallStatus:'healthy' | ' degraded' | ' unhealthy' = ' healthy';
+    let overallStatus:'healthy' | 'degraded' | 'unhealthy' = 'healthy';
 
     // Check each processor
     for (const [name, processor] of this.processors) {
@@ -248,7 +248,7 @@ export class ProcessorManager extends TypedEventBase {
 
     // Check if there are any recent errors
     if (this.lastError) {
-      overallStatus = overallStatus === 'healthy' ? ' degraded' :overallStatus;
+      overallStatus = overallStatus === 'healthy' ? 'degraded' :overallStatus;
 }
 
     return {

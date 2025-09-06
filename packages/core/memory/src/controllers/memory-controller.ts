@@ -187,7 +187,7 @@ export class MemoryController {
       return {
         success: true,
         data: {
-          status: isHealthy ? 'healthy' : ' unhealthy',
+          status: isHealthy ? 'healthy' : 'unhealthy',
           totalKeys: size,
           backend: this.config.type,
           uptime: Math.floor(

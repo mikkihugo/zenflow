@@ -80,8 +80,8 @@ export interface ProjectSwitcherStatus {
   status: 'idle' | 'switching' | 'error';
   isSwitching: boolean;
   currentProject?: string;
-  lastSwitch?: string;
-  lastError?: string;
+  lastSwitch?: string | undefined;
+  lastError?: string | undefined;
 }
 
 /**
@@ -173,19 +173,19 @@ export class ProjectSwitcher extends EventEmitter {
    * Get current switcher status
    */
   getStatus(): ProjectSwitcherStatus {
-    const currentProject = getCurrentProject();
-    return {
-      status: this.lastError
-        ? 'error'
-        : this.isSwitching
-          ? 'switching'
-          : 'idle',
-      isSwitching: this.isSwitching,
-      currentProject: currentProject?.id || 'unknown',
-      lastSwitch: this.lastSwitch?.toISOString(),
-      lastError: this.lastError,
-    };
-  }
+      const currentProject = getCurrentProject();
+      return {
+        status: this.lastError
+          ? 'error'
+          : this.isSwitching
+            ? 'switching'
+            : 'idle',
+        isSwitching: this.isSwitching,
+        currentProject: currentProject?.id || 'unknown',
+        lastSwitch: this.lastSwitch ? this.lastSwitch.toISOString() : undefined,
+        lastError: this.lastError ?? undefined,
+      };
+    }
 
   /**
    * Get switch history
@@ -420,7 +420,7 @@ export class ProjectSwitcher extends EventEmitter {
     const shutdownPromise = shutdownClaudeZen();
 
     // Create timeout promise
-    const timeoutPromise = new Promise<never>((resolve, reject) => {
+    const timeoutPromise = new Promise<never>((_resolve, reject) => {
       setTimeout(() => {
         reject(new Error(`Shutdown timeout after ${timeout}ms`));
       }, timeout);
@@ -435,8 +435,8 @@ export class ProjectSwitcher extends EventEmitter {
         logger.warn('Graceful shutdown timed out, forcing shutdown');
 
         // Force cleanup of global references
-        delete (global as Record<string, unknown>).swarmCoordinator;
-        delete (global as Record<string, unknown>).memorySystem;
+        delete (global as Record<string, unknown>)['swarmCoordinator'];
+        delete (global as Record<string, unknown>)['memorySystem'];
       } else {
         throw error;
       }

@@ -182,8 +182,9 @@ export class System extends EventEmitter<CoreSystemEventMap> {
         logger.info(' TaskMaster service initialized');
       }
 
-      // Register services in container
-      this.serviceContainer.register('taskmaster', this.taskMasterService as TaskMasterService);
+            // Register services in container
+            // The container expects a constructor, not an instance
+            this.serviceContainer.register('taskmaster', (this.taskMasterService as any).constructor as new (...args: unknown[]) => unknown);
 
       // Initialize WebSocket heartbeat if enabled
       if (this.configuration.websocket?.enableEventStreaming) {
@@ -207,7 +208,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       this.on('error', (error) => {
         logger.error('System error:', error);
         this.status = ERROR_STATUS;
-        this.emit(STATUS_CHANGED_EVENT, this.status);
+        this.emit(STATUS_CHANGED_EVENT, this.status as string);
       });
 
       // Handle graceful shutdown
@@ -219,7 +220,7 @@ export class System extends EventEmitter<CoreSystemEventMap> {
       // Handle status changes
       this.on(STATUS_CHANGED_EVENT, (status) => {
         logger.info(`System status changed to: ${  status}`);
-        this.broadcastStatusUpdate(status);
+        this.broadcastStatusUpdate(typeof status === 'string' ? status : String(status));
       });
 
       // Handle WebSocket events

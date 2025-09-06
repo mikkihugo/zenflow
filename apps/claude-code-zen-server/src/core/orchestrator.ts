@@ -169,7 +169,7 @@ export class Orchestrator {
     task: Task,
     startTime: number
   ): Promise<TaskResult> {
-    const timeoutPromise = new Promise<TaskResult>((resolve, reject) => {
+    const timeoutPromise = new Promise<TaskResult>((_resolve, reject) => {
       setTimeout(() => {
         reject(new Error('Task timeout'));
       }, this.config.timeout);
@@ -231,7 +231,7 @@ export class Orchestrator {
     // Neural training implementation would go here
     return Promise.resolve({
       trained: true,
-      model: (task.input as Record<string, unknown>)?.dataset,
+      model: (task.input as Record<string, unknown>)?.['dataset'],
     });
   }
 
@@ -240,7 +240,7 @@ export class Orchestrator {
     // Data processing implementation would go here
     return Promise.resolve({
       processed: true,
-      records: (task.input as Record<string, unknown>)?.recordCount || 0,
+      records: (task.input as Record<string, unknown>)?.['recordCount'] || 0,
     });
   }
 
@@ -249,7 +249,7 @@ export class Orchestrator {
     // System coordination implementation would go here
     return Promise.resolve({
       coordinated: true,
-      systems: (task.input as Record<string, unknown>)?.systems || [],
+      systems: (task.input as Record<string, unknown>)?.['systems'] || [],
     });
   }
 

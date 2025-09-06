@@ -48,7 +48,7 @@ const logger = getLogger('ai-safety');
 // =============================================================================
 // DECEPTION DETECTION - AI behavior analysis
 // =============================================================================
-export {
+export type {
   AIDeceptionDetector,
   analyzeAIResponse,
   createAIDeceptionDetector,
@@ -62,11 +62,11 @@ export {
 // =============================================================================
 // ENTERPRISE SAFETY ORCHESTRATION - Comprehensive foundation integration
 // =============================================================================
-export { AISafetyOrchestrator as SafetyGuard, 
+export type { AISafetyOrchestrator as SafetyGuard,
   AISafetyOrchestrator,
   AutomatedDetectionResult,
   BehavioralAnalysisResult,
-  createAISafetyOrchestrator as createSafetyGuard, 
+  createAISafetyOrchestrator as createSafetyGuard,
   createAISafetyOrchestrator,
   createInitializedAISafetyOrchestrator,
   HumanEscalationResult,

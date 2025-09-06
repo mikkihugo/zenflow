@@ -56,7 +56,7 @@ export interface PerformanceConfig {
 // ============================================================================
 
 export interface SystemHealth {
-  status: 'healthy' | ' degraded' | ' unhealthy';
+  status: 'healthy' | 'degraded' | 'unhealthy';
   version: string;
   uptime: number;
   components: Record<string, ComponentHealth>;
@@ -65,7 +65,7 @@ export interface SystemHealth {
 }
 
 export interface ComponentHealth {
-  status: 'healthy' | ' degraded' | ' unhealthy';
+  status: 'healthy' | 'degraded' | 'unhealthy';
   message?: string;
   metrics?: Record<string, number>;
   lastCheck: Date;

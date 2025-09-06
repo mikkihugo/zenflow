@@ -126,7 +126,7 @@ interface AgentInstance {
   name:string;
   type:string;
   capabilities:string[];
-  status:'active' | ' inactive' | ' busy' | ' error';
+  status:'active' | 'inactive' | 'busy' | 'error';
   health:AgentHealthStatus;
   config:Record<string, unknown>;
   metadata:Record<string, unknown>;
@@ -145,7 +145,7 @@ interface AgentRegistrationConfig {
 }
 
 interface AgentHealthStatus {
-  status:'healthy' | ' degraded' | ' unhealthy';
+  status:'healthy' | 'degraded' | 'unhealthy';
   responseTime:number;
   errorRate:number;
   memoryUsage:number;
@@ -571,8 +571,8 @@ export class EventDrivenAgentRegistry extends TypedEventBase {
       agent.version += 1;
 
       // Update status based on health
-      agent.status = health.status === 'healthy' ? ' active' :
-                     health.status === 'degraded' ? ' busy' : ' error';
+      agent.status = health.status === 'healthy' ? 'active' :
+                     health.status === 'degraded' ? 'busy' : 'error';
 
       // Record metrics
       if (this.options.enableMetrics) {

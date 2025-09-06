@@ -1,5 +1,5 @@
 import { EventEmitter, getLogger } from '@claude-zen/foundation';
-import { OptimizationResult } from './types/index.js';
+import type { OptimizationResult } from './types/index.js';
 
 const logger = getLogger('prompt-optimization-service');
 

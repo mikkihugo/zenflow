@@ -662,11 +662,11 @@ export class VectorStore extends EventEmitter {
    * Health check for monitoring
    */
   healthCheck(): Promise<{
-    status: 'healthy' | ' degraded' | ' unhealthy';
+    status: 'healthy' | 'degraded' | 'unhealthy';
     details: Record<string, unknown>;
   }> {
     return Promise.resolve({
-      status: this.isInitialized ? 'healthy' : (' unhealthy' as const),
+      status: this.isInitialized ? 'healthy' : ('unhealthy' as const),
       details: {
         initialized: this.isInitialized,
         connections: this.connectionPool.length,

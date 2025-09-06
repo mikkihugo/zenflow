@@ -41,10 +41,10 @@ export class TransformProcessor implements BaseProcessor {
     this.logger = getLogger(`TransformProcessor:${  config.name}`);
 
     // Parse configuration
-    this.addAttributes = config.config?.addAttributes || {};
-    this.removeFields = config.config?.removeFields || [];
-    this.fieldMappings = config.config?.fieldMappings || {};
-    this.operations = this.parseOperations(config.config?.operations || []);
+    this.addAttributes = config.config?.['addAttributes'] || {};
+    this.removeFields = config.config?.['removeFields'] || [];
+    this.fieldMappings = config.config?.['fieldMappings'] || {};
+    this.operations = this.parseOperations(config.config?.['operations'] || []);
 }
 
   async initialize(): Promise<void> {

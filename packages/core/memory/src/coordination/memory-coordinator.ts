@@ -538,7 +538,7 @@ export class MemoryCoordinator extends EventEmitter {
     );
 
     return {
-      status: unhealthyNodes.length === 0 ? 'healthy' : ' degraded',
+      status: unhealthyNodes.length === 0 ? 'healthy' : 'degraded',
       details: {
         ...stats,
         unhealthyNodes:unhealthyNodes.map((n) => ({

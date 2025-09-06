@@ -339,12 +339,12 @@ export class WebApiRoutes {
     assertDefined(this.advancedGUI, 'Advanced GUI not initialized');
 
     // Delegate all advanced GUI routes to AGUI package
-    await this.advancedGUI.setupWebRoutes(app, `${api  }/agui`);
+    await this.advancedGUI['setupWebRoutes'](app, `${api  }/agui`);
 
     // Task approval routes
     app.get(`${api  }/agui/approvals`, async (req: Request, res: Response) => {
       try {
-        const approvals = await this.advancedGUI?.getPendingApprovals();
+        const approvals = await this.advancedGUI?.['getPendingApprovals']();
         res.json({
           success: true,
           data: approvals,
@@ -361,8 +361,8 @@ export class WebApiRoutes {
       `${api  }/agui/approvals/:id/approve`,
       async (req: Request, res: Response) => {
         try {
-          const result = await this.advancedGUI.approveTask(
-            req.params.id,
+          const result = await this.advancedGUI['approveTask'](
+            req.params['id'],
             req.body
           );
           res.json({
@@ -427,7 +427,7 @@ export class WebApiRoutes {
       `${api  }/tasks/:id/execute`,
       async (req: Request, res: Response) => {
         try {
-          const result = await this.workflowEngine?.executeTask(req.params.id);
+          const result = await this.workflowEngine?.executeTask(req.params['id']);
           res.json({
             success: true,
             data: result,

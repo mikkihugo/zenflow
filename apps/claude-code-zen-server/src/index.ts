@@ -13,7 +13,11 @@ import {
   err,
   getConfig,
 } from '@claude-zen/foundation';
+import type { Express, Request, Response } from 'express';
+import type { Server as HTTPServer } from 'http';
+import type { Server as SocketIOServer, Socket } from 'socket.io';
 import { getPort, getHost, getEmergencyShutdownToken, isProd } from './config/env';
+
 
  // Initialize foundation config early
 getConfig();
@@ -87,7 +91,7 @@ class ClaudeZenServer {
 
     // Request logging middleware
     if (!isProd) {
-      const morgan = (await import('morgan')).default;
+      const { default: morgan } = await import('morgan');
       app.use(morgan('combined'));
     }
 
@@ -101,7 +105,7 @@ class ClaudeZenServer {
     logger.debug('Setting up routes...');
 
     // Health check endpoint
-    app.get('/health', (req: Request, res: Response) => {
+    app.get('/health', (_req: Request, res: Response) => {
       res.json({
         status: this.isShuttingDown ? 'shutting_down' : 'ok',
         timestamp: new Date().toISOString(),
@@ -115,7 +119,7 @@ class ClaudeZenServer {
     });
 
     // API routes
-    app.get('/api/v1/health', (req: Request, res: Response) => {
+    app.get('/api/v1/health', (_req: Request, res: Response) => {
       res.json({
         status: 'healthy',
         service: 'claude-code-zen-server',
@@ -146,10 +150,12 @@ class ClaudeZenServer {
       setTimeout(() => {
         this.emergencyShutdown('api-endpoint');
       }, 1000);
+
+      return; // Explicit return to satisfy all code paths
     });
 
     // Basic dashboard route (if no static serving is set up)
-    app.get('/', (req: Request, res: Response) => {
+    app.get('/', (_req: Request, res: Response) => {
       res.json({
         message: 'Claude Code Zen Server',
         status: 'running',
@@ -179,6 +185,18 @@ class ClaudeZenServer {
    */
   private startServer(): void {
     logger.debug('Server initialization complete, ready to listen...');
+  }
+
+  /**
+   * Log server startup information
+   */
+  private logServerStartup(): void {
+    logger.info(`🚀 Claude Code Zen Server started successfully`);
+    logger.info(`📍 Server running at http://${this.host}:${this.port}`);
+    logger.info(`🌐 Environment: ${isProd ? 'production' : 'development'}`);
+    logger.info(`📊 Health endpoint: http://${this.host}:${this.port}/health`);
+    logger.info(`🔌 WebSocket endpoint: http://${this.host}:${this.port}/socket.io/`);
+    logger.info(`⚡ Server ready to handle requests`);
   }
 
   /**
@@ -328,8 +346,8 @@ class ClaudeZenServer {
     });
 
     // Handle unhandled promise rejections
-    process.on('unhandledRejection', (reason, promise) => {
-      logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.on('unhandledRejection', (reason, _promise) => {
+      logger.error('Unhandled Rejection - reason:', reason);
       this.emergencyShutdown('unhandledRejection');
     });
 

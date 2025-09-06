@@ -46,7 +46,7 @@ async function initializeServices(): Promise<void> {
     dataService = new WebDataService();
     logger.info('✅ Production foundation services initialized');
     return true;
-  }, 3, 1000);
+  }, { maxAttempts: 3 });
   
   if (result.isErr()) {
     throw result.error;

@@ -14,7 +14,7 @@ import type { BaseProcessor} from './index.js';
  */
 interface FilterRule {
  field:string;
- operator:'equals' | ' contains' | ' startsWith' | ' endsWith' | ' regex' | ' exists';
+ operator:'equals' | 'contains' | 'startsWith' | 'endsWith' | 'regex' | 'exists';
  value?:any;
  regex?:RegExp;
 }

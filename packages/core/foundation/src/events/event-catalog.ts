@@ -427,7 +427,7 @@ export interface DatabaseOperationEvent extends BaseEvent {
  * @listener System
  */
 export interface DatabaseHealthEvent extends BaseEvent {
-  status: 'healthy' | ' degraded' | ' unhealthy';
+  status: 'healthy' | 'degraded' | 'unhealthy';
   details?: Record<string, unknown>;
 }
 

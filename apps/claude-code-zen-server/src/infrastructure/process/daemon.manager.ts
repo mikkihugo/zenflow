@@ -34,7 +34,7 @@ export interface ProcessInfo {
 export class DaemonProcessManager {
   private logger = getLogger('Daemon');
   private config: Required<DaemonConfig>;
-  private currentProcess?: ReturnType<typeof spawn>;
+  private _currentProcess?: ReturnType<typeof spawn>;
 
   constructor(config: DaemonConfig = {}) {
     this.config = {

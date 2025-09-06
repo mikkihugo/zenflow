@@ -217,7 +217,7 @@ try {
 this.logger.info(' Initializing DSPy-Brain ML Bridge');
 
 // Import Brain coordinator - fallback if not available
-let BrainCoordinator;
+let _BrainCoordinator;
 try {
 // Brain package integration disabled - using fallback
 throw new Error('Brain package not available'); // Force fallback
@@ -527,7 +527,7 @@ return history;
 */
 private async generateMLRecommendation(
 taskAnalysis: any,
-historicalData: any[]
+_historicalData: any[]
 ): Promise<any> {
 // Simple heuristic-based recommendation (would use ML in production)
 let recommendedTeleprompter = 'miprov2';

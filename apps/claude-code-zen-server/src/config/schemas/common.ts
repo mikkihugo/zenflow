@@ -131,15 +131,15 @@ export interface SuccessResponse<T = unknown> {
  * '
  */
 export interface HealthResponse {
-  readonly status: 'healthy' | ' unhealthy' | ' degraded';
+  readonly status: 'healthy' | 'unhealthy' | 'degraded';
   readonly timestamp: string;
   readonly version: string;
   readonly uptime: number;
-  readonly environment: 'development' | ' production' | ' test';
-  readonly services?: Record<string, 'healthy' | ' unhealthy' | ' degraded'>;
+  readonly environment: 'development' | 'production' | 'test';
+  readonly services?: Record<string, 'healthy' | 'unhealthy' | 'degraded'>;
   readonly checks?: readonly {
     readonly name: string;
-    readonly status: 'healthy' | ' unhealthy';
+    readonly status: 'healthy' | 'unhealthy';
     readonly message?: string;
     readonly duration?: number;
   }[];

@@ -9,7 +9,6 @@
 
 import { getLogger } from '@claude-zen/foundation';
 import type { NextFunction, Request, Response } from 'express';
-import type { BufferEncoding } from 'node:buffer';
 import { getEnv, isProd } from '../../../config/env';
 
 const logger = getLogger('interfaces-api-http-middleware-logging');
@@ -223,7 +222,7 @@ const sanitizeData = (data: unknown): Record<string, unknown> => {
     'apikey',
   ];
 
-  const sanitized = { ...data };
+  const sanitized = { ...data } as Record<string, unknown>;
   for (const field of sensitiveFields) {
     if (field in sanitized) {
       sanitized[field] = '[REDACTED]';
@@ -495,7 +494,7 @@ export const logPerformance = (
   };
   
   if (metadata) {
-    logMetadata.performanceMetric = metadata;
+    logMetadata['performanceMetric'] = metadata;
   }
   
   const logEntry = createLogEntry({

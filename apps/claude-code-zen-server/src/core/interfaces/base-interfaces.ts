@@ -112,7 +112,7 @@ export interface TaskExecution {
 // =============================================================================
 
 export interface SystemHealth {
-  readonly status: 'healthy' | ' degraded' | ' unhealthy';
+  readonly status: 'healthy' | 'degraded' | 'unhealthy';
   readonly uptime: number;
   readonly version: string;
   readonly timestamp: string;
@@ -121,7 +121,7 @@ export interface SystemHealth {
 
 export interface ComponentHealth {
   readonly name: string;
-  readonly status: 'healthy' | ' degraded' | ' unhealthy';
+  readonly status: 'healthy' | 'degraded' | 'unhealthy';
   readonly message?: string;
   readonly lastCheck: string;
   readonly metrics?: Record<string, number>;

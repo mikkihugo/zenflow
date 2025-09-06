@@ -95,7 +95,7 @@ export type ServiceStatus =
   | 'error';
 
 export interface ServiceHealth {
-  status: 'healthy' | ' degraded' | ' unhealthy';
+  status: 'healthy' | 'degraded' | 'unhealthy';
   checks: HealthCheck[];
   lastCheck: Date;
 }

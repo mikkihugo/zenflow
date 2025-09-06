@@ -269,7 +269,7 @@ export class WebSocketManager {
         // Safely derive agent count
         let agentsCount = 0;
         if (typeof systemState === 'object' && systemState !== null) {
-          const maybeAgents = (systemState as Record<string, unknown>).agents;
+          const maybeAgents = (systemState as Record<string, unknown>)['agents'];
           if (Array.isArray(maybeAgents)) agentsCount = maybeAgents.length;
         }
         return {
@@ -456,7 +456,7 @@ export class WebSocketManager {
       ['@claude-zen/system-monitoring']: { status: packageInfo['@claude-zen/system-monitoring']?.available ? 'registered' : 'fallback', version: packageInfo['@claude-zen/system-monitoring']?.version },
     };
     const registeredServices = Object.keys(serviceHealth).filter((s) => ['monitoring', 'loadBalancer', 'chaos'].includes(s) && serviceHealth[s].status === 'healthy');
-    const healthScore = serviceHealth.webSocket?.status === 'healthy' ? 45 : 20;
+    const healthScore = serviceHealth['webSocket']?.status === 'healthy' ? 45 : 20;
     return {
       name: 'operations',
       capability: healthScore >= 80 ? 'full' : healthScore >= 40 ? 'partial' : 'fallback',

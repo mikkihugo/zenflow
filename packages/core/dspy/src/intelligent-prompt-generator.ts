@@ -468,7 +468,7 @@ ${enhancedStandards.contextualIntro}
    */
   private generatePhaseGuidelines(
     phase:DevelopmentPhase,
-    context:ProjectContext,
+    _context:ProjectContext,
     config:Required<CodingStandardsConfig>
   ):string {
     switch (phase) {

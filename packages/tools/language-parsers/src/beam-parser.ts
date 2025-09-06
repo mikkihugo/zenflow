@@ -398,7 +398,7 @@ customTypes:this.extractGleamCustomTypes(content),
 // Enhanced Elixir parsing methods
 private extractElixirModuleName(content: string): string | null {
 const match = content.match(/defmodule\s+([A-Z][\w.]*)/);
-return match ? match[1] : null;
+return match?.[1] ?? null;
 }
 
 private extractElixirFunctions(content:string): BeamFunction[] {
@@ -418,6 +418,7 @@ const isPrivate = content
 const isMacro = content
 .substring(Math.max(0, match.index - 10), match.index)
 .includes('defmacro');
+if (!functionName) continue;
 const func: BeamFunction = {
 name: functionName,
 arity,
@@ -447,10 +448,11 @@ const types: BeamType[] = [];
 const typeRegex = /@type\s+([a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
 let match;
 while ((match = typeRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
-name:match[1],
-definition:match[2].trim(),
+name: match[1],
+definition: match[2].trim(),
 lineNumber,
 category: 'custom',
 });
@@ -460,10 +462,11 @@ category: 'custom',
 const privateTypeRegex =
 /@typep\s+([a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
 while ((match = privateTypeRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
-name:match[1],
-definition:match[2].trim(),
+name: match[1],
+definition: match[2].trim(),
 lineNumber,
 category: 'custom',
 });
@@ -472,10 +475,11 @@ category: 'custom',
 // @spec definitions
 const specRegex = /@spec\s+([a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
 while ((match = specRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
-name:match[1],
-definition:match[2].trim(),
+name: match[1],
+definition: match[2].trim(),
 lineNumber,
 category: 'spec',
 });
@@ -491,13 +495,13 @@ const docs: string[] = [];
 const moduleDocRegex = /@moduledoc\s+"""([\S\s]*?)"""/g;
 let match;
 while ((match = moduleDocRegex.exec(content)) !== null) {
-docs.push(match[1].trim());
+if (match[1]) docs.push(match[1].trim());
 }
 
 // @doc
 const docRegex = /@doc\s+"""([\S\s]*?)"""/g;
 while ((match = docRegex.exec(content)) !== null) {
-docs.push(match[1].trim());
+if (match[1]) docs.push(match[1].trim());
 }
 
 return docs;
@@ -509,25 +513,25 @@ const deps: string[] = [];
 // Extract use statements
 const useMatches = Array.from(content.matchAll(/use\s+([A-Z][\w.]*)/g));
 for (const match of useMatches) {
-deps.push(match[1]);
+if (match[1]) deps.push(match[1]);
 }
 
 // Extract import statements
 const importMatches = Array.from(content.matchAll(/import\s+([A-Z][\w.]*)/g));
 for (const match of importMatches) {
-deps.push(match[1]);
+if (match[1]) deps.push(match[1]);
 }
 
 // Extract alias statements
 const aliasMatches = Array.from(content.matchAll(/alias\s+([A-Z][\w.]*)/g));
 for (const match of aliasMatches) {
-deps.push(match[1]);
+if (match[1]) deps.push(match[1]);
 }
 
 // Extract require statements
 const requireMatches = Array.from(content.matchAll(/require\s+([A-Z][\w.]*)/g));
 for (const match of requireMatches) {
-deps.push(match[1]);
+if (match[1]) deps.push(match[1]);
 }
 
 return Array.from(new Set(deps)); // Remove duplicates
@@ -539,7 +543,7 @@ const protocolRegex = /defimpl\s+([A-Z][\w.]*)/g;
 
 let match;
 while ((match = protocolRegex.exec(content)) !== null) {
-protocols.push(match[1]);
+if (match[1]) protocols.push(match[1]);
 }
 
 return protocols;
@@ -548,7 +552,7 @@ return protocols;
 // Enhanced Erlang parsing methods
 private extractErlangModuleName(content: string): string | null {
 const match = content.match(/-module\s*\(\s*([a-z]\w*)\s*\)/);
-return match ? match[1] : null;
+return match?.[1] ?? null;
 }
 
 private extractErlangFunctions(content: string): BeamFunction[] {
@@ -561,6 +565,7 @@ const functionName = match[1];
 const params = match[2] || '';
 const arity = params ? params.split(',').length : 0;
 const lineNumber = content.substring(0, match.index).split('\n').length;
+if (!functionName) continue;
 const func: BeamFunction = {
 name: functionName,
 arity,
@@ -589,6 +594,7 @@ const types:BeamType[] = [];
 const typeRegex = /-type\s+([a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
 let match;
 while ((match = typeRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
@@ -602,6 +608,7 @@ category: 'custom',
 const opaqueRegex =
 /-opaque\s+([a-z]\w*(?:\([^)]{0,100}\))?)\s*::\s*([^.]{1,200})\./g;
 while ((match = opaqueRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
@@ -614,6 +621,7 @@ category: 'opaque',
 // -spec definitions
 const specRegex = /-spec\s+([a-z]\w*(?:\([^)]*\))?)\s*->\s*([^.]+)\./g;
 while ((match = specRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
@@ -646,7 +654,7 @@ const includeRegex = /-include\s*\(\s*"([^"]+)"\s*\)/g;
 
 let match;
 while ((match = includeRegex.exec(content)) !== null) {
-deps.push(match[1]);
+if (match[1]) deps.push(match[1]);
 }
 
 return deps;
@@ -658,7 +666,7 @@ const behaviourRegex = /-behaviour\s*\(\s*([a-z]\w*)\s*\)/g;
 
 let match;
 while ((match = behaviourRegex.exec(content)) !== null) {
-behaviours.push(match[1]);
+if (match[1]) behaviours.push(match[1]);
 }
 
 return behaviours;
@@ -670,8 +678,10 @@ const exportRegex = /-export\s*\(\s*\[([^\]]+)]\s*\)/g;
 
 let match;
 while ((match = exportRegex.exec(content)) !== null) {
+if (match[1]) {
 const funcs = match[1].split(',').map((f) => f.trim());
 exports.push(...funcs);
+}
 }
 
 return exports;
@@ -683,7 +693,7 @@ const includeRegex = /-include_lib\s*\(\s*"([^"]+)"\s*\)/g;
 
 let match;
 while ((match = includeRegex.exec(content)) !== null) {
-includes.push(match[1]);
+if (match[1]) includes.push(match[1]);
 }
 
 return includes;
@@ -698,10 +708,12 @@ while ((match = attrRegex.exec(content)) !== null) {
 const attrName = match[1];
 const attrValue = match[2];
 
+if (attrName && attrValue) {
 if (!attributes[attrName]) {
 attributes[attrName] = [];
 }
 attributes[attrName].push(attrValue);
+}
 }
 
 return attributes;
@@ -730,6 +742,7 @@ const lineNumber = content.substring(0, match.index).split('\n').length;
 const isPublic = content
 .substring(Math.max(0, match.index - 10), match.index)
 .includes('pub');
+if (!functionName) continue;
 const func: BeamFunction = {
 name: functionName,
 arity,
@@ -759,6 +772,7 @@ const typeRegex =
 /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
 let match;
 while ((match = typeRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
@@ -771,6 +785,7 @@ category: 'custom',
 // Type aliases
 const aliasRegex = /(?:pub\s+)?type\s+([A-Z]\w*)\s*=\s*([A-Z]\w*)/g;
 while ((match = aliasRegex.exec(content)) !== null) {
+if (!match[1] || !match[2]) continue;
 const lineNumber = content.substring(0, match.index).split('\n').length;
 types.push({
 name: match[1],
@@ -789,7 +804,7 @@ const docRegex = /\/{3}\s*(.*)/g;
 
 let match;
 while ((match = docRegex.exec(content)) !== null) {
-docs.push(match[1].trim());
+if (match[1]) docs.push(match[1].trim());
 }
 
 return docs;
@@ -801,7 +816,7 @@ const importRegex = /import\s+([a-z][\w/]*)/g;
 
 let match;
 while ((match = importRegex.exec(content)) !== null) {
-deps.push(match[1]);
+if (match[1]) deps.push(match[1]);
 }
 
 return deps;
@@ -813,7 +828,7 @@ const customTypeRegex = /(?:pub\s+)?type\s+([A-Z]\w*)/g;
 
 let match;
 while ((match = customTypeRegex.exec(content)) !== null) {
-customTypes.push(match[1]);
+if (match[1]) customTypes.push(match[1]);
 }
 
 return customTypes;

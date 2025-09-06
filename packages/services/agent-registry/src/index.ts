@@ -44,10 +44,7 @@ export { AgentRegistry } from './agent-registry';
 
 // Registry adapter for migration and compatibility
 export {
-  AgentRegistryAdapter,
-  createAgentRegistryAdapter,
-  type MigrationStats,
-  type RegistryAdapterOptions,
+  RegistryAdapter as AgentRegistryAdapter,
 } from './registry-adapter';
 
 // Type definitions

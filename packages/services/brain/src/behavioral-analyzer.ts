@@ -1,5 +1,5 @@
 import { EventEmitter, getLogger } from '@claude-zen/foundation';
-import { BehavioralPrediction, TaskComplexityAnalysis } from './types/index.js';
+import type { BehavioralPrediction, TaskComplexityAnalysis } from './types/index.js';
 
 const logger = getLogger('behavioral-analyzer');
 

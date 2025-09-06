@@ -75,7 +75,7 @@ export class WorkspaceApiRoutes {
    */
   private async listFiles(req: Request, res: Response): Promise<void> {
     try {
-      const requestedPath = (req.query.path as string) || '';
+      const requestedPath = (req.query['path'] as string) || '';
       const fullPath = path.resolve(this.workspaceRoot, requestedPath);
 
       // Security check - ensure path is within workspace
@@ -132,7 +132,7 @@ export class WorkspaceApiRoutes {
    */
   private async getFileContent(req: Request, res: Response): Promise<void> {
     try {
-      const filePath = req.query.path as string;
+      const filePath = req.query['path'] as string;
       if (!filePath) {
         res
           .status(400)
@@ -235,7 +235,7 @@ export class WorkspaceApiRoutes {
    */
   private async deleteFile(req: Request, res: Response): Promise<void> {
     try {
-      const filePath = req.query.path as string;
+      const filePath = req.query['path'] as string;
       if (!filePath) {
         res
           .status(400)
@@ -287,7 +287,7 @@ export class WorkspaceApiRoutes {
    */
   private async deleteDirectory(req: Request, res: Response): Promise<void> {
     try {
-      const dirPath = req.query.path as string;
+      const dirPath = req.query['path'] as string;
       if (!dirPath) {
         res.status(400).json({ error: 'Directory path required' });
         return;
@@ -319,7 +319,7 @@ export class WorkspaceApiRoutes {
       // Check if directory is empty (optional - remove this if you want to allow non-empty deletion)
       const isEmpty = await this.isDirectoryEmpty(fullPath);
       if (!isEmpty) {
-        const force = req.query.force === 'true';
+        const force = req.query['force'] === 'true';
         if (!force) {
           res.status(400).json({ 
             error: 'Directory is not empty. Use force=true to delete non-empty directories.',
@@ -427,7 +427,7 @@ export class WorkspaceApiRoutes {
    */
   private async searchFiles(req: Request, res: Response): Promise<void> {
     try {
-      const query = req.query.q as string;
+      const query = req.query['q'] as string;
       if (!query) {
         res.status(400).json({ error: 'Search query required' });
       }
@@ -473,9 +473,9 @@ export class WorkspaceApiRoutes {
    */
   private async searchContent(req: Request, res: Response): Promise<void> {
     try {
-      const query = req.query.q as string;
-      const fileTypes = (req.query.types as string)?.split(',') || ['.ts', '.js', '.json', '.md', '.txt'];
-      const maxResults = parseInt(req.query.limit as string) || 50;
+      const query = req.query['q'] as string;
+      const fileTypes = (req.query['types'] as string)?.split(',') || ['.ts', '.js', '.json', '.md', '.txt'];
+      const maxResults = parseInt(req.query['limit'] as string) || 50;
 
       if (!query) {
         res.status(400).json({ error: 'Search query required' });
@@ -634,7 +634,7 @@ export class WorkspaceApiRoutes {
    */
   private async getRecentFiles(req: Request, res: Response): Promise<void> {
     try {
-      const limit = parseInt(req.query.limit as string) || 10;
+      const limit = parseInt(req.query['limit'] as string) || 10;
       const recentFiles: Array<{
         name: string;
         path: string;

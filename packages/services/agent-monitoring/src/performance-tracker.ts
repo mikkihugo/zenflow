@@ -383,7 +383,7 @@ export class PerformanceTracker {
    */
   private calculateMemoryTrend(
     snapshots: PerformanceSnapshot[]
-  ):'increasing' | ' stable' | ' decreasing' {
+  ):'increasing' | 'stable' | 'decreasing' {
     if (snapshots.length < 3) return 'stable';
 
     const recentMemory = snapshots.slice(-5).map((s) => s.memoryUsage.rss);
@@ -477,23 +477,24 @@ export class PerformanceTracker {
    * Get performance stats
    */
   getStats():PerformanceStats {
-    const snapshots = Array.from(this.snapshots.values());
+    // Flatten all agent snapshots into a single array
+    const allSnapshots = Array.from(this.snapshots.values()).flat();
     const activeOps = Array.from(this.activeOperations.values());
     
-    const avgDuration = snapshots.length > 0 
-      ? snapshots.reduce((sum, s) => sum + s.duration, 0) / snapshots.length 
+    const avgDuration = allSnapshots.length > 0
+      ? allSnapshots.reduce((sum, s) => sum + s.duration, 0) / allSnapshots.length
       : 0;
     
-    const successRate = snapshots.length > 0
-      ? snapshots.filter(s => s.success).length / snapshots.length
+    const successRate = allSnapshots.length > 0
+      ? allSnapshots.filter(s => s.success).length / allSnapshots.length
       : 1;
 
     return {
-      totalOperations: snapshots.length,
+      totalOperations: allSnapshots.length,
       activeOperations: activeOps.length,
       averageDuration: avgDuration,
       successRate,
-      totalErrors: snapshots.filter(s => !s.success).length,
+      totalErrors: allSnapshots.filter(s => !s.success).length,
       memoryUsage: process.memoryUsage(),
       cpuUsage: process.cpuUsage()
     };

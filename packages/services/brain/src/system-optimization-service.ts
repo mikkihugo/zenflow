@@ -1,5 +1,5 @@
 import { EventEmitter, getLogger } from '@claude-zen/foundation';
-import { SystemMetrics, OptimizationRecommendation } from './types/index.js';
+import type { SystemMetrics, OptimizationRecommendation } from './types/index.js';
 
 const logger = getLogger('system-optimization-service');
 

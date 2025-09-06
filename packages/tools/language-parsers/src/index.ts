@@ -105,7 +105,7 @@ return new DefaultParserFactory();
 */
 export async function parseFile(
 filePath:string,
-options?:{
+_options?:{
 includeMetrics?:boolean;
 analyzeFunctionComplexity?:boolean;
 extractDocumentation?:boolean;
@@ -144,7 +144,7 @@ throw new Error(`Parser not implemented for language family: ${family}`);
 */
 export async function parseFiles(
 filePaths:string[],
-options?:{
+_options?:{
 includeMetrics?:boolean;
 analyzeFunctionComplexity?:boolean;
 extractDocumentation?:boolean;

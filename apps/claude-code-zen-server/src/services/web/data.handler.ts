@@ -399,9 +399,9 @@ export class WebDataService {
         failed: Math.floor(Math.random() * 3),
       },
       performance: {
-        efficiency: agent.metrics?.efficiency || 0.85,
-        responseTime: agent.metrics?.responseTime || 150,
-        successRate: agent.metrics?.successRate || 0.92,
+        efficiency: agent['metrics']?.['efficiency'] || 0.85,
+        responseTime: agent['metrics']?.['responseTime'] || 150,
+        successRate: agent['metrics']?.['successRate'] || 0.92,
       },
       lastActive: agent.lastActive || new Date().toISOString(),
     };
@@ -436,16 +436,16 @@ export class WebDataService {
 
   private normalizeSwarmData(data: unknown): SwarmStatusData {
     const obj = (data as Record<string, unknown>) || {};
-    const tasksObj = (obj.tasks as Record<string, unknown>) || {};
-    const perfObj = (obj.performance as Record<string, unknown>) || {};
+    const tasksObj = (obj['tasks'] as Record<string, unknown>) || {};
+    const perfObj = (obj['performance'] as Record<string, unknown>) || {};
 
-    const typeRaw = this.coerceString(obj.type, 'agent');
+    const typeRaw = this.coerceString(obj['type'], 'agent');
     const typeVal: SwarmStatusData['type'] =
       typeRaw === 'queen' || typeRaw ==='commander' || typeRaw ==='agent'
         ? (typeRaw as SwarmStatusData['type'])
         : 'agent';
 
-    const statusRaw = this.coerceString(obj.status, 'unknown');
+    const statusRaw = this.coerceString(obj['status'], 'unknown');
     const statusVal: SwarmStatusData['status'] =
       statusRaw === 'active' ||
       statusRaw === ' idle' ||
@@ -455,34 +455,34 @@ export class WebDataService {
         : 'active';
 
     return {
-      id: this.coerceString(obj.id, `swarm-${Date.now()}`),
-      name: this.coerceString(obj.name, 'Unknown Swarm'),
+      id: this.coerceString(obj['id'], `swarm-${Date.now()}`),
+      name: this.coerceString(obj['name'], 'Unknown Swarm'),
       type: typeVal,
       status: statusVal,
       tasks: {
-        current: this.coerceNumber(obj.current_tasks ?? tasksObj.current, 0),
+        current: this.coerceNumber(obj['current_tasks'] ?? tasksObj['current'], 0),
         completed: this.coerceNumber(
-          obj.completed_tasks ?? tasksObj.completed,
+          obj['completed_tasks'] ?? tasksObj['completed'],
           0
         ),
-        failed: this.coerceNumber(obj.failed_tasks ?? tasksObj.failed, 0),
+        failed: this.coerceNumber(obj['failed_tasks'] ?? tasksObj['failed'], 0),
       },
       performance: {
         efficiency: this.coerceNumber(
-          obj.efficiency ?? perfObj.efficiency,
+          obj['efficiency'] ?? perfObj['efficiency'],
           0.85
         ),
         responseTime: this.coerceNumber(
-          obj.response_time ?? perfObj.responseTime,
+          obj['response_time'] ?? perfObj['responseTime'],
           150
         ),
         successRate: this.coerceNumber(
-          obj.success_rate ?? perfObj.successRate,
+          obj['success_rate'] ?? perfObj['successRate'],
           0.9
         ),
       },
       lastActive: this.coerceString(
-        obj.last_active ?? obj.lastActive,
+        obj['last_active'] ?? obj['lastActive'],
         new Date().toISOString()
       ),
     };

@@ -677,10 +677,10 @@ async function handleGetTask(
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    logger.error(`Failed to get task ${req.params.taskId}:`, error);
+    logger.error(`Failed to get task ${req.params['taskId']}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTaskFailed, req, {
       error: (error as Error).message,
-      taskId: req.params.taskId,
+      taskId: req.params['taskId'],
     });
 
     res.status(500).json({
@@ -767,10 +767,10 @@ async function handleGetTasksByState(
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    logger.error(`Failed to get tasks by state ${req.params.state}:`, error);
+    logger.error(`Failed to get tasks by state ${req.params['state']}:`, error);
     log(LogLevel.ERROR, TASK_ERROR_MESSAGES.getTasksByStateFailed, req, {
       error: (error as Error).message,
-      state: req.params.state,
+      state: req.params['state'],
     });
 
     res.status(500).json({
@@ -935,10 +935,10 @@ function handleMoveTaskError(
   res: Response,
   error: unknown
 ): void {
-  logger.error(`Failed to move task ${req.params.taskId}:`, error);
+  logger.error(`Failed to move task ${req.params['taskId']}:`, error);
   log(LogLevel.ERROR, TASK_ERROR_MESSAGES.moveTaskFailed, req, {
     error: (error as Error).message,
-    taskId: req.params.taskId,
+    taskId: req.params['taskId'],
     body: req.body,
   });
 
@@ -1199,7 +1199,7 @@ function setupSystemHealthRoutes(
 
         // Set appropriate HTTP status based on health
         const httpStatus =
-          status === 'unhealthy' ? 503 : status === ' degraded' ? 207 : 200;
+          status === 'unhealthy' ? 503 : status === 'degraded' ? 207 : 200;
 
         res.status(httpStatus).json({
           success: true,
@@ -1296,8 +1296,8 @@ async function createDashboardDataHandler(
 
     // Calculate dashboard insights
     const totalTasks = Object.values(tasksByState).flat().length;
-    const completedTasks = tasksByState.done.length;
-    const blockedTasks = tasksByState.blocked.length;
+    const completedTasks = tasksByState['done'].length;
+    const blockedTasks = tasksByState['blocked'].length;
     const completionRate =
       totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
     const blockedRate =
@@ -1321,7 +1321,7 @@ async function createDashboardDataHandler(
         states,
         insights: {
           bottlenecks: states.filter((state) => tasksByState[state].length > 5),
-          highPriorityBlocked: tasksByState.blocked.filter(
+          highPriorityBlocked: tasksByState['blocked'].filter(
             (task) => task.priority === 'high' || task.priority === 'critical'
           ).length,
           avgCycleTime: metrics.cycleTime,

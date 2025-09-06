@@ -131,24 +131,25 @@ export class SimpleTaskPredictor implements TaskPredictor {
     success: boolean,
     metadata?:Record<string, unknown>
   ):void {
-    const key = `${agentId.id  }-${  taskType}`;
+    const key = `${agentId.id}-${taskType}`;
 
+    // Defensive: Only assign complexity/quality/resourceUsage if present and number
     const record: TaskCompletionRecord = {
       agentId,
       taskType,
       duration,
       success,
       timestamp: Date.now(),
-      complexity: metadata?.complexity as number,
-      quality: metadata?.quality as number,
-      resourceUsage: metadata?.resourceUsage as number,
+      ...(typeof metadata?.['complexity'] === 'number' ? { complexity: metadata['complexity'] } : {}),
+      ...(typeof metadata?.['quality'] === 'number' ? { quality: metadata['quality'] } : {}),
+      ...(typeof metadata?.['resourceUsage'] === 'number' ? { resourceUsage: metadata['resourceUsage'] } : {}),
       metadata,
-};
+    };
 
     // Add to history
     if (!this.taskHistory.has(key)) {
       this.taskHistory.set(key, []);
-}
+    }
 
     const history = this.taskHistory.get(key)!;
     history.push(record);
@@ -156,15 +157,15 @@ export class SimpleTaskPredictor implements TaskPredictor {
     // Keep only recent history
     if (history.length > this.config.historyWindowSize) {
       history.shift();
-}
+    }
 
     logger.debug('Task completion recorded', {
       agentId: agentId.id,
       taskType,
       duration,
       success,
-});
-}
+    });
+  }
 
   /**
    * Predict task duration using simple moving average

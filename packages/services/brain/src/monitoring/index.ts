@@ -1,4 +1,4 @@
-import { MonitoringMetrics, MonitoringConfig } from '../types/index.js';
+import type { MonitoringMetrics, MonitoringConfig } from '../types/index.js';
 
 export class BrainMonitoring {
   constructor(private config: MonitoringConfig = { enabled: true, interval: 30000 }) {}

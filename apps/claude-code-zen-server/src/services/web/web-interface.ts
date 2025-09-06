@@ -40,8 +40,8 @@ class WebConfig {
 
   constructor(config: unknown) {
     const cfg = config as Partial<WebConfig>;
-    this.port = cfg?.port || parseInt(process.env.PORT || '3000', 10);
-    this.host = cfg?.host || process.env.HOST || 'localhost';
+    this.port = cfg?.port || parseInt(process.env['PORT'] || '3000', 10);
+    this.host = cfg?.host || process.env['HOST'] || 'localhost';
     this.staticDir = cfg?.staticDir;
     this.daemon = cfg?.daemon || false;
     this.container = cfg?.container;

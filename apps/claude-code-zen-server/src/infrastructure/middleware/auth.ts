@@ -45,7 +45,7 @@ export interface AuthContext {
  */
 export const authMiddleware = (
   req: Request & { auth?: AuthContext },
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   // Create anonymous user context
@@ -85,7 +85,7 @@ export const authMiddleware = (
  */
 export const optionalAuthMiddleware = (
   req: Request & { auth?: AuthContext },
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   // Check for auth headers (but don't enforce)
